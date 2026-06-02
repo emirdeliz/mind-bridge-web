@@ -1,5 +1,3 @@
-import './chartConfig';
-export * from './Bar/ChartBar';
 export * from './Gauge/ChartGauge';
 export * from './Radar/ChartRadar';
 export * from './Donut/ChartDonut';
