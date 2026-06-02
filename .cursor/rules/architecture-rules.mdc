@@ -30,11 +30,11 @@ alwaysApply: false
 
 ### UI Components
 - Create in: `src/ui/components/[resource-name]/[ResourceName]Component.tsx`
-- Or in: `src/ui/pages/[resource-name]/[ResourceName]Page.tsx` for complete pages
+- Keep complete page content in: `src/ui/components/[resource-name]/[ResourceName]Page.tsx`
 
 ### Pages (Routes)
 - Create in: `src/pages/[category]/[resource-name]/index.tsx`
-- Always export the corresponding component from ui/pages folder
+- Files in `src/pages` must only handle routing and render/export components from `src/ui/components`
 
 ## Naming Conventions
 
@@ -42,7 +42,7 @@ alwaysApply: false
 - DTOs: `[ResourceName]Dto.ts`
 - APIs: `[ResourceName]Api.ts`
 - Hooks: `use[ResourceName].ts`
-- Components: `[ResourceName]Component.tsx` or `[ResourceName]Page.tsx`
+- Components: `[ResourceName]Component.tsx` or `[ResourceName]Page.tsx` in `src/ui/components`
 
 ### Variables and Functions
 - Methods and variables: always in English, using camelCase
@@ -122,6 +122,7 @@ export const useResourceName = () => {
 - Commit messages: English, following Conventional Commits patterns
 
 ### Code Style
+- Use TypeScript for application code (`.ts` and `.tsx`)
 - Use camelCase for properties and methods
 - Use PascalCase for interfaces, types, and components
 - Use snake_case for Supabase table names
@@ -139,7 +140,8 @@ export const useResourceName = () => {
 ## Imports and Exports
 
 ### Import Aliases
-- Use defined aliases (@api, @services, @helpers, @molecules, @components)
+- Prefer TypeScript path aliases over long relative imports
+- Use defined aliases (`@api`, `@services`, `@ui`, `@utils`, `@styles`)
 - Import only what's necessary, avoid full module imports
 
 ### Exports

@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Get branch name
+CURRENT_BRANCH=$(git branch | grep '*' | sed 's/* //')
+
+# Get commit description
+COMMIT_MESSAGE=$(cat $1)
+
+# Get commit prefix
+COMMIT_PREFIX_BRANCH_NAME="[$CURRENT_BRANCH] - "
+
+# Define error message
+ERROR_MSG="Aborting commit. Your commit message is missing $COMMIT_PREFIX_BRANCH_NAME"
+
+if [[ $COMMIT_MESSAGE  == *"$COMMIT_PREFIX_BRANCH_NAME"* ]]; then
+	echo "Nice commit!"
+else
+	echo "$ERROR_MSG" >&2
+	exit 1
+fi

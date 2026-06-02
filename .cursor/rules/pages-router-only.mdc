@@ -1,0 +1,22 @@
+---
+description: Keep src/pages only for router entries
+globs:
+  - src/pages/**/*.ts
+  - src/pages/**/*.tsx
+alwaysApply: false
+---
+
+# Router-Only Pages Rule
+
+- Keep `src/pages` as a routing layer only.
+- Do not place business logic, feature state, or large JSX structures in `src/pages`.
+- Route files should import and render/export screen components from `src/ui/components/**`.
+- If a route needs guards or redirects, keep that code minimal and route-focused.
+
+## Expected Pattern
+
+```tsx
+import { PatientPage } from "@ui/components/patient/PatientPage";
+
+export default PatientPage;
+```

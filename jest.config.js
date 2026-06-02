@@ -1,0 +1,22 @@
+module.exports = {
+  preset: "ts-jest",
+  testEnvironment: "jsdom",
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
+  moduleNameMapper: {
+    "^@api/(.*)$": "<rootDir>/src/api/$1",
+    "^@services/(.*)$": "<rootDir>/src/services/$1",
+    "^@helpers$": "<rootDir>/src/helpers",
+    "^@helpers/(.*)$": "<rootDir>/src/helpers/$1",
+    "^@atoms$": "<rootDir>/src/ui/atoms",
+    "^@atoms/(.*)$": "<rootDir>/src/ui/atoms/$1",
+    "^@molecules$": "<rootDir>/src/ui/molecules",
+    "^@molecules/(.*)$": "<rootDir>/src/ui/molecules/$1",
+    "^@organisms$": "<rootDir>/src/ui/organisms",
+    "^@organisms/(.*)$": "<rootDir>/src/ui/organisms/$1",
+    "^@components$": "<rootDir>/src/ui/components",
+    "^@components/(.*)$": "<rootDir>/src/ui/components/$1",
+    "^@templates$": "<rootDir>/src/ui/templates",
+    "^@templates/(.*)$": "<rootDir>/src/ui/templates/$1",
+    "^@styles/(.*)$": "<rootDir>/src/styles/$1",
+  },
+};

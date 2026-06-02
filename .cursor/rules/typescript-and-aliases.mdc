@@ -1,0 +1,25 @@
+---
+description: Enforce TypeScript and prefer path aliases
+globs:
+  - src/**/*.ts
+  - src/**/*.tsx
+alwaysApply: false
+---
+
+# TypeScript And Aliases
+
+- All application code must be written in TypeScript (`.ts` / `.tsx`).
+- Avoid creating new JavaScript source files (`.js` / `.jsx`) in `src`.
+- Prefer path aliases from `tsconfig.json` for imports (`@api`, `@services`, `@ui`, `@utils`, `@styles`).
+- Avoid deep relative paths like `../../../`.
+- Keep import paths consistent and predictable across modules.
+
+## Example
+
+```ts
+// ✅
+import { useAuth } from "@services/auth/hooks/useAuth";
+
+// ❌
+import { useAuth } from "../../../services/auth/hooks/useAuth";
+```
