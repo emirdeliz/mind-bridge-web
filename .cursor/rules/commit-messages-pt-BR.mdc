@@ -1,0 +1,16 @@
+---
+description: Mensagens de commit sugeridas pelo Agent em português do Brasil (pt-BR)
+alwaysApply: true
+---
+
+# Mensagens de commit (pt-BR)
+
+Quando **sugerir, redigir ou reformular** uma mensagem de `git commit` (título e, se houver, corpo):
+
+- Use **sempre português do Brasil (pt-BR)**: vocabulário e acentuação corretos.
+- **Títulos** em imperativo, claros e curtos; primeira letra em minúscula é aceitável se o time seguir o padrão; evite ponto final no título.
+- Se o repositório usar **Conventional Commits**, mantenha o tipo em inglês e a descrição em pt-BR, por exemplo: `feat: adiciona filtro na listagem` ou `fix: corrige validação do CNPJ`.
+- Mencione **o quê** mudou e, quando útil, **por quê** (no corpo, com linha em branco após o título).
+- Não invente escopo de commit (arquivos alterados) — baseie-se no diff e no contexto fornecido.
+
+Não mude o idioma de **identificadores de código**, trechos de log ou citações literais; só a redação **da mensagem de commit**.
