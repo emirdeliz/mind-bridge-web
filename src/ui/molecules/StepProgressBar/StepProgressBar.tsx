@@ -36,7 +36,7 @@ const renderDot = (
         <Flex.Row
           alignCenter
           justifyCenter
-          ml="1"
+          ml1
           data-testid={`${key}-step-progress`}
         >
           <Title noWrap white={isCurrent}>

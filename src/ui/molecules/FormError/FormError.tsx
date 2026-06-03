@@ -1,49 +1,26 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode } from "react";
 
-export interface FormErrorProps {
+import { Title } from "@atoms";
+import { buildMarginClasses, type MarginSpacingProps } from "../../atoms/shared/spacingClasses";
+
+export interface FormErrorProps extends MarginSpacingProps {
   children: ReactNode;
   error?: string;
-  margin?: string;
-  mt?: string;
-  mr?: string;
-  mb?: string;
-  ml?: string;
-  mx?: string;
-  my?: string;
 }
 
-export const FormError = ({ 
-  children, 
-  error,
-  margin,
-  mt,
-  mr,
-  mb,
-  ml,
-  mx,
-  my,
-  ...props 
-}: FormErrorProps) => {
-  const marginClasses = [
-    margin && `m-${margin}`,
-    mt && `mt-${mt}`,
-    mr && `mr-${mr}`,
-    mb && `mb-${mb}`,
-    ml && `ml-${ml}`,
-    mx && `mx-${mx}`,
-    my && `my-${my}`,
-  ].filter(Boolean).join(' ');
+export const FormError = ({ children, error, ...marginProps }: FormErrorProps) => {
+  const marginClasses = buildMarginClasses(marginProps);
 
   if (!error) {
-    return <div className={marginClasses}>{children}</div>;
+    return <div className={`w-full ${marginClasses}`.trim()}>{children}</div>;
   }
 
   return (
-    <div className={marginClasses}>
+    <div className={`w-full ${marginClasses}`.trim()}>
       {children}
-      <div className="mt-2 text-sm font-medium text-mb-danger">
+      <Title s1 error mt2>
         {error}
-      </div>
+      </Title>
     </div>
   );
 };

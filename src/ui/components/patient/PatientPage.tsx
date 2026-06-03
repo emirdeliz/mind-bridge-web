@@ -61,7 +61,7 @@ export const PatientPage = () => {
           {summary}
         </Title>
       </Card>
-      <Flex row wrap gap={8}>
+      <Flex row wrap gap4>
         <Button
           variant="secondary"
           outlined

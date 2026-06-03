@@ -4,11 +4,15 @@ import NextLink from "next/link";
 export interface RouteLinkProps {
   href: string;
   children: ReactNode;
-  className?: string;
+  active?: boolean;
+  inline?: boolean;
 }
 
-export const RouteLink = ({ href, children, className }: RouteLinkProps) => (
-  <NextLink href={href} className={className}>
+export const RouteLink = ({ href, children, active, inline }: RouteLinkProps) => (
+  <NextLink
+    href={href}
+    className={active ? "mb-nav-link-active" : inline ? "mb-auth-text-link" : "mb-nav-link"}
+  >
     {children}
   </NextLink>
 );

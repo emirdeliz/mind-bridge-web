@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import type { UserRole } from "@api";
 import { getRoleRoute, useAuth } from "@services";
-import { Button, Input, Select } from "@atoms";
+import { Button, Flex, Input, RouteLink, Select, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card, Form } from "@molecules";
 import { AppShell } from "@templates";
@@ -26,8 +26,11 @@ export const RegisterPage = () => {
   }
 
   return (
-    <AppShell title={t("REGISTER")} subtitle={t("REGISTER_SUBTITLE")} variant="auth">
+    <AppShell title={t("APP_TITLE")} subtitle={t("REGISTER_SUBTITLE")} variant="auth">
       <Card padding="lg" shadow="md">
+        <Title fs3 fw3 mb2>
+          {t("REGISTER")}
+        </Title>
         <Form
           onSubmit={async (event) => {
             event.preventDefault();
@@ -54,6 +57,14 @@ export const RegisterPage = () => {
             {t("CREATE_ACCOUNT")}
           </Button>
         </Form>
+        <Flex row justifyCenter alignCenter wrap gap2 mt6 wFull>
+          <Title s1 gray center>
+            {t("AUTH_OR")}
+          </Title>
+          <RouteLink href="/" inline>
+            {t("AUTH_LOGIN_LINK")}
+          </RouteLink>
+        </Flex>
       </Card>
     </AppShell>
   );

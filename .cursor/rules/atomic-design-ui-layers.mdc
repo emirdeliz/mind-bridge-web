@@ -19,6 +19,7 @@ alwaysApply: false
 
 - Visual controls, form patterns, tables, modals, cards, and lists that could exist in **any** React app using the same design system.
 - Domain-agnostic props: `label`, `options`, `onSubmit`, `columns`, `children`, and already-mapped data in a neutral format.
+- Do not expose `className`; use boolean spacing/layout props (see `atomic-no-classname-props.mdc`).
 
 ## What counts as “project/domain” (templates)
 

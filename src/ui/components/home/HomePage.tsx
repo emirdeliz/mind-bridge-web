@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import type { UserRole } from "@api";
 import { getRoleRoute, useAuth } from "@services";
-import { Button, Flex, Input, Select, Title } from "@atoms";
+import { Button, Flex, Input, RouteLink, Select, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card, Form, FormError } from "@molecules";
 import { AppShell } from "@templates";
@@ -69,10 +69,11 @@ export const HomePage = () => {
             </Button>
           </FormError>
         </Form>
-        <Flex row wrap gap={8} mt="4">
+        <Flex col wFull mt6 gap4>
           <Button
             variant="secondary"
             outlined
+            wFull
             onClick={async () => navigateByRole((await loginWithProvider("google", role)).role)}
           >
             {t("CONTINUE_WITH_GOOGLE")}
@@ -80,10 +81,19 @@ export const HomePage = () => {
           <Button
             variant="secondary"
             outlined
+            wFull
             onClick={async () => navigateByRole((await loginWithProvider("facebook", role)).role)}
           >
             {t("CONTINUE_WITH_FACEBOOK")}
           </Button>
+        </Flex>
+        <Flex row justifyCenter alignCenter wrap gap2 mt4 wFull>
+          <Title s1 gray center>
+            {t("AUTH_OR")}
+          </Title>
+          <RouteLink href="/register" inline>
+            {t("AUTH_REGISTER_LINK")}
+          </RouteLink>
         </Flex>
       </Card>
     </AppShell>

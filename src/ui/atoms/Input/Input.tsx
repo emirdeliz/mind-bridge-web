@@ -152,7 +152,7 @@ export const Input = ({
   ].filter(Boolean).join(' ');
 
   const containerClasses = [
-    'flex flex-1 rounded-md',
+    'flex w-full flex-1 rounded-md',
     'bg-transparent',
     marginClasses,
     paddingClasses,
@@ -177,9 +177,9 @@ export const Input = ({
 
   return (
     <div className={containerClasses}>
-      {before && <Flex.Center ml="2">{before}</Flex.Center>}
+      {before && <Flex.Center ml2>{before}</Flex.Center>}
       {inputElement}
-      {after && <Flex.Center mr="2">{after}</Flex.Center>}
+      {after && <Flex.Center mr2>{after}</Flex.Center>}
     </div>
   );
 };

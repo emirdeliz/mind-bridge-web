@@ -44,7 +44,7 @@ export const PsychologistPage = () => {
           onChange={(event) => setPsychologistContext(event.target.value)}
         />
       </Card>
-      <Flex row wrap gap={16}>
+      <Flex row wrap gap4>
         <Flex flex1>
           <Card padding="lg" shadow="md">
             <Title fs3 fw3 mb2>

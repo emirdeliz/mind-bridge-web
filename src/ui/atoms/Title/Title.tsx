@@ -25,6 +25,7 @@ export interface TitleProps {
   mb1?: boolean;
   mb2?: boolean;
   mb3?: boolean;
+  mb4?: boolean;
   mt2?: boolean;
   ml5?: boolean;
   p2?: boolean;
@@ -38,6 +39,15 @@ export interface TitleProps {
   s1?: boolean;
   s2?: boolean;
   s3?: boolean;
+  gradient?: boolean;
+  fsHero?: boolean;
+  textXs?: boolean;
+  textAccent?: boolean;
+  trackingWide?: boolean;
+  block?: boolean;
+  maxW2xl?: boolean;
+  leadingRelaxed?: boolean;
+  py8?: boolean;
 }
 
 export const Title = (props: TitleProps) => {
@@ -70,14 +80,26 @@ export const Title = (props: TitleProps) => {
     else baseClasses.push('font-medium');
 
     // Transformações de texto
+    if (props.gradient) {
+      baseClasses.push('mb-gradient-title');
+    }
     if (props.uppercase) {
       baseClasses.push('uppercase tracking-wide');
     }
+    if (props.trackingWide) baseClasses.push('tracking-wide');
+    if (props.textXs) baseClasses.push('text-xs');
+    if (props.textAccent) baseClasses.push('text-mb-accent');
+    if (props.block) baseClasses.push('block');
+    if (props.maxW2xl) baseClasses.push('max-w-2xl');
+    if (props.leadingRelaxed) baseClasses.push('leading-relaxed');
+    if (props.py8) baseClasses.push('py-8');
     if (props.lowercase) baseClasses.push('lowercase');
     if (props.capitalize) baseClasses.push('capitalize');
 
     // Tamanhos de fonte
-    if (props.n2) {
+    if (props.fsHero) {
+      baseClasses.push('text-2xl sm:text-3xl');
+    } else if (props.n2) {
       baseClasses.push('text-2xl');
     } else if (props.fs3) {
       baseClasses.push('text-lg');
@@ -101,6 +123,7 @@ export const Title = (props: TitleProps) => {
     if (props.mb1) baseClasses.push('mb-1');
     if (props.mb2) baseClasses.push('mb-2');
     if (props.mb3) baseClasses.push('mb-3');
+    if (props.mb4) baseClasses.push('mb-4');
     if (props.mt2) baseClasses.push('mt-2');
     if (props.ml5) baseClasses.push('ml-5');
     if (props.p2) baseClasses.push('p-2');

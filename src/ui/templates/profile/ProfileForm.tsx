@@ -36,7 +36,7 @@ const ProfileFormContent = ({ initialData, onSave }: ProfileFormProps) => {
         >
           {t("PROFILE_FULL_NAME_PLACEHOLDER")}
         </InputForm>
-        <Flex row wrap gap={16}>
+        <Flex row wrap gap4>
           <Flex flex1>
             <InputForm
               value={data.age}

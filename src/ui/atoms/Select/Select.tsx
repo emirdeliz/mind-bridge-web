@@ -34,7 +34,7 @@ export const Select = ({
 
   return (
     <select
-      className={selectClasses}
+      className={`${selectClasses} block w-full`}
       role="select"
       data-testid={dataTestId}
       value={value}

@@ -16,8 +16,8 @@ export const ChartCard = ({ children, title }: ChartCardProps) => {
 
   return (
     <div className={chartCardClasses}>
-      <Flex.Col alignCenter className="h-full">
-        <Title fw3 fs4 center className="mb-4">{title}</Title>
+      <Flex.Col alignCenter hFull>
+        <Title fw3 fs4 center mb4>{title}</Title>
         <div className="flex-1 w-full">
           {children}
         </div>

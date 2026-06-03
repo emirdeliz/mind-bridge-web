@@ -71,6 +71,10 @@
     @apply rounded-lg bg-mb-accent/15 px-3 py-2 text-sm font-medium text-mb-accent ring-1 ring-mb-accent/25;
   }
 
+  .mb-auth-text-link {
+    @apply text-sm font-medium text-mb-accent underline-offset-2 transition hover:text-mb-text hover:underline;
+  }
+
   .mb-gradient-title {
     @apply bg-gradient-to-r from-mb-text via-mb-accent to-mb-primary bg-clip-text text-transparent;
   }

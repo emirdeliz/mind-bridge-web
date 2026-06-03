@@ -3,7 +3,7 @@ import { useState } from "react";
 import type { ChatMessage } from "@services";
 import { Button, Flex, Input, Title } from "@atoms";
 import { useI18n } from "@i18n";
-import { Card, Form } from "@molecules";
+import { Card, ChatMessageBubble, Form } from "@molecules";
 
 interface ChatPanelProps {
   messages: ChatMessage[];
@@ -38,20 +38,19 @@ export const ChatPanel = ({ messages, onSend, onSpeechToText }: ChatPanelProps) 
       <Title fs3 fw3 mb2>
         {t("AI_AGENT_CHAT")}
       </Title>
-      <Flex col mb="4" maxHeight="320px" overflowY gap={12} className="mb-chat-scroll">
+      <Flex col mb4 maxH320 overflowY gap4 chatScroll>
         {messages.map((message) => (
-          <div
+          <ChatMessageBubble
             key={message.id}
-            className={message.sender === "agent" ? "mb-message-agent" : "mb-message-user"}
-          >
-            <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-mb-accent">
-              {message.sender === "agent" ? t("CHAT_AGENT_LABEL") : t("CHAT_USER_LABEL")}
-            </span>
-            {message.text}
-          </div>
+            sender={message.sender}
+            label={message.sender === "agent" ? t("CHAT_AGENT_LABEL") : t("CHAT_USER_LABEL")}
+            text={message.text}
+          />
         ))}
         {!messages.length ? (
-          <p className="py-8 text-center text-sm text-mb-muted">{t("CHAT_NO_MESSAGES")}</p>
+          <Title s1 gray center py8>
+            {t("CHAT_NO_MESSAGES")}
+          </Title>
         ) : null}
       </Flex>
       <Form
@@ -61,7 +60,7 @@ export const ChatPanel = ({ messages, onSend, onSpeechToText }: ChatPanelProps) 
           setText("");
         }}
       >
-        <Flex row gap={8} alignEnd>
+        <Flex row gap4 alignEnd>
           <Flex flex1>
             <Input
               placeholder={t("CHAT_MESSAGE_PLACEHOLDER")}

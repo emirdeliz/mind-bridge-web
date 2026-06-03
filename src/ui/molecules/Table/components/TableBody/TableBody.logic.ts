@@ -23,7 +23,7 @@ export const buildDataSource = <T>({ columns, dataSource }: TableProps<T>) => {
         const value = (dataSourceItem as T & { actions: ReactNode })[key];
         const valueFormatMaybe = formatValueMaybe(
           column,
-          value as GenericObject
+          value as string | number | Date | undefined
         );
         return {
           ...keysValue,

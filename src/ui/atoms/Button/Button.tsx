@@ -31,6 +31,8 @@ export interface ButtonProps {
   my?: boolean;
   // Props específicas
   default?: boolean;
+  selected?: boolean;
+  chip?: boolean;
 }
 
 export const Button = ({
@@ -60,6 +62,8 @@ export const Button = ({
   mx,
   my,
   default: defaultVariant = false,
+  selected = false,
+  chip = false,
   ...props
 }: ButtonProps) => {
   // Construir classes Tailwind dinamicamente
@@ -99,6 +103,16 @@ export const Button = ({
     my && 'my-2',
   ].filter(Boolean).join(' ');
 
+  const chipClasses = chip
+    ? 'rounded-lg px-2.5 py-1 text-xs font-semibold uppercase tracking-wide'
+    : '';
+
+  const selectedClasses = selected
+    ? 'bg-mb-accent/20 text-mb-accent ring-1 ring-mb-accent/30'
+    : chip
+      ? 'text-mb-muted hover:bg-mb-surface-elevated hover:text-mb-text'
+      : '';
+
   const buttonClasses = [
     'flex items-center justify-center',
     'font-medium font-poppins',
@@ -109,7 +123,8 @@ export const Button = ({
     opacityClasses,
     cursorClasses,
     marginClasses,
-    variantClasses[variant],
+    chipClasses,
+    chip ? selectedClasses : variantClasses[variant],
     'transition-all duration-200 ease-in-out',
     'focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-mb-accent/30',
     'disabled:opacity-50 disabled:cursor-not-allowed',

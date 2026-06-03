@@ -72,7 +72,7 @@ export const TableBody = <T extends { actions: ReactNode }>({
             {customCellRender ? (
               customCellRender(row)
             ) : (
-              <Title fs2>{String(valueFormatted || row[keyLabel] || '')}</Title>
+              <Title s2>{String(valueFormatted || row[keyLabel] || '')}</Title>
             )}
           </td>
         );

@@ -1,6 +1,7 @@
-import { ReactNode } from 'react';
-import { DropdownOptionProps, DropdownProps } from '..';
-import { accessAtributeObjectByPath } from '@helpers';
+import { ReactNode } from "react";
+import { GenericObject } from "@types";
+import { accessAtributeObjectByPath } from "@helpers";
+import { DropdownProps } from "./Dropdown";
 
 export interface DropdownSelectedItemProps<T> {
   value?: T;
@@ -8,7 +9,7 @@ export interface DropdownSelectedItemProps<T> {
   before?: ReactNode;
 }
 
-export const normalizeValue = <T>({
+export const normalizeValue = <T extends GenericObject>({
   value,
   keyOfLabel,
   keyOfLabelCompost,
@@ -28,13 +29,14 @@ export const normalizeValue = <T>({
 
   return {
     value: value,
-    before: (value as DropdownOptionProps<T>)?.before,
-    label: keyOfLabelCompost ? accessAtributeObjectByPath<T>(value, [keyOfLabelCompost])[0] :
-      String((keyOfLabel && value ? value[keyOfLabel] : value) || ''),
+    before: (value as T & { before?: ReactNode })?.before,
+    label: keyOfLabelCompost
+      ? String(accessAtributeObjectByPath(value as Record<string, unknown>, String(keyOfLabelCompost)) ?? "")
+      : String((keyOfLabel && value ? value[keyOfLabel] : value) || ""),
   } as DropdownSelectedItemProps<T>;
 };
 
-export const getOptionsFiltered = <T>(
+export const getOptionsFiltered = <T extends GenericObject>(
 	options: Array<DropdownSelectedItemProps<T>>,
   filter?: string
 ) => {

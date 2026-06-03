@@ -177,17 +177,12 @@ interface TooltipRefObject {
   isOpen: () => boolean;
 }
 
-export const Tooltip = forwardRef(
-  (props: TooltipProps, ref?: GenericObject) => {
+export const Tooltip = forwardRef<TooltipRefObject, TooltipProps>((props, ref) => {
     const refTooltip = useRef<TooltipRefObject | undefined>(undefined);
     const refDivContents = useRef<HTMLDivElement>(null);
     const [timeOutId, setTimeOutId] = useState<NodeJS.Timeout | null>();
     const { top, bottom, left, right, title, invisible, children } =
       props;
-
-    useImperativeHandle(ref, () => ({
-      open,
-    }));
 
     const open = () => {
       if (refTooltip.current && !refTooltip.current?.isOpen()) {
@@ -206,6 +201,12 @@ export const Tooltip = forwardRef(
         refTooltip.current.close();
       }
     };
+
+    useImperativeHandle(ref, () => ({
+      open,
+      close,
+      isOpen: () => refTooltip.current?.isOpen() ?? false,
+    }));
 
     const extraTooltipProps = {
       onMouseLeave: () => close(),

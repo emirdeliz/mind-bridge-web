@@ -19,11 +19,11 @@ export const ContentInfoRow = ({
 
   return (
     <div className={contentInfoClasses}>
-      <Title fs1 n2>
+      <Title s1 n2>
         {title}
       </Title>
       <ShowSkeleton when={loading} width="200px" height="14px">
-        <Label fs1 fw3>
+        <Label fs3 fw3>
           {info}
         </Label>
       </ShowSkeleton>
