@@ -39,6 +39,7 @@
   "PROFILE_ADDRESS_PLACEHOLDER": "Address",
   "PROFILE_PHONE_PLACEHOLDER": "Phone",
   "SAVE_PROFILE": "Save profile",
+  "SAVE": "Save",
   "PROFILE_PAGE_TITLE": "My profile",
   "PROFILE_PAGE_SUBTITLE": "Update your identification details.",
   "USER_MENU_EDIT_PROFILE": "Edit profile",
@@ -85,5 +86,8 @@
   "TOOLTIP_PSYCHOLOGIST_SESSION_NOTES": "Psychotherapy session notes: agenda, techniques used, and items to review at the next appointment.",
   "TOOLTIP_PSYCHOLOGIST_CHAT": "Ask the AI to consolidate patient data, detect patterns, and suggest clinical guidance.",
   "TOOLTIP_PSYCHOLOGIST_SUMMARY": "Aggregated view of the patient's AI interactions, including metrics, risk, and plan adherence.",
-  "TOOLTIP_PSYCHOLOGIST_INSIGHTS": "Automatically suggested indicators, patterns, alerts, and actions to support your clinical decisions."
+  "TOOLTIP_PSYCHOLOGIST_INSIGHTS": "Automatically suggested indicators, patterns, alerts, and actions to support your clinical decisions.",
+  "SESSION_NOTES_PREVIOUS": "Previous session",
+  "SESSION_NOTES_NEXT": "Next session",
+  "SESSION_NOTES_READONLY_HINT": "Viewing a past session — editing is disabled."
 }

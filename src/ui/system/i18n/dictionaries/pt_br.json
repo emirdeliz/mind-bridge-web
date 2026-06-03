@@ -39,6 +39,7 @@
   "PROFILE_ADDRESS_PLACEHOLDER": "Endereço",
   "PROFILE_PHONE_PLACEHOLDER": "Telefone",
   "SAVE_PROFILE": "Salvar perfil",
+  "SAVE": "Salvar",
   "PROFILE_PAGE_TITLE": "Meu perfil",
   "PROFILE_PAGE_SUBTITLE": "Atualize seus dados de identificação.",
   "USER_MENU_EDIT_PROFILE": "Editar perfil",
@@ -85,5 +86,8 @@
   "TOOLTIP_PSYCHOLOGIST_SESSION_NOTES": "Anotações da sessão de psicoterapia: pauta, técnicas aplicadas e pontos a revisar na próxima consulta.",
   "TOOLTIP_PSYCHOLOGIST_CHAT": "Consulte a IA para consolidar dados do paciente, detectar padrões e receber sugestões de condução clínica.",
   "TOOLTIP_PSYCHOLOGIST_SUMMARY": "Visão agregada das interações do paciente com a IA, incluindo métricas, risco e adesão ao plano.",
-  "TOOLTIP_PSYCHOLOGIST_INSIGHTS": "Indicadores, padrões, alertas e ações sugeridas automaticamente para apoiar sua decisão clínica."
+  "TOOLTIP_PSYCHOLOGIST_INSIGHTS": "Indicadores, padrões, alertas e ações sugeridas automaticamente para apoiar sua decisão clínica.",
+  "SESSION_NOTES_PREVIOUS": "Sessão anterior",
+  "SESSION_NOTES_NEXT": "Próxima sessão",
+  "SESSION_NOTES_READONLY_HINT": "Visualização de sessão anterior — edição desabilitada."
 }

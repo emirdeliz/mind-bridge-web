@@ -46,7 +46,25 @@
 
 @layer components {
   .mb-field {
-    @apply w-full min-h-[48px] rounded-xl border border-mb-border bg-mb-bg/70 px-4 py-3 text-base text-mb-text shadow-inner shadow-black/10 outline-none transition-all duration-200 placeholder:text-mb-muted focus:border-mb-accent focus:ring-2 focus:ring-mb-accent/25 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply w-full min-h-[48px] rounded-xl border border-mb-border bg-mb-bg/70 px-4 py-3 text-base text-mb-text shadow-inner shadow-black/10 outline-none transition-all duration-200 placeholder:text-mb-muted focus:border-mb-accent focus:ring-2 focus:ring-mb-accent/25;
+  }
+
+  textarea.mb-field:disabled,
+  textarea.mb-field[readonly],
+  textarea.mb-field-readonly {
+    cursor: default;
+    border-color: rgba(42, 54, 80, 0.85);
+    background-color: rgba(10, 15, 26, 0.65);
+    color: #8b9ab8;
+    opacity: 1;
+    -webkit-text-fill-color: #8b9ab8;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  .mb-field:disabled:not(textarea),
+  .mb-field[readonly]:not(textarea) {
+    @apply cursor-default border-mb-border/60 bg-mb-bg/40 text-mb-muted opacity-100;
+    -webkit-text-fill-color: #8b9ab8;
   }
 
   .mb-field-error {
@@ -63,6 +81,21 @@
 
   .input-focus-primary:focus {
     @apply border-mb-accent ring-2 ring-mb-accent/25;
+  }
+
+  .mb-field-with-action {
+    @apply relative w-full;
+  }
+
+  .mb-field-with-action--has-save textarea.mb-field {
+    padding-right: 3.25rem;
+    padding-bottom: 2.75rem;
+  }
+
+  .mb-field-with-action-save {
+    @apply pointer-events-auto absolute z-10;
+    right: 0.625rem;
+    bottom: 0.625rem;
   }
 
   .mb-nav-link {

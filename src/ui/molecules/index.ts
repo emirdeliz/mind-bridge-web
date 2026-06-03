@@ -21,6 +21,7 @@ export * from "./StepProgressBar/StepProgressBar";
 export * from "./Switch/Switch";
 export * from "./Table/Table";
 export * from "./Table/components";
+export * from "./TextAreaWithSave/TextAreaWithSave";
 export * from "./Toast";
 
 // LoaderComponent — import from "./LoaderComponent/LoaderComponent"

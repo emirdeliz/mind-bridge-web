@@ -3,8 +3,9 @@ import { InputProps } from '../Input';
 
 const TEXT_AREA_MAX_LENGTH = 65_535;
 
-export const InputTextArea = ({ maxLength, rows, dataTestId, hasError, ...props }: InputProps) => {
+export const InputTextArea = ({ maxLength, rows, dataTestId, hasError, disabled, readOnly, ...props }: InputProps) => {
   const id = String(props.id);
+  const isReadonly = Boolean(disabled || readOnly);
 
   const textareaClasses = [
     'mb-field block w-full min-w-0',
@@ -12,6 +13,7 @@ export const InputTextArea = ({ maxLength, rows, dataTestId, hasError, ...props 
     'resize-y',
     'input-focus-primary',
     hasError && 'mb-field-error',
+    isReadonly && 'mb-field-readonly',
   ].filter(Boolean).join(' ');
 
   return (
@@ -19,6 +21,8 @@ export const InputTextArea = ({ maxLength, rows, dataTestId, hasError, ...props 
       {...props}
       id={id}
       rows={rows}
+      disabled={disabled}
+      readOnly={readOnly}
       data-testid={dataTestId || ''}
       value={String(props.value)}
       maxLength={maxLength || TEXT_AREA_MAX_LENGTH}

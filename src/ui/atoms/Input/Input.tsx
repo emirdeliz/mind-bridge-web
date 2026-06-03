@@ -160,6 +160,8 @@ export const Input = ({
 
   const inputElement = useMemo(() => {
     switch (true) {
+      case textarea:
+        return <InputTextArea {...props} readOnly={readOnly} />;
       case readOnly:
         return <InputReadOnly {...props} />;
       case number:
@@ -168,10 +170,8 @@ export const Input = ({
         return <InputCurrency {...props} currency />;
       case date:
         return <InputDate {...props} />;
-      case textarea:
-        return <InputTextArea {...props} />;
       default:
-        return <InputText {...props} />
+        return <InputText {...props} readOnly={readOnly} />;
     }
   }, [number, textarea, date, readOnly, props, currency, decimal, allowNegative, decimalPlaces, maxValue]);
 

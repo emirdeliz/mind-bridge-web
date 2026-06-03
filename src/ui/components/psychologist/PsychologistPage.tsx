@@ -3,9 +3,9 @@ import { useRouter } from "next/router";
 
 import type { ChatMessage } from "@services";
 import { getRoleRoute, isAuthBypassEnabled, useAiAgent, useAuth } from "@services";
-import { Flex, Input, Title } from "@atoms";
+import { Button, Flex, Icon, Input, Title } from "@atoms";
 import { useI18n } from "@i18n";
-import { Card } from "@molecules";
+import { Card, TextAreaWithSave, Tooltip } from "@molecules";
 import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
 
 const MOCK_PSYCHOLOGIST_CONTEXT =
@@ -14,8 +14,36 @@ const MOCK_PSYCHOLOGIST_CONTEXT =
 const MOCK_INTERACTION_NOTES =
   "02/06 — Chat: relato de insônia e catastrofização antes de reunião.\n01/06 — Áudio: humor 4/10, mencionou tensão muscular.\n31/05 — Texto: adesão parcial ao diário (2 entradas no fim de semana).";
 
-const MOCK_SESSION_NOTES =
-  "Próxima sessão: revisar experimento comportamental da semana 3. Validar uso da respiração 4-7-8. Explorar crença central sobre desempenho profissional. Considerar escala de ansiedade (GAD-7) na abertura.";
+type SessionNoteEntry = {
+  id: string;
+  label: string;
+  content: string;
+  isCurrent?: boolean;
+};
+
+const MOCK_SESSION_NOTES_HISTORY: SessionNoteEntry[] = [
+  {
+    id: "session-2026-06-03",
+    label: "Sessão 03/06/2026 (atual)",
+    content:
+      "Próxima sessão: revisar experimento comportamental da semana 3. Validar uso da respiração 4-7-8. Explorar crença central sobre desempenho profissional. Considerar escala de ansiedade (GAD-7) na abertura.",
+    isCurrent: true,
+  },
+  {
+    id: "session-2026-05-27",
+    label: "Sessão 27/05/2026",
+    content:
+      "Paciente relatou melhora leve no sono após rotina de desligar telas às 22h. Revisado registro de pensamentos; mantida exposição gradual no ambiente de trabalho. Combinado envio de diário de humor 3x na semana.",
+  },
+  {
+    id: "session-2026-05-20",
+    label: "Sessão 20/05/2026",
+    content:
+      "Primeira elaboração de gatilhos de ansiedade em reuniões. Psicoeducação sobre ciclo ansiedade–evitação. Paciente aceitou experimento de check-in emocional antes de apresentações. Sem indicadores de risco na sessão.",
+  },
+];
+
+const CURRENT_SESSION_NOTE_INDEX = MOCK_SESSION_NOTES_HISTORY.findIndex((entry) => entry.isCurrent);
 
 const MOCK_PSYCHOLOGIST_CHAT: ChatMessage[] = [
   {
@@ -101,7 +129,12 @@ export const PsychologistPage = () => {
   const { t } = useI18n();
   const { session, loading } = useAuth();
   const [psychologistContext, setPsychologistContext] = useState(MOCK_PSYCHOLOGIST_CONTEXT);
-  const [sessionNotes, setSessionNotes] = useState(MOCK_SESSION_NOTES);
+  const [sessionNotesById, setSessionNotesById] = useState(() =>
+    Object.fromEntries(MOCK_SESSION_NOTES_HISTORY.map((entry) => [entry.id, entry.content])),
+  );
+  const [selectedSessionIndex, setSelectedSessionIndex] = useState(
+    CURRENT_SESSION_NOTE_INDEX >= 0 ? CURRENT_SESSION_NOTE_INDEX : 0,
+  );
   const [interactionNotes, setInteractionNotes] = useState(MOCK_INTERACTION_NOTES);
   const { messages, sendMessage } = useAiAgent(psychologistContext);
   const chatMessages = [...MOCK_PSYCHOLOGIST_CHAT, ...messages];
@@ -121,6 +154,29 @@ export const PsychologistPage = () => {
     return null;
   }
 
+  const selectedSession = MOCK_SESSION_NOTES_HISTORY[selectedSessionIndex];
+  const isCurrentSession = Boolean(selectedSession?.isCurrent);
+  const sessionNotesValue = selectedSession ? (sessionNotesById[selectedSession.id] ?? "") : "";
+  const canGoToOlderSession = selectedSessionIndex < MOCK_SESSION_NOTES_HISTORY.length - 1;
+  const canGoToNewerSession = selectedSessionIndex > 0;
+  const olderSession = canGoToOlderSession
+    ? MOCK_SESSION_NOTES_HISTORY[selectedSessionIndex + 1]
+    : undefined;
+  const newerSession = canGoToNewerSession
+    ? MOCK_SESSION_NOTES_HISTORY[selectedSessionIndex - 1]
+    : undefined;
+
+  const savePsychologistContext = () => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("mb.psychologist.aiContext", psychologistContext);
+    }
+  };
+
+  const saveSessionNotes = () => {
+    if (!selectedSession?.isCurrent || typeof window === "undefined") return;
+    window.localStorage.setItem("mb.psychologist.sessionNotes", sessionNotesValue);
+  };
+
   return (
     <AppShell title={t("PSYCHOLOGIST_AREA_TITLE")} subtitle={t("PSYCHOLOGIST_AREA_SUBTITLE")} variant="dashboard">
       <Card padding="lg" shadow="md">
@@ -129,9 +185,11 @@ export const PsychologistPage = () => {
           tooltip={t("TOOLTIP_PSYCHOLOGIST_CONTEXT")}
         />
         <Flex col wFull>
-          <Input.TextArea
+          <TextAreaWithSave
             rows={4}
             value={psychologistContext}
+            saveLabel={t("SAVE")}
+            onSave={savePsychologistContext}
             onChange={(event) => setPsychologistContext(event.target.value)}
           />
         </Flex>
@@ -156,12 +214,83 @@ export const PsychologistPage = () => {
             title={t("SESSION_CONSIDERATIONS")}
             tooltip={t("TOOLTIP_PSYCHOLOGIST_SESSION_NOTES")}
           />
+          <Flex row wFull alignCenter justifySpaceBetween wrap gap4 mb4>
+            <Title s1 gray>
+              {selectedSession?.label}
+            </Title>
+            <Flex row alignCenter gap2>
+              <Tooltip
+                title={
+                  olderSession
+                    ? `${t("SESSION_NOTES_PREVIOUS")}: ${olderSession.label}`
+                    : t("SESSION_NOTES_PREVIOUS")
+                }
+                top
+                width={280}
+              >
+                <span className="inline-block">
+                  <Button
+                    type="button"
+                    xs
+                    sm
+                    circle
+                    variant="secondary"
+                    outlined
+                    clickable={canGoToOlderSession}
+                    onClick={() =>
+                      setSelectedSessionIndex((index) =>
+                        Math.min(MOCK_SESSION_NOTES_HISTORY.length - 1, index + 1),
+                      )
+                    }
+                  >
+                    <Icon.LeftOpen sm />
+                  </Button>
+                </span>
+              </Tooltip>
+              <Tooltip
+                title={
+                  newerSession ? `${t("SESSION_NOTES_NEXT")}: ${newerSession.label}` : t("SESSION_NOTES_NEXT")
+                }
+                top
+                width={280}
+              >
+                <span className="inline-block">
+                  <Button
+                    type="button"
+                    xs
+                    sm
+                    circle
+                    variant="secondary"
+                    outlined
+                    clickable={canGoToNewerSession}
+                    onClick={() => setSelectedSessionIndex((index) => Math.max(0, index - 1))}
+                  >
+                    <Icon.RightOpen sm />
+                  </Button>
+                </span>
+              </Tooltip>
+            </Flex>
+          </Flex>
+          {!isCurrentSession ? (
+            <Title s1 gray mb4>
+              {t("SESSION_NOTES_READONLY_HINT")}
+            </Title>
+          ) : null}
           <Flex col wFull>
-            <Input.TextArea
+            <TextAreaWithSave
               rows={6}
               placeholder={t("SESSION_CONSIDERATIONS_PLACEHOLDER")}
-              value={sessionNotes}
-              onChange={(event) => setSessionNotes(event.target.value)}
+              value={sessionNotesValue}
+              readOnly={!isCurrentSession}
+              saveLabel={t("SAVE")}
+              onSave={isCurrentSession ? saveSessionNotes : undefined}
+              onChange={(event) => {
+                if (!selectedSession?.isCurrent) return;
+                setSessionNotesById((prev) => ({
+                  ...prev,
+                  [selectedSession.id]: event.target.value,
+                }));
+              }}
             />
           </Flex>
         </Card>
