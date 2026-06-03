@@ -1,3 +1,5 @@
+@import "./fontello.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -83,6 +85,14 @@
     @apply rounded-xl border border-mb-border/80 bg-mb-bg/50 p-3 backdrop-blur-sm;
   }
 
+  .mb-chat-form-action {
+    @apply flex shrink-0 items-center self-stretch;
+  }
+
+  .mb-chat-form-action button {
+    @apply min-h-[48px] px-5;
+  }
+
   .mb-message-user {
     @apply ml-auto max-w-[90%] rounded-2xl rounded-br-md border border-mb-border bg-mb-surface-elevated px-4 py-2.5 text-sm text-mb-text;
   }
@@ -93,5 +103,43 @@
 
   .mb-alert-warning {
     @apply flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100;
+  }
+
+  .mb-user-menu-anchor {
+    @apply relative shrink-0;
+  }
+
+  .mb-user-avatar {
+    @apply flex h-10 w-10 items-center justify-center rounded-full border border-mb-accent/40 bg-mb-accent/15 text-sm font-semibold uppercase tracking-wide text-mb-accent transition hover:border-mb-accent hover:bg-mb-accent/25 focus:outline-none focus:ring-2 focus:ring-mb-accent/30;
+  }
+
+  .mb-user-menu {
+    @apply absolute right-0 top-full z-50 mt-2 min-w-[180px] overflow-hidden rounded-xl border border-mb-border/80 bg-mb-surface/95 py-1 shadow-lg shadow-black/30 backdrop-blur-xl;
+  }
+
+  .mb-user-menu-item {
+    @apply block w-full px-4 py-2.5 text-left text-sm text-mb-text transition hover:bg-mb-surface-elevated;
+  }
+
+  .mb-user-menu-item-danger {
+    @apply block w-full px-4 py-2.5 text-left text-sm text-red-300 transition hover:bg-red-950/40;
+  }
+
+  .mb-chat-sender-icon {
+    @apply inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-mb-border/70 bg-mb-bg/80;
+  }
+
+  .mb-chat-sender-icon [class^="icon-"]:before,
+  .mb-chat-sender-icon [class*=" icon-"]:before {
+    margin: 0;
+    font-size: 0.875rem;
+  }
+
+  .mb-chat-sender-icon-user {
+    @apply text-mb-accent;
+  }
+
+  .mb-chat-sender-icon-agent {
+    @apply text-mb-primary;
   }
 }

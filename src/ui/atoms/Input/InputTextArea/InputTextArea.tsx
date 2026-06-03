@@ -7,7 +7,7 @@ export const InputTextArea = ({ maxLength, rows, dataTestId, hasError, ...props 
   const id = String(props.id);
 
   const textareaClasses = [
-    'mb-field',
+    'mb-field block w-full min-w-0',
     !rows && 'min-h-[80px]',
     'resize-y',
     'input-focus-primary',

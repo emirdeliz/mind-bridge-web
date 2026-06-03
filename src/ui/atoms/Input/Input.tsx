@@ -152,7 +152,7 @@ export const Input = ({
   ].filter(Boolean).join(' ');
 
   const containerClasses = [
-    'flex w-full flex-1 rounded-md',
+    textarea ? 'flex w-full flex-col' : 'flex w-full flex-1 rounded-md',
     'bg-transparent',
     marginClasses,
     paddingClasses,

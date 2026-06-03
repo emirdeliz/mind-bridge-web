@@ -1,5 +1,12 @@
 export const filterDOMProps = <T extends object>(props: T): T => props;
 
+export const getProfileInitials = (fullName: string, fallback = "??"): string => {
+  const parts = fullName.trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return fallback;
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return `${parts[0][0] ?? ""}${parts[parts.length - 1][0] ?? ""}`.toUpperCase();
+};
+
 export const getNumbersOfString = (value: string): string => value.replace(/\D/g, "");
 
 export const maskCPF = (value: string): string => value;

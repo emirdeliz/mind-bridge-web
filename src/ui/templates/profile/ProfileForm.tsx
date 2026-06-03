@@ -36,8 +36,8 @@ const ProfileFormContent = ({ initialData, onSave }: ProfileFormProps) => {
         >
           {t("PROFILE_FULL_NAME_PLACEHOLDER")}
         </InputForm>
-        <Flex row wrap gap4>
-          <Flex flex1>
+        <Flex row wrap wFull gap4 alignStretch>
+          <Flex flex1 wFull>
             <InputForm
               value={data.age}
               placeholder={t("PROFILE_AGE_PLACEHOLDER")}
@@ -46,7 +46,7 @@ const ProfileFormContent = ({ initialData, onSave }: ProfileFormProps) => {
               {t("PROFILE_AGE_PLACEHOLDER")}
             </InputForm>
           </Flex>
-          <Flex flex1>
+          <Flex flex1 wFull>
             <InputForm
               value={data.phone}
               placeholder={t("PROFILE_PHONE_PLACEHOLDER")}

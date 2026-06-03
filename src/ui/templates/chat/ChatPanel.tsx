@@ -9,9 +9,11 @@ interface ChatPanelProps {
   messages: ChatMessage[];
   onSend: (text: string) => void;
   onSpeechToText?: (text: string) => void;
+  tallScroll?: boolean;
+  showAudio?: boolean;
 }
 
-export const ChatPanel = ({ messages, onSend, onSpeechToText }: ChatPanelProps) => {
+export const ChatPanel = ({ messages, onSend, onSpeechToText, tallScroll, showAudio = true }: ChatPanelProps) => {
   const { t } = useI18n();
   const [text, setText] = useState("");
 
@@ -38,7 +40,7 @@ export const ChatPanel = ({ messages, onSend, onSpeechToText }: ChatPanelProps) 
       <Title fs3 fw3 mb2>
         {t("AI_AGENT_CHAT")}
       </Title>
-      <Flex col mb4 maxH320 overflowY gap4 chatScroll>
+      <Flex col mb4 overflowY gap4 chatScroll maxH320={!tallScroll} maxH480={tallScroll}>
         {messages.map((message) => (
           <ChatMessageBubble
             key={message.id}
@@ -60,18 +62,24 @@ export const ChatPanel = ({ messages, onSend, onSpeechToText }: ChatPanelProps) 
           setText("");
         }}
       >
-        <Flex row gap4 alignEnd>
-          <Flex flex1>
+        <Flex row wFull gap4 alignCenter>
+          <Flex flex1 wFull alignStretch>
             <Input
               placeholder={t("CHAT_MESSAGE_PLACEHOLDER")}
               value={text}
               onChange={(event) => setText(event.target.value)}
             />
           </Flex>
-          <Button type="button" variant="secondary" outlined onClick={startAudioInput}>
-            {t("AUDIO")}
-          </Button>
-          <Button type="submit">{t("SEND")}</Button>
+          {showAudio ? (
+            <span className="mb-chat-form-action">
+              <Button type="button" variant="secondary" outlined onClick={startAudioInput}>
+                {t("AUDIO")}
+              </Button>
+            </span>
+          ) : null}
+          <span className="mb-chat-form-action">
+            <Button type="submit">{t("SEND")}</Button>
+          </span>
         </Flex>
       </Form>
     </Card>

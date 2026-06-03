@@ -56,7 +56,9 @@ export const InputText = ({
     [cpf, cnpj, rg, phone, barcode, props.value]
   );
 
-  const inputClasses = ['mb-field', 'input-focus-primary', hasError && 'mb-field-error'].filter(Boolean).join(' ');
+  const inputClasses = ['mb-field block w-full min-w-0', 'input-focus-primary', hasError && 'mb-field-error']
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <input

@@ -33,7 +33,7 @@ export const FormGroup = ({
   const domProps = filterDOMProps(props);
   
   const formGroupClasses = [
-    'mb-6',
+    'mb-6 w-full',
     'transition-all duration-200',
     'group',
     'form-group',

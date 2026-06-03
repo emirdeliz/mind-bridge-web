@@ -2,11 +2,48 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 
 import type { UserProfile } from "@api";
-import { getRoleRoute, isAuthBypassEnabled, useAiAgent, useAuth } from "@services";
-import { Button, Flex, Title } from "@atoms";
+import {
+  type ChatMessage,
+  getProfileRoute,
+  getRoleRoute,
+  isAuthBypassEnabled,
+  useAiAgent,
+  useAuth,
+} from "@services";
+import { Button, Flex, RouteLink, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Alert, Card } from "@molecules";
-import { AppShell, ChatPanel, ProfileForm } from "@templates";
+import { AppShell, ChatPanel } from "@templates";
+
+const MOCK_PATIENT_CHAT: ChatMessage[] = [
+  {
+    id: "mock-patient-1",
+    sender: "user",
+    text: "Hoje acordei muito ansioso pensando na reunião da tarde.",
+    createdAt: "2026-06-02T09:15:00.000Z",
+  },
+  {
+    id: "mock-patient-2",
+    sender: "agent",
+    text: "Obrigado por compartilhar. Antes da reunião, você percebeu algum sinal no corpo — taquicardia, tensão nos ombros ou pensamentos acelerados?",
+    createdAt: "2026-06-02T09:16:00.000Z",
+  },
+  {
+    id: "mock-patient-3",
+    sender: "user",
+    text: "Senti o peito apertado e não consegui dormir direito ontem.",
+    createdAt: "2026-06-02T09:17:00.000Z",
+  },
+  {
+    id: "mock-patient-4",
+    sender: "agent",
+    text: "Vamos registrar isso no seu plano de cuidado. Que tal uma pausa de 2 minutos de respiração antes da reunião e anotar como você se sente depois?",
+    createdAt: "2026-06-02T09:18:00.000Z",
+  },
+];
+
+const MOCK_PATIENT_SUMMARY =
+  "Últimas 48h: 4 mensagens trocadas. Temas principais: ansiedade antecipatória no trabalho, sintomas corporais (aperto no peito) e sono prejudicado. Agente sugeriu respiração guiada e registro pós-reunião. Risco emocional: moderado. Encaminhar reflexão para a próxima sessão com o psicólogo.";
 
 const PROFILE_FIELD_I18N_KEYS: Record<keyof UserProfile, string> = {
   fullName: "PROFILE_FIELD_FULL_NAME",
@@ -18,9 +55,10 @@ const PROFILE_FIELD_I18N_KEYS: Record<keyof UserProfile, string> = {
 export const PatientPage = () => {
   const router = useRouter();
   const { t } = useI18n();
-  const { session, loading, saveProfile, logout } = useAuth();
+  const { session, loading } = useAuth();
   const [context] = useState(() => t("DEFAULT_PATIENT_AI_CONTEXT"));
-  const { messages, sendMessage, summary } = useAiAgent(context);
+  const { messages, sendMessage } = useAiAgent(context);
+  const chatMessages = [...MOCK_PATIENT_CHAT, ...messages];
 
   useEffect(() => {
     if (loading) return;
@@ -48,20 +86,22 @@ export const PatientPage = () => {
     <AppShell title={t("PATIENT_AREA_TITLE")} subtitle={t("PATIENT_AREA_SUBTITLE")} variant="dashboard">
       {missingProfileFields.length ? (
         <Alert>
-          {t("PROFILE_INCOMPLETE_ALERT")} {missingProfileFields.join(", ")}.
+          {t("PROFILE_INCOMPLETE_ALERT")} {missingProfileFields.join(", ")}.{" "}
+          <RouteLink href={getProfileRoute(session.role)} inline>
+            {t("COMPLETE_PROFILE")}
+          </RouteLink>
         </Alert>
       ) : null}
-      <ProfileForm initialData={session.profile} onSave={(profile) => void saveProfile(profile)} />
-      <ChatPanel messages={messages} onSend={sendMessage} />
+      <ChatPanel messages={chatMessages} onSend={sendMessage} />
       <Card padding="lg" shadow="md">
         <Title fs3 fw3 mb2>
           {t("INTERACTION_SUMMARY")}
         </Title>
         <Title s1 gray>
-          {summary}
+          {MOCK_PATIENT_SUMMARY}
         </Title>
       </Card>
-      <Flex row wrap gap4>
+      <Flex row wrap wFull gap4>
         <Button
           variant="secondary"
           outlined
@@ -76,15 +116,6 @@ export const PatientPage = () => {
           }}
         >
           {t("ENABLE_NOTIFICATIONS")}
-        </Button>
-        <Button
-          variant="secondary"
-          onClick={async () => {
-            await logout();
-            void router.push("/");
-          }}
-        >
-          {t("LOGOUT")}
         </Button>
       </Flex>
     </AppShell>

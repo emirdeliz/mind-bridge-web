@@ -41,6 +41,7 @@ export interface FlexProps
   maxWMd?: boolean;
   maxWContainer?: boolean;
   maxH320?: boolean;
+  maxH480?: boolean;
   chatScroll?: boolean;
   userMessage?: boolean;
   agentMessage?: boolean;
@@ -77,6 +78,7 @@ export const Flex = ({
   maxWMd,
   maxWContainer,
   maxH320,
+  maxH480,
   chatScroll,
   userMessage,
   agentMessage,
@@ -127,6 +129,7 @@ export const Flex = ({
     maxWMd && "max-w-md",
     maxWContainer && "max-w-[960px]",
     maxH320 && "max-h-[320px]",
+    maxH480 && "max-h-[480px]",
     chatScroll && "mb-chat-scroll",
     userMessage && "mb-message-user",
     agentMessage && "mb-message-agent",

@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { Flex, RouteLink, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { LanguageSwitcher } from "@molecules";
+import { UserAccountMenu } from "../user/UserAccountMenu";
 
 type AppShellVariant = "auth" | "dashboard";
 
@@ -22,6 +23,7 @@ const DASHBOARD_NAV_ITEMS = [
 export const AppShell = ({ title, subtitle, variant = "dashboard", children }: AppShellProps) => {
   const { t } = useI18n();
   const { pathname } = useRouter();
+  const showLanguageSwitcher = pathname === "/";
 
   return (
     <Flex col wFull minHScreen px4 py8 smPx6 lgPx8>
@@ -31,7 +33,10 @@ export const AppShell = ({ title, subtitle, variant = "dashboard", children }: A
             <Title gradient fsHero fw3>
               {title}
             </Title>
-            <LanguageSwitcher />
+            <Flex row alignCenter gap4>
+              {showLanguageSwitcher ? <LanguageSwitcher /> : null}
+              {variant === "dashboard" ? <UserAccountMenu /> : null}
+            </Flex>
           </Flex>
           {subtitle ? (
             <Title s1 gray mt2 maxW2xl leadingRelaxed>
@@ -55,7 +60,7 @@ export const AppShell = ({ title, subtitle, variant = "dashboard", children }: A
             </Flex>
           </Flex>
         ) : (
-          <Flex col gap5>
+          <Flex col wFull alignStretch gap5>
             {children}
           </Flex>
         )}
