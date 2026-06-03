@@ -87,7 +87,10 @@ export const PsychologistDashboardPage = () => {
               height={260}
             />
           </ChartCard>
-          <ChartCard title={t("CHART_MOOD_DIARY_ADHERENCE")}>
+          <ChartCard
+            title={t("CHART_MOOD_DIARY_ADHERENCE")}
+            tooltip={t("TOOLTIP_CHART_MOOD_DIARY_ADHERENCE")}
+          >
             <ChartGauge
               value={MOCK_MOOD_DIARY_ADHERENCE_PERCENT}
               valueSuffix="%"
@@ -97,13 +100,13 @@ export const PsychologistDashboardPage = () => {
             />
           </ChartCard>
         </div>
-        <ChartCard title={t("CHART_MOOD_TREND")}>
+        <ChartCard title={t("CHART_MOOD_TREND")} tooltip={t("TOOLTIP_CHART_MOOD_TREND")}>
           <ChartLine
             categories={MOCK_MOOD_TREND_CATEGORIES}
             series={MOCK_MOOD_TREND_SERIES}
             unit="/10"
             hideWhenEmpty={false}
-            height={280}
+            height={300}
           />
         </ChartCard>
         <ChartCard title={t("CHART_WEEKLY_INTERACTIONS")}>
@@ -114,7 +117,7 @@ export const PsychologistDashboardPage = () => {
             height={280}
           />
         </ChartCard>
-        <ChartCard title={t("CHART_CLINICAL_THEMES")}>
+        <ChartCard title={t("CHART_CLINICAL_THEMES")} tooltip={t("TOOLTIP_CHART_CLINICAL_THEMES")}>
           <ChartBarHorizontal
             categories={MOCK_CLINICAL_THEME_CATEGORIES}
             series={MOCK_CLINICAL_THEME_SERIES}

@@ -157,9 +157,12 @@ export const MOCK_PSYCHOLOGIST_INSIGHTS = [
   },
 ] as const;
 
-export const MOCK_MOOD_TREND_CATEGORIES = ["27/05", "28/05", "29/05", "30/05", "31/05", "01/06", "02/06"];
+/** Média mensal de humor (escala 0–10) — últimos 6 meses. */
+export const MOCK_MOOD_TREND_CATEGORIES = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
 
-export const MOCK_MOOD_TREND_SERIES = [{ name: "Humor", data: [5, 4.5, 4, 3.5, 4, 4, 4.2], color: "#5eead4" }];
+export const MOCK_MOOD_TREND_SERIES = [
+  { name: "Humor médio", data: [5.4, 5.1, 4.7, 4.3, 3.9, 4.2], color: "#5eead4" },
+];
 
 export const MOCK_WEEKLY_INTERACTION_CATEGORIES = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
 
