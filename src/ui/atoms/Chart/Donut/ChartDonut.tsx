@@ -4,6 +4,7 @@ import { memo, useMemo } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { useI18n } from '@i18n';
 import { Flex } from '@atoms';
+import { MB_CHART_MUTED, MB_CHART_TEXT, mbChartTitleStyle } from '../chartDarkTheme';
 
 export interface ChartDonutDataItem {
   name: string;
@@ -36,15 +37,19 @@ export const ChartDonut = memo(({
   }, [data, hideWhenEmpty]);
 
   const option = useMemo(() => ({
-    title: title
-      ? { text: title, left: 'center', top: 8, textStyle: { fontSize: 14 } }
-      : undefined,
+    backgroundColor: 'transparent',
+    title: title ? mbChartTitleStyle(title) : undefined,
     tooltip: {
       trigger: 'item',
       formatter: '{b}: {c} ({d}%)',
     },
     legend: showLegend
-      ? { orient: 'vertical', left: 'left', top: 'middle', textStyle: { fontSize: 12 } }
+      ? {
+          orient: 'vertical',
+          left: 'left',
+          top: 'middle',
+          textStyle: { fontSize: 12, color: MB_CHART_MUTED },
+        }
       : { show: false },
     series: [
       {
@@ -53,7 +58,14 @@ export const ChartDonut = memo(({
         center: showLegend ? ['62%', '50%'] : ['50%', '50%'],
         avoidLabelOverlap: false,
         label: centerText
-          ? { show: true, position: 'center', formatter: centerText, fontSize: 16, fontWeight: 600 }
+          ? {
+              show: true,
+              position: 'center',
+              formatter: centerText,
+              fontSize: 16,
+              fontWeight: 600,
+              color: MB_CHART_TEXT,
+            }
           : { show: false },
         emphasis: {
           label: { show: true, fontSize: 14, fontWeight: 600 },
@@ -70,11 +82,11 @@ export const ChartDonut = memo(({
   if (!hasData) {
     return (
       <div
-        className="flex items-center justify-center w-full bg-gray-50 rounded-lg"
+        className="mb-chart-empty"
         style={{ height }}
       >
         <Flex.Center wFull hFull>
-          <div className="text-gray-500 text-sm font-medium">{t('NO_DATA_AVAILABLE')}</div>
+          <div className="mb-chart-empty-text">{t('NO_DATA_AVAILABLE')}</div>
         </Flex.Center>
       </div>
     );

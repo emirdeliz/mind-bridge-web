@@ -4,6 +4,7 @@ import { memo, useMemo } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { useI18n } from '@i18n';
 import { Flex } from '@atoms';
+import { mbCategoryAxis, mbChartTitleStyle, mbValueAxis } from '../chartDarkTheme';
 
 export interface ChartBarVerticalSeries {
   name: string;
@@ -40,9 +41,8 @@ export const ChartBarVertical = memo(({
   );
 
   const option = useMemo(() => ({
-    title: title
-      ? { text: title, left: 'center', top: 8, textStyle: { fontSize: 14 } }
-      : undefined,
+    backgroundColor: 'transparent',
+    title: title ? mbChartTitleStyle(title) : undefined,
     tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'shadow' },
@@ -57,13 +57,13 @@ export const ChartBarVertical = memo(({
       bottom: series.length > 1 ? '14%' : '6%',
       containLabel: true,
     },
-    legend: series.length > 1 ? { bottom: 0 } : { show: false },
-    xAxis: {
+    legend: series.length > 1 ? { bottom: 0, textStyle: { color: '#8b9ab8' } } : { show: false },
+    xAxis: mbCategoryAxis({
       type: 'category',
       data: categories,
       axisLabel: { overflow: 'truncate', width: 80 },
-    },
-    yAxis: { type: 'value' },
+    }),
+    yAxis: mbValueAxis(),
     series: series.map((s) => ({
       name: s.name,
       type: 'bar',
@@ -76,11 +76,11 @@ export const ChartBarVertical = memo(({
   if (!hasData) {
     return (
       <div
-        className="flex items-center justify-center w-full bg-gray-50 rounded-lg"
+        className="mb-chart-empty"
         style={{ height }}
       >
         <Flex.Center wFull hFull>
-          <div className="text-gray-500 text-sm font-medium">{t('NO_DATA_AVAILABLE')}</div>
+          <div className="mb-chart-empty-text">{t('NO_DATA_AVAILABLE')}</div>
         </Flex.Center>
       </div>
     );

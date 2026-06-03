@@ -98,6 +98,41 @@
     bottom: 0.625rem;
   }
 
+  .mb-chart-card {
+    @apply flex h-full min-h-[300px] w-full flex-col rounded-2xl border border-mb-border/80 bg-mb-surface/90 p-6 shadow-card backdrop-blur-xl;
+  }
+
+  .mb-chart-card-row {
+    display: grid;
+    width: 100%;
+    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  @media (max-width: 767px) {
+    .mb-chart-card-row {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .mb-chart-card-row .mb-chart-card {
+    min-height: 320px;
+    height: 100%;
+  }
+
+  .mb-chart-card-body {
+    @apply min-h-0 w-full flex-1;
+  }
+
+  .mb-chart-empty {
+    @apply flex min-h-[200px] w-full items-center justify-center rounded-xl border border-mb-border/60 bg-mb-bg/50;
+  }
+
+  .mb-chart-empty-text {
+    @apply text-sm font-medium text-mb-muted;
+  }
+
   .mb-nav-link {
     @apply rounded-lg px-3 py-2 text-sm font-medium text-mb-muted transition-all duration-200 hover:bg-mb-surface-elevated hover:text-mb-text;
   }

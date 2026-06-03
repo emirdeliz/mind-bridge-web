@@ -4,6 +4,7 @@ import { memo, useMemo } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { useI18n } from '@i18n';
 import { Flex } from '@atoms';
+import { MB_CHART_TEXT, mbChartTitleStyle } from '../chartDarkTheme';
 
 export interface ChartGaugeProps {
   value: number;
@@ -14,6 +15,7 @@ export interface ChartGaugeProps {
   valueSuffix?: string;
   decimals?: number;
   hideWhenEmpty?: boolean;
+  height?: string | number;
 }
 
 const DEFAULT_MIN = 0;
@@ -28,6 +30,7 @@ export const ChartGauge = memo(({
   valueSuffix = '',
   decimals = 0,
   hideWhenEmpty = true,
+  height = 280,
 }: ChartGaugeProps) => {
   const { t } = useI18n();
 
@@ -45,9 +48,8 @@ export const ChartGauge = memo(({
     const safeMax = Number.isFinite(Number(max)) ? Number(max) : DEFAULT_MAX;
 
     return {
-      title: title
-        ? { text: title, left: 'center', top: 8, textStyle: { fontSize: 14 } }
-        : undefined,
+      backgroundColor: 'transparent',
+      title: title ? mbChartTitleStyle(title) : undefined,
       series: [
         {
           type: 'gauge',
@@ -74,7 +76,7 @@ export const ChartGauge = memo(({
             offsetCenter: [0, 0],
             fontSize: 24,
             fontWeight: 600,
-            color: 'inherit',
+            color: MB_CHART_TEXT,
           },
           data: [{ value: safeValue }],
         },
@@ -82,20 +84,23 @@ export const ChartGauge = memo(({
     };
   }, [value, min, max, title, color, valueSuffix, decimals]);
 
+  const heightCss = typeof height === 'number' ? `${height}px` : height;
+
   if (!hasData) {
     return (
-      <div className="flex items-center justify-center w-full h-full bg-gray-50 rounded-lg min-h-[200px]">
+      <div className="mb-chart-empty" style={{ height: heightCss }}>
         <Flex.Center wFull hFull>
-          <div className="text-gray-500 text-lg font-medium">{t('NO_DATA_AVAILABLE')}</div>
+          <div className="mb-chart-empty-text">{t('NO_DATA_AVAILABLE')}</div>
         </Flex.Center>
       </div>
     );
   }
 
   return (
-    <div className="w-full h-full min-h-[200px]" style={{ position: 'relative' }}>
+    <div className="min-w-0 w-full" style={{ height: heightCss, position: 'relative' }}>
       <ReactECharts
         option={option}
+        style={{ height: '100%', width: '100%' }}
         opts={{ renderer: 'svg' }}
       />
     </div>

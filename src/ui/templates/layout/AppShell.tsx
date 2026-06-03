@@ -46,7 +46,11 @@ export const AppShell = ({ title, subtitle, variant = "dashboard", children }: A
           {variant === "dashboard" ? (
             <Flex row wrap gap2 mt4>
               {DASHBOARD_NAV_ITEMS.map((item) => (
-                <RouteLink key={item.href} href={item.href} active={pathname === item.href}>
+                <RouteLink
+                  key={item.href}
+                  href={item.href}
+                  active={pathname === item.href || pathname.startsWith(`${item.href}/`)}
+                >
                   {t(item.key)}
                 </RouteLink>
               ))}

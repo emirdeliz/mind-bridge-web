@@ -5,6 +5,7 @@ import { memo, useLayoutEffect, useMemo, useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { useI18n } from '@i18n';
 import { Flex } from '@atoms';
+import { mbCategoryAxis, mbChartTitleStyle, mbValueAxis } from '../chartDarkTheme';
 
 export interface ChartLineSeries {
   name: string;
@@ -45,9 +46,8 @@ export const ChartLine = memo(({
   const showMarkers = categories.length <= 1;
 
   const option = useMemo(() => ({
-    title: title
-      ? { text: title, left: 'center', top: 8, textStyle: { fontSize: 14 } }
-      : undefined,
+    backgroundColor: 'transparent',
+    title: title ? mbChartTitleStyle(title) : undefined,
     tooltip: {
       trigger: 'axis',
       formatter: unit
@@ -58,7 +58,7 @@ export const ChartLine = memo(({
           }
         : undefined,
     },
-    legend: series.length > 1 ? { bottom: 0 } : { show: false },
+    legend: series.length > 1 ? { bottom: 0, textStyle: { color: '#8b9ab8' } } : { show: false },
     grid: {
       top: '8%',
       left: '4%',
@@ -66,13 +66,13 @@ export const ChartLine = memo(({
       bottom: series.length > 1 ? '14%' : '6%',
       containLabel: true,
     },
-    xAxis: {
+    xAxis: mbCategoryAxis({
       type: 'category',
       boundaryGap: false,
       data: categories,
       axisLabel: { rotate: categories.length > 8 ? 30 : 0 },
-    },
-    yAxis: { type: 'value' },
+    }),
+    yAxis: mbValueAxis(),
     series: series.map((s) => ({
       name: s.name,
       type: 'line',
@@ -117,11 +117,11 @@ export const ChartLine = memo(({
   if (!hasData) {
     return (
       <div
-        className="flex min-h-0 min-w-0 w-full items-center justify-center rounded-lg bg-gray-50"
+        className="mb-chart-empty min-h-0 min-w-0"
         style={{ height }}
       >
         <Flex.Center wFull hFull>
-          <div className="text-gray-500 text-sm font-medium">{t('NO_DATA_AVAILABLE')}</div>
+          <div className="mb-chart-empty-text">{t('NO_DATA_AVAILABLE')}</div>
         </Flex.Center>
       </div>
     );
