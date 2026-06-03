@@ -1,7 +1,7 @@
 import { GenericObject } from '@types';
 import { Flex, Icon } from '@atoms';
 import { useCallback } from 'react';
-import { TableProps, TableSort, TableSortProps } from '../../Table';
+import { TableProps, TableSort, TableSortProps, type TableVariant } from '../../Table';
 
 export interface TableHeaderProps<T> extends TableProps<T> {
   sortable?: boolean;
@@ -14,14 +14,16 @@ export interface TableHeaderSortProps<T>
     TableSortProps {}
 
 export const TableHeader = <T extends GenericObject>({
+  variant = 'light',
   sortable,
   columns,
   sorterColumnStatus,
   sorterColumnIndex,
   setSorterColumnStatus,
   setSorterColumnIndex,
-  onSort
-}: TableHeaderSortProps<T>) => {
+  onSort,
+}: TableHeaderSortProps<T> & { variant?: TableVariant }) => {
+  const isDark = variant === 'dark';
   const sortData = useCallback(
     (columnIndex: number) => {
       if (sorterColumnIndex !== columnIndex) {
@@ -56,7 +58,21 @@ export const TableHeader = <T extends GenericObject>({
         <th
           key={index}
           role="columnheader"
-          className={`px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 font-semibold text-gray-700 uppercase tracking-wide text-sm ${isActionsColumn ? 'text-center' : 'text-left'} ${disableSort ? '' : 'cursor-pointer hover:from-gray-100 hover:to-gray-200 transition-all duration-200'}`}
+          className={[
+            'px-6 py-4 border-b font-semibold uppercase tracking-wide text-sm',
+            isActionsColumn ? 'text-center' : 'text-left',
+            isDark
+              ? 'border-mb-border/60 bg-mb-surface-elevated/80 text-mb-muted'
+              : 'border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700',
+            !disableSort && !isDark
+              ? 'cursor-pointer hover:from-gray-100 hover:to-gray-200 transition-all duration-200'
+              : '',
+            !disableSort && isDark
+              ? 'cursor-pointer hover:bg-mb-surface-elevated transition-all duration-200'
+              : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
           style={width ? { width, minWidth: width, maxWidth: width } : undefined}
           onClick={disableSort ? undefined :() => sortData(index)}
         >
@@ -79,7 +95,8 @@ export const TableHeader = <T extends GenericObject>({
                   xs
                   down={!isSortAsc}
                   up={isSortAsc}
-                  black
+                  white={isDark}
+                  black={!isDark}
                 />
               </Flex>
             )}
@@ -88,10 +105,14 @@ export const TableHeader = <T extends GenericObject>({
       );
     });
     return (
-      <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
+      <thead
+        className={
+          isDark ? 'bg-mb-surface-elevated/80' : 'bg-gradient-to-r from-gray-50 to-gray-100'
+        }
+      >
         <tr className="border-b border-gray-200">{result}</tr>
       </thead>
     );
-  }, [columns, sortData, sortable, sorterColumnIndex, sorterColumnStatus]);
+  }, [columns, sortData, sortable, sorterColumnIndex, sorterColumnStatus, isDark]);
   return buildHead();
 };

@@ -25,7 +25,10 @@ export interface TableSortProps {
 export interface TableColumnEditableProps<T> extends TableColumnProps<T & { actions?: ReactNode }> {
 }
 
+export type TableVariant = 'light' | 'dark';
+
 export interface TableProps<T> {
+  variant?: TableVariant;
   enablePagination?: boolean;
   countItems?: number;
   numItemsPerPage?: number;
@@ -45,6 +48,7 @@ export enum TableSort {
 }
 
 export const Table = <T extends { actions: ReactNode }>({
+  variant = 'light',
   columns,
   dataSource,
   sortable,
@@ -57,6 +61,7 @@ export const Table = <T extends { actions: ReactNode }>({
   onSort,
   ...props
 }: TableProps<T>) => {
+  const isDark = variant === 'dark';
   const [sorterColumnIndex, setSorterColumnIndex] = useState<number>(0);
   const [sorterColumnStatus, setSorterColumnStatus] = useState<TableSort>(TableSort.ASC);
 
@@ -79,16 +84,18 @@ export const Table = <T extends { actions: ReactNode }>({
     'overflow-x-auto',
     'rounded-lg',
     'shadow-lg',
-    'bg-white',
+    isDark
+      ? 'border border-mb-border/80 bg-mb-surface/90 backdrop-blur-xl'
+      : 'bg-white',
     props.disabled && 'opacity-50 pointer-events-none',
   ].filter(Boolean).join(' ');
 
   const tableClasses = [
     'w-full',
     'border-collapse',
-    'bg-white',
     'rounded-lg',
     'overflow-hidden',
+    isDark ? 'bg-transparent' : 'bg-white',
   ].join(' ');
 
   return (
@@ -96,17 +103,19 @@ export const Table = <T extends { actions: ReactNode }>({
       <table className={tableClasses} role="table">
         <TableHeader<T>
           {...{
+            variant,
             columns,
             sorterColumnStatus,
             sorterColumnIndex,
             setSorterColumnStatus,
             setSorterColumnIndex,
             sortable,
-            onSort
+            onSort,
           }}
         />
         <TableBody<T>
           {...{
+            variant,
             columns,
             dataSource,
             sorterColumnIndex,

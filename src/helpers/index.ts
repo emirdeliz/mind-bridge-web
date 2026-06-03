@@ -1,3 +1,5 @@
+export * from './caseTransform';
+
 export const filterDOMProps = <T extends object>(props: T): T => props;
 
 export const getProfileInitials = (fullName: string, fallback = "??"): string => {
@@ -11,7 +13,23 @@ export const getNumbersOfString = (value: string): string => value.replace(/\D/g
 
 export const maskCPF = (value: string): string => value;
 export const maskCNPJ = (value: string): string => value;
-export const maskPhone = (value: string): string => value;
+/** Celular BR: (DD) XXXXX-XXXX (11 dígitos) ou (DD) XXXX-XXXX (10 dígitos). */
+export const maskPhone = (value: string): string => {
+  const digits = getNumbersOfString(value).slice(0, 11);
+  if (!digits.length) {
+    return "";
+  }
+  if (digits.length <= 2) {
+    return `(${digits}`;
+  }
+  if (digits.length <= 6) {
+    return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+  }
+  if (digits.length <= 10) {
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+  }
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
+};
 export const maskBarcode = (value: string): string => value;
 export const maskRG = (value: string): string => value;
 export const maskCountryState = (value: string): string => value;

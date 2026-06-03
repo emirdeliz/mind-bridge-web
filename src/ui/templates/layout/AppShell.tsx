@@ -17,7 +17,7 @@ interface AppShellProps {
 
 const DASHBOARD_NAV_ITEMS = [
   { href: "/patient", key: "PATIENT_AREA" },
-  { href: "/psychologist", key: "PSYCHOLOGIST_AREA" },
+  { href: "/psychologist/patients", key: "PSYCHOLOGIST_PATIENTS_NAV" },
 ] as const;
 
 export const AppShell = ({ title, subtitle, variant = "dashboard", children }: AppShellProps) => {

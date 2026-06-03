@@ -28,6 +28,12 @@ export const PsychologistSessionPage = () => {
   const router = useRouter();
   const { t } = useI18n();
   const { loading, isPsychologist } = usePsychologistGuard();
+  const patientId =
+    typeof router.query.patientId === "string" ? router.query.patientId : undefined;
+  const patientName =
+    typeof router.query.patientName === "string" && router.query.patientName.trim()
+      ? router.query.patientName
+      : undefined;
   const [psychologistContext, setPsychologistContext] = useState(MOCK_PSYCHOLOGIST_CONTEXT);
   const [sessionNotesById, setSessionNotesById] = useState(() =>
     Object.fromEntries(MOCK_SESSION_NOTES_HISTORY.map((entry) => [entry.id, entry.content])),
@@ -109,15 +115,21 @@ export const PsychologistSessionPage = () => {
     });
   };
 
+  const sessionSubtitle = patientName
+    ? `${t("PSYCHOLOGIST_SESSION_SUBTITLE")} — ${patientName}`
+    : patientId
+      ? `${t("PSYCHOLOGIST_SESSION_SUBTITLE")} (${patientId})`
+      : t("PSYCHOLOGIST_SESSION_SUBTITLE");
+
   return (
     <AppShell
       title={t("PSYCHOLOGIST_SESSION_TITLE")}
-      subtitle={t("PSYCHOLOGIST_SESSION_SUBTITLE")}
+      subtitle={sessionSubtitle}
       variant="dashboard"
     >
       <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
-        <RouteLink href="/psychologist" inline>
-          {t("BACK_TO_PSYCHOLOGIST_DASHBOARD")}
+        <RouteLink href="/psychologist/patients" inline>
+          {t("PSYCHOLOGIST_PATIENTS_NAV")}
         </RouteLink>
         <Button type="button" onClick={endSession}>
           {t("END_SESSION")}

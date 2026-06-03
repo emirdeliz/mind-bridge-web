@@ -22,6 +22,8 @@ interface FloatingElementProps {
   right?: boolean;
   /** When false, does not cap height to the viewport or use overflow:auto (no inner scroll). */
   clampToViewport?: boolean;
+  /** When false, the floating layer does not inherit a min-width from the anchor (e.g. tooltips). */
+  matchAnchorMinWidth?: boolean;
   anchor?: HTMLElement | null;
   opened?: boolean;
   children: ReactElement<
@@ -33,7 +35,16 @@ interface FloatingElementProps {
 const FloatingElement = (props: FloatingElementProps) => {
   const [style, setStyle] = useState<CSSProperties>({});
   const containerRef = useRef<HTMLDivElement>(null);
-  const { anchor, opened, top, bottom, left, right, clampToViewport = true } = props;
+  const {
+    anchor,
+    opened,
+    top,
+    bottom,
+    left,
+    right,
+    clampToViewport = true,
+    matchAnchorMinWidth = true,
+  } = props;
 
   const updatePosition = useCallback(() => {
     if (!anchor || !containerRef.current) return;
@@ -49,9 +60,11 @@ const FloatingElement = (props: FloatingElementProps) => {
       right,
       clampToViewport,
     );
-    tempStyle.minWidth = anchor.offsetWidth - 20;
+    if (matchAnchorMinWidth) {
+      tempStyle.minWidth = anchor.offsetWidth - 20;
+    }
     setStyle(tempStyle);
-  }, [anchor, top, bottom, left, right, clampToViewport]);
+  }, [anchor, top, bottom, left, right, clampToViewport, matchAnchorMinWidth]);
 
   useLayoutEffect(() => {
     if (!opened) {
@@ -84,7 +97,8 @@ const FloatingElement = (props: FloatingElementProps) => {
 
   const dynamicStyles: CSSProperties = {
     ...style,
-    minWidth: anchor ? anchor.offsetWidth - 20 : undefined,
+    minWidth:
+      matchAnchorMinWidth && anchor ? anchor.offsetWidth - 20 : undefined,
     visibility:
       opened && style.top != null && style.left != null ? 'visible' : 'hidden',
   };

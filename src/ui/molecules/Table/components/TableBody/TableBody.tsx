@@ -2,7 +2,7 @@ import { ReactNode, useCallback, useMemo } from 'react';
 import { Title } from '@atoms';
 import { sortTableValues, buildDataSource } from './TableBody.logic';
 import { TableHeaderProps } from '..';
-import { TableProps, TableSortProps } from '../../Table';
+import { TableProps, TableSortProps, type TableVariant } from '../../Table';
 
 export interface TableBodyProps<T>
   extends Omit<
@@ -15,13 +15,15 @@ export interface TableBodyProps<T>
 }
 
 export const TableBody = <T extends { actions: ReactNode }>({
+  variant = 'light',
   columns,
   dataSource,
   sorterColumnStatus,
   sorterColumnIndex,
   isSortableInApi,
   onRowClick,
-}: TableBodyProps<T>) => {
+}: TableBodyProps<T> & { variant?: TableVariant }) => {
+  const isDark = variant === 'dark';
   const dataSourceBase = useMemo(
     () => buildDataSource<T>({ columns, dataSource }) as Array<T>,
     [columns, dataSource]
@@ -53,7 +55,7 @@ export const TableBody = <T extends { actions: ReactNode }>({
               key={colIndex}
               role="cell"
               data-testid={`table-row-${index}-cell-${colIndex}`}
-              className="px-6 py-4 text-center border-b border-gray-100"
+              className={`px-6 py-4 text-center border-b ${isDark ? 'border-mb-border/40' : 'border-gray-100'}`}
               style={widthStyle}
             >
               {row.actions}
@@ -66,13 +68,15 @@ export const TableBody = <T extends { actions: ReactNode }>({
             key={colIndex}
             role="cell"
             data-testid={`table-row-${index}-cell-${colIndex}`}
-            className="px-6 py-4 border-b border-gray-100"
+            className={`px-6 py-4 border-b ${isDark ? 'border-mb-border/40' : 'border-gray-100'}`}
             style={widthStyle}
           >
             {customCellRender ? (
               customCellRender(row)
             ) : (
-              <Title s2>{String(valueFormatted || row[keyLabel] || '')}</Title>
+              <Title s2 white={isDark}>
+                {String(valueFormatted || row[keyLabel] || '')}
+              </Title>
             )}
           </td>
         );
@@ -81,7 +85,22 @@ export const TableBody = <T extends { actions: ReactNode }>({
         <tr
           role="row"
           key={index}
-          className={`border-b border-gray-100 hover:bg-gradient-to-r hover:from-primary-theme-50 hover:to-indigo-50 transition-all duration-200 ${onRowClick ? 'cursor-pointer' : ''} ${index % 2 === 0 ? 'bg-white' : 'bg-gray-25'}`}
+          className={[
+            'border-b transition-all duration-200',
+            isDark
+              ? 'border-mb-border/40 hover:bg-mb-surface-elevated/60'
+              : 'border-gray-100 hover:bg-gradient-to-r hover:from-primary-theme-50 hover:to-indigo-50',
+            onRowClick ? 'cursor-pointer' : '',
+            isDark
+              ? index % 2 === 0
+                ? 'bg-mb-surface/50'
+                : 'bg-mb-surface-elevated/30'
+              : index % 2 === 0
+                ? 'bg-white'
+                : 'bg-gray-25',
+          ]
+            .filter(Boolean)
+            .join(' ')}
           onClick={(e) => {
             e.stopPropagation();
             onRowClick && onRowClick(row, index);
@@ -92,7 +111,7 @@ export const TableBody = <T extends { actions: ReactNode }>({
       );
     });
     return <tbody data-testid="table-body">{result}</tbody>;
-  }, [columns, dataSourceSortable, onRowClick]);
+  }, [columns, dataSourceSortable, onRowClick, isDark]);
 
   return buildBody();
 };

@@ -1,14 +1,14 @@
 "use client";
 
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 
-import { Button, Flex, Title } from "@atoms";
+import { Button, Flex, RouteLink, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card, ChartCard } from "@molecules";
 import { AppShell } from "@templates";
 
-import { MOCK_PATIENT_DISPLAY_NAME } from "./psychologistMockData";
 import { usePsychologistDashboardData } from "./usePsychologistDashboardData";
 import { usePsychologistGuard } from "./usePsychologistGuard";
 
@@ -40,12 +40,36 @@ export const PsychologistDashboardPage = () => {
   const { loading, isPsychologist } = usePsychologistGuard();
   const { snapshot, channelCenterText } = usePsychologistDashboardData();
 
-  if (loading || !isPsychologist) {
+  const patientId =
+    typeof router.query.patientId === "string" ? router.query.patientId : undefined;
+  const patientName =
+    typeof router.query.patientName === "string" && router.query.patientName.trim()
+      ? router.query.patientName
+      : undefined;
+
+  useEffect(() => {
+    if (!router.isReady || loading) {
+      return;
+    }
+    if (!patientId) {
+      void router.replace("/psychologist/patients");
+    }
+  }, [router, patientId, loading]);
+
+  if (loading || !isPsychologist || !patientId) {
     return null;
   }
 
+  const displayName = patientName ?? patientId;
+
   const startSession = () => {
-    void router.push("/psychologist/session");
+    void router.push({
+      pathname: "/psychologist/session",
+      query: {
+        patientId,
+        patientName: displayName,
+      },
+    });
   };
 
   return (
@@ -54,6 +78,12 @@ export const PsychologistDashboardPage = () => {
       subtitle={t("PSYCHOLOGIST_DASHBOARD_SUBTITLE")}
       variant="dashboard"
     >
+      <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
+        <RouteLink href="/psychologist/patients" inline>
+          {t("PSYCHOLOGIST_PATIENTS_NAV")}
+        </RouteLink>
+      </Flex>
+
       <Card padding="lg" shadow="md">
         <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
           <Flex col gap2>
@@ -61,7 +91,7 @@ export const PsychologistDashboardPage = () => {
               {t("PSYCHOLOGIST_DASHBOARD_PATIENT")}
             </Title>
             <Title s1 gray>
-              {MOCK_PATIENT_DISPLAY_NAME} · {t("PSYCHOLOGIST_DASHBOARD_PATIENT_HINT")}
+              {displayName} · {t("PSYCHOLOGIST_DASHBOARD_PATIENT_HINT")}
             </Title>
           </Flex>
           <Button type="button" onClick={startSession}>

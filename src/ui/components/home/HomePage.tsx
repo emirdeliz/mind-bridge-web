@@ -118,7 +118,7 @@ export const HomePage = () => {
               wFull
               onClick={async () => {
                 await enterBypass("psychologist");
-                void router.push("/psychologist");
+                void router.push("/psychologist/patients");
               }}
             >
               {t("AUTH_BYPASS_PSYCHOLOGIST")}

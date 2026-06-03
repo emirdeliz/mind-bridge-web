@@ -16,6 +16,7 @@ export interface UserAuthViewDto {
   role: UserRole;
   provider: AuthProvider;
   profile: UserProfile;
+  accessToken?: string;
 }
 
 export interface UserAuthSaveOrUpdateDto {

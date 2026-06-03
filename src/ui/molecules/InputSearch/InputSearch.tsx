@@ -10,9 +10,7 @@ interface InputSearchProps {
 export const InputSearch = ({ value, onChange, placeholder }: InputSearchProps) => {
   const { t } = useI18n();
   
-  const containerClasses = [
-    'relative w-full max-w-md',
-  ].join(' ');
+  const containerClasses = ['relative w-full'].join(' ');
 
   const inputClasses = [
     'h-12', // Altura padronizada (48px)

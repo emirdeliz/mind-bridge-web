@@ -17,8 +17,11 @@ import { filterDOMProps } from '@helpers';
 export interface TooltipProps {
   invisible?: boolean;
   width?: number;
+  minWidth?: number;
   /** When false, floating layer is not height-clamped to the viewport (no vertical scroll inside the float). */
   clampToViewport?: boolean;
+  /** When false, tooltip width follows content only (no min-width from the trigger). */
+  matchAnchorMinWidth?: boolean;
   title: any;
   top?: boolean;
   bottom?: boolean;
@@ -48,6 +51,8 @@ const TooltipPopup = withFloat((props: GenericObject) => {
     left,
     right,
     width,
+    minWidth,
+    style: styleProp,
     _floatingElementAnchor,
     _floatingElementStyle,
     onMouseOver,
@@ -131,7 +136,11 @@ const TooltipPopup = withFloat((props: GenericObject) => {
         ? 'mb-tooltip-arrow-right'
         : 'mb-tooltip-arrow-left';
 
-  const contentStyle: CSSProperties | undefined = width ? { width, maxWidth: width } : undefined;
+  const contentStyle: CSSProperties = {
+    ...(minWidth != null ? { minWidth } : {}),
+    ...(width ? { width, maxWidth: width } : {}),
+    ...(styleProp ?? {}),
+  };
   const domProps = filterDOMProps(props);
 
   return (
@@ -213,6 +222,7 @@ export const Tooltip = forwardRef<TooltipRefObject, TooltipProps>((props, ref) =
             {...props}
             {...extraTooltipProps}
             clampToViewport={props.clampToViewport ?? false}
+            matchAnchorMinWidth={props.matchAnchorMinWidth ?? false}
             ref={refTooltip}
           />
         )}
