@@ -90,60 +90,6 @@ export const PsychologistSessionPage = () => {
       <Flex col wFull gap4>
         <Card padding="lg" shadow="md">
           <DashboardSectionTitle
-            title={t("SESSION_NOTES_AGENTIC_SUMMARY")}
-            tooltip={t("TOOLTIP_SESSION_NOTES_AGENTIC_SUMMARY")}
-          />
-          <Flex row wFull alignCenter justifySpaceBetween wrap gap4 mb4>
-            <Title s1 gray>
-              {agenticRangeLabel}
-            </Title>
-            <SessionHistoryNavButtons
-              canGoOlder={canGoAgenticOlder}
-              canGoNewer={canGoAgenticNewer}
-              onGoOlder={() => setAgenticSummaryPage((page) => Math.min(agenticSummaryMaxPage, page + 1))}
-              onGoNewer={() => setAgenticSummaryPage((page) => Math.max(0, page - 1))}
-              olderTooltip={
-                olderAgenticBatch
-                  ? `${t("SESSION_NOTES_PREVIOUS")}: ${olderAgenticBatch.sessionDate}`
-                  : t("SESSION_NOTES_PREVIOUS")
-              }
-              newerTooltip={
-                newerAgenticBatch
-                  ? `${t("SESSION_NOTES_NEXT")}: ${newerAgenticBatch.sessionDate}`
-                  : t("SESSION_NOTES_NEXT")
-              }
-            />
-          </Flex>
-          <Flex col wFull gap5>
-            {Array.from({ length: AGENTIC_SUMMARY_PAGE_SIZE }, (_, slotIndex) => {
-              const entry = visibleAgenticSummaries[slotIndex];
-              if (!entry) {
-                return (
-                  <Flex col wFull key={`agentic-empty-${agenticSummaryPage}-${slotIndex}`} gap2>
-                    <Title fs3 fw3 mb1 gray>
-                      —
-                    </Title>
-                    <Title s1 gray leadingRelaxed>
-                      —
-                    </Title>
-                  </Flex>
-                );
-              }
-              return (
-                <Flex col wFull key={entry.id}>
-                  <Title fs3 fw3 mb1>
-                    {entry.sessionDate}
-                  </Title>
-                  <Title s1 gray leadingRelaxed>
-                    {entry.agenticSummary}
-                  </Title>
-                </Flex>
-              );
-            })}
-          </Flex>
-        </Card>
-        <Card padding="lg" shadow="md">
-          <DashboardSectionTitle
             title={t("SESSION_CONSIDERATIONS")}
             tooltip={t("TOOLTIP_PSYCHOLOGIST_SESSION_NOTES")}
           />
@@ -224,6 +170,60 @@ export const PsychologistSessionPage = () => {
         <Title s1 gray leadingRelaxed>
           {MOCK_PSYCHOLOGIST_SUMMARY}
         </Title>
+      </Card>
+      <Card padding="lg" shadow="md">
+        <DashboardSectionTitle
+          title={t("SESSION_NOTES_AGENTIC_SUMMARY")}
+          tooltip={t("TOOLTIP_SESSION_NOTES_AGENTIC_SUMMARY")}
+        />
+        <Flex row wFull alignCenter justifySpaceBetween wrap gap4 mb4>
+          <Title s1 gray>
+            {agenticRangeLabel}
+          </Title>
+          <SessionHistoryNavButtons
+            canGoOlder={canGoAgenticOlder}
+            canGoNewer={canGoAgenticNewer}
+            onGoOlder={() => setAgenticSummaryPage((page) => Math.min(agenticSummaryMaxPage, page + 1))}
+            onGoNewer={() => setAgenticSummaryPage((page) => Math.max(0, page - 1))}
+            olderTooltip={
+              olderAgenticBatch
+                ? `${t("SESSION_NOTES_PREVIOUS")}: ${olderAgenticBatch.sessionDate}`
+                : t("SESSION_NOTES_PREVIOUS")
+            }
+            newerTooltip={
+              newerAgenticBatch
+                ? `${t("SESSION_NOTES_NEXT")}: ${newerAgenticBatch.sessionDate}`
+                : t("SESSION_NOTES_NEXT")
+            }
+          />
+        </Flex>
+        <Flex col wFull gap5>
+          {Array.from({ length: AGENTIC_SUMMARY_PAGE_SIZE }, (_, slotIndex) => {
+            const entry = visibleAgenticSummaries[slotIndex];
+            if (!entry) {
+              return (
+                <Flex col wFull key={`agentic-empty-${agenticSummaryPage}-${slotIndex}`} gap2>
+                  <Title fs3 fw3 mb1 gray>
+                    —
+                  </Title>
+                  <Title s1 gray leadingRelaxed>
+                    —
+                  </Title>
+                </Flex>
+              );
+            }
+            return (
+              <Flex col wFull key={entry.id}>
+                <Title fs3 fw3 mb1>
+                  {entry.sessionDate}
+                </Title>
+                <Title s1 gray leadingRelaxed>
+                  {entry.agenticSummary}
+                </Title>
+              </Flex>
+            );
+          })}
+        </Flex>
       </Card>
       <Card padding="lg" shadow="md">
         <DashboardSectionTitle
