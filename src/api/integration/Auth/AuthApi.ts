@@ -3,7 +3,7 @@ import {
   type UserAuthSaveOrUpdateDto,
   type UserAuthViewDto,
   type UserProfile,
-} from "@api/dto/auth/AuthDto";
+} from "@api";
 
 const USERS_KEY = "mindbridge.users";
 const SESSION_KEY = "mindbridge.session";

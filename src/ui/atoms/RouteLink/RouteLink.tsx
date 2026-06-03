@@ -8,7 +8,7 @@ export interface RouteLinkProps {
 }
 
 export const RouteLink = ({ href, children, className }: RouteLinkProps) => (
-  <NextLink href={href} className={className ?? "text-sm text-blue-700 hover:underline"}>
+  <NextLink href={href} className={className}>
     {children}
   </NextLink>
 );

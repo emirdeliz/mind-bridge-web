@@ -23,7 +23,7 @@ const i18n: I18nContextType['i18n'] = {
 };
 
 export const I18nContext = createContext<I18nContextType>({
-  language: 'en',
+  language: 'pt',
   setLanguage: () => {},
   i18n: i18n,
   t: (key: string) => key,
@@ -34,11 +34,11 @@ interface I18nProviderProps {
 }
 
 export const I18nProvider = ({ children }: I18nProviderProps) => {
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguage] = useState<Language>('pt');
 
   const translate = useCallback(
     (key: string) => {
-      return i18n[language][key] ?? i18n.en[key] ?? key;
+      return i18n[language][key] ?? i18n.pt[key] ?? i18n.en[key] ?? key;
     },
     [language],
   );

@@ -6,7 +6,7 @@ import type {
   UserAuthViewDto,
   UserProfile,
   UserRole,
-} from "@api/dto/auth/AuthDto";
+} from "@api";
 import {
   getSessionApi,
   loginWithPasswordApi,
@@ -14,7 +14,7 @@ import {
   logoutApi,
   registerUserApi,
   saveProfileApi,
-} from "@api/integration/Auth/AuthApi";
+} from "@api";
 
 export const useAuth = () => {
   const [session, setSession] = useState<UserAuthViewDto | null>(null);

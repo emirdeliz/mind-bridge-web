@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import type { UserProfile } from "@api/dto/auth/AuthDto";
+import type { UserProfile } from "@api";
 import { Button, Flex, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card, Form, InputForm } from "@molecules";

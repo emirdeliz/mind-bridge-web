@@ -32,6 +32,7 @@
       "@types": ["src/types"],
       "@utils": ["src/utils"],
       "@api": ["src/api"],
+      "@styles": ["src/styles"],
       "@constants": ["src/constants"],
       "@test": ["test"]
     }
@@ -40,7 +41,6 @@
   "exclude": [
     "node_modules",
     "src/ui/organisms/**",
-    "src/ui/atoms/AuditSkillChip/**",
     "src/ui/atoms/Chart/**",
     "src/ui/atoms/Checkbox/**",
     "src/ui/atoms/Col/**",
@@ -52,8 +52,6 @@
     "src/ui/atoms/Hr/**",
     "src/ui/atoms/Image/**",
     "src/ui/atoms/InfiniteScroll/**",
-    "src/ui/atoms/InlineCode/**",
-    "src/ui/atoms/KpiTile/**",
     "src/ui/atoms/Link/**",
     "src/ui/atoms/Loading/**",
     "src/ui/atoms/Markdown/**",
@@ -62,8 +60,6 @@
     "src/ui/atoms/ProgressBar/**",
     "src/ui/atoms/ResizablePanels/**",
     "src/ui/atoms/Skeleton/**",
-    "src/ui/atoms/StatusBadge/**",
-    "src/ui/atoms/StatusPill/**",
     "src/ui/atoms/Tabs/**",
     "src/ui/molecules/Accordion/**",
     "src/ui/molecules/Calendar/**",
@@ -82,8 +78,6 @@
     "src/ui/molecules/Switch/**",
     "src/ui/molecules/Table/**",
     "src/ui/molecules/Toast/**",
-    "src/ui/molecules/Tooltip/**",
-    "src/ui/molecules/UpcodeMetricTip/**",
-    "src/ui/molecules/upcode/**"
+    "src/ui/molecules/Tooltip/**"
   ]
 }

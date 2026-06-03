@@ -56,22 +56,7 @@ export const InputText = ({
     [cpf, cnpj, rg, phone, barcode, props.value]
   );
 
-  const inputClasses = [
-    'w-full',
-    'h-12', // Altura padronizada (48px)
-    'min-h-[48px]', // Altura mínima garantida
-    'outline-none rounded-lg',
-    'px-4 py-3', // Padding padronizado (16px horizontal, 12px vertical)
-    'text-base',
-    'font-poppins',
-    'transition-all duration-200 ease-in-out',
-    'placeholder:text-gray-400 placeholder:font-normal',
-    'disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed',
-    'border border-gray-300', // Borda explícita com cor
-    'bg-white text-gray-900',
-    'input-focus-primary',
-    hasError && 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200',
-  ].filter(Boolean).join(' ');
+  const inputClasses = ['mb-field', 'input-focus-primary', hasError && 'mb-field-error'].filter(Boolean).join(' ');
 
   return (
     <input

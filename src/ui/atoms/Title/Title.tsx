@@ -55,14 +55,14 @@ export const Title = (props: TitleProps) => {
     } else if (props.blue) {
       baseClasses.push('text-primary-theme');
     } else if (props.gray) {
-      baseClasses.push('text-gray-500');
+      baseClasses.push('text-mb-muted');
     } else if (props.lightBlue) {
       baseClasses.push('text-primary-theme-light');
     } else if (props.error) {
       baseClasses.push('text-red-500');
     } else {
       // Cor padrão apenas se nenhuma cor específica for definida
-      baseClasses.push('text-gray-900');
+      baseClasses.push('text-mb-text');
     }
 
     // Pesos da fonte

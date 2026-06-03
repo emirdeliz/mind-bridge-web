@@ -1,28 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import type { UserRole } from "@api/dto/auth/AuthDto";
-import { useAuth } from "@services/auth/hooks/useAuth";
+import type { UserRole } from "@api";
+import { getRoleRoute, useAuth } from "@services";
 import { Button, Flex, Input, Select, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card, Form, FormError } from "@molecules";
-import { AppShell } from "@templates/layout/AppShell";
+import { AppShell } from "@templates";
 
 export const HomePage = () => {
   const router = useRouter();
   const { t } = useI18n();
-  const { loginWithPassword, loginWithProvider } = useAuth();
+  const { session, loading, loginWithPassword, loginWithProvider } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<UserRole>("patient");
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    if (loading || !session) return;
+    void router.replace(getRoleRoute(session.role));
+  }, [loading, session, router]);
+
   const navigateByRole = (userRole: UserRole) => {
-    void router.push(userRole === "psychologist" ? "/psychologist" : "/patient");
+    void router.replace(getRoleRoute(userRole));
   };
 
+  if (loading || session) {
+    return null;
+  }
+
   return (
-    <AppShell title={t("APP_TITLE")} subtitle={t("HOME_SUBTITLE")}>
+    <AppShell title={t("APP_TITLE")} subtitle={t("HOME_SUBTITLE")} variant="auth">
       <Card padding="lg" shadow="md">
         <Title fs3 fw3 mb2>
           {t("LOGIN")}
@@ -60,7 +69,7 @@ export const HomePage = () => {
             </Button>
           </FormError>
         </Form>
-        <Flex row gap={8} mt="4">
+        <Flex row wrap gap={8} mt="4">
           <Button
             variant="secondary"
             outlined

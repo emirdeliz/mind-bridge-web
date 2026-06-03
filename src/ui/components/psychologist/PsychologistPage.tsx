@@ -1,34 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import { useAiAgent } from "@services/ai/hooks/useAiAgent";
-import { useAuth } from "@services/auth/hooks/useAuth";
+import { getRoleRoute, useAiAgent, useAuth } from "@services";
 import { Button, Flex, Input, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card } from "@molecules";
-import { ChatPanel } from "@templates/chat/ChatPanel";
-import { AppShell } from "@templates/layout/AppShell";
-import { ProfileForm } from "@templates/profile/ProfileForm";
+import { AppShell, ChatPanel, ProfileForm } from "@templates";
 
 export const PsychologistPage = () => {
   const router = useRouter();
   const { t } = useI18n();
-  const { session, saveProfile, logout } = useAuth();
+  const { session, loading, saveProfile, logout } = useAuth();
   const [psychologistContext, setPsychologistContext] = useState(() => t("DEFAULT_PSYCHOLOGIST_AI_CONTEXT"));
   const [sessionNotes, setSessionNotes] = useState("");
   const [interactionNotes, setInteractionNotes] = useState("");
   const { messages, sendMessage, summary } = useAiAgent(psychologistContext);
 
-  if (!session) {
-    return (
-      <AppShell title={t("PSYCHOLOGIST_AREA_TITLE")} subtitle={t("PSYCHOLOGIST_AUTH_REQUIRED_SUBTITLE")}>
-        <Button onClick={() => void router.push("/")}>{t("GO_TO_LOGIN")}</Button>
-      </AppShell>
-    );
+  useEffect(() => {
+    if (loading) return;
+    if (!session) {
+      void router.replace("/");
+      return;
+    }
+    if (session.role !== "psychologist") {
+      void router.replace(getRoleRoute(session.role));
+    }
+  }, [loading, session, router]);
+
+  if (loading || !session || session.role !== "psychologist") {
+    return null;
   }
 
   return (
-    <AppShell title={t("PSYCHOLOGIST_AREA_TITLE")} subtitle={t("PSYCHOLOGIST_AREA_SUBTITLE")}>
+    <AppShell title={t("PSYCHOLOGIST_AREA_TITLE")} subtitle={t("PSYCHOLOGIST_AREA_SUBTITLE")} variant="dashboard">
       <ProfileForm initialData={session.profile} onSave={(profile) => void saveProfile(profile)} />
       <Card padding="lg" shadow="md">
         <Title fs3 fw3 mb2>

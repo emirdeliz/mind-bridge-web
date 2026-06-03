@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 
 export interface CardProps { 
   children: ReactNode;
+  className?: string;
   maxWidth?: string;
   padding?: 'sm' | 'md' | 'lg' | 'xl';
   shadow?: 'sm' | 'md' | 'lg' | 'xl';
@@ -10,7 +11,8 @@ export interface CardProps {
 }
 
 export const Card = ({ 
-  children, 
+  children,
+  className = '',
   maxWidth, 
   padding = 'md',
   shadow = 'md',
@@ -26,23 +28,25 @@ export const Card = ({
   };
 
   const shadowClasses = {
-    sm: 'shadow-sm',
-    md: 'shadow-md',
-    lg: 'shadow-lg',
-    xl: 'shadow-xl',
+    sm: 'shadow-card',
+    md: 'shadow-card',
+    lg: 'shadow-card',
+    xl: 'shadow-card',
   };
 
   const cardClasses = [
     'flex w-full flex-col',
-    'bg-white',
-    'rounded-lg',
+    'rounded-2xl',
+    'bg-mb-surface/90',
+    'backdrop-blur-xl',
     shadowClasses[shadow],
     paddingClasses[padding],
-    border && 'border border-gray-200',
-    hover && 'hover:shadow-lg transition-shadow duration-200',
+    border && 'border border-mb-border/80',
+    hover && 'hover:border-mb-accent/30 hover:shadow-glow transition-all duration-300',
     'transition-all duration-200',
     maxWidth ? `max-w-[${maxWidth}]` : '',
-  ].join(' ');
+    className,
+  ].filter(Boolean).join(' ');
 
   return (
     <div {...props} className={cardClasses}>

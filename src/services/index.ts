@@ -1,5 +1,9 @@
 export * from "./auth/hooks/useAuth";
+export * from "./auth/roleRoute";
 export * from "./ai/hooks/useAiAgent";
+export * from "./ai/agentGuardrails";
+
+export type { ChatMessage } from "./ai/hooks/useAiAgent";
 
 export type ActorChipVariant = "agent" | "human" | "system";
 

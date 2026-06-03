@@ -1,15 +1,12 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 
-import type { UserProfile } from "@api/dto/auth/AuthDto";
-import { useAiAgent } from "@services/ai/hooks/useAiAgent";
-import { useAuth } from "@services/auth/hooks/useAuth";
+import type { UserProfile } from "@api";
+import { getRoleRoute, useAiAgent, useAuth } from "@services";
 import { Button, Flex, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Alert, Card } from "@molecules";
-import { ChatPanel } from "@templates/chat/ChatPanel";
-import { AppShell } from "@templates/layout/AppShell";
-import { ProfileForm } from "@templates/profile/ProfileForm";
+import { AppShell, ChatPanel, ProfileForm } from "@templates";
 
 const PROFILE_FIELD_I18N_KEYS: Record<keyof UserProfile, string> = {
   fullName: "PROFILE_FIELD_FULL_NAME",
@@ -21,9 +18,20 @@ const PROFILE_FIELD_I18N_KEYS: Record<keyof UserProfile, string> = {
 export const PatientPage = () => {
   const router = useRouter();
   const { t } = useI18n();
-  const { session, saveProfile, logout } = useAuth();
+  const { session, loading, saveProfile, logout } = useAuth();
   const [context] = useState(() => t("DEFAULT_PATIENT_AI_CONTEXT"));
   const { messages, sendMessage, summary } = useAiAgent(context);
+
+  useEffect(() => {
+    if (loading) return;
+    if (!session) {
+      void router.replace("/");
+      return;
+    }
+    if (session.role !== "patient") {
+      void router.replace(getRoleRoute(session.role));
+    }
+  }, [loading, session, router]);
 
   const missingProfileFields = useMemo(() => {
     if (!session) return [];
@@ -32,16 +40,12 @@ export const PatientPage = () => {
       .map(([key]) => t(PROFILE_FIELD_I18N_KEYS[key as keyof UserProfile]));
   }, [session, t]);
 
-  if (!session) {
-    return (
-      <AppShell title={t("PATIENT_AREA_TITLE")} subtitle={t("PATIENT_AUTH_REQUIRED_SUBTITLE")}>
-        <Button onClick={() => void router.push("/")}>{t("GO_TO_LOGIN")}</Button>
-      </AppShell>
-    );
+  if (loading || !session || session.role !== "patient") {
+    return null;
   }
 
   return (
-    <AppShell title={t("PATIENT_AREA_TITLE")} subtitle={t("PATIENT_AREA_SUBTITLE")}>
+    <AppShell title={t("PATIENT_AREA_TITLE")} subtitle={t("PATIENT_AREA_SUBTITLE")} variant="dashboard">
       {missingProfileFields.length ? (
         <Alert>
           {t("PROFILE_INCOMPLETE_ALERT")} {missingProfileFields.join(", ")}.
@@ -57,7 +61,7 @@ export const PatientPage = () => {
           {summary}
         </Title>
       </Card>
-      <Flex row gap={8}>
+      <Flex row wrap gap={8}>
         <Button
           variant="secondary"
           outlined

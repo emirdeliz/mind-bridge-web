@@ -1,29 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import type { UserRole } from "@api/dto/auth/AuthDto";
-import { useAuth } from "@services/auth/hooks/useAuth";
+import type { UserRole } from "@api";
+import { getRoleRoute, useAuth } from "@services";
 import { Button, Input, Select } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card, Form } from "@molecules";
-import { AppShell } from "@templates/layout/AppShell";
+import { AppShell } from "@templates";
 
 export const RegisterPage = () => {
   const router = useRouter();
   const { t } = useI18n();
-  const { registerUser } = useAuth();
+  const { session, loading, registerUser } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<UserRole>("patient");
 
+  useEffect(() => {
+    if (loading || !session) return;
+    void router.replace(getRoleRoute(session.role));
+  }, [loading, session, router]);
+
+  if (loading || session) {
+    return null;
+  }
+
   return (
-    <AppShell title={t("REGISTER")} subtitle={t("REGISTER_SUBTITLE")}>
+    <AppShell title={t("REGISTER")} subtitle={t("REGISTER_SUBTITLE")} variant="auth">
       <Card padding="lg" shadow="md">
         <Form
           onSubmit={async (event) => {
             event.preventDefault();
             const user = await registerUser({ email, password, role, provider: "password" });
-            void router.push(user.role === "psychologist" ? "/psychologist" : "/patient");
+            void router.replace(getRoleRoute(user.role));
           }}
         >
           <Select

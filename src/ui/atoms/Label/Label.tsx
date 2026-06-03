@@ -13,7 +13,7 @@ export interface LabelProps {
 export const Label = ({ children, target, fw3, n2, fs3, error, disabled, ...props }: LabelProps) => {
   const labelClasses = [
     'block font-medium',
-    'text-gray-700',
+    'text-mb-muted',
     'transition-colors duration-200',
     // Tamanhos
     n2 && 'text-2xl',

@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 
 export interface FlexProps {
   children: ReactNode;
+  className?: string;
   justifyStart?: boolean;
   justifyEnd?: boolean;
   justifyCenter?: boolean;
@@ -82,6 +83,8 @@ export const Flex = ({
   pl,
   px,
   py,
+  className,
+  children,
   ...props 
 }: FlexProps) => {
   // Construir classes de flexbox
@@ -146,11 +149,12 @@ export const Flex = ({
     maxWidth ? `max-w-[${maxWidth}]` : '',
     maxHeight ? `max-h-[${maxHeight}]` : '',
     gap ? `gap-[${gap}px]` : '',
+    className,
   ].filter(Boolean).join(' ');
 
   return (
     <div {...props} className={containerClasses}>
-      {props.children}
+      {children}
     </div>
   );
 };

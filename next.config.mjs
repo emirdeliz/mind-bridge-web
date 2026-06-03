@@ -13,6 +13,7 @@ const nextConfig = {
       "@api": new URL("./src/api", import.meta.url).pathname,
       "@i18n": new URL("./src/ui/system/i18n", import.meta.url).pathname,
       "@styles": new URL("./src/styles", import.meta.url).pathname,
+      "@types": new URL("./src/types", import.meta.url).pathname,
     };
     return config;
   },

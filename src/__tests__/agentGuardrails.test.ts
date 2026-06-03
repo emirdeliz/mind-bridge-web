@@ -1,4 +1,4 @@
-import { hasUnsafeContent, safeAgentResponse } from "@services/ai/agentGuardrails";
+import { hasUnsafeContent, safeAgentResponse } from "../services/ai/agentGuardrails";
 
 const t = (key: string): string => {
   const dictionary: Record<string, string> = {

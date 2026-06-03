@@ -41,7 +41,7 @@ export const FormError = ({
   return (
     <div className={marginClasses}>
       {children}
-      <div className="mt-1 text-sm text-red-600 font-medium">
+      <div className="mt-2 text-sm font-medium text-mb-danger">
         {error}
       </div>
     </div>

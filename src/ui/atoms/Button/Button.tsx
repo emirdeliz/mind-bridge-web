@@ -75,7 +75,9 @@ export const Button = ({
   // Variantes de cor - primary usa classes de tema CSS para permitir customização
   const variantClasses = {
     primary: outlined ? 'btn-primary-theme-outlined border-2' : 'btn-primary-theme',
-    secondary: outlined ? 'border-gray-600 text-gray-600 hover:bg-gray-50' : 'bg-gray-600 text-white hover:bg-gray-700',
+    secondary: outlined
+      ? 'border-mb-border text-mb-muted hover:border-mb-accent/50 hover:bg-mb-surface-elevated hover:text-mb-text'
+      : 'bg-mb-surface-elevated text-mb-text hover:bg-mb-border border-mb-border',
     success: outlined ? 'border-green-600 text-green-600 hover:bg-green-50' : 'bg-green-600 text-white hover:bg-green-700',
     danger: outlined ? 'border-red-600 text-red-600 hover:bg-red-50' : 'bg-red-600 text-white hover:bg-red-700',
     warning: outlined ? 'border-yellow-600 text-yellow-600 hover:bg-yellow-50' : 'bg-yellow-600 text-white hover:bg-yellow-700',
@@ -109,7 +111,7 @@ export const Button = ({
     marginClasses,
     variantClasses[variant],
     'transition-all duration-200 ease-in-out',
-    'focus:outline-none focus:ring-2 focus:ring-offset-2',
+    'focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-mb-accent/30',
     'disabled:opacity-50 disabled:cursor-not-allowed',
     'transform hover:scale-105 active:scale-95',
     outlined ? 'bg-transparent' : '',

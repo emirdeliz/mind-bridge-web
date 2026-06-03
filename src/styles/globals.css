@@ -2,6 +2,92 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply bg-slate-50 text-slate-900;
+@layer base {
+  :root {
+    --mb-bg: #0a0f1a;
+    --mb-surface: #151d2f;
+    --mb-border: #2a3650;
+    --mb-text: #e8edf7;
+    --mb-muted: #8b9ab8;
+    --mb-accent: #5eead4;
+    --mb-primary: #818cf8;
+  }
+
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply min-h-screen bg-mb-bg text-mb-text font-sans;
+    background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(129, 140, 248, 0.18), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 0%, rgba(45, 212, 191, 0.12), transparent);
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    @apply bg-mb-accent/30 text-mb-text;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-mb-border;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+}
+
+@layer components {
+  .mb-field {
+    @apply w-full min-h-[48px] rounded-xl border border-mb-border bg-mb-bg/70 px-4 py-3 text-base text-mb-text shadow-inner shadow-black/10 outline-none transition-all duration-200 placeholder:text-mb-muted focus:border-mb-accent focus:ring-2 focus:ring-mb-accent/25 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .mb-field-error {
+    @apply border-mb-danger bg-red-950/30 focus:border-mb-danger focus:ring-red-500/25;
+  }
+
+  .btn-primary-theme {
+    @apply border-0 bg-gradient-to-r from-mb-primary to-indigo-500 text-white shadow-lg shadow-indigo-500/25 hover:from-mb-primary-hover hover:to-indigo-600 focus:ring-mb-primary/40;
+  }
+
+  .btn-primary-theme-outlined {
+    @apply border-mb-primary/50 bg-transparent text-mb-primary hover:border-mb-primary hover:bg-mb-primary/10 focus:ring-mb-primary/30;
+  }
+
+  .input-focus-primary:focus {
+    @apply border-mb-accent ring-2 ring-mb-accent/25;
+  }
+
+  .mb-nav-link {
+    @apply rounded-lg px-3 py-2 text-sm font-medium text-mb-muted transition-all duration-200 hover:bg-mb-surface-elevated hover:text-mb-text;
+  }
+
+  .mb-nav-link-active {
+    @apply rounded-lg bg-mb-accent/15 px-3 py-2 text-sm font-medium text-mb-accent ring-1 ring-mb-accent/25;
+  }
+
+  .mb-gradient-title {
+    @apply bg-gradient-to-r from-mb-text via-mb-accent to-mb-primary bg-clip-text text-transparent;
+  }
+
+  .mb-chat-scroll {
+    @apply rounded-xl border border-mb-border/80 bg-mb-bg/50 p-3 backdrop-blur-sm;
+  }
+
+  .mb-message-user {
+    @apply ml-auto max-w-[90%] rounded-2xl rounded-br-md border border-mb-border bg-mb-surface-elevated px-4 py-2.5 text-sm text-mb-text;
+  }
+
+  .mb-message-agent {
+    @apply max-w-[90%] rounded-2xl rounded-bl-md border border-mb-accent/25 bg-mb-accent/10 px-4 py-2.5 text-sm text-mb-text;
+  }
+
+  .mb-alert-warning {
+    @apply flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100;
+  }
 }

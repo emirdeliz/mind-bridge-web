@@ -28,21 +28,9 @@ export const Select = ({
   disabled,
   ...props
 }: SelectProps) => {
-  const selectClasses = [
-    'w-full',
-    'h-12', // Altura padronizada (48px)
-    'min-h-[48px]', // Altura mínima garantida
-    'border border-gray-300', // Borda restaurada com cor correta
-    'rounded-md',
-    'bg-white text-gray-900',
-    'input-focus-primary',
-    'disabled:bg-gray-100 disabled:cursor-not-allowed',
-  ].join(' ');
+  const selectClasses = ['mb-field', 'h-12', 'cursor-pointer', 'input-focus-primary'].join(' ');
 
-  const optionClasses = [
-    'px-3 py-2',
-    'text-gray-900',
-  ].join(' ');
+  const optionClasses = ['bg-mb-surface text-mb-text'].join(' ');
 
   return (
     <select

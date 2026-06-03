@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 
 import { translateTemplate, useI18n } from "@i18n";
-import { safeAgentResponse } from "@services/ai/agentGuardrails";
+import { safeAgentResponse } from "../agentGuardrails";
 
 export interface ChatMessage {
   id: string;

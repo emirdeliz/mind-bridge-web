@@ -1,4 +1,4 @@
-import { translateTemplate } from "@i18n/utils/translateTemplate";
+import { translateTemplate } from "@i18n";
 
 export type TranslateFn = (key: string) => string;
 

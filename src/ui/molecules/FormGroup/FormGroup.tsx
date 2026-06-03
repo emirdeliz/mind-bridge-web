@@ -51,21 +51,21 @@ export const FormGroup = ({
   ].join(' ');
 
   const optionalClasses = [
-    'text-gray-500 text-sm',
+    'text-mb-muted text-sm',
     'font-normal',
-    'bg-gray-100 px-2 py-1 rounded-md',
+    'bg-mb-surface-elevated px-2 py-1 rounded-md',
   ].join(' ');
 
   const errorClasses = [
-    'text-red-500 text-sm',
+    'text-mb-danger text-sm',
     'mt-2 font-medium',
-    'bg-red-50 border border-red-200 rounded-lg px-3 py-2',
+    'bg-red-950/40 border border-red-500/30 rounded-lg px-3 py-2',
   ].join(' ');
 
   const helpTextClasses = [
-    'text-gray-600 text-sm',
+    'text-mb-muted text-sm',
     'mt-2',
-    'bg-primary-theme-50 border border-primary-theme-200 rounded-lg px-3 py-2',
+    'bg-mb-accent/10 border border-mb-accent/20 rounded-lg px-3 py-2',
   ].join(' ');
 
   return (
