@@ -16,6 +16,7 @@ export const createBypassSession = (role: UserRole): UserAuthViewDto => ({
     age: "30",
     address: "Endereço demo",
     phone: "+55 11 90000-0000",
+    language: "pt",
   },
 });
 

@@ -11,6 +11,7 @@ export * from "./FormError/FormError";
 export * from "./FormGroup/FormGroup";
 export * from "./InputForm/InputForm";
 export * from "./InputSearch/InputSearch";
+export * from "./LanguageSelect/LanguageSelect";
 export * from "./LanguageSwitcher/LanguageSwitcher";
 export * from "./MenuButton/MenuButton";
 export * from "./Modal/Modal";

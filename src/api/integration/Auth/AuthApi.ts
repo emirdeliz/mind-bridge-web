@@ -70,6 +70,7 @@ export const loginWithProviderApi = async (
       age: mocked.age ?? "",
       address: mocked.address,
       phone: mocked.phone,
+      language: "pt",
     },
   };
   saveUsers([...users, created]);
@@ -91,6 +92,7 @@ export const registerUserApi = async (
       age: "",
       address: "",
       phone: "",
+      language: "pt",
     },
   };
 

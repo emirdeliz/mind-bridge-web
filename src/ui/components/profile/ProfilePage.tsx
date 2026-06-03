@@ -12,7 +12,7 @@ interface ProfilePageProps {
 
 export const ProfilePage = ({ area }: ProfilePageProps) => {
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, setLanguage } = useI18n();
   const { session, loading, saveProfile } = useAuth();
 
   useEffect(() => {
@@ -32,7 +32,15 @@ export const ProfilePage = ({ area }: ProfilePageProps) => {
 
   return (
     <AppShell title={t("PROFILE_PAGE_TITLE")} subtitle={t("PROFILE_PAGE_SUBTITLE")} variant="dashboard">
-      <ProfileForm initialData={session.profile} onSave={(profile) => void saveProfile(profile)} />
+      <ProfileForm
+        initialData={session.profile}
+        onSave={(profile) => {
+          if (profile.language) {
+            setLanguage(profile.language);
+          }
+          void saveProfile(profile);
+        }}
+      />
     </AppShell>
   );
 };

@@ -2,8 +2,8 @@ import { useState } from "react";
 
 import type { UserProfile } from "@api";
 import { Button, Flex, Title } from "@atoms";
-import { useI18n } from "@i18n";
-import { Card, Form, InputForm } from "@molecules";
+import { DEFAULT_APP_LANGUAGE, useI18n } from "@i18n";
+import { Card, Form, FormGroup, InputForm, LanguageSelect } from "@molecules";
 
 interface ProfileFormProps {
   initialData: UserProfile;
@@ -15,8 +15,11 @@ export const ProfileForm = ({ initialData, onSave }: ProfileFormProps) => (
 );
 
 const ProfileFormContent = ({ initialData, onSave }: ProfileFormProps) => {
-  const { t } = useI18n();
-  const [data, setData] = useState<UserProfile>(initialData);
+  const { t, language: activeLanguage } = useI18n();
+  const [data, setData] = useState<UserProfile>({
+    ...initialData,
+    language: initialData.language ?? activeLanguage ?? DEFAULT_APP_LANGUAGE,
+  });
 
   return (
     <Card padding="lg" shadow="md">
@@ -63,6 +66,12 @@ const ProfileFormContent = ({ initialData, onSave }: ProfileFormProps) => {
         >
           {t("PROFILE_ADDRESS_PLACEHOLDER")}
         </InputForm>
+        <FormGroup label={t("PROFILE_LANGUAGE")} helpText={t("PROFILE_LANGUAGE_HELP")}>
+          <LanguageSelect
+            value={data.language ?? DEFAULT_APP_LANGUAGE}
+            onChange={(language) => setData({ ...data, language })}
+          />
+        </FormGroup>
         <Button type="submit" wFull>
           {t("SAVE_PROFILE")}
         </Button>

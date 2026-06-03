@@ -45,7 +45,7 @@ const MOCK_PATIENT_CHAT: ChatMessage[] = [
 const MOCK_PATIENT_SUMMARY =
   "Últimas 48h: 4 mensagens trocadas. Temas principais: ansiedade antecipatória no trabalho, sintomas corporais (aperto no peito) e sono prejudicado. Agente sugeriu respiração guiada e registro pós-reunião. Risco emocional: moderado. Encaminhar reflexão para a próxima sessão com o psicólogo.";
 
-const PROFILE_FIELD_I18N_KEYS: Record<keyof UserProfile, string> = {
+const PROFILE_FIELD_I18N_KEYS: Record<Exclude<keyof UserProfile, "language">, string> = {
   fullName: "PROFILE_FIELD_FULL_NAME",
   age: "PROFILE_FIELD_AGE",
   address: "PROFILE_FIELD_ADDRESS",
@@ -74,8 +74,8 @@ export const PatientPage = () => {
   const missingProfileFields = useMemo(() => {
     if (!session) return [];
     return Object.entries(session.profile)
-      .filter(([, value]) => !value)
-      .map(([key]) => t(PROFILE_FIELD_I18N_KEYS[key as keyof UserProfile]));
+      .filter(([key, value]) => key !== "language" && !value)
+      .map(([key]) => t(PROFILE_FIELD_I18N_KEYS[key as Exclude<keyof UserProfile, "language">]));
   }, [session, t]);
 
   if (loading || !session || (session.role !== "patient" && !isAuthBypassEnabled())) {

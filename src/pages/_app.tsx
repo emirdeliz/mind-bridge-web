@@ -2,7 +2,7 @@ import type { AppProps } from "next/app";
 import { Inter } from "next/font/google";
 import { useEffect } from "react";
 
-import { I18nProvider } from "@i18n";
+import { I18nProvider, ProfileLanguageSync } from "@i18n";
 import "@styles/globals.css";
 
 const inter = Inter({
@@ -22,6 +22,7 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   return (
     <I18nProvider>
+      <ProfileLanguageSync />
       <div className={`${inter.variable} ${inter.className} min-h-screen font-sans`}>
         <Component {...pageProps} />
       </div>

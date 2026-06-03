@@ -54,6 +54,8 @@
   "PROFILE_AGE_PLACEHOLDER": "Edad",
   "PROFILE_ADDRESS_PLACEHOLDER": "Dirección",
   "PROFILE_PHONE_PLACEHOLDER": "Teléfono",
+  "PROFILE_LANGUAGE": "Idioma de la interfaz",
+  "PROFILE_LANGUAGE_HELP": "Define el idioma de Mind Bridge en este dispositivo.",
   "SAVE_PROFILE": "Guardar perfil",
   "SAVE": "Guardar",
   "PROFILE_PAGE_TITLE": "Mi perfil",

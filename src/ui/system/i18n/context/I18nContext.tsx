@@ -1,9 +1,11 @@
-import { createContext, ReactNode, use, useCallback, useState } from 'react';
+import type { AppLanguage } from '@api';
+import { createContext, ReactNode, use, useCallback, useEffect, useState } from 'react';
 import en from '../dictionaries/en.json';
 import es from '../dictionaries/es.json';
 import pt from '../dictionaries/pt_br.json';
+import { DEFAULT_APP_LANGUAGE, getLanguageFromSessionStorage } from '../languages';
 
-type Language = 'en' | 'es' | 'pt';
+type Language = AppLanguage;
 
 interface I18nContextType {
   language: Language;
@@ -34,7 +36,14 @@ interface I18nProviderProps {
 }
 
 export const I18nProvider = ({ children }: I18nProviderProps) => {
-  const [language, setLanguage] = useState<Language>('pt');
+  const [language, setLanguage] = useState<Language>(DEFAULT_APP_LANGUAGE);
+
+  useEffect(() => {
+    const stored = getLanguageFromSessionStorage();
+    if (stored) {
+      setLanguage(stored);
+    }
+  }, []);
 
   const translate = useCallback(
     (key: string) => {
