@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import type { ChatMessage } from "@services";
 import { getRoleRoute, isAuthBypassEnabled, useAiAgent, useAuth } from "@services";
-import { Button, Flex, Icon, Input, Title } from "@atoms";
+import { Button, Flex, Icon, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card, TextAreaWithSave, Tooltip } from "@molecules";
 import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
@@ -11,13 +11,12 @@ import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
 const MOCK_PSYCHOLOGIST_CONTEXT =
   "Paciente: Ana M., 32 anos. Abordagem TCC com foco em ansiedade antecipatória e higiene do sono. Meta atual: reduzir evitação em contextos laborais e aumentar adesão ao diário de humor (meta ≥ 5 registros/semana).";
 
-const MOCK_INTERACTION_NOTES =
-  "02/06 — Chat: relato de insônia e catastrofização antes de reunião.\n01/06 — Áudio: humor 4/10, mencionou tensão muscular.\n31/05 — Texto: adesão parcial ao diário (2 entradas no fim de semana).";
-
 type SessionNoteEntry = {
   id: string;
   label: string;
+  sessionDate: string;
   content: string;
+  agenticSummary?: string;
   isCurrent?: boolean;
 };
 
@@ -25,6 +24,7 @@ const MOCK_SESSION_NOTES_HISTORY: SessionNoteEntry[] = [
   {
     id: "session-2026-06-03",
     label: "Sessão 03/06/2026 (atual)",
+    sessionDate: "03/06/2026",
     content:
       "Próxima sessão: revisar experimento comportamental da semana 3. Validar uso da respiração 4-7-8. Explorar crença central sobre desempenho profissional. Considerar escala de ansiedade (GAD-7) na abertura.",
     isCurrent: true,
@@ -32,16 +32,26 @@ const MOCK_SESSION_NOTES_HISTORY: SessionNoteEntry[] = [
   {
     id: "session-2026-05-27",
     label: "Sessão 27/05/2026",
+    sessionDate: "27/05/2026",
+    agenticSummary:
+      "Leve melhora do sono com rotina sem telas às 22h; exposição gradual no trabalho mantida. Adesão ao diário ainda abaixo da meta (3x/semana). Sem alertas de risco.",
     content:
       "Paciente relatou melhora leve no sono após rotina de desligar telas às 22h. Revisado registro de pensamentos; mantida exposição gradual no ambiente de trabalho. Combinado envio de diário de humor 3x na semana.",
   },
   {
     id: "session-2026-05-20",
     label: "Sessão 20/05/2026",
+    sessionDate: "20/05/2026",
+    agenticSummary:
+      "Mapeamento inicial de gatilhos em reuniões; psicoeducação sobre ciclo ansiedade–evitação. Paciente aderiu ao experimento de check-in emocional pré-apresentações. Sem indicadores de risco na sessão.",
     content:
       "Primeira elaboração de gatilhos de ansiedade em reuniões. Psicoeducação sobre ciclo ansiedade–evitação. Paciente aceitou experimento de check-in emocional antes de apresentações. Sem indicadores de risco na sessão.",
   },
 ];
+
+const previousSessionsAgenticSummaries = MOCK_SESSION_NOTES_HISTORY.filter(
+  (entry) => !entry.isCurrent && entry.agenticSummary,
+);
 
 const CURRENT_SESSION_NOTE_INDEX = MOCK_SESSION_NOTES_HISTORY.findIndex((entry) => entry.isCurrent);
 
@@ -135,7 +145,6 @@ export const PsychologistPage = () => {
   const [selectedSessionIndex, setSelectedSessionIndex] = useState(
     CURRENT_SESSION_NOTE_INDEX >= 0 ? CURRENT_SESSION_NOTE_INDEX : 0,
   );
-  const [interactionNotes, setInteractionNotes] = useState(MOCK_INTERACTION_NOTES);
   const { messages, sendMessage } = useAiAgent(psychologistContext);
   const chatMessages = [...MOCK_PSYCHOLOGIST_CHAT, ...messages];
 
@@ -179,34 +188,23 @@ export const PsychologistPage = () => {
 
   return (
     <AppShell title={t("PSYCHOLOGIST_AREA_TITLE")} subtitle={t("PSYCHOLOGIST_AREA_SUBTITLE")} variant="dashboard">
-      <Card padding="lg" shadow="md">
-        <DashboardSectionTitle
-          title={t("PSYCHOLOGIST_CONTEXT_FOR_AI")}
-          tooltip={t("TOOLTIP_PSYCHOLOGIST_CONTEXT")}
-        />
-        <Flex col wFull>
-          <TextAreaWithSave
-            rows={4}
-            value={psychologistContext}
-            saveLabel={t("SAVE")}
-            onSave={savePsychologistContext}
-            onChange={(event) => setPsychologistContext(event.target.value)}
-          />
-        </Flex>
-      </Card>
       <Flex col wFull gap4>
         <Card padding="lg" shadow="md">
           <DashboardSectionTitle
-            title={t("INTERACTION_NOTES")}
-            tooltip={t("TOOLTIP_PSYCHOLOGIST_INTERACTION_NOTES")}
+            title={t("SESSION_NOTES_AGENTIC_SUMMARY")}
+            tooltip={t("TOOLTIP_SESSION_NOTES_AGENTIC_SUMMARY")}
           />
-          <Flex col wFull>
-            <Input.TextArea
-              rows={6}
-              placeholder={t("INTERACTION_NOTES_PLACEHOLDER")}
-              value={interactionNotes}
-              onChange={(event) => setInteractionNotes(event.target.value)}
-            />
+          <Flex col wFull gap5>
+            {previousSessionsAgenticSummaries.map((entry) => (
+              <Flex col wFull key={entry.id}>
+                <Title fs3 fw3 mb1>
+                  {entry.sessionDate}
+                </Title>
+                <Title s1 gray leadingRelaxed>
+                  {entry.agenticSummary}
+                </Title>
+              </Flex>
+            ))}
           </Flex>
         </Card>
         <Card padding="lg" shadow="md">
@@ -302,6 +300,21 @@ export const PsychologistPage = () => {
         showAudio={false}
         sectionTooltip={t("TOOLTIP_PSYCHOLOGIST_CHAT")}
       />
+      <Card padding="lg" shadow="md">
+        <DashboardSectionTitle
+          title={t("PSYCHOLOGIST_CONTEXT_FOR_AI")}
+          tooltip={t("TOOLTIP_PSYCHOLOGIST_CONTEXT")}
+        />
+        <Flex col wFull>
+          <TextAreaWithSave
+            rows={4}
+            value={psychologistContext}
+            saveLabel={t("SAVE")}
+            onSave={savePsychologistContext}
+            onChange={(event) => setPsychologistContext(event.target.value)}
+          />
+        </Flex>
+      </Card>
       <Card padding="lg" shadow="md">
         <DashboardSectionTitle
           title={t("AGENTIC_INTERACTION_SUMMARY")}
