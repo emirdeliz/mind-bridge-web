@@ -39,6 +39,19 @@ The platform is intended to let psychologists:
 - Auto-fill of available profile data from OAuth providers.
 - Manual completion when provider data is unavailable.
 
+## Deploy (Vercel)
+
+1. Install dependencies: `npm install`
+2. Log in to Vercel (once): `npx vercel login`
+3. Preview deploy: `npm run deploy:vercel`
+4. Production deploy: `npm run deploy:vercel:prod`
+
+The script runs a local `npm run build` before upload. Skip it with `SKIP_BUILD=1` if needed.
+
+Set environment variables in the Vercel dashboard (see `.env.example`). For production, set `NEXT_PUBLIC_AUTH_BYPASS=false`.
+
+CI example: export `VERCEL_TOKEN` and optionally `VERCEL_ORG_ID` / `VERCEL_PROJECT_ID`, then run `npm run deploy:vercel:prod`.
+
 ## Project Status
 
 This project is in an evolving phase. Core architectural choices are defined, and implementation is being organized around:
