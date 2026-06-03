@@ -13,6 +13,7 @@ import {
   loginWithProviderApi,
   logoutApi,
   registerUserApi,
+  requestPasswordResetApi,
   saveProfileApi,
 } from "@api";
 import { isAuthBypassEnabled, persistBypassSession } from "../authBypass";
@@ -56,6 +57,10 @@ export const useAuth = () => {
     return updated;
   }, []);
 
+  const requestPasswordReset = useCallback(async (email: string) => {
+    return requestPasswordResetApi(email);
+  }, []);
+
   const logout = useCallback(async () => {
     await logoutApi();
     setSession(null);
@@ -75,6 +80,7 @@ export const useAuth = () => {
     registerUser,
     saveProfile,
     logout,
+    requestPasswordReset,
     refreshSession,
     enterBypass,
     isAuthBypassEnabled,

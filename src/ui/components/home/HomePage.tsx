@@ -11,12 +11,23 @@ import { AppShell } from "@templates";
 export const HomePage = () => {
   const router = useRouter();
   const { t } = useI18n();
-  const { session, loading, loginWithPassword, loginWithProvider, enterBypass, isAuthBypassEnabled } = useAuth();
+  const {
+    session,
+    loading,
+    loginWithPassword,
+    loginWithProvider,
+    requestPasswordReset,
+    enterBypass,
+    isAuthBypassEnabled,
+  } = useAuth();
   const authBypass = isAuthBypassEnabled();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<UserRole>("patient");
   const [error, setError] = useState("");
+  const [forgotMode, setForgotMode] = useState(false);
+  const [forgotMessage, setForgotMessage] = useState("");
+  const [forgotSending, setForgotSending] = useState(false);
 
   useEffect(() => {
     if (loading || !session) return;
@@ -31,71 +42,161 @@ export const HomePage = () => {
     return null;
   }
 
+  const handleForgotPassword = async () => {
+    setError("");
+    setForgotMessage("");
+    setForgotSending(true);
+
+    const result = await requestPasswordReset(email);
+
+    setForgotSending(false);
+
+    if (authBypass) {
+      setForgotMessage(t("FORGOT_PASSWORD_UNAVAILABLE"));
+      return;
+    }
+
+    if (!result.ok) {
+      setError(result.message ?? t("FORGOT_PASSWORD_ERROR"));
+      return;
+    }
+
+    setForgotMessage(t("FORGOT_PASSWORD_SUCCESS"));
+  };
+
   return (
     <AppShell title={t("APP_TITLE")} subtitle={t("HOME_SUBTITLE")} variant="auth">
       <Card padding="lg" shadow="md">
         <Title fs3 fw3 mb2>
-          {t("LOGIN")}
+          {forgotMode ? t("FORGOT_PASSWORD_TITLE") : t("LOGIN")}
         </Title>
-        <Form
-          onSubmit={async (event) => {
-            event.preventDefault();
-            setError("");
-            const user = await loginWithPassword(email, password);
-            if (!user) {
-              setError(t("INVALID_CREDENTIALS"));
-              return;
-            }
-            navigateByRole(user.role);
-          }}
-        >
-          <Select
-            value={role}
-            onChange={(value) => setRole(value as UserRole)}
-            options={[
-              { label: t("ROLE_PATIENT"), value: "patient" },
-              { label: t("ROLE_PSYCHOLOGIST"), value: "psychologist" },
-            ]}
-          />
-          <Input placeholder={t("EMAIL")} value={email} onChange={(event) => setEmail(event.target.value)} />
-          <Input
-            placeholder={t("PASSWORD")}
-            password
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-          <FormError error={error}>
-            <Button type="submit" wFull>
-              {t("LOGIN_WITH_PASSWORD")}
+
+        {forgotMode ? (
+          <Form
+            onSubmit={async (event) => {
+              event.preventDefault();
+              await handleForgotPassword();
+            }}
+          >
+            <Title s2 gray mb2 block leadingRelaxed>
+              {t("FORGOT_PASSWORD_HINT")}
+            </Title>
+            <Input
+              placeholder={t("EMAIL")}
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+            {forgotMessage ? (
+              <Title s2 textAccent block>
+                {forgotMessage}
+              </Title>
+            ) : null}
+            <FormError error={error}>
+              <Button type="submit" wFull clickable={!forgotSending}>
+                {forgotSending ? t("FORGOT_PASSWORD_SENDING") : t("FORGOT_PASSWORD_SEND")}
+              </Button>
+            </FormError>
+            <Button
+              type="button"
+              variant="secondary"
+              outlined
+              wFull
+              onClick={() => {
+                setForgotMode(false);
+                setForgotMessage("");
+                setError("");
+              }}
+            >
+              {t("FORGOT_PASSWORD_BACK")}
             </Button>
-          </FormError>
-        </Form>
-        <Flex col wFull mt6 gap4>
-          <Button
-            variant="secondary"
-            outlined
-            wFull
-            onClick={async () => navigateByRole((await loginWithProvider("google", role)).role)}
-          >
-            {t("CONTINUE_WITH_GOOGLE")}
-          </Button>
-          <Button
-            variant="secondary"
-            outlined
-            wFull
-            onClick={async () => navigateByRole((await loginWithProvider("facebook", role)).role)}
-          >
-            {t("CONTINUE_WITH_FACEBOOK")}
-          </Button>
-        </Flex>
-        <Flex row justifyCenter alignCenter wrap gap2 mt4 wFull>
-          <Title s1 gray center>
-            {t("AUTH_OR")}
-          </Title>
-          <RouteLink href="/register" inline>
-            {t("AUTH_REGISTER_LINK")}
-          </RouteLink>
-        </Flex>
+          </Form>
+        ) : (
+          <>
+            <Form
+              onSubmit={async (event) => {
+                event.preventDefault();
+                setError("");
+                const user = await loginWithPassword(email, password);
+                if (!user) {
+                  setError(t("INVALID_CREDENTIALS"));
+                  return;
+                }
+                navigateByRole(user.role);
+              }}
+            >
+              <Select
+                value={role}
+                onChange={(value) => setRole(value as UserRole)}
+                options={[
+                  { label: t("ROLE_PATIENT"), value: "patient" },
+                  { label: t("ROLE_PSYCHOLOGIST"), value: "psychologist" },
+                ]}
+              />
+              <Input
+                placeholder={t("EMAIL")}
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
+              <Input
+                placeholder={t("PASSWORD")}
+                password
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              />
+              <Flex row justifyEnd wFull>
+                <button
+                  type="button"
+                  className="mb-auth-text-link text-sm"
+                  onClick={() => {
+                    setForgotMode(true);
+                    setError("");
+                    setForgotMessage("");
+                  }}
+                >
+                  {t("FORGOT_PASSWORD")}
+                </button>
+              </Flex>
+              <FormError error={error}>
+                <Button type="submit" wFull>
+                  {t("LOGIN_WITH_PASSWORD")}
+                </Button>
+              </FormError>
+            </Form>
+            <Flex col wFull mt6 gap4>
+              <Button
+                variant="secondary"
+                outlined
+                wFull
+                onClick={async () =>
+                  navigateByRole((await loginWithProvider("google", role)).role)
+                }
+              >
+                {t("CONTINUE_WITH_GOOGLE")}
+              </Button>
+              <Button
+                variant="secondary"
+                outlined
+                wFull
+                onClick={async () =>
+                  navigateByRole(
+                    (await loginWithProvider("facebook", role)).role
+                  )
+                }
+              >
+                {t("CONTINUE_WITH_FACEBOOK")}
+              </Button>
+            </Flex>
+            <Flex row justifyCenter alignCenter wrap gap2 mt4 wFull>
+              <Title s1 gray center>
+                {t("AUTH_OR")}
+              </Title>
+              <RouteLink href="/register" inline>
+                {t("AUTH_REGISTER_LINK")}
+              </RouteLink>
+            </Flex>
+          </>
+        )}
+
         {authBypass ? (
           <Flex col wFull mt6 gap4>
             <Title s1 gray center>

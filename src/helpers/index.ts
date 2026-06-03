@@ -11,6 +11,10 @@ export const getProfileInitials = (fullName: string, fallback = "??"): string =>
 
 export const getNumbersOfString = (value: string): string => value.replace(/\D/g, "");
 
+/** Senha inicial de paciente: 5 dígitos numéricos (10000–99999). */
+export const generatePatientPassword = (): string =>
+  String(Math.floor(10000 + Math.random() * 90000));
+
 export const maskCPF = (value: string): string => value;
 export const maskCNPJ = (value: string): string => value;
 /** Celular BR: (DD) XXXXX-XXXX (11 dígitos) ou (DD) XXXX-XXXX (10 dígitos). */

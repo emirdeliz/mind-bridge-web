@@ -42,6 +42,7 @@ export const PsychologistPatientsPage = () => {
     openEditModal,
     closeModal,
     updateForm,
+    regeneratePatientPassword,
     savePatient,
     deletePatient,
   } = usePsychologistPatients();
@@ -237,6 +238,7 @@ export const PsychologistPatientsPage = () => {
         onClose={closeModal}
         onConfirm={() => void savePatient()}
         onChange={updateForm}
+        onRegeneratePassword={regeneratePatientPassword}
       />
     </AppShell>
   );

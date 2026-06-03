@@ -254,6 +254,35 @@ export const saveProfileApi = async (
   return refreshed;
 };
 
+export const requestPasswordResetApi = async (
+  email: string
+): Promise<{ ok: boolean; message?: string }> => {
+  const trimmed = email.trim();
+  if (!trimmed) {
+    return { ok: false, message: 'Email is required' };
+  }
+
+  if (isAuthBypassEnabled()) {
+    return { ok: false, message: 'Password reset is not available in demo mode' };
+  }
+
+  const supabase = getSupabaseClient();
+  const redirectTo =
+    typeof window !== 'undefined'
+      ? `${window.location.origin}/`
+      : undefined;
+
+  const { error } = await supabase.auth.resetPasswordForEmail(trimmed, {
+    redirectTo,
+  });
+
+  if (error) {
+    return { ok: false, message: error.message };
+  }
+
+  return { ok: true };
+};
+
 export const logoutApi = async (): Promise<void> => {
   if (typeof window === 'undefined') return;
   window.localStorage.removeItem(SESSION_KEY);

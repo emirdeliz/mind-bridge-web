@@ -1,9 +1,10 @@
 'use client';
 
 import type { FormEvent, MouseEvent } from 'react';
+import { useCallback, useState } from 'react';
 
 import type { PsychologistPatientSaveOrUpdateDto } from '@api';
-import { Button, Flex, Icon, Overlay, Title } from '@atoms';
+import { Button, Flex, Icon, Input, Overlay, Title } from '@atoms';
 import { useI18n } from '@i18n';
 import { Card, FormGroup, InputForm } from '@molecules';
 
@@ -15,6 +16,7 @@ type PsychologistPatientFormModalProps = {
   onClose: () => void;
   onConfirm: () => void;
   onChange: (patch: Partial<PsychologistPatientSaveOrUpdateDto>) => void;
+  onRegeneratePassword?: () => void;
 };
 
 export const PsychologistPatientFormModal = ({
@@ -25,10 +27,13 @@ export const PsychologistPatientFormModal = ({
   onClose,
   onConfirm,
   onChange,
+  onRegeneratePassword,
 }: PsychologistPatientFormModalProps) => {
   const { t } = useI18n();
   const isEdit = Boolean(form.id);
-  const showCredentials = !isEdit && !isDemoMode;
+  const showCreateAccount = !isEdit && !isDemoMode;
+  const showEditPasswordReset = isEdit && !isDemoMode;
+  const [passwordCopied, setPasswordCopied] = useState(false);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -40,6 +45,20 @@ export const PsychologistPatientFormModal = ({
   const stopPropagation = (event: MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
   };
+
+  const copyGeneratedPassword = useCallback(async () => {
+    const password = form.password ?? '';
+    if (!password || typeof navigator === 'undefined' || !navigator.clipboard) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(password);
+      setPasswordCopied(true);
+      window.setTimeout(() => setPasswordCopied(false), 2000);
+    } catch {
+      setPasswordCopied(false);
+    }
+  }, [form.password]);
 
   return (
     <Overlay visible={visible} zIndex={40} onClick={onClose}>
@@ -61,23 +80,23 @@ export const PsychologistPatientFormModal = ({
                   <Icon.User lg white />
                 </div>
                 <div className="min-w-0 flex-1">
-                <Flex col wFull gap1>
-                  <span id="patient-form-modal-title" className="sr-only">
-                    {isEdit
-                      ? t('PSYCHOLOGIST_PATIENTS_MODAL_TITLE_EDIT')
-                      : t('PSYCHOLOGIST_PATIENTS_MODAL_TITLE_ADD')}
-                  </span>
-                  <Title fs3 fw3 block noWrap ellipsis>
-                    {isEdit
-                      ? t('PSYCHOLOGIST_PATIENTS_MODAL_TITLE_EDIT')
-                      : t('PSYCHOLOGIST_PATIENTS_MODAL_TITLE_ADD')}
-                  </Title>
-                  <Title s2 gray block leadingRelaxed>
-                    {isEdit
-                      ? t('PSYCHOLOGIST_PATIENTS_MODAL_SUBTITLE_EDIT')
-                      : t('PSYCHOLOGIST_PATIENTS_MODAL_SUBTITLE_ADD')}
-                  </Title>
-                </Flex>
+                  <Flex col wFull gap1>
+                    <span id="patient-form-modal-title" className="sr-only">
+                      {isEdit
+                        ? t('PSYCHOLOGIST_PATIENTS_MODAL_TITLE_EDIT')
+                        : t('PSYCHOLOGIST_PATIENTS_MODAL_TITLE_ADD')}
+                    </span>
+                    <Title fs3 fw3 block noWrap ellipsis>
+                      {isEdit
+                        ? t('PSYCHOLOGIST_PATIENTS_MODAL_TITLE_EDIT')
+                        : t('PSYCHOLOGIST_PATIENTS_MODAL_TITLE_ADD')}
+                    </Title>
+                    <Title s2 gray block leadingRelaxed>
+                      {isEdit
+                        ? t('PSYCHOLOGIST_PATIENTS_MODAL_SUBTITLE_EDIT')
+                        : t('PSYCHOLOGIST_PATIENTS_MODAL_SUBTITLE_ADD')}
+                    </Title>
+                  </Flex>
                 </div>
               </Flex>
               <Button
@@ -116,14 +135,11 @@ export const PsychologistPatientFormModal = ({
                   {t('PSYCHOLOGIST_PATIENTS_COL_PHONE')}
                 </InputForm>
 
-                {showCredentials ? (
+                {showCreateAccount ? (
                   <>
                     <div className="my-2 h-px w-full bg-mb-border/50" aria-hidden />
                     <Title s2 textAccent mb2 block>
                       {t('PSYCHOLOGIST_PATIENTS_MODAL_ACCOUNT_SECTION')}
-                    </Title>
-                    <Title s2 gray mb2 block leadingRelaxed>
-                      {t('PSYCHOLOGIST_PATIENTS_MODAL_ACCOUNT_HELP')}
                     </Title>
                     <InputForm
                       required
@@ -133,15 +149,72 @@ export const PsychologistPatientFormModal = ({
                     >
                       {t('EMAIL')}
                     </InputForm>
-                    <InputForm
+                    <FormGroup
+                      label={t('PSYCHOLOGIST_PATIENTS_MODAL_GENERATED_PASSWORD')}
+                      helpText={t(
+                        'PSYCHOLOGIST_PATIENTS_MODAL_GENERATED_PASSWORD_HELP'
+                      )}
                       required
+                    >
+                      <Flex row wFull alignCenter gap3>
+                        <div className="min-w-0 flex-1">
+                          <Input
+                            readOnly
+                            value={form.password ?? ''}
+                            placeholder={t('PASSWORD')}
+                          />
+                        </div>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          outlined
+                          circle
+                          title={t('PSYCHOLOGIST_PATIENTS_COPY_PASSWORD')}
+                          onClick={() => void copyGeneratedPassword()}
+                        >
+                          <Icon.Docs sm />
+                        </Button>
+                        {onRegeneratePassword ? (
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            outlined
+                            circle
+                            title={t(
+                              'PSYCHOLOGIST_PATIENTS_REGENERATE_PASSWORD'
+                            )}
+                            onClick={onRegeneratePassword}
+                          >
+                            <Icon.Cog sm />
+                          </Button>
+                        ) : null}
+                      </Flex>
+                      {passwordCopied ? (
+                        <Title s2 textAccent mt2 block>
+                          {t('PSYCHOLOGIST_PATIENTS_PASSWORD_COPIED')}
+                        </Title>
+                      ) : null}
+                    </FormGroup>
+                  </>
+                ) : null}
+
+                {showEditPasswordReset ? (
+                  <>
+                    <div className="my-2 h-px w-full bg-mb-border/50" aria-hidden />
+                    <Title s2 textAccent mb2 block>
+                      {t('PSYCHOLOGIST_PATIENTS_MODAL_RESET_PASSWORD_SECTION')}
+                    </Title>
+                    <InputForm
+                      optional
                       password
                       value={form.password ?? ''}
-                      placeholder={t('PASSWORD')}
-                      helpText={t('PSYCHOLOGIST_PATIENTS_MODAL_PASSWORD_HELP')}
+                      placeholder={t('PSYCHOLOGIST_PATIENTS_MODAL_RESET_PASSWORD')}
+                      helpText={t(
+                        'PSYCHOLOGIST_PATIENTS_MODAL_RESET_PASSWORD_HELP'
+                      )}
                       onChange={(value) => onChange({ password: String(value) })}
                     >
-                      {t('PASSWORD')}
+                      {t('PSYCHOLOGIST_PATIENTS_MODAL_RESET_PASSWORD')}
                     </InputForm>
                   </>
                 ) : null}

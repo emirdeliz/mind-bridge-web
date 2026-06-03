@@ -10,6 +10,7 @@ import {
   filterMockPatients,
   MOCK_PSYCHOLOGIST_PATIENTS,
 } from '@constants';
+import { generatePatientPassword } from '@helpers';
 import { useI18n } from '@i18n';
 import { isAuthBypassEnabled, useAuth } from '@services';
 
@@ -94,7 +95,10 @@ export const usePsychologistPatients = () => {
   }, [loadPatients]);
 
   const openCreateModal = useCallback(() => {
-    setForm(emptyForm());
+    setForm({
+      ...emptyForm(),
+      password: generatePatientPassword(),
+    });
     setModalOpen(true);
   }, []);
 
@@ -103,8 +107,16 @@ export const usePsychologistPatients = () => {
       id: patient.id,
       fullName: patient.fullName ?? '',
       phone: patient.phone ?? '',
+      password: '',
     });
     setModalOpen(true);
+  }, []);
+
+  const regeneratePatientPassword = useCallback(() => {
+    setForm((current) => ({
+      ...current,
+      password: generatePatientPassword(),
+    }));
   }, []);
 
   const closeModal = useCallback(() => {
@@ -131,6 +143,24 @@ export const usePsychologistPatients = () => {
     }
 
     const normalizedPhone = phoneDigits(form.phone);
+
+    if (!form.id && !isDemoMode) {
+      if (!form.email?.trim()) {
+        setError(t('PSYCHOLOGIST_PATIENTS_ERROR_EMAIL_REQUIRED'));
+        return;
+      }
+      if (!/^\d{5}$/.test(form.password ?? '')) {
+        setError(t('PSYCHOLOGIST_PATIENTS_ERROR_PASSWORD_INVALID'));
+        return;
+      }
+    }
+
+    if (form.id && !isDemoMode && form.password?.trim()) {
+      if (form.password.trim().length < 5) {
+        setError(t('PSYCHOLOGIST_PATIENTS_ERROR_RESET_PASSWORD_SHORT'));
+        return;
+      }
+    }
 
     if (isDemoMode) {
       setSaving(true);
@@ -175,6 +205,7 @@ export const usePsychologistPatients = () => {
       await saveOrEditPsychologistPatientApi(session.accessToken, {
         ...form,
         phone: normalizedPhone,
+        password: form.password?.trim() || undefined,
       });
       closeModal();
       await loadPatients();
@@ -235,6 +266,7 @@ export const usePsychologistPatients = () => {
     openEditModal,
     closeModal,
     updateForm,
+    regeneratePatientPassword,
     savePatient,
     deletePatient,
   };
