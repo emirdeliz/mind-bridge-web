@@ -12,8 +12,8 @@ import {
 } from "@services";
 import { Button, Flex, RouteLink, Title } from "@atoms";
 import { useI18n } from "@i18n";
-import { Alert, Card } from "@molecules";
-import { AppShell, ChatPanel } from "@templates";
+import { Alert, Card, Tooltip } from "@molecules";
+import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
 
 const MOCK_PATIENT_CHAT: ChatMessage[] = [
   {
@@ -92,31 +92,35 @@ export const PatientPage = () => {
           </RouteLink>
         </Alert>
       ) : null}
-      <ChatPanel messages={chatMessages} onSend={sendMessage} />
+      <ChatPanel
+        messages={chatMessages}
+        onSend={sendMessage}
+        sectionTooltip={t("TOOLTIP_PATIENT_CHAT")}
+      />
       <Card padding="lg" shadow="md">
-        <Title fs3 fw3 mb2>
-          {t("INTERACTION_SUMMARY")}
-        </Title>
+        <DashboardSectionTitle title={t("INTERACTION_SUMMARY")} tooltip={t("TOOLTIP_PATIENT_SUMMARY")} />
         <Title s1 gray>
           {MOCK_PATIENT_SUMMARY}
         </Title>
       </Card>
       <Flex row wrap wFull gap4>
-        <Button
-          variant="secondary"
-          outlined
-          onClick={async () => {
-            if (!("Notification" in window)) return;
-            if (Notification.permission !== "granted") await Notification.requestPermission();
-            if (Notification.permission === "granted") {
-              new Notification(t("NOTIFICATION_TITLE"), {
-                body: t("NOTIFICATION_BODY"),
-              });
-            }
-          }}
-        >
-          {t("ENABLE_NOTIFICATIONS")}
-        </Button>
+        <Tooltip title={t("TOOLTIP_PATIENT_NOTIFICATIONS")} top width={300}>
+          <Button
+            variant="secondary"
+            outlined
+            onClick={async () => {
+              if (!("Notification" in window)) return;
+              if (Notification.permission !== "granted") await Notification.requestPermission();
+              if (Notification.permission === "granted") {
+                new Notification(t("NOTIFICATION_TITLE"), {
+                  body: t("NOTIFICATION_BODY"),
+                });
+              }
+            }}
+          >
+            {t("ENABLE_NOTIFICATIONS")}
+          </Button>
+        </Tooltip>
       </Flex>
     </AppShell>
   );

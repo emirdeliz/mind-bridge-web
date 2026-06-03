@@ -5,7 +5,7 @@ export * from "./Divider/Divider";
 export * from "./Dot/Dot";
 export * from "./Fade/Fade";
 export * from "./Flex/Flex";
-export * from "./withFloat/withFloat";
+export { withFloat } from "./FloatingElement/FloatingElement";
 export * from "./Footer/Footer";
 export * from "./FormControl/FormControl";
 export * from "./Hr/Hr";

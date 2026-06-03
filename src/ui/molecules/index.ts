@@ -24,4 +24,4 @@ export * from "./Table/components";
 export * from "./Toast";
 
 // LoaderComponent — import from "./LoaderComponent/LoaderComponent"
-// Tooltip — import from "./Tooltip/Tooltip"
+export * from "./Tooltip/Tooltip";

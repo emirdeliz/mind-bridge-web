@@ -75,5 +75,15 @@
   "SEARCH": "Search",
   "SELECT_DATE": "Select date",
   "SELECT": "Select",
-  "CLEAR": "Clear"
+  "CLEAR": "Clear",
+  "TOOLTIP_PATIENT_CHAT": "Chat with the AI agent by text or audio. Responses use your care plan and recent history.",
+  "TOOLTIP_PATIENT_CHAT_AUDIO": "Use the microphone to dictate your message. Text will appear in the field before you send.",
+  "TOOLTIP_PATIENT_SUMMARY": "Automatic summary of your AI interactions, including recurring themes and self-care suggestions.",
+  "TOOLTIP_PATIENT_NOTIFICATIONS": "Enable browser reminders to stay engaged with your care plan between sessions.",
+  "TOOLTIP_PSYCHOLOGIST_CONTEXT": "Set the clinical context the AI should prioritize when analyzing interactions and generating patient insights.",
+  "TOOLTIP_PSYCHOLOGIST_INTERACTION_NOTES": "Log observations per interaction (chat, audio, or text) for the record and to inform the AI.",
+  "TOOLTIP_PSYCHOLOGIST_SESSION_NOTES": "Psychotherapy session notes: agenda, techniques used, and items to review at the next appointment.",
+  "TOOLTIP_PSYCHOLOGIST_CHAT": "Ask the AI to consolidate patient data, detect patterns, and suggest clinical guidance.",
+  "TOOLTIP_PSYCHOLOGIST_SUMMARY": "Aggregated view of the patient's AI interactions, including metrics, risk, and plan adherence.",
+  "TOOLTIP_PSYCHOLOGIST_INSIGHTS": "Automatically suggested indicators, patterns, alerts, and actions to support your clinical decisions."
 }

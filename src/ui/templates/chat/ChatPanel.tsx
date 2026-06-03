@@ -2,8 +2,9 @@ import { useState } from "react";
 
 import type { ChatMessage } from "@services";
 import { Button, Flex, Input, Title } from "@atoms";
+import { DashboardSectionTitle } from "../dashboard/DashboardSectionTitle";
 import { useI18n } from "@i18n";
-import { Card, ChatMessageBubble, Form } from "@molecules";
+import { Card, ChatMessageBubble, Form, Tooltip } from "@molecules";
 
 interface ChatPanelProps {
   messages: ChatMessage[];
@@ -11,9 +12,17 @@ interface ChatPanelProps {
   onSpeechToText?: (text: string) => void;
   tallScroll?: boolean;
   showAudio?: boolean;
+  sectionTooltip?: string;
 }
 
-export const ChatPanel = ({ messages, onSend, onSpeechToText, tallScroll, showAudio = true }: ChatPanelProps) => {
+export const ChatPanel = ({
+  messages,
+  onSend,
+  onSpeechToText,
+  tallScroll,
+  showAudio = true,
+  sectionTooltip,
+}: ChatPanelProps) => {
   const { t } = useI18n();
   const [text, setText] = useState("");
 
@@ -37,9 +46,13 @@ export const ChatPanel = ({ messages, onSend, onSpeechToText, tallScroll, showAu
 
   return (
     <Card padding="lg" shadow="lg">
-      <Title fs3 fw3 mb2>
-        {t("AI_AGENT_CHAT")}
-      </Title>
+      {sectionTooltip ? (
+        <DashboardSectionTitle title={t("AI_AGENT_CHAT")} tooltip={sectionTooltip} />
+      ) : (
+        <Title fs3 fw3 mb2>
+          {t("AI_AGENT_CHAT")}
+        </Title>
+      )}
       <Flex col mb4 overflowY gap4 chatScroll maxH320={!tallScroll} maxH480={tallScroll}>
         {messages.map((message) => (
           <ChatMessageBubble
@@ -72,9 +85,11 @@ export const ChatPanel = ({ messages, onSend, onSpeechToText, tallScroll, showAu
           </Flex>
           {showAudio ? (
             <span className="mb-chat-form-action">
-              <Button type="button" variant="secondary" outlined onClick={startAudioInput}>
-                {t("AUDIO")}
-              </Button>
+              <Tooltip title={t("TOOLTIP_PATIENT_CHAT_AUDIO")} top width={260}>
+                <Button type="button" variant="secondary" outlined onClick={startAudioInput}>
+                  {t("AUDIO")}
+                </Button>
+              </Tooltip>
             </span>
           ) : null}
           <span className="mb-chat-form-action">

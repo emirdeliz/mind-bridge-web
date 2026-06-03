@@ -41,12 +41,10 @@
   "exclude": [
     "node_modules",
     "src/ui/atoms/Chart/**",
-    "src/ui/atoms/FloatingElement/**",
     "src/ui/atoms/ResizablePanels/**",
     "src/ui/organisms/LinkCalendar/**",
     "src/ui/organisms/LinkCalendarForm/**",
     "src/ui/molecules/LoaderComponent/**",
-    "src/ui/molecules/Tooltip/**",
     "src/ui/**/*.spec.tsx"
   ]
 }

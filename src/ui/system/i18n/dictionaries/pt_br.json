@@ -75,5 +75,15 @@
   "SEARCH": "Buscar",
   "SELECT_DATE": "Selecionar data",
   "SELECT": "Selecionar",
-  "CLEAR": "Limpar"
+  "CLEAR": "Limpar",
+  "TOOLTIP_PATIENT_CHAT": "Converse com o agente de IA por texto ou áudio. As respostas consideram seu plano de cuidado e o histórico recente.",
+  "TOOLTIP_PATIENT_CHAT_AUDIO": "Use o microfone para ditar sua mensagem. O texto aparecerá no campo antes de enviar.",
+  "TOOLTIP_PATIENT_SUMMARY": "Resumo automático das suas interações com o agente, com temas recorrentes e sugestões de autocuidado.",
+  "TOOLTIP_PATIENT_NOTIFICATIONS": "Ative lembretes no navegador para manter o engajamento com o plano de cuidado entre as sessões.",
+  "TOOLTIP_PSYCHOLOGIST_CONTEXT": "Defina o contexto clínico que a IA deve priorizar ao analisar interações e gerar insights do paciente.",
+  "TOOLTIP_PSYCHOLOGIST_INTERACTION_NOTES": "Registre observações por interação (chat, áudio ou texto) para compor o prontuário e alimentar a IA.",
+  "TOOLTIP_PSYCHOLOGIST_SESSION_NOTES": "Anotações da sessão de psicoterapia: pauta, técnicas aplicadas e pontos a revisar na próxima consulta.",
+  "TOOLTIP_PSYCHOLOGIST_CHAT": "Consulte a IA para consolidar dados do paciente, detectar padrões e receber sugestões de condução clínica.",
+  "TOOLTIP_PSYCHOLOGIST_SUMMARY": "Visão agregada das interações do paciente com a IA, incluindo métricas, risco e adesão ao plano.",
+  "TOOLTIP_PSYCHOLOGIST_INSIGHTS": "Indicadores, padrões, alertas e ações sugeridas automaticamente para apoiar sua decisão clínica."
 }

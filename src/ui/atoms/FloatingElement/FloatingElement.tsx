@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { GenericObject } from '@types';
 import React, {
   useCallback,
@@ -79,7 +80,7 @@ const FloatingElement = (props: FloatingElementProps) => {
     };
   }, [opened, anchor, updatePosition]);
 
-  const containerClasses = ['fixed z-50'].join(' ');
+  const containerClasses = ['fixed z-50 font-sans'].join(' ');
 
   const dynamicStyles: CSSProperties = {
     ...style,

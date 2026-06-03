@@ -6,7 +6,7 @@ import { getRoleRoute, isAuthBypassEnabled, useAiAgent, useAuth } from "@service
 import { Flex, Input, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card } from "@molecules";
-import { AppShell, ChatPanel } from "@templates";
+import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
 
 const MOCK_PSYCHOLOGIST_CONTEXT =
   "Paciente: Ana M., 32 anos. Abordagem TCC com foco em ansiedade antecipatória e higiene do sono. Meta atual: reduzir evitação em contextos laborais e aumentar adesão ao diário de humor (meta ≥ 5 registros/semana).";
@@ -124,9 +124,10 @@ export const PsychologistPage = () => {
   return (
     <AppShell title={t("PSYCHOLOGIST_AREA_TITLE")} subtitle={t("PSYCHOLOGIST_AREA_SUBTITLE")} variant="dashboard">
       <Card padding="lg" shadow="md">
-        <Title fs3 fw3 mb2>
-          {t("PSYCHOLOGIST_CONTEXT_FOR_AI")}
-        </Title>
+        <DashboardSectionTitle
+          title={t("PSYCHOLOGIST_CONTEXT_FOR_AI")}
+          tooltip={t("TOOLTIP_PSYCHOLOGIST_CONTEXT")}
+        />
         <Flex col wFull>
           <Input.TextArea
             rows={4}
@@ -137,9 +138,10 @@ export const PsychologistPage = () => {
       </Card>
       <Flex col wFull gap4>
         <Card padding="lg" shadow="md">
-          <Title fs3 fw3 mb2>
-            {t("INTERACTION_NOTES")}
-          </Title>
+          <DashboardSectionTitle
+            title={t("INTERACTION_NOTES")}
+            tooltip={t("TOOLTIP_PSYCHOLOGIST_INTERACTION_NOTES")}
+          />
           <Flex col wFull>
             <Input.TextArea
               rows={6}
@@ -150,9 +152,10 @@ export const PsychologistPage = () => {
           </Flex>
         </Card>
         <Card padding="lg" shadow="md">
-          <Title fs3 fw3 mb2>
-            {t("SESSION_CONSIDERATIONS")}
-          </Title>
+          <DashboardSectionTitle
+            title={t("SESSION_CONSIDERATIONS")}
+            tooltip={t("TOOLTIP_PSYCHOLOGIST_SESSION_NOTES")}
+          />
           <Flex col wFull>
             <Input.TextArea
               rows={6}
@@ -163,19 +166,27 @@ export const PsychologistPage = () => {
           </Flex>
         </Card>
       </Flex>
-      <ChatPanel messages={chatMessages} onSend={sendMessage} tallScroll showAudio={false} />
+      <ChatPanel
+        messages={chatMessages}
+        onSend={sendMessage}
+        tallScroll
+        showAudio={false}
+        sectionTooltip={t("TOOLTIP_PSYCHOLOGIST_CHAT")}
+      />
       <Card padding="lg" shadow="md">
-        <Title fs3 fw3 mb2>
-          {t("AGENTIC_INTERACTION_SUMMARY")}
-        </Title>
+        <DashboardSectionTitle
+          title={t("AGENTIC_INTERACTION_SUMMARY")}
+          tooltip={t("TOOLTIP_PSYCHOLOGIST_SUMMARY")}
+        />
         <Title s1 gray leadingRelaxed>
           {MOCK_PSYCHOLOGIST_SUMMARY}
         </Title>
       </Card>
       <Card padding="lg" shadow="md">
-        <Title fs3 fw3 mb2>
-          Insights para o psicólogo
-        </Title>
+        <DashboardSectionTitle
+          title="Insights para o psicólogo"
+          tooltip={t("TOOLTIP_PSYCHOLOGIST_INSIGHTS")}
+        />
         <Flex col wFull gap5>
           {MOCK_PSYCHOLOGIST_INSIGHTS.map((insight) => (
             <Flex col wFull key={insight.title}>
