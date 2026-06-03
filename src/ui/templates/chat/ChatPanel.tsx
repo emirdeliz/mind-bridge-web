@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import type { ChatMessage } from "@services/ai/hooks/useAiAgent";
 import { Button, Flex, Input, Title } from "@atoms";
+import { useI18n } from "@i18n";
 import { Card, Form } from "@molecules";
 
 interface ChatPanelProps {
@@ -11,6 +12,7 @@ interface ChatPanelProps {
 }
 
 export const ChatPanel = ({ messages, onSend, onSpeechToText }: ChatPanelProps) => {
+  const { t } = useI18n();
   const [text, setText] = useState("");
 
   const startAudioInput = () => {
@@ -34,20 +36,20 @@ export const ChatPanel = ({ messages, onSend, onSpeechToText }: ChatPanelProps) 
   return (
     <Card padding="lg" shadow="md">
       <Title fs3 fw3 mb2>
-        AI Agent Chat
+        {t("AI_AGENT_CHAT")}
       </Title>
       <Flex col mb="4" maxHeight="288px" overflowY gap={8} p="3">
         {messages.map((message) => (
           <Title key={message.id} s1>
             <Title s1 fw3>
-              {message.sender === "agent" ? "Agent" : "You"}:
+              {message.sender === "agent" ? t("CHAT_AGENT_LABEL") : t("CHAT_USER_LABEL")}:
             </Title>{" "}
             {message.text}
           </Title>
         ))}
         {!messages.length ? (
           <Title s1 gray>
-            No messages yet.
+            {t("CHAT_NO_MESSAGES")}
           </Title>
         ) : null}
       </Flex>
@@ -61,15 +63,15 @@ export const ChatPanel = ({ messages, onSend, onSpeechToText }: ChatPanelProps) 
         <Flex row gap={2}>
           <Flex flex1>
             <Input
-              placeholder="Write your message..."
+              placeholder={t("CHAT_MESSAGE_PLACEHOLDER")}
               value={text}
               onChange={(event) => setText(event.target.value)}
             />
           </Flex>
           <Button type="button" variant="secondary" outlined onClick={startAudioInput}>
-            Audio
+            {t("AUDIO")}
           </Button>
-          <Button type="submit">Send</Button>
+          <Button type="submit">{t("SEND")}</Button>
         </Flex>
       </Form>
     </Card>

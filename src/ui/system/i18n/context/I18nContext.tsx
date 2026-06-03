@@ -38,9 +38,9 @@ export const I18nProvider = ({ children }: I18nProviderProps) => {
 
   const translate = useCallback(
     (key: string) => {
-      return i18n[language][key];
+      return i18n[language][key] ?? i18n.en[key] ?? key;
     },
-    [language]
+    [language],
   );
 
   return (

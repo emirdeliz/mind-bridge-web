@@ -18,5 +18,7 @@ module.exports = {
     "^@templates$": "<rootDir>/src/ui/templates",
     "^@templates/(.*)$": "<rootDir>/src/ui/templates/$1",
     "^@styles/(.*)$": "<rootDir>/src/styles/$1",
+    "^@i18n$": "<rootDir>/src/ui/system/i18n",
+    "^@i18n/(.*)$": "<rootDir>/src/ui/system/i18n/$1",
   },
 };

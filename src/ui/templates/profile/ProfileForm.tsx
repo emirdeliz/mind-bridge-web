@@ -1,7 +1,8 @@
 import { useState } from "react";
 
 import type { UserProfile } from "@api/dto/auth/AuthDto";
-import { Button, Flex } from "@atoms";
+import { Button, Flex, Title } from "@atoms";
+import { useI18n } from "@i18n";
 import { Card, Form, InputForm } from "@molecules";
 
 interface ProfileFormProps {
@@ -14,10 +15,14 @@ export const ProfileForm = ({ initialData, onSave }: ProfileFormProps) => (
 );
 
 const ProfileFormContent = ({ initialData, onSave }: ProfileFormProps) => {
+  const { t } = useI18n();
   const [data, setData] = useState<UserProfile>(initialData);
 
   return (
     <Card padding="lg" shadow="md">
+      <Title fs3 fw3 mb2>
+        {t("PROFILE_IDENTIFICATION")}
+      </Title>
       <Form
         onSubmit={(event) => {
           event.preventDefault();
@@ -26,36 +31,40 @@ const ProfileFormContent = ({ initialData, onSave }: ProfileFormProps) => {
       >
         <InputForm
           value={data.fullName}
-          placeholder="Full name"
+          placeholder={t("PROFILE_FULL_NAME_PLACEHOLDER")}
           onChange={(value) => setData({ ...data, fullName: String(value) })}
         >
-          Full name
+          {t("PROFILE_FULL_NAME_PLACEHOLDER")}
         </InputForm>
         <Flex row wrap gap={16}>
           <Flex flex1>
-            <InputForm value={data.age} placeholder="Age" onChange={(value) => setData({ ...data, age: String(value) })}>
-              Age
+            <InputForm
+              value={data.age}
+              placeholder={t("PROFILE_AGE_PLACEHOLDER")}
+              onChange={(value) => setData({ ...data, age: String(value) })}
+            >
+              {t("PROFILE_AGE_PLACEHOLDER")}
             </InputForm>
           </Flex>
           <Flex flex1>
             <InputForm
               value={data.phone}
-              placeholder="Phone"
+              placeholder={t("PROFILE_PHONE_PLACEHOLDER")}
               onChange={(value) => setData({ ...data, phone: String(value) })}
             >
-              Phone
+              {t("PROFILE_PHONE_PLACEHOLDER")}
             </InputForm>
           </Flex>
         </Flex>
         <InputForm
           value={data.address}
-          placeholder="Address"
+          placeholder={t("PROFILE_ADDRESS_PLACEHOLDER")}
           onChange={(value) => setData({ ...data, address: String(value) })}
         >
-          Address
+          {t("PROFILE_ADDRESS_PLACEHOLDER")}
         </InputForm>
         <Button type="submit" wFull>
-          Save profile
+          {t("SAVE_PROFILE")}
         </Button>
       </Form>
     </Card>

@@ -11,6 +11,7 @@ const nextConfig = {
       "@services": new URL("./src/services", import.meta.url).pathname,
       "@helpers": new URL("./src/helpers", import.meta.url).pathname,
       "@api": new URL("./src/api", import.meta.url).pathname,
+      "@i18n": new URL("./src/ui/system/i18n", import.meta.url).pathname,
       "@styles": new URL("./src/styles", import.meta.url).pathname,
     };
     return config;

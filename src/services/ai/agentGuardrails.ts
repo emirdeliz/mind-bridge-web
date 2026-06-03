@@ -1,3 +1,7 @@
+import { translateTemplate } from "@i18n/utils/translateTemplate";
+
+export type TranslateFn = (key: string) => string;
+
 const blockedPatterns = [
   /suicid/i,
   /self-harm/i,
@@ -10,14 +14,18 @@ const blockedPatterns = [
 export const hasUnsafeContent = (input: string): boolean =>
   blockedPatterns.some((pattern) => pattern.test(input));
 
-export const safeAgentResponse = (userInput: string, psychologistContext: string): string => {
+export const safeAgentResponse = (
+  userInput: string,
+  psychologistContext: string,
+  t: TranslateFn,
+): string => {
   if (hasUnsafeContent(userInput)) {
-    return "I cannot respond to harmful or discriminatory content. If this is an urgent safety concern, please seek immediate professional help.";
+    return t("AI_AGENT_UNSAFE_RESPONSE");
   }
 
-  const promptPrefix = psychologistContext.trim()
-    ? `Based on your care plan: ${psychologistContext.trim()}. `
+  const prefix = psychologistContext.trim()
+    ? `${translateTemplate(t("AI_AGENT_CARE_PLAN_PREFIX"), { context: psychologistContext.trim() })} `
     : "";
 
-  return `${promptPrefix}Thank you for sharing this. Can you tell me more about how you felt before and after this situation?`;
+  return `${prefix}${t("AI_AGENT_DEFAULT_RESPONSE")}`;
 };

@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useAiAgent } from "@services/ai/hooks/useAiAgent";
 import { useAuth } from "@services/auth/hooks/useAuth";
 import { Button, Flex, Input, Title } from "@atoms";
+import { useI18n } from "@i18n";
 import { Card } from "@molecules";
 import { ChatPanel } from "@templates/chat/ChatPanel";
 import { AppShell } from "@templates/layout/AppShell";
@@ -11,31 +12,27 @@ import { ProfileForm } from "@templates/profile/ProfileForm";
 
 export const PsychologistPage = () => {
   const router = useRouter();
+  const { t } = useI18n();
   const { session, saveProfile, logout } = useAuth();
-  const [psychologistContext, setPsychologistContext] = useState(
-    "Encourage healthy routines, active listening, and reflective questioning.",
-  );
+  const [psychologistContext, setPsychologistContext] = useState(() => t("DEFAULT_PSYCHOLOGIST_AI_CONTEXT"));
   const [sessionNotes, setSessionNotes] = useState("");
   const [interactionNotes, setInteractionNotes] = useState("");
   const { messages, sendMessage, summary } = useAiAgent(psychologistContext);
 
   if (!session) {
     return (
-      <AppShell title="Psychologist Area" subtitle="Please authenticate first.">
-        <Button onClick={() => void router.push("/")}>Go to login</Button>
+      <AppShell title={t("PSYCHOLOGIST_AREA_TITLE")} subtitle={t("PSYCHOLOGIST_AUTH_REQUIRED_SUBTITLE")}>
+        <Button onClick={() => void router.push("/")}>{t("GO_TO_LOGIN")}</Button>
       </AppShell>
     );
   }
 
   return (
-    <AppShell
-      title="Psychologist Area"
-      subtitle="Track patient interactions, annotate sessions, and tune AI context for daily patient guidance."
-    >
+    <AppShell title={t("PSYCHOLOGIST_AREA_TITLE")} subtitle={t("PSYCHOLOGIST_AREA_SUBTITLE")}>
       <ProfileForm initialData={session.profile} onSave={(profile) => void saveProfile(profile)} />
       <Card padding="lg" shadow="md">
         <Title fs3 fw3 mb2>
-          Psychologist Context for AI
+          {t("PSYCHOLOGIST_CONTEXT_FOR_AI")}
         </Title>
         <Input.TextArea
           rows={4}
@@ -47,11 +44,11 @@ export const PsychologistPage = () => {
         <Flex flex1>
           <Card padding="lg" shadow="md">
             <Title fs3 fw3 mb2>
-              Interaction Notes
+              {t("INTERACTION_NOTES")}
             </Title>
             <Input.TextArea
               rows={6}
-              placeholder="Write notes for each interaction..."
+              placeholder={t("INTERACTION_NOTES_PLACEHOLDER")}
               value={interactionNotes}
               onChange={(event) => setInteractionNotes(event.target.value)}
             />
@@ -60,11 +57,11 @@ export const PsychologistPage = () => {
         <Flex flex1>
           <Card padding="lg" shadow="md">
             <Title fs3 fw3 mb2>
-              Psychotherapy Session Considerations
+              {t("SESSION_CONSIDERATIONS")}
             </Title>
             <Input.TextArea
               rows={6}
-              placeholder="Add in-session considerations..."
+              placeholder={t("SESSION_CONSIDERATIONS_PLACEHOLDER")}
               value={sessionNotes}
               onChange={(event) => setSessionNotes(event.target.value)}
             />
@@ -74,7 +71,7 @@ export const PsychologistPage = () => {
       <ChatPanel messages={messages} onSend={sendMessage} />
       <Card padding="lg" shadow="md">
         <Title fs3 fw3 mb2>
-          Agentic Interaction Summary
+          {t("AGENTIC_INTERACTION_SUMMARY")}
         </Title>
         <Title s1 gray>
           {summary}
@@ -87,7 +84,7 @@ export const PsychologistPage = () => {
           void router.push("/");
         }}
       >
-        Logout
+        {t("LOGOUT")}
       </Button>
     </AppShell>
   );
