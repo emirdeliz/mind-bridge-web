@@ -11,7 +11,8 @@ import { AppShell } from "@templates";
 export const HomePage = () => {
   const router = useRouter();
   const { t } = useI18n();
-  const { session, loading, loginWithPassword, loginWithProvider } = useAuth();
+  const { session, loading, loginWithPassword, loginWithProvider, enterBypass, isAuthBypassEnabled } = useAuth();
+  const authBypass = isAuthBypassEnabled();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<UserRole>("patient");
@@ -95,6 +96,35 @@ export const HomePage = () => {
             {t("AUTH_REGISTER_LINK")}
           </RouteLink>
         </Flex>
+        {authBypass ? (
+          <Flex col wFull mt6 gap4>
+            <Title s1 gray center>
+              {t("AUTH_BYPASS_HINT")}
+            </Title>
+            <Button
+              variant="secondary"
+              outlined
+              wFull
+              onClick={async () => {
+                await enterBypass("patient");
+                void router.push("/patient");
+              }}
+            >
+              {t("AUTH_BYPASS_PATIENT")}
+            </Button>
+            <Button
+              variant="secondary"
+              outlined
+              wFull
+              onClick={async () => {
+                await enterBypass("psychologist");
+                void router.push("/psychologist");
+              }}
+            >
+              {t("AUTH_BYPASS_PSYCHOLOGIST")}
+            </Button>
+          </Flex>
+        ) : null}
       </Card>
     </AppShell>
   );

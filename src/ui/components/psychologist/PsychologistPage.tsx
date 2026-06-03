@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import { getRoleRoute, useAiAgent, useAuth } from "@services";
+import { getRoleRoute, isAuthBypassEnabled, useAiAgent, useAuth } from "@services";
 import { Button, Flex, Input, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card } from "@molecules";
@@ -22,12 +22,12 @@ export const PsychologistPage = () => {
       void router.replace("/");
       return;
     }
-    if (session.role !== "psychologist") {
+    if (session.role !== "psychologist" && !isAuthBypassEnabled()) {
       void router.replace(getRoleRoute(session.role));
     }
   }, [loading, session, router]);
 
-  if (loading || !session || session.role !== "psychologist") {
+  if (loading || !session || (session.role !== "psychologist" && !isAuthBypassEnabled())) {
     return null;
   }
 

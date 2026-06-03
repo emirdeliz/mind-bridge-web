@@ -15,6 +15,7 @@ import {
   registerUserApi,
   saveProfileApi,
 } from "@api";
+import { isAuthBypassEnabled, persistBypassSession } from "../authBypass";
 
 export const useAuth = () => {
   const [session, setSession] = useState<UserAuthViewDto | null>(null);
@@ -60,6 +61,12 @@ export const useAuth = () => {
     setSession(null);
   }, []);
 
+  const enterBypass = useCallback(async (role: UserRole) => {
+    const user = persistBypassSession(role);
+    setSession(user);
+    return user;
+  }, []);
+
   return {
     session,
     loading,
@@ -69,5 +76,7 @@ export const useAuth = () => {
     saveProfile,
     logout,
     refreshSession,
+    enterBypass,
+    isAuthBypassEnabled,
   };
 };

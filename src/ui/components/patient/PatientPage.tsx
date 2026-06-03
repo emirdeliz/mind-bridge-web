@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 
 import type { UserProfile } from "@api";
-import { getRoleRoute, useAiAgent, useAuth } from "@services";
+import { getRoleRoute, isAuthBypassEnabled, useAiAgent, useAuth } from "@services";
 import { Button, Flex, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Alert, Card } from "@molecules";
@@ -28,7 +28,7 @@ export const PatientPage = () => {
       void router.replace("/");
       return;
     }
-    if (session.role !== "patient") {
+    if (session.role !== "patient" && !isAuthBypassEnabled()) {
       void router.replace(getRoleRoute(session.role));
     }
   }, [loading, session, router]);
@@ -40,7 +40,7 @@ export const PatientPage = () => {
       .map(([key]) => t(PROFILE_FIELD_I18N_KEYS[key as keyof UserProfile]));
   }, [session, t]);
 
-  if (loading || !session || session.role !== "patient") {
+  if (loading || !session || (session.role !== "patient" && !isAuthBypassEnabled())) {
     return null;
   }
 
