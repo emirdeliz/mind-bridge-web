@@ -93,6 +93,10 @@ if [[ -n "${VERCEL_TOKEN:-}" ]]; then
 fi
 
 echo "==> Deploying with Vercel CLI..."
-npx --yes vercel@latest "${DEPLOY_ARGS[@]}" "${EXTRA_ARGS[@]}"
+if ((${#EXTRA_ARGS[@]} > 0)); then
+  npx --yes vercel@latest "${DEPLOY_ARGS[@]}" "${EXTRA_ARGS[@]}"
+else
+  npx --yes vercel@latest "${DEPLOY_ARGS[@]}"
+fi
 
 echo "==> Done."
