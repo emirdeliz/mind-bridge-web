@@ -30,6 +30,7 @@
   "PSYCHOLOGIST_SESSION_TITLE": "Psychotherapy session",
   "PSYCHOLOGIST_SESSION_SUBTITLE": "Record session notes, consult the AI, and tune clinical context during the appointment.",
   "START_SESSION": "Start session",
+  "END_SESSION": "End session",
   "BACK_TO_PSYCHOLOGIST_DASHBOARD": "Back to dashboard",
   "PSYCHOLOGIST_DASHBOARD_PATIENT": "Patient in care",
   "PSYCHOLOGIST_DASHBOARD_PATIENT_HINT": "last 7 days",

@@ -8,17 +8,8 @@ import { useI18n } from "@i18n";
 import { Card, ChartCard } from "@molecules";
 import { AppShell } from "@templates";
 
-import {
-  MOCK_CLINICAL_THEME_CATEGORIES,
-  MOCK_CLINICAL_THEME_SERIES,
-  MOCK_INTERACTION_CHANNELS,
-  MOCK_MOOD_DIARY_ADHERENCE_PERCENT,
-  MOCK_MOOD_TREND_CATEGORIES,
-  MOCK_MOOD_TREND_SERIES,
-  MOCK_PATIENT_DISPLAY_NAME,
-  MOCK_WEEKLY_INTERACTION_CATEGORIES,
-  MOCK_WEEKLY_INTERACTION_SERIES,
-} from "./psychologistMockData";
+import { MOCK_PATIENT_DISPLAY_NAME } from "./psychologistMockData";
+import { usePsychologistDashboardData } from "./usePsychologistDashboardData";
 import { usePsychologistGuard } from "./usePsychologistGuard";
 
 const ChartLine = dynamic(
@@ -47,6 +38,7 @@ export const PsychologistDashboardPage = () => {
   const router = useRouter();
   const { t } = useI18n();
   const { loading, isPsychologist } = usePsychologistGuard();
+  const { snapshot, channelCenterText } = usePsychologistDashboardData();
 
   if (loading || !isPsychologist) {
     return null;
@@ -81,8 +73,8 @@ export const PsychologistDashboardPage = () => {
         <div className="mb-chart-card-row">
           <ChartCard title={t("CHART_INTERACTION_CHANNELS")}>
             <ChartDonut
-              data={MOCK_INTERACTION_CHANNELS}
-              centerText="6"
+              data={snapshot.interactionChannels}
+              centerText={channelCenterText}
               hideWhenEmpty={false}
               height={260}
             />
@@ -92,7 +84,7 @@ export const PsychologistDashboardPage = () => {
             tooltip={t("TOOLTIP_CHART_MOOD_DIARY_ADHERENCE")}
           >
             <ChartGauge
-              value={MOCK_MOOD_DIARY_ADHERENCE_PERCENT}
+              value={snapshot.moodDiaryAdherencePercent}
               valueSuffix="%"
               color="#5eead4"
               hideWhenEmpty={false}
@@ -102,8 +94,8 @@ export const PsychologistDashboardPage = () => {
         </div>
         <ChartCard title={t("CHART_MOOD_TREND")} tooltip={t("TOOLTIP_CHART_MOOD_TREND")}>
           <ChartLine
-            categories={MOCK_MOOD_TREND_CATEGORIES}
-            series={MOCK_MOOD_TREND_SERIES}
+            categories={snapshot.moodTrendCategories}
+            series={snapshot.moodTrendSeries}
             unit="/10"
             hideWhenEmpty={false}
             height={300}
@@ -111,16 +103,16 @@ export const PsychologistDashboardPage = () => {
         </ChartCard>
         <ChartCard title={t("CHART_WEEKLY_INTERACTIONS")}>
           <ChartBarVertical
-            categories={MOCK_WEEKLY_INTERACTION_CATEGORIES}
-            series={MOCK_WEEKLY_INTERACTION_SERIES}
+            categories={snapshot.weeklyInteractionCategories}
+            series={snapshot.weeklyInteractionSeries}
             hideWhenEmpty={false}
             height={280}
           />
         </ChartCard>
         <ChartCard title={t("CHART_CLINICAL_THEMES")} tooltip={t("TOOLTIP_CHART_CLINICAL_THEMES")}>
           <ChartBarHorizontal
-            categories={MOCK_CLINICAL_THEME_CATEGORIES}
-            series={MOCK_CLINICAL_THEME_SERIES}
+            categories={snapshot.clinicalThemeCategories}
+            series={snapshot.clinicalThemeSeries}
             hideWhenEmpty={false}
             height={300}
           />

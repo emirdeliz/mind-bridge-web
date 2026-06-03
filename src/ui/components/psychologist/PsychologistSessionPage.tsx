@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 import { useAiAgent } from "@services";
-import { Flex, RouteLink, Title } from "@atoms";
+import { Button, Flex, RouteLink, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card, TextAreaWithSave } from "@molecules";
 import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
@@ -16,10 +17,15 @@ import {
   MOCK_SESSION_NOTES_HISTORY,
   previousSessionsAgenticSummaries,
 } from "./psychologistMockData";
+import { refreshPsychologistDashboardAfterSession } from "./psychologistDashboardSnapshot";
 import { SessionHistoryNavButtons } from "./SessionHistoryNavButtons";
 import { usePsychologistGuard } from "./usePsychologistGuard";
 
+const AI_CONTEXT_STORAGE_KEY = "mb.psychologist.aiContext";
+const SESSION_NOTES_STORAGE_KEY = "mb.psychologist.sessionNotes";
+
 export const PsychologistSessionPage = () => {
+  const router = useRouter();
   const { t } = useI18n();
   const { loading, isPsychologist } = usePsychologistGuard();
   const [psychologistContext, setPsychologistContext] = useState(MOCK_PSYCHOLOGIST_CONTEXT);
@@ -32,6 +38,21 @@ export const PsychologistSessionPage = () => {
   const [agenticSummaryPage, setAgenticSummaryPage] = useState(0);
   const { messages, sendMessage } = useAiAgent(psychologistContext);
   const chatMessages = [...MOCK_PSYCHOLOGIST_CHAT, ...messages];
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const storedContext = window.localStorage.getItem(AI_CONTEXT_STORAGE_KEY);
+    const storedNotes = window.localStorage.getItem(SESSION_NOTES_STORAGE_KEY);
+    if (storedContext) {
+      setPsychologistContext(storedContext);
+    }
+    if (storedNotes) {
+      const currentId = MOCK_SESSION_NOTES_HISTORY.find((entry) => entry.isCurrent)?.id;
+      if (currentId) {
+        setSessionNotesById((prev) => ({ ...prev, [currentId]: storedNotes }));
+      }
+    }
+  }, []);
 
   if (loading || !isPsychologist) {
     return null;
@@ -69,13 +90,23 @@ export const PsychologistSessionPage = () => {
 
   const savePsychologistContext = () => {
     if (typeof window !== "undefined") {
-      window.localStorage.setItem("mb.psychologist.aiContext", psychologistContext);
+      window.localStorage.setItem(AI_CONTEXT_STORAGE_KEY, psychologistContext);
     }
   };
 
   const saveSessionNotes = () => {
     if (!selectedSession?.isCurrent || typeof window === "undefined") return;
-    window.localStorage.setItem("mb.psychologist.sessionNotes", sessionNotesValue);
+    window.localStorage.setItem(SESSION_NOTES_STORAGE_KEY, sessionNotesValue);
+  };
+
+  const endSession = () => {
+    savePsychologistContext();
+    saveSessionNotes();
+    refreshPsychologistDashboardAfterSession();
+    void router.push({
+      pathname: "/psychologist",
+      query: { refreshed: Date.now().toString() },
+    });
   };
 
   return (
@@ -84,9 +115,14 @@ export const PsychologistSessionPage = () => {
       subtitle={t("PSYCHOLOGIST_SESSION_SUBTITLE")}
       variant="dashboard"
     >
-      <RouteLink href="/psychologist" inline>
-        {t("BACK_TO_PSYCHOLOGIST_DASHBOARD")}
-      </RouteLink>
+      <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
+        <RouteLink href="/psychologist" inline>
+          {t("BACK_TO_PSYCHOLOGIST_DASHBOARD")}
+        </RouteLink>
+        <Button type="button" onClick={endSession}>
+          {t("END_SESSION")}
+        </Button>
+      </Flex>
       <Flex col wFull gap4>
         <Card padding="lg" shadow="md">
           <DashboardSectionTitle
