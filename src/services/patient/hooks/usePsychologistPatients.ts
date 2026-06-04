@@ -6,11 +6,7 @@ import {
   getPsychologistPatientsApi,
   saveOrEditPsychologistPatientApi,
 } from '@api';
-import {
-  generatePatientPassword,
-  isValidPhone,
-  phoneDigits,
-} from '@helpers';
+import { isValidPhone, phoneDigits } from '@helpers';
 import { useI18n } from '@i18n';
 import { useAuth } from '@services';
 
@@ -67,10 +63,7 @@ export const usePsychologistPatients = () => {
   }, [loadPatients]);
 
   const openCreateModal = useCallback(() => {
-    setForm({
-      ...emptyForm(),
-      password: generatePatientPassword(),
-    });
+    setForm(emptyForm());
     setModalOpen(true);
   }, []);
 
@@ -173,13 +166,6 @@ export const usePsychologistPatients = () => {
     [session, loadPatients, t]
   );
 
-  const regeneratePatientPassword = useCallback(() => {
-    setForm((current) => ({
-      ...current,
-      password: generatePatientPassword(),
-    }));
-  }, []);
-
   return {
     patients,
     search,
@@ -195,7 +181,6 @@ export const usePsychologistPatients = () => {
     openEditModal,
     closeModal,
     updateForm,
-    regeneratePatientPassword,
     savePatient,
     deletePatient,
   };

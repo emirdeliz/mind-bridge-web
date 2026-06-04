@@ -12,7 +12,7 @@ import { AppShell } from "@templates";
 export const RegisterPage = () => {
   const router = useRouter();
   const { t } = useI18n();
-  const { session, loading, registerUser } = useAuth();
+  const { session, loading, registerPublicAccount } = useAuth();
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -55,14 +55,14 @@ export const RegisterPage = () => {
             }
 
             try {
-              const user = await registerUser({
+              await registerPublicAccount({
                 email: email.trim(),
                 phone: phoneDigits(phone),
                 password,
                 role,
                 provider: "password",
               });
-              void router.replace(getRoleRoute(user.role));
+              void router.replace("/?registered=1");
             } catch (registerError) {
               setError(
                 registerError instanceof Error

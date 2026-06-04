@@ -11,10 +11,6 @@ export const getProfileInitials = (fullName: string, fallback = "??"): string =>
 
 export const getNumbersOfString = (value: string): string => value.replace(/\D/g, "");
 
-/** Senha inicial de paciente: 5 dígitos numéricos (10000–99999). */
-export const generatePatientPassword = (): string =>
-  String(Math.floor(10000 + Math.random() * 90000));
-
 export const phoneDigits = (phone: string | null | undefined): string =>
   (phone ?? "").replace(/\D/g, "");
 

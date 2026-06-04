@@ -26,6 +26,7 @@ export const HomePage = () => {
   const [forgotMode, setForgotMode] = useState(false);
   const [forgotMessage, setForgotMessage] = useState("");
   const [forgotSending, setForgotSending] = useState(false);
+  const registeredSuccess = router.query.registered === "1";
 
   useEffect(() => {
     if (loading || !session) return;
@@ -68,6 +69,12 @@ export const HomePage = () => {
         <Title fs3 fw3 mb2>
           {forgotMode ? t("FORGOT_PASSWORD_TITLE") : t("LOGIN")}
         </Title>
+
+        {registeredSuccess && !forgotMode ? (
+          <Title s2 textAccent mb2 block leadingRelaxed>
+            {t("REGISTER_SUCCESS_LOGIN")}
+          </Title>
+        ) : null}
 
         {forgotMode ? (
           <Form
