@@ -1,49 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 
-import type { UserProfile } from "@api";
+import type { ClinicalChatMessageDto, UserProfile } from "@api";
 import {
   type ChatMessage,
   getProfileRoute,
   getRoleRoute,
-  isAuthBypassEnabled,
   useAiAgent,
   useAuth,
+  usePatientClinicalContent,
 } from "@services";
 import { Button, Flex, RouteLink, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Alert, Card, Tooltip } from "@molecules";
 import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
-
-const MOCK_PATIENT_CHAT: ChatMessage[] = [
-  {
-    id: "mock-patient-1",
-    sender: "user",
-    text: "Hoje acordei muito ansioso pensando na reunião da tarde.",
-    createdAt: "2026-06-02T09:15:00.000Z",
-  },
-  {
-    id: "mock-patient-2",
-    sender: "agent",
-    text: "Obrigado por compartilhar. Antes da reunião, você percebeu algum sinal no corpo — taquicardia, tensão nos ombros ou pensamentos acelerados?",
-    createdAt: "2026-06-02T09:16:00.000Z",
-  },
-  {
-    id: "mock-patient-3",
-    sender: "user",
-    text: "Senti o peito apertado e não consegui dormir direito ontem.",
-    createdAt: "2026-06-02T09:17:00.000Z",
-  },
-  {
-    id: "mock-patient-4",
-    sender: "agent",
-    text: "Vamos registrar isso no seu plano de cuidado. Que tal uma pausa de 2 minutos de respiração antes da reunião e anotar como você se sente depois?",
-    createdAt: "2026-06-02T09:18:00.000Z",
-  },
-];
-
-const MOCK_PATIENT_SUMMARY =
-  "Últimas 48h: 4 mensagens trocadas. Temas principais: ansiedade antecipatória no trabalho, sintomas corporais (aperto no peito) e sono prejudicado. Agente sugeriu respiração guiada e registro pós-reunião. Risco emocional: moderado. Encaminhar reflexão para a próxima sessão com o psicólogo.";
 
 const PROFILE_FIELD_I18N_KEYS: Record<Exclude<keyof UserProfile, "language">, string> = {
   fullName: "PROFILE_FIELD_FULL_NAME",
@@ -52,13 +22,30 @@ const PROFILE_FIELD_I18N_KEYS: Record<Exclude<keyof UserProfile, "language">, st
   phone: "PROFILE_FIELD_PHONE",
 };
 
+const toChatMessages = (seed: ClinicalChatMessageDto[]): ChatMessage[] =>
+  seed.map((item) => ({
+    id: item.id,
+    sender: item.sender,
+    text: item.text,
+    createdAt: item.createdAt,
+  }));
+
 export const PatientPage = () => {
   const router = useRouter();
   const { t } = useI18n();
   const { session, loading } = useAuth();
-  const [context] = useState(() => t("DEFAULT_PATIENT_AI_CONTEXT"));
-  const { messages, sendMessage } = useAiAgent(context);
-  const chatMessages = [...MOCK_PATIENT_CHAT, ...messages];
+  const { content, loading: contentLoading } = usePatientClinicalContent();
+  const [careContext] = useState(() => t("DEFAULT_PATIENT_AI_CONTEXT"));
+  const { messages, sendMessage, setMessages } = useAiAgent({
+    mode: "patient",
+    careContext,
+  });
+
+  useEffect(() => {
+    if (content?.patientChatSeed) {
+      setMessages(toChatMessages(content.patientChatSeed));
+    }
+  }, [content, setMessages]);
 
   useEffect(() => {
     if (loading) return;
@@ -66,7 +53,7 @@ export const PatientPage = () => {
       void router.replace("/");
       return;
     }
-    if (session.role !== "patient" && !isAuthBypassEnabled()) {
+    if (session.role !== "patient") {
       void router.replace(getRoleRoute(session.role));
     }
   }, [loading, session, router]);
@@ -78,9 +65,12 @@ export const PatientPage = () => {
       .map(([key]) => t(PROFILE_FIELD_I18N_KEYS[key as Exclude<keyof UserProfile, "language">]));
   }, [session, t]);
 
-  if (loading || !session || (session.role !== "patient" && !isAuthBypassEnabled())) {
+  if (loading || contentLoading || !session || session.role !== "patient") {
     return null;
   }
+
+  const patientSummary =
+    content?.patientSummary ?? t("AI_SUMMARY_NO_INTERACTIONS");
 
   return (
     <AppShell title={t("PATIENT_AREA_TITLE")} subtitle={t("PATIENT_AREA_SUBTITLE")} variant="dashboard">
@@ -93,14 +83,14 @@ export const PatientPage = () => {
         </Alert>
       ) : null}
       <ChatPanel
-        messages={chatMessages}
+        messages={messages}
         onSend={sendMessage}
         sectionTooltip={t("TOOLTIP_PATIENT_CHAT")}
       />
       <Card padding="lg" shadow="md">
         <DashboardSectionTitle title={t("INTERACTION_SUMMARY")} tooltip={t("TOOLTIP_PATIENT_SUMMARY")} />
         <Title s1 gray>
-          {MOCK_PATIENT_SUMMARY}
+          {patientSummary}
         </Title>
       </Card>
       <Flex row wrap wFull gap4>

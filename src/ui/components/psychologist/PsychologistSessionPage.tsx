@@ -1,81 +1,86 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import { useAiAgent } from "@services";
+import type { ClinicalChatMessageDto } from "@api";
+import { useAiAgent, usePsychologistClinicalContent } from "@services";
 import { Button, Flex, RouteLink, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card, TextAreaWithSave } from "@molecules";
 import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
 
+import { bumpDashboardSnapshot } from "./psychologistDashboardSnapshot";
 import {
   AGENTIC_SUMMARY_PAGE_SIZE,
-  CURRENT_SESSION_NOTE_INDEX,
-  MOCK_PSYCHOLOGIST_CHAT,
-  MOCK_PSYCHOLOGIST_CONTEXT,
-  MOCK_PSYCHOLOGIST_INSIGHTS,
-  MOCK_PSYCHOLOGIST_SUMMARY,
-  MOCK_SESSION_NOTES_HISTORY,
-  previousSessionsAgenticSummaries,
-} from "./psychologistMockData";
-import { refreshPsychologistDashboardAfterSession } from "./psychologistDashboardSnapshot";
+  getCurrentSessionNoteIndex,
+  getPreviousSessionsAgenticSummaries,
+} from "./psychologistSessionTypes";
 import { SessionHistoryNavButtons } from "./SessionHistoryNavButtons";
 import { usePsychologistGuard } from "./usePsychologistGuard";
 
-const AI_CONTEXT_STORAGE_KEY = "mb.psychologist.aiContext";
-const SESSION_NOTES_STORAGE_KEY = "mb.psychologist.sessionNotes";
+const DASHBOARD_BUMP_KEY = "mb.psychologist.dashboardBump";
+
+const toChatMessages = (seed: ClinicalChatMessageDto[]) =>
+  seed.map((item) => ({
+    id: item.id,
+    sender: item.sender,
+    text: item.text,
+    createdAt: item.createdAt,
+  }));
 
 export const PsychologistSessionPage = () => {
   const router = useRouter();
   const { t } = useI18n();
-  const { loading, isPsychologist } = usePsychologistGuard();
+  const { loading: guardLoading, isPsychologist } = usePsychologistGuard();
   const patientId =
     typeof router.query.patientId === "string" ? router.query.patientId : undefined;
   const patientName =
     typeof router.query.patientName === "string" && router.query.patientName.trim()
       ? router.query.patientName
       : undefined;
-  const [psychologistContext, setPsychologistContext] = useState(MOCK_PSYCHOLOGIST_CONTEXT);
-  const [sessionNotesById, setSessionNotesById] = useState(() =>
-    Object.fromEntries(MOCK_SESSION_NOTES_HISTORY.map((entry) => [entry.id, entry.content])),
-  );
-  const [selectedSessionIndex, setSelectedSessionIndex] = useState(
-    CURRENT_SESSION_NOTE_INDEX >= 0 ? CURRENT_SESSION_NOTE_INDEX : 0,
-  );
+
+  const { content, loading: contentLoading } = usePsychologistClinicalContent(patientId);
+  const sessionNotes = content?.sessionNotes ?? [];
+  const [psychologistContext, setPsychologistContext] = useState("");
+  const [sessionNotesById, setSessionNotesById] = useState<Record<string, string>>({});
+  const [selectedSessionIndex, setSelectedSessionIndex] = useState(0);
   const [agenticSummaryPage, setAgenticSummaryPage] = useState(0);
-  const { messages, sendMessage } = useAiAgent(psychologistContext);
-  const chatMessages = [...MOCK_PSYCHOLOGIST_CHAT, ...messages];
+
+  const { messages, sendMessage, setMessages, sending } = useAiAgent({
+    mode: "psychologist",
+    patientId,
+    clinicalContext: psychologistContext,
+  });
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const storedContext = window.localStorage.getItem(AI_CONTEXT_STORAGE_KEY);
-    const storedNotes = window.localStorage.getItem(SESSION_NOTES_STORAGE_KEY);
-    if (storedContext) {
-      setPsychologistContext(storedContext);
-    }
-    if (storedNotes) {
-      const currentId = MOCK_SESSION_NOTES_HISTORY.find((entry) => entry.isCurrent)?.id;
-      if (currentId) {
-        setSessionNotesById((prev) => ({ ...prev, [currentId]: storedNotes }));
-      }
-    }
-  }, []);
+    if (!content) return;
+    setPsychologistContext(content.sessionContext ?? "");
+    setSessionNotesById(
+      Object.fromEntries(content.sessionNotes.map((entry) => [entry.id, entry.content])),
+    );
+    const currentIndex = getCurrentSessionNoteIndex(content.sessionNotes);
+    setSelectedSessionIndex(currentIndex >= 0 ? currentIndex : 0);
+    setMessages(toChatMessages(content.psychologistChatSeed));
+  }, [content, setMessages]);
 
-  if (loading || !isPsychologist) {
+  const chatMessages = messages;
+
+  if (guardLoading || contentLoading || !isPsychologist) {
     return null;
   }
 
-  const selectedSession = MOCK_SESSION_NOTES_HISTORY[selectedSessionIndex];
+  if (!patientId) {
+    return null;
+  }
+
+  const selectedSession = sessionNotes[selectedSessionIndex];
   const isCurrentSession = Boolean(selectedSession?.isCurrent);
   const sessionNotesValue = selectedSession ? (sessionNotesById[selectedSession.id] ?? "") : "";
-  const canGoToOlderSession = selectedSessionIndex < MOCK_SESSION_NOTES_HISTORY.length - 1;
+  const canGoToOlderSession = selectedSessionIndex < sessionNotes.length - 1;
   const canGoToNewerSession = selectedSessionIndex > 0;
-  const olderSession = canGoToOlderSession
-    ? MOCK_SESSION_NOTES_HISTORY[selectedSessionIndex + 1]
-    : undefined;
-  const newerSession = canGoToNewerSession
-    ? MOCK_SESSION_NOTES_HISTORY[selectedSessionIndex - 1]
-    : undefined;
+  const olderSession = canGoToOlderSession ? sessionNotes[selectedSessionIndex + 1] : undefined;
+  const newerSession = canGoToNewerSession ? sessionNotes[selectedSessionIndex - 1] : undefined;
 
+  const previousSessionsAgenticSummaries = getPreviousSessionsAgenticSummaries(sessionNotes);
   const agenticSummaryMaxPage = Math.max(
     0,
     Math.ceil(previousSessionsAgenticSummaries.length / AGENTIC_SUMMARY_PAGE_SIZE) - 1,
@@ -91,35 +96,31 @@ export const PsychologistSessionPage = () => {
     visibleAgenticSummaries.length > 0
       ? `${visibleAgenticSummaries[0].sessionDate} – ${visibleAgenticSummaries[visibleAgenticSummaries.length - 1].sessionDate}`
       : "";
-  const olderAgenticBatch = previousSessionsAgenticSummaries[agenticWindowStart + AGENTIC_SUMMARY_PAGE_SIZE];
-  const newerAgenticBatch = previousSessionsAgenticSummaries[agenticWindowStart - AGENTIC_SUMMARY_PAGE_SIZE];
-
-  const savePsychologistContext = () => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(AI_CONTEXT_STORAGE_KEY, psychologistContext);
-    }
-  };
-
-  const saveSessionNotes = () => {
-    if (!selectedSession?.isCurrent || typeof window === "undefined") return;
-    window.localStorage.setItem(SESSION_NOTES_STORAGE_KEY, sessionNotesValue);
-  };
+  const olderAgenticBatch =
+    previousSessionsAgenticSummaries[agenticWindowStart + AGENTIC_SUMMARY_PAGE_SIZE];
+  const newerAgenticBatch =
+    previousSessionsAgenticSummaries[agenticWindowStart - AGENTIC_SUMMARY_PAGE_SIZE];
 
   const endSession = () => {
-    savePsychologistContext();
-    saveSessionNotes();
-    refreshPsychologistDashboardAfterSession();
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem(DASHBOARD_BUMP_KEY, patientId);
+    }
     void router.push({
       pathname: "/psychologist",
-      query: { refreshed: Date.now().toString() },
+      query: {
+        patientId,
+        patientName: patientName ?? "",
+        refreshed: Date.now().toString(),
+      },
     });
   };
 
   const sessionSubtitle = patientName
     ? `${t("PSYCHOLOGIST_SESSION_SUBTITLE")} — ${patientName}`
-    : patientId
-      ? `${t("PSYCHOLOGIST_SESSION_SUBTITLE")} (${patientId})`
-      : t("PSYCHOLOGIST_SESSION_SUBTITLE");
+    : t("PSYCHOLOGIST_SESSION_SUBTITLE");
+
+  const insights = content?.sessionInsights ?? [];
+  const psychologistSummary = content?.psychologistSummary ?? "";
 
   return (
     <AppShell
@@ -150,7 +151,7 @@ export const PsychologistSessionPage = () => {
               canGoNewer={canGoToNewerSession}
               onGoOlder={() =>
                 setSelectedSessionIndex((index) =>
-                  Math.min(MOCK_SESSION_NOTES_HISTORY.length - 1, index + 1),
+                  Math.min(sessionNotes.length - 1, index + 1),
                 )
               }
               onGoNewer={() => setSelectedSessionIndex((index) => Math.max(0, index - 1))}
@@ -160,7 +161,9 @@ export const PsychologistSessionPage = () => {
                   : t("SESSION_NOTES_PREVIOUS")
               }
               newerTooltip={
-                newerSession ? `${t("SESSION_NOTES_NEXT")}: ${newerSession.label}` : t("SESSION_NOTES_NEXT")
+                newerSession
+                  ? `${t("SESSION_NOTES_NEXT")}: ${newerSession.label}`
+                  : t("SESSION_NOTES_NEXT")
               }
             />
           </Flex>
@@ -175,8 +178,6 @@ export const PsychologistSessionPage = () => {
               placeholder={t("SESSION_CONSIDERATIONS_PLACEHOLDER")}
               value={sessionNotesValue}
               readOnly={!isCurrentSession}
-              saveLabel={t("SAVE")}
-              onSave={isCurrentSession ? saveSessionNotes : undefined}
               onChange={(event) => {
                 if (!selectedSession?.isCurrent) return;
                 setSessionNotesById((prev) => ({
@@ -204,93 +205,80 @@ export const PsychologistSessionPage = () => {
           <TextAreaWithSave
             rows={4}
             value={psychologistContext}
-            saveLabel={t("SAVE")}
-            onSave={savePsychologistContext}
             onChange={(event) => setPsychologistContext(event.target.value)}
           />
         </Flex>
       </Card>
       <Card padding="lg" shadow="md">
         <DashboardSectionTitle
-          title={t("AGENTIC_INTERACTION_SUMMARY")}
+          title={t("INTERACTION_SUMMARY")}
           tooltip={t("TOOLTIP_PSYCHOLOGIST_SUMMARY")}
         />
-        <Title s1 gray leadingRelaxed>
-          {MOCK_PSYCHOLOGIST_SUMMARY}
+        <Title s1 gray>
+          {psychologistSummary}
         </Title>
-      </Card>
-      <Card padding="lg" shadow="md">
-        <DashboardSectionTitle
-          title={t("SESSION_NOTES_AGENTIC_SUMMARY")}
-          tooltip={t("TOOLTIP_SESSION_NOTES_AGENTIC_SUMMARY")}
-        />
-        <Flex row wFull alignCenter justifySpaceBetween wrap gap4 mb4>
-          <Title s1 gray>
-            {agenticRangeLabel}
-          </Title>
-          <SessionHistoryNavButtons
-            canGoOlder={canGoAgenticOlder}
-            canGoNewer={canGoAgenticNewer}
-            onGoOlder={() => setAgenticSummaryPage((page) => Math.min(agenticSummaryMaxPage, page + 1))}
-            onGoNewer={() => setAgenticSummaryPage((page) => Math.max(0, page - 1))}
-            olderTooltip={
-              olderAgenticBatch
-                ? `${t("SESSION_NOTES_PREVIOUS")}: ${olderAgenticBatch.sessionDate}`
-                : t("SESSION_NOTES_PREVIOUS")
-            }
-            newerTooltip={
-              newerAgenticBatch
-                ? `${t("SESSION_NOTES_NEXT")}: ${newerAgenticBatch.sessionDate}`
-                : t("SESSION_NOTES_NEXT")
-            }
-          />
-        </Flex>
-        <Flex col wFull gap5>
-          {Array.from({ length: AGENTIC_SUMMARY_PAGE_SIZE }, (_, slotIndex) => {
-            const entry = visibleAgenticSummaries[slotIndex];
-            if (!entry) {
-              return (
-                <Flex col wFull key={`agentic-empty-${agenticSummaryPage}-${slotIndex}`} gap2>
-                  <Title fs3 fw3 mb1 gray>
-                    —
-                  </Title>
-                  <Title s1 gray leadingRelaxed>
-                    —
-                  </Title>
-                </Flex>
-              );
-            }
-            return (
-              <Flex col wFull key={entry.id}>
-                <Title fs3 fw3 mb1>
-                  {entry.sessionDate}
-                </Title>
-                <Title s1 gray leadingRelaxed>
-                  {entry.agenticSummary}
-                </Title>
-              </Flex>
-            );
-          })}
-        </Flex>
       </Card>
       <Card padding="lg" shadow="md">
         <DashboardSectionTitle
           title={t("PSYCHOLOGIST_INSIGHTS_TITLE")}
           tooltip={t("TOOLTIP_PSYCHOLOGIST_INSIGHTS")}
         />
-        <Flex col wFull gap5>
-          {MOCK_PSYCHOLOGIST_INSIGHTS.map((insight) => (
-            <Flex col wFull key={insight.title}>
-              <Title fs3 fw3 mb1>
+        <Flex col wFull gap4>
+          {insights.map((insight) => (
+            <Flex col wFull key={insight.title} gap1>
+              <Title s2 textAccent>
                 {insight.title}
               </Title>
-              <Title s1 gray leadingRelaxed>
+              <Title s1 gray>
                 {insight.body}
               </Title>
             </Flex>
           ))}
         </Flex>
       </Card>
+      {previousSessionsAgenticSummaries.length > 0 ? (
+        <Card padding="lg" shadow="md">
+          <DashboardSectionTitle
+            title={t("SESSION_AGENTIC_SUMMARIES")}
+            tooltip={t("TOOLTIP_SESSION_AGENTIC_SUMMARIES")}
+          />
+          <Flex row wFull alignCenter justifySpaceBetween wrap gap4 mb4>
+            <Title s1 gray>
+              {agenticRangeLabel}
+            </Title>
+            <SessionHistoryNavButtons
+              canGoOlder={canGoAgenticOlder}
+              canGoNewer={canGoAgenticNewer}
+              onGoOlder={() =>
+                setAgenticSummaryPage((page) => Math.min(agenticSummaryMaxPage, page + 1))
+              }
+              onGoNewer={() => setAgenticSummaryPage((page) => Math.max(0, page - 1))}
+              olderTooltip={
+                olderAgenticBatch
+                  ? `${t("SESSION_NOTES_PREVIOUS")}: ${olderAgenticBatch.sessionDate}`
+                  : t("SESSION_NOTES_PREVIOUS")
+              }
+              newerTooltip={
+                newerAgenticBatch
+                  ? `${t("SESSION_NOTES_NEXT")}: ${newerAgenticBatch.sessionDate}`
+                  : t("SESSION_NOTES_NEXT")
+              }
+            />
+          </Flex>
+          <Flex col wFull gap4>
+            {visibleAgenticSummaries.map((entry) => (
+              <Flex col wFull key={entry.id} gap1>
+                <Title s2 textAccent>
+                  {entry.label}
+                </Title>
+                <Title s1 gray>
+                  {entry.agenticSummary}
+                </Title>
+              </Flex>
+            ))}
+          </Flex>
+        </Card>
+      ) : null}
     </AppShell>
   );
 };

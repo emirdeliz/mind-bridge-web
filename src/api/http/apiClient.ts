@@ -1,11 +1,3 @@
-const getApiBaseUrl = (): string => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-  if (!baseUrl) {
-    throw new Error('NEXT_PUBLIC_API_BASE_URL is not configured');
-  }
-  return baseUrl.replace(/\/$/, '');
-};
-
 export class ApiError extends Error {
   status: number;
 
@@ -18,14 +10,16 @@ export class ApiError extends Error {
 
 type ApiRequestOptions = {
   method?: 'GET' | 'POST' | 'PATCH' | 'DELETE';
-  accessToken?: string;
   body?: unknown;
   query?: Record<string, string | boolean | undefined>;
 };
 
-export const apiRequest = async <T>(path: string, options: ApiRequestOptions = {}): Promise<T> => {
-  const { method = 'GET', accessToken, body, query } = options;
-  const url = new URL(`${getApiBaseUrl()}${path}`);
+const buildProxyUrl = (path: string, query?: ApiRequestOptions['query']): string => {
+  const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
+  const url = new URL(
+    `/api/backend/${normalizedPath}`,
+    typeof window !== 'undefined' ? window.location.origin : 'http://localhost'
+  );
 
   if (query) {
     Object.entries(query).forEach(([key, value]) => {
@@ -36,21 +30,32 @@ export const apiRequest = async <T>(path: string, options: ApiRequestOptions = {
     });
   }
 
+  return url.pathname + url.search;
+};
+
+export const apiRequest = async <T>(
+  path: string,
+  options: ApiRequestOptions = {}
+): Promise<T> => {
+  if (typeof window === 'undefined') {
+    throw new Error('apiRequest is browser-only; use serverApiRequest on the server');
+  }
+
+  const { method = 'GET', body, query } = options;
+  const url = buildProxyUrl(path, query);
+
   const headers: Record<string, string> = {
     Accept: 'application/json',
   };
-
-  if (accessToken) {
-    headers.Authorization = `Bearer ${accessToken}`;
-  }
 
   if (body !== undefined) {
     headers['Content-Type'] = 'application/json';
   }
 
-  const response = await fetch(url.toString(), {
+  const response = await fetch(url, {
     method,
     headers,
+    credentials: 'include',
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
 

@@ -1,15 +1,4 @@
-import {
-  MOCK_CLINICAL_THEME_CATEGORIES,
-  MOCK_CLINICAL_THEME_SERIES,
-  MOCK_INTERACTION_CHANNELS,
-  MOCK_MOOD_DIARY_ADHERENCE_PERCENT,
-  MOCK_MOOD_TREND_CATEGORIES,
-  MOCK_MOOD_TREND_SERIES,
-  MOCK_WEEKLY_INTERACTION_CATEGORIES,
-  MOCK_WEEKLY_INTERACTION_SERIES,
-} from "./psychologistMockData";
-
-const DASHBOARD_STORAGE_KEY = "mb.psychologist.dashboard";
+import type { DashboardSnapshotDto } from "@api";
 
 export type DashboardChartSeries = {
   name: string;
@@ -23,77 +12,27 @@ export type DashboardDonutItem = {
   color?: string;
 };
 
-export type PsychologistDashboardSnapshot = {
-  moodTrendCategories: string[];
-  moodTrendSeries: DashboardChartSeries[];
-  weeklyInteractionCategories: string[];
-  weeklyInteractionSeries: DashboardChartSeries[];
-  interactionChannels: DashboardDonutItem[];
-  moodDiaryAdherencePercent: number;
-  clinicalThemeCategories: string[];
-  clinicalThemeSeries: DashboardChartSeries[];
-  lastUpdatedAt: string;
-};
+export type PsychologistDashboardSnapshot = DashboardSnapshotDto;
 
-const cloneDefaultSnapshot = (): PsychologistDashboardSnapshot => ({
-  moodTrendCategories: [...MOCK_MOOD_TREND_CATEGORIES],
-  moodTrendSeries: MOCK_MOOD_TREND_SERIES.map((series) => ({
-    ...series,
-    data: [...series.data],
-  })),
-  weeklyInteractionCategories: [...MOCK_WEEKLY_INTERACTION_CATEGORIES],
-  weeklyInteractionSeries: MOCK_WEEKLY_INTERACTION_SERIES.map((series) => ({
-    ...series,
-    data: [...series.data],
-  })),
-  interactionChannels: MOCK_INTERACTION_CHANNELS.map((item) => ({ ...item })),
-  moodDiaryAdherencePercent: MOCK_MOOD_DIARY_ADHERENCE_PERCENT,
-  clinicalThemeCategories: [...MOCK_CLINICAL_THEME_CATEGORIES],
-  clinicalThemeSeries: MOCK_CLINICAL_THEME_SERIES.map((series) => ({
-    ...series,
-    data: [...series.data],
-  })),
+export const emptyDashboardSnapshot = (): PsychologistDashboardSnapshot => ({
+  moodTrendCategories: [],
+  moodTrendSeries: [],
+  weeklyInteractionCategories: [],
+  weeklyInteractionSeries: [],
+  interactionChannels: [],
+  moodDiaryAdherencePercent: 0,
+  clinicalThemeCategories: [],
+  clinicalThemeSeries: [],
   lastUpdatedAt: new Date().toISOString(),
 });
 
-export const loadPsychologistDashboardSnapshot = (): PsychologistDashboardSnapshot => {
-  if (typeof window === "undefined") {
-    return cloneDefaultSnapshot();
-  }
+export const getDashboardChannelTotal = (snapshot: PsychologistDashboardSnapshot): number =>
+  snapshot.interactionChannels.reduce((sum, item) => sum + item.value, 0);
 
-  try {
-    const raw = window.localStorage.getItem(DASHBOARD_STORAGE_KEY);
-    if (!raw) return cloneDefaultSnapshot();
-    const parsed = JSON.parse(raw) as PsychologistDashboardSnapshot;
-    return {
-      ...cloneDefaultSnapshot(),
-      ...parsed,
-      moodTrendCategories: parsed.moodTrendCategories ?? MOCK_MOOD_TREND_CATEGORIES,
-      moodTrendSeries: parsed.moodTrendSeries ?? cloneDefaultSnapshot().moodTrendSeries,
-      weeklyInteractionCategories:
-        parsed.weeklyInteractionCategories ?? MOCK_WEEKLY_INTERACTION_CATEGORIES,
-      weeklyInteractionSeries:
-        parsed.weeklyInteractionSeries ?? cloneDefaultSnapshot().weeklyInteractionSeries,
-      interactionChannels: parsed.interactionChannels ?? cloneDefaultSnapshot().interactionChannels,
-      moodDiaryAdherencePercent:
-        parsed.moodDiaryAdherencePercent ?? MOCK_MOOD_DIARY_ADHERENCE_PERCENT,
-      clinicalThemeCategories:
-        parsed.clinicalThemeCategories ?? MOCK_CLINICAL_THEME_CATEGORIES,
-      clinicalThemeSeries: parsed.clinicalThemeSeries ?? cloneDefaultSnapshot().clinicalThemeSeries,
-    };
-  } catch {
-    return cloneDefaultSnapshot();
-  }
-};
-
-const persistSnapshot = (snapshot: PsychologistDashboardSnapshot) => {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(DASHBOARD_STORAGE_KEY, JSON.stringify(snapshot));
-};
-
-/** Simula atualização dos indicadores após encerrar uma sessão. */
-export const refreshPsychologistDashboardAfterSession = (): PsychologistDashboardSnapshot => {
-  const current = loadPsychologistDashboardSnapshot();
+/** Ajuste leve dos indicadores após encerrar sessão (estado em memória). */
+export const bumpDashboardSnapshot = (
+  current: PsychologistDashboardSnapshot,
+): PsychologistDashboardSnapshot => {
   const moodData = [...(current.moodTrendSeries[0]?.data ?? [])];
   if (moodData.length > 0) {
     const lastIndex = moodData.length - 1;
@@ -109,14 +48,13 @@ export const refreshPsychologistDashboardAfterSession = (): PsychologistDashboar
   const channels = current.interactionChannels.map((channel) =>
     channel.name === "Texto" ? { ...channel, value: channel.value + 1 } : { ...channel },
   );
-  const channelTotal = channels.reduce((sum, item) => sum + item.value, 0);
 
   const clinicalData = [...(current.clinicalThemeSeries[0]?.data ?? [])];
   if (clinicalData.length > 0) {
     clinicalData[0] = clinicalData[0] + 1;
   }
 
-  const updated: PsychologistDashboardSnapshot = {
+  return {
     ...current,
     moodTrendSeries: [
       {
@@ -143,10 +81,4 @@ export const refreshPsychologistDashboardAfterSession = (): PsychologistDashboar
     ],
     lastUpdatedAt: new Date().toISOString(),
   };
-
-  persistSnapshot(updated);
-  return updated;
 };
-
-export const getDashboardChannelTotal = (snapshot: PsychologistDashboardSnapshot): number =>
-  snapshot.interactionChannels.reduce((sum, item) => sum + item.value, 0);

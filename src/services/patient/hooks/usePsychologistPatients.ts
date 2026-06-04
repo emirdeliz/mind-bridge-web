@@ -7,16 +7,12 @@ import {
   saveOrEditPsychologistPatientApi,
 } from '@api';
 import {
-  filterMockPatients,
-  MOCK_PSYCHOLOGIST_PATIENTS,
-} from '@constants';
-import {
   generatePatientPassword,
   isValidPhone,
   phoneDigits,
 } from '@helpers';
 import { useI18n } from '@i18n';
-import { isAuthBypassEnabled, useAuth } from '@services';
+import { useAuth } from '@services';
 
 const emptyForm = (): PsychologistPatientSaveOrUpdateDto => ({
   fullName: '',
@@ -28,10 +24,6 @@ const emptyForm = (): PsychologistPatientSaveOrUpdateDto => ({
 export const usePsychologistPatients = () => {
   const { t } = useI18n();
   const { session } = useAuth();
-  const isDemoMode = isAuthBypassEnabled();
-  const [demoPatients, setDemoPatients] = useState<PsychologistPatientViewDto[]>(
-    () => [...MOCK_PSYCHOLOGIST_PATIENTS]
-  );
   const [patients, setPatients] = useState<PsychologistPatientViewDto[]>([]);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -42,25 +34,13 @@ export const usePsychologistPatients = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState<PsychologistPatientSaveOrUpdateDto>(emptyForm());
 
-  const apiUnavailable = isDemoMode || !session?.accessToken;
-
   useEffect(() => {
     const timer = window.setTimeout(() => setDebouncedSearch(search), 300);
     return () => window.clearTimeout(timer);
   }, [search]);
 
   const loadPatients = useCallback(async () => {
-    if (isDemoMode) {
-      setLoading(true);
-      setError('');
-      setPatients(
-        filterMockPatients(demoPatients, debouncedSearch, includeDeleted)
-      );
-      setLoading(false);
-      return;
-    }
-
-    if (!session?.accessToken) {
+    if (!session) {
       setPatients([]);
       setLoading(false);
       return;
@@ -70,11 +50,7 @@ export const usePsychologistPatients = () => {
     setError('');
 
     try {
-      const list = await getPsychologistPatientsApi(
-        session.accessToken,
-        debouncedSearch,
-        includeDeleted
-      );
+      const list = await getPsychologistPatientsApi(debouncedSearch, includeDeleted);
       setPatients(list);
     } catch (loadError) {
       setError(
@@ -84,7 +60,7 @@ export const usePsychologistPatients = () => {
     } finally {
       setLoading(false);
     }
-  }, [isDemoMode, demoPatients, session?.accessToken, debouncedSearch, includeDeleted]);
+  }, [session, debouncedSearch, includeDeleted]);
 
   useEffect(() => {
     void loadPatients();
@@ -106,13 +82,6 @@ export const usePsychologistPatients = () => {
       password: '',
     });
     setModalOpen(true);
-  }, []);
-
-  const regeneratePatientPassword = useCallback(() => {
-    setForm((current) => ({
-      ...current,
-      password: generatePatientPassword(),
-    }));
   }, []);
 
   const closeModal = useCallback(() => {
@@ -140,7 +109,7 @@ export const usePsychologistPatients = () => {
 
     const normalizedPhone = phoneDigits(form.phone);
 
-    if (!form.id && !isDemoMode) {
+    if (!form.id) {
       if (!form.email?.trim()) {
         setError(t('PSYCHOLOGIST_PATIENTS_ERROR_EMAIL_REQUIRED'));
         return;
@@ -151,46 +120,13 @@ export const usePsychologistPatients = () => {
       }
     }
 
-    if (form.id && !isDemoMode && form.password?.trim()) {
-      if (form.password.trim().length < 5) {
-        setError(t('PSYCHOLOGIST_PATIENTS_ERROR_RESET_PASSWORD_SHORT'));
-        return;
-      }
-    }
-
-    if (isDemoMode) {
-      setSaving(true);
-      setError('');
-
-      if (form.id) {
-        setDemoPatients((current) =>
-          current.map((patient) =>
-            patient.id === form.id
-              ? {
-                  ...patient,
-                  fullName: form.fullName,
-                  phone: normalizedPhone,
-                }
-              : patient
-          )
-        );
-      } else {
-        const newPatient: PsychologistPatientViewDto = {
-          id: `demo-patient-${crypto.randomUUID()}`,
-          fullName: form.fullName,
-          phone: normalizedPhone,
-          lastConsultationAt: null,
-          isDeleted: false,
-        };
-        setDemoPatients((current) => [...current, newPatient]);
-      }
-
-      closeModal();
-      setSaving(false);
+    if (form.id && form.password?.trim() && form.password.trim().length < 5) {
+      setError(t('PSYCHOLOGIST_PATIENTS_ERROR_RESET_PASSWORD_SHORT'));
       return;
     }
 
-    if (!session?.accessToken) {
+    if (!session) {
+      setError(t('PSYCHOLOGIST_PATIENTS_API_UNAVAILABLE'));
       return;
     }
 
@@ -198,7 +134,7 @@ export const usePsychologistPatients = () => {
     setError('');
 
     try {
-      await saveOrEditPsychologistPatientApi(session.accessToken, {
+      await saveOrEditPsychologistPatientApi({
         ...form,
         phone: normalizedPhone,
         password: form.password?.trim() || undefined,
@@ -212,27 +148,19 @@ export const usePsychologistPatients = () => {
     } finally {
       setSaving(false);
     }
-  }, [isDemoMode, form, closeModal, loadPatients, session?.accessToken, t]);
+  }, [form, closeModal, loadPatients, session, t]);
 
   const deletePatient = useCallback(
     async (patientId: string) => {
+      if (!session) {
+        setError(t('PSYCHOLOGIST_PATIENTS_API_UNAVAILABLE'));
+        return;
+      }
+
       setError('');
 
-      if (isDemoMode) {
-        setDemoPatients((current) =>
-          current.map((patient) =>
-            patient.id === patientId ? { ...patient, isDeleted: true } : patient
-          )
-        );
-        return;
-      }
-
-      if (!session?.accessToken) {
-        return;
-      }
-
       try {
-        await deletePsychologistPatientApi(session.accessToken, patientId);
+        await deletePsychologistPatientApi(patientId);
         await loadPatients();
       } catch (deleteError) {
         setError(
@@ -242,8 +170,15 @@ export const usePsychologistPatients = () => {
         );
       }
     },
-    [isDemoMode, session?.accessToken, loadPatients]
+    [session, loadPatients, t]
   );
+
+  const regeneratePatientPassword = useCallback(() => {
+    setForm((current) => ({
+      ...current,
+      password: generatePatientPassword(),
+    }));
+  }, []);
 
   return {
     patients,
@@ -256,8 +191,6 @@ export const usePsychologistPatients = () => {
     error,
     modalOpen,
     form,
-    apiUnavailable,
-    isDemoMode,
     openCreateModal,
     openEditModal,
     closeModal,

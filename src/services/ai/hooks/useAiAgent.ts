@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
+import { postPatientChatApi, postPsychologistChatApi } from "@api";
 import { translateTemplate, useI18n } from "@i18n";
-import { safeAgentResponse } from "../agentGuardrails";
+import { useAuth } from "@services";
 
 export interface ChatMessage {
   id: string;
@@ -10,9 +11,19 @@ export interface ChatMessage {
   createdAt: string;
 }
 
-export const useAiAgent = (psychologistContext: string) => {
+export type UseAiAgentOptions = {
+  mode: "patient" | "psychologist";
+  patientId?: string;
+  clinicalContext?: string;
+  careContext?: string;
+};
+
+export const useAiAgent = (options: UseAiAgentOptions) => {
   const { t } = useI18n();
+  const { session } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
 
   const summary = useMemo(() => {
     if (!messages.length) return t("AI_SUMMARY_NO_INTERACTIONS");
@@ -27,30 +38,66 @@ export const useAiAgent = (psychologistContext: string) => {
     });
   }, [messages, t]);
 
-  const sendMessage = (text: string) => {
-    const cleanText = text.trim();
-    if (!cleanText) return;
+  const sendMessage = useCallback(
+    async (text: string) => {
+      const cleanText = text.trim();
+      if (!cleanText || sending) return;
 
-    const userMessage: ChatMessage = {
-      id: crypto.randomUUID(),
-      sender: "user",
-      text: cleanText,
-      createdAt: new Date().toISOString(),
-    };
+      if (!session) {
+        setError(t("AI_ERROR_NOT_AUTHENTICATED"));
+        return;
+      }
 
-    const agentMessage: ChatMessage = {
-      id: crypto.randomUUID(),
-      sender: "agent",
-      text: safeAgentResponse(cleanText, psychologistContext, t),
-      createdAt: new Date().toISOString(),
-    };
+      if (options.mode === "psychologist" && !options.patientId) {
+        setError(t("AI_ERROR_PATIENT_REQUIRED"));
+        return;
+      }
 
-    setMessages((prev) => [...prev, userMessage, agentMessage]);
-  };
+      const userMessage: ChatMessage = {
+        id: crypto.randomUUID(),
+        sender: "user",
+        text: cleanText,
+        createdAt: new Date().toISOString(),
+      };
+
+      setMessages((prev) => [...prev, userMessage]);
+      setSending(true);
+      setError("");
+
+      try {
+        const reply =
+          options.mode === "patient"
+            ? await postPatientChatApi(cleanText, options.careContext)
+            : await postPsychologistChatApi(
+                options.patientId!,
+                cleanText,
+                options.clinicalContext,
+              );
+
+        const agentMessage: ChatMessage = {
+          id: crypto.randomUUID(),
+          sender: "agent",
+          text: reply,
+          createdAt: new Date().toISOString(),
+        };
+        setMessages((prev) => [...prev, agentMessage]);
+      } catch (sendError) {
+        setError(
+          sendError instanceof Error ? sendError.message : t("AI_ERROR_GENERIC"),
+        );
+      } finally {
+        setSending(false);
+      }
+    },
+    [options, sending, session, t],
+  );
 
   return {
     messages,
     summary,
+    sending,
+    error,
     sendMessage,
+    setMessages,
   };
 };

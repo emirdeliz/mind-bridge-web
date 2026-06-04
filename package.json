@@ -12,6 +12,7 @@
     "deploy:vercel:prod": "bash scripts/deploy-vercel.sh --prod"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.49.1",
     "echarts": "^5.6.0",
     "echarts-for-react": "^3.0.6",

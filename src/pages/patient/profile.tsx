@@ -1,5 +1,5 @@
-import { ProfilePage } from "@components";
+export { ProfilePage as default } from '@components';
 
-export default function PatientProfilePage() {
-  return <ProfilePage area="patient" />;
-}
+import { withAuthSSR } from '@lib/auth/withAuthSSR';
+
+export const getServerSideProps = withAuthSSR({ role: 'patient' });

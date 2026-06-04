@@ -14,12 +14,10 @@ type PatientResponse = {
 };
 
 export const getPsychologistPatientsApi = async (
-  accessToken: string,
   search: string,
   includeDeleted: boolean
 ): Promise<PsychologistPatientViewDto[]> => {
   const response = await apiRequest<PatientsListResponse>('/psychologist/patients', {
-    accessToken,
     query: {
       name: search.trim() || undefined,
       includeDeleted,
@@ -31,7 +29,6 @@ export const getPsychologistPatientsApi = async (
 };
 
 export const saveOrEditPsychologistPatientApi = async (
-  accessToken: string,
   data: PsychologistPatientSaveOrUpdateDto
 ): Promise<PsychologistPatientViewDto> => {
   if (data.id) {
@@ -40,7 +37,6 @@ export const saveOrEditPsychologistPatientApi = async (
       `/psychologist/patients/${data.id}`,
       {
         method: 'PATCH',
-        accessToken,
         body: {
           fullName: data.fullName,
           phone: data.phone,
@@ -56,7 +52,6 @@ export const saveOrEditPsychologistPatientApi = async (
 
   const response = await apiRequest<PatientResponse>('/psychologist/patients', {
     method: 'POST',
-    accessToken,
     body: {
       fullName: data.fullName,
       phone: data.phone,
@@ -72,11 +67,9 @@ export const saveOrEditPsychologistPatientApi = async (
 };
 
 export const deletePsychologistPatientApi = async (
-  accessToken: string,
   patientId: string
 ): Promise<void> => {
   await apiRequest<void>(`/psychologist/patients/${patientId}`, {
     method: 'DELETE',
-    accessToken,
   });
 };

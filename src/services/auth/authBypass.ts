@@ -1,10 +1,8 @@
 import type { UserAuthViewDto, UserRole } from "@api";
 
-const SESSION_KEY = "mindbridge.session";
-
-/** Temporary dev bypass — disable with NEXT_PUBLIC_AUTH_BYPASS=false */
+/** UI flag only — server must set AUTH_BYPASS=true for bypass API/cookies. */
 export const isAuthBypassEnabled = (): boolean =>
-  process.env.NEXT_PUBLIC_AUTH_BYPASS !== "false";
+  process.env.NEXT_PUBLIC_AUTH_BYPASS === "true";
 
 export const createBypassSession = (role: UserRole): UserAuthViewDto => ({
   id: `bypass-${role}`,
@@ -13,17 +11,9 @@ export const createBypassSession = (role: UserRole): UserAuthViewDto => ({
   provider: "password",
   profile: {
     fullName: role === "patient" ? "Paciente Demo" : "Psicólogo Demo",
-    age: "30",
+    age: "",
     address: "Endereço demo",
     phone: "+55 11 90000-0000",
     language: "pt",
   },
 });
-
-export const persistBypassSession = (role: UserRole): UserAuthViewDto => {
-  const session = createBypassSession(role);
-  if (typeof window !== "undefined") {
-    window.localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-  }
-  return session;
-};

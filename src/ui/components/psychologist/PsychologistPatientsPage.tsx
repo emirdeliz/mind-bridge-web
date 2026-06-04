@@ -36,8 +36,6 @@ export const PsychologistPatientsPage = () => {
     error,
     modalOpen,
     form,
-    apiUnavailable,
-    isDemoMode,
     openCreateModal,
     openEditModal,
     closeModal,
@@ -98,7 +96,7 @@ export const PsychologistPatientsPage = () => {
               circle
               variant="secondary"
               outlined
-              clickable={!row.isDeleted && (isDemoMode || !apiUnavailable)}
+              clickable={!row.isDeleted}
               onClick={() => openEditModal(row)}
             >
               <Icon.Pencil sm white />
@@ -114,7 +112,7 @@ export const PsychologistPatientsPage = () => {
               circle
               variant="danger"
               outlined
-              clickable={!row.isDeleted && (isDemoMode || !apiUnavailable)}
+              clickable={!row.isDeleted}
               onClick={() => {
                 if (window.confirm(t('PSYCHOLOGIST_PATIENTS_DELETE_CONFIRM'))) {
                   void deletePatient(row.id);
@@ -127,7 +125,7 @@ export const PsychologistPatientsPage = () => {
         </Tooltip>
       </div>
     ),
-    [t, router, openEditModal, deletePatient, isDemoMode, apiUnavailable]
+    [t, router, openEditModal, deletePatient]
   );
 
   const tableData = useMemo((): PatientTableRow[] => {
@@ -172,14 +170,6 @@ export const PsychologistPatientsPage = () => {
       subtitle={t('PSYCHOLOGIST_PATIENTS_SUBTITLE')}
       variant="dashboard"
     >
-      {apiUnavailable ? (
-        <Card padding="md">
-          <Title s1 gray>
-            {t('PSYCHOLOGIST_PATIENTS_DEMO_HINT')}
-          </Title>
-        </Card>
-      ) : null}
-
       <Flex row wFull wrap alignCenter justifySpaceBetween gap4>
         <Flex row flex1 wFull gap4 alignCenter>
           <div className="min-w-0 flex-1 w-full">
@@ -234,7 +224,6 @@ export const PsychologistPatientsPage = () => {
         visible={modalOpen}
         form={form}
         saving={saving}
-        isDemoMode={isDemoMode}
         onClose={closeModal}
         onConfirm={() => void savePatient()}
         onChange={updateForm}

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import type { UserRole } from "@api";
 import { getRoleRoute, useAuth } from "@services";
 import { Button, Flex, Input, RouteLink, Select, Title } from "@atoms";
 import { useI18n } from "@i18n";
@@ -15,7 +14,6 @@ export const HomePage = () => {
     session,
     loading,
     loginWithPassword,
-    loginWithProvider,
     requestPasswordReset,
     enterBypass,
     isAuthBypassEnabled,
@@ -23,7 +21,7 @@ export const HomePage = () => {
   const authBypass = isAuthBypassEnabled();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<UserRole>("patient");
+  const [role, setRole] = useState<"patient" | "psychologist">("patient");
   const [error, setError] = useState("");
   const [forgotMode, setForgotMode] = useState(false);
   const [forgotMessage, setForgotMessage] = useState("");
@@ -34,7 +32,7 @@ export const HomePage = () => {
     void router.replace(getRoleRoute(session.role));
   }, [loading, session, router]);
 
-  const navigateByRole = (userRole: UserRole) => {
+  const navigateByRole = (userRole: "patient" | "psychologist") => {
     void router.replace(getRoleRoute(userRole));
   };
 
@@ -126,7 +124,7 @@ export const HomePage = () => {
             >
               <Select
                 value={role}
-                onChange={(value) => setRole(value as UserRole)}
+                onChange={(value) => setRole(value as "patient" | "psychologist")}
                 options={[
                   { label: t("ROLE_PATIENT"), value: "patient" },
                   { label: t("ROLE_PSYCHOLOGIST"), value: "psychologist" },
@@ -162,31 +160,7 @@ export const HomePage = () => {
                 </Button>
               </FormError>
             </Form>
-            <Flex col wFull mt6 gap4>
-              <Button
-                variant="secondary"
-                outlined
-                wFull
-                onClick={async () =>
-                  navigateByRole((await loginWithProvider("google", role)).role)
-                }
-              >
-                {t("CONTINUE_WITH_GOOGLE")}
-              </Button>
-              <Button
-                variant="secondary"
-                outlined
-                wFull
-                onClick={async () =>
-                  navigateByRole(
-                    (await loginWithProvider("facebook", role)).role
-                  )
-                }
-              >
-                {t("CONTINUE_WITH_FACEBOOK")}
-              </Button>
-            </Flex>
-            <Flex row justifyCenter alignCenter wrap gap2 mt4 wFull>
+            <Flex row justifyCenter alignCenter wrap gap2 mt6 wFull>
               <Title s1 gray center>
                 {t("AUTH_OR")}
               </Title>

@@ -12,7 +12,6 @@ type PsychologistPatientFormModalProps = {
   visible: boolean;
   form: PsychologistPatientSaveOrUpdateDto;
   saving: boolean;
-  isDemoMode?: boolean;
   onClose: () => void;
   onConfirm: () => void;
   onChange: (patch: Partial<PsychologistPatientSaveOrUpdateDto>) => void;
@@ -23,7 +22,6 @@ export const PsychologistPatientFormModal = ({
   visible,
   form,
   saving,
-  isDemoMode = false,
   onClose,
   onConfirm,
   onChange,
@@ -31,8 +29,8 @@ export const PsychologistPatientFormModal = ({
 }: PsychologistPatientFormModalProps) => {
   const { t } = useI18n();
   const isEdit = Boolean(form.id);
-  const showCreateAccount = !isEdit && !isDemoMode;
-  const showEditPasswordReset = isEdit && !isDemoMode;
+  const showCreateAccount = !isEdit;
+  const showEditPasswordReset = isEdit;
   const [passwordCopied, setPasswordCopied] = useState(false);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {

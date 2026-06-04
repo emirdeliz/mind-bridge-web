@@ -38,10 +38,10 @@ export const PsychologistDashboardPage = () => {
   const router = useRouter();
   const { t } = useI18n();
   const { loading, isPsychologist } = usePsychologistGuard();
-  const { snapshot, channelCenterText } = usePsychologistDashboardData();
-
   const patientId =
     typeof router.query.patientId === "string" ? router.query.patientId : undefined;
+  const { snapshot, channelCenterText, loading: dashboardLoading } =
+    usePsychologistDashboardData(patientId);
   const patientName =
     typeof router.query.patientName === "string" && router.query.patientName.trim()
       ? router.query.patientName
@@ -56,7 +56,7 @@ export const PsychologistDashboardPage = () => {
     }
   }, [router, patientId, loading]);
 
-  if (loading || !isPsychologist || !patientId) {
+  if (loading || dashboardLoading || !isPsychologist || !patientId) {
     return null;
   }
 

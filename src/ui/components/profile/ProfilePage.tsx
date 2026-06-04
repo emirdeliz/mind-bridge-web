@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 
 import type { UserRole } from "@api";
-import { getRoleRoute, isAuthBypassEnabled, useAuth } from "@services";
+import { getRoleRoute, useAuth } from "@services";
 import { useI18n } from "@i18n";
 import { AppShell, ProfileForm } from "@templates";
 
@@ -21,12 +21,12 @@ export const ProfilePage = ({ area }: ProfilePageProps) => {
       void router.replace("/");
       return;
     }
-    if (session.role !== area && !isAuthBypassEnabled()) {
+    if (session.role !== area) {
       void router.replace(getRoleRoute(session.role));
     }
   }, [area, loading, session, router]);
 
-  if (loading || !session || (session.role !== area && !isAuthBypassEnabled())) {
+  if (loading || !session || session.role !== area) {
     return null;
   }
 

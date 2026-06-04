@@ -20,8 +20,9 @@ type MeResponse = {
   profile: MeProfileResponse | null;
 };
 
-export const fetchMeApi = async (accessToken: string) => {
-  const response = await apiRequest<MeResponse>('/me', { accessToken });
+/** Browser-only; session is loaded via /api/auth/session on the server. */
+export const fetchMeApi = async () => {
+  const response = await apiRequest<MeResponse>('/me');
   const data = keysToCamel<MeResponse>(response);
   const profileRow = data.profile;
 

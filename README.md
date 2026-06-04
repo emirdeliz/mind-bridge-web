@@ -16,16 +16,17 @@ The platform is intended to let psychologists:
 ## Architecture
 
 ### Frontend
-- **React + Next.js**
-- Server-rendering and routing are handled through Next.js.
+- **React + Next.js (Pages Router)**
+- Protected routes use **SSR** (`getServerSideProps`) for auth gates.
+- Supabase and `mind-bridge-be` credentials stay **server-only**; the browser calls same-origin `/api/auth/*` and `/api/backend/*` (BFF proxy).
 
 ### UI and Styling
 - **Tailwind CSS**
 - Utility-first styling approach for fast and consistent UI development.
 
 ### Data Layer
-- **Supabase** (planned)
-- The integration with Supabase is defined in the architecture but **is not enabled yet** in the current stage.
+- **Supabase Auth** (server-side via `@supabase/ssr` cookies — no `NEXT_PUBLIC_SUPABASE_*`).
+- **mind-bridge-be** via `API_BASE_URL` (proxied as `/api/backend/...` from the browser).
 
 ### Testing
 - **Jest**
@@ -48,7 +49,16 @@ The platform is intended to let psychologists:
 
 The script runs a local `npm run build` before upload. Skip it with `SKIP_BUILD=1` if needed.
 
-Set environment variables in the Vercel dashboard (see `.env.example`). For production, set `NEXT_PUBLIC_AUTH_BYPASS=false`.
+Set environment variables in the Vercel dashboard (see `.env.example`):
+
+| Variable | Scope |
+|----------|--------|
+| `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `API_BASE_URL` | Server only |
+| `AUTH_BYPASS` | Server only (`true` for local demo auth) |
+| `NEXT_PUBLIC_AUTH_BYPASS` | Client UI flag for bypass buttons only |
+| `NEXT_PUBLIC_APP_URL` | Password-reset redirect |
+
+For production, set `NEXT_PUBLIC_AUTH_BYPASS=false` and `AUTH_BYPASS=false`.
 
 CI example: export `VERCEL_TOKEN` and optionally `VERCEL_ORG_ID` / `VERCEL_PROJECT_ID`, then run `npm run deploy:vercel:prod`.
 
