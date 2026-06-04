@@ -11,6 +11,7 @@ type PsychologistPatientFormModalProps = {
   visible: boolean;
   form: PsychologistPatientSaveOrUpdateDto;
   saving: boolean;
+  formError?: string;
   onClose: () => void;
   onConfirm: () => void;
   onChange: (patch: Partial<PsychologistPatientSaveOrUpdateDto>) => void;
@@ -20,6 +21,7 @@ export const PsychologistPatientFormModal = ({
   visible,
   form,
   saving,
+  formError,
   onClose,
   onConfirm,
   onChange,
@@ -57,7 +59,7 @@ export const PsychologistPatientFormModal = ({
                   className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-mb-accent/30 bg-mb-accent/15 shadow-glow"
                   aria-hidden
                 >
-                  <Icon.User lg white />
+                  <Icon.User nm white />
                 </div>
                 <div className="min-w-0 flex-1">
                   <Flex col wFull gap1>
@@ -93,7 +95,16 @@ export const PsychologistPatientFormModal = ({
 
             <div className="h-px w-full bg-mb-border/70" aria-hidden />
 
-            <form className="w-full" onSubmit={handleSubmit}>
+            <form className="w-full" onSubmit={handleSubmit} noValidate>
+              {formError ? (
+                <div
+                  className="mb-4 rounded-lg border border-red-500/30 bg-red-950/40 px-3 py-2 text-sm font-medium text-mb-danger"
+                  role="alert"
+                >
+                  {formError}
+                </div>
+              ) : null}
+
               <Flex col wFull gap1 alignStretch>
                 <InputForm
                   required
@@ -133,9 +144,12 @@ export const PsychologistPatientFormModal = ({
                       required
                       password
                       value={form.password ?? ''}
+                      maxLength={5}
                       placeholder={t('PSYCHOLOGIST_PATIENTS_MODAL_INITIAL_PASSWORD')}
                       helpText={t('PSYCHOLOGIST_PATIENTS_MODAL_INITIAL_PASSWORD_HELP')}
-                      onChange={(value) => onChange({ password: String(value) })}
+                      onChange={(value) =>
+                        onChange({ password: String(value).replace(/\D/g, '').slice(0, 5) })
+                      }
                     >
                       {t('PSYCHOLOGIST_PATIENTS_MODAL_INITIAL_PASSWORD')}
                     </InputForm>

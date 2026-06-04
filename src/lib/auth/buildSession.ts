@@ -46,12 +46,14 @@ export const buildUserAuthViewFromSupabase = async (
     return null;
   }
 
+  const profile = mapProfileRow(row as ProfileRow);
+
   return {
     id: userData.user.id,
     email: userData.user.email,
     role: row.role,
     provider: 'password',
-    profile: mapProfileRow(row as ProfileRow),
+    profile,
   };
 };
 

@@ -25,7 +25,7 @@ export const UserAccountMenu = () => {
   if (!session) return null;
 
   const initials = getProfileInitials(
-    session.profile.fullName,
+    session.profile?.fullName ?? "",
     session.email.slice(0, 2).toUpperCase(),
   );
   const profileHref = getProfileRoute(session.role);

@@ -122,7 +122,7 @@ export const HomePage = () => {
                 setError("");
                 try {
                   const user = await loginWithPassword(email, password);
-                  if (!user) {
+                  if (!user?.role) {
                     setError(t("INVALID_CREDENTIALS"));
                     return;
                   }

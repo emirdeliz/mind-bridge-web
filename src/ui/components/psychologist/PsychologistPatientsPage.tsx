@@ -34,6 +34,7 @@ export const PsychologistPatientsPage = () => {
     loading,
     saving,
     error,
+    formError,
     modalOpen,
     form,
     openCreateModal,
@@ -223,6 +224,7 @@ export const PsychologistPatientsPage = () => {
         visible={modalOpen}
         form={form}
         saving={saving}
+        formError={formError}
         onClose={closeModal}
         onConfirm={() => void savePatient()}
         onChange={updateForm}

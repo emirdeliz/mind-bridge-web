@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -24,6 +25,7 @@ import {
   saveProfileApi,
 } from "@api";
 import { isAuthBypassEnabled } from "./authBypass";
+import { normalizeSession } from "./sessionUtils";
 
 export type AuthPageProps = {
   session: UserAuthViewDto | null;
@@ -52,21 +54,30 @@ type AuthProviderProps = {
 };
 
 export const AuthProvider = ({ children, initialAuth }: AuthProviderProps) => {
-  const [session, setSession] = useState<UserAuthViewDto | null>(
-    initialAuth?.session ?? null
+  const hydratedFromPageProps = useRef(false);
+
+  const [session, setSession] = useState<UserAuthViewDto | null>(() =>
+    normalizeSession(initialAuth?.session)
   );
   const [loading, setLoading] = useState(initialAuth?.loading ?? true);
 
   useEffect(() => {
-    if (initialAuth) {
-      setSession(initialAuth.session);
-      setLoading(initialAuth.loading);
+    if (initialAuth === undefined || hydratedFromPageProps.current) {
+      return;
+    }
+    hydratedFromPageProps.current = true;
+    setLoading(initialAuth.loading);
+    const next = normalizeSession(initialAuth.session);
+    if (next) {
+      setSession(next);
+    } else if (!initialAuth.loading) {
+      setSession(null);
     }
   }, [initialAuth]);
 
   const refreshSession = useCallback(async () => {
     setLoading(true);
-    const currentSession = await getSessionApi();
+    const currentSession = normalizeSession(await getSessionApi());
     setSession(currentSession);
     setLoading(false);
   }, []);
@@ -78,7 +89,7 @@ export const AuthProvider = ({ children, initialAuth }: AuthProviderProps) => {
   }, [initialAuth, refreshSession]);
 
   const loginWithPassword = useCallback(async (email: string, password: string) => {
-    const loggedUser = await loginWithPasswordApi(email, password);
+    const loggedUser = normalizeSession(await loginWithPasswordApi(email, password));
     setSession(loggedUser);
     return loggedUser;
   }, []);
@@ -90,7 +101,7 @@ export const AuthProvider = ({ children, initialAuth }: AuthProviderProps) => {
   }, []);
 
   const saveProfile = useCallback(async (profile: UserProfile) => {
-    const updated = await saveProfileApi(profile);
+    const updated = normalizeSession(await saveProfileApi(profile));
     setSession(updated);
     return updated;
   }, []);
@@ -105,7 +116,10 @@ export const AuthProvider = ({ children, initialAuth }: AuthProviderProps) => {
   }, []);
 
   const enterBypass = useCallback(async (role: UserRole) => {
-    const user = await enterBypassApi(role);
+    const user = normalizeSession(await enterBypassApi(role));
+    if (!user) {
+      throw new Error("Bypass session is invalid");
+    }
     setSession(user);
     return user;
   }, []);

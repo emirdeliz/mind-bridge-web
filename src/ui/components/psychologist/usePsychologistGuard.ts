@@ -9,7 +9,7 @@ export const usePsychologistGuard = () => {
 
   useEffect(() => {
     if (loading) return;
-    if (!session) {
+    if (!session?.role) {
       void router.replace("/");
       return;
     }

@@ -27,6 +27,7 @@ export const usePsychologistPatients = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [formError, setFormError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState<PsychologistPatientSaveOrUpdateDto>(emptyForm());
 
@@ -64,6 +65,7 @@ export const usePsychologistPatients = () => {
 
   const openCreateModal = useCallback(() => {
     setForm(emptyForm());
+    setFormError('');
     setModalOpen(true);
   }, []);
 
@@ -74,29 +76,32 @@ export const usePsychologistPatients = () => {
       phone: patient.phone ?? '',
       password: '',
     });
+    setFormError('');
     setModalOpen(true);
   }, []);
 
   const closeModal = useCallback(() => {
     setModalOpen(false);
     setForm(emptyForm());
+    setFormError('');
   }, []);
 
   const updateForm = useCallback(
     (patch: Partial<PsychologistPatientSaveOrUpdateDto>) => {
       setForm((current) => ({ ...current, ...patch }));
+      setFormError('');
     },
     []
   );
 
   const savePatient = useCallback(async () => {
     if (!form.fullName?.trim()) {
-      setError(t('PSYCHOLOGIST_PATIENTS_ERROR_NAME_REQUIRED'));
+      setFormError(t('PSYCHOLOGIST_PATIENTS_ERROR_NAME_REQUIRED'));
       return;
     }
 
     if (!isValidPhone(form.phone)) {
-      setError(t('PSYCHOLOGIST_PATIENTS_ERROR_PHONE_REQUIRED'));
+      setFormError(t('PSYCHOLOGIST_PATIENTS_ERROR_PHONE_REQUIRED'));
       return;
     }
 
@@ -104,27 +109,27 @@ export const usePsychologistPatients = () => {
 
     if (!form.id) {
       if (!form.email?.trim()) {
-        setError(t('PSYCHOLOGIST_PATIENTS_ERROR_EMAIL_REQUIRED'));
+        setFormError(t('PSYCHOLOGIST_PATIENTS_ERROR_EMAIL_REQUIRED'));
         return;
       }
       if (!/^\d{5}$/.test(form.password ?? '')) {
-        setError(t('PSYCHOLOGIST_PATIENTS_ERROR_PASSWORD_INVALID'));
+        setFormError(t('PSYCHOLOGIST_PATIENTS_ERROR_PASSWORD_INVALID'));
         return;
       }
     }
 
     if (form.id && form.password?.trim() && form.password.trim().length < 5) {
-      setError(t('PSYCHOLOGIST_PATIENTS_ERROR_RESET_PASSWORD_SHORT'));
+      setFormError(t('PSYCHOLOGIST_PATIENTS_ERROR_RESET_PASSWORD_SHORT'));
       return;
     }
 
     if (!session) {
-      setError(t('PSYCHOLOGIST_PATIENTS_API_UNAVAILABLE'));
+      setFormError(t('PSYCHOLOGIST_PATIENTS_API_UNAVAILABLE'));
       return;
     }
 
     setSaving(true);
-    setError('');
+    setFormError('');
 
     try {
       // Patient account via API — psychologist session stays active (no public register redirect).
@@ -136,7 +141,7 @@ export const usePsychologistPatients = () => {
       closeModal();
       await loadPatients();
     } catch (saveError) {
-      setError(
+      setFormError(
         saveError instanceof Error ? saveError.message : 'Failed to save patient'
       );
     } finally {
@@ -176,6 +181,7 @@ export const usePsychologistPatients = () => {
     loading,
     saving,
     error,
+    formError,
     modalOpen,
     form,
     openCreateModal,
