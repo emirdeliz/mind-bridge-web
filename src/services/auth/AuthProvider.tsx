@@ -34,7 +34,8 @@ type AuthContextValue = {
   session: UserAuthViewDto | null;
   loading: boolean;
   loginWithPassword: (email: string, password: string) => Promise<UserAuthViewDto | null>;
-  registerUser: (payload: UserAuthSaveOrUpdateDto) => Promise<UserAuthViewDto>;
+  /** Self-service signup at /register only — clears session; do not use for psychologist patient modal. */
+  registerPublicAccount: (payload: UserAuthSaveOrUpdateDto) => Promise<void>;
   saveProfile: (profile: UserProfile) => Promise<UserAuthViewDto | null>;
   logout: () => Promise<void>;
   requestPasswordReset: (email: string) => Promise<{ ok: boolean; message?: string }>;
@@ -82,10 +83,10 @@ export const AuthProvider = ({ children, initialAuth }: AuthProviderProps) => {
     return loggedUser;
   }, []);
 
-  const registerUser = useCallback(async (payload: UserAuthSaveOrUpdateDto) => {
-    const createdUser = await registerUserApi(payload);
-    setSession(createdUser);
-    return createdUser;
+  const registerPublicAccount = useCallback(async (payload: UserAuthSaveOrUpdateDto) => {
+    await registerUserApi(payload);
+    await logoutApi();
+    setSession(null);
   }, []);
 
   const saveProfile = useCallback(async (profile: UserProfile) => {
@@ -114,7 +115,7 @@ export const AuthProvider = ({ children, initialAuth }: AuthProviderProps) => {
       session,
       loading,
       loginWithPassword,
-      registerUser,
+      registerPublicAccount,
       saveProfile,
       logout,
       requestPasswordReset,
@@ -126,7 +127,7 @@ export const AuthProvider = ({ children, initialAuth }: AuthProviderProps) => {
       session,
       loading,
       loginWithPassword,
-      registerUser,
+      registerPublicAccount,
       saveProfile,
       logout,
       requestPasswordReset,

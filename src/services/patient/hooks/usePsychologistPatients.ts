@@ -127,6 +127,7 @@ export const usePsychologistPatients = () => {
     setError('');
 
     try {
+      // Patient account via API — psychologist session stays active (no public register redirect).
       await saveOrEditPsychologistPatientApi({
         ...form,
         phone: normalizedPhone,
