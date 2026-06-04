@@ -6,7 +6,7 @@ import {
   getPsychologistPatientsApi,
   saveOrEditPsychologistPatientApi,
 } from '@api';
-import { isValidPhone, phoneDigits } from '@helpers';
+import { isValidPatientInitialPassword, isValidPhone, phoneDigits } from '@helpers';
 import { useI18n } from '@i18n';
 import { useAuth } from '@services';
 
@@ -112,7 +112,7 @@ export const usePsychologistPatients = () => {
         setFormError(t('PSYCHOLOGIST_PATIENTS_ERROR_EMAIL_REQUIRED'));
         return;
       }
-      if (!/^\d{5}$/.test(form.password ?? '')) {
+      if (!isValidPatientInitialPassword(form.password)) {
         setFormError(t('PSYCHOLOGIST_PATIENTS_ERROR_PASSWORD_INVALID'));
         return;
       }

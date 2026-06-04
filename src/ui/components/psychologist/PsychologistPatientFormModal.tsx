@@ -145,11 +145,10 @@ export const PsychologistPatientFormModal = ({
                       password
                       value={form.password ?? ''}
                       maxLength={5}
+                      autoComplete="new-password"
                       placeholder={t('PSYCHOLOGIST_PATIENTS_MODAL_INITIAL_PASSWORD')}
                       helpText={t('PSYCHOLOGIST_PATIENTS_MODAL_INITIAL_PASSWORD_HELP')}
-                      onChange={(value) =>
-                        onChange({ password: String(value).replace(/\D/g, '').slice(0, 5) })
-                      }
+                      onChange={(value) => onChange({ password: String(value) })}
                     >
                       {t('PSYCHOLOGIST_PATIENTS_MODAL_INITIAL_PASSWORD')}
                     </InputForm>

@@ -20,6 +20,13 @@ export const getNumbersOfString = (value: string): string => value.replace(/\D/g
 export const phoneDigits = (phone: string | null | undefined): string =>
   (phone ?? "").replace(/\D/g, "");
 
+/** Senha inicial do paciente (cadastro pelo psicólogo): exatamente 5 caracteres alfanuméricos. */
+export const PATIENT_INITIAL_PASSWORD_REGEX = /^[a-zA-Z0-9]{5}$/;
+
+export const isValidPatientInitialPassword = (
+  password: string | null | undefined
+): boolean => PATIENT_INITIAL_PASSWORD_REGEX.test(password ?? "");
+
 export const isValidPhone = (phone: string | null | undefined): boolean => {
   const digits = phoneDigits(phone);
   return digits.length >= 10 && digits.length <= 11;

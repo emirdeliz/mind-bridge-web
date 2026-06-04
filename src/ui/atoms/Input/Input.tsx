@@ -38,6 +38,8 @@ export interface InputProps extends FormControl {
   rows?: number;
   alignCenter?: boolean;
   password?: boolean;
+  /** Apenas dígitos (ex.: PIN de 5 números). Usa `type="text"` + `inputMode="numeric"`. */
+  digitsOnly?: boolean;
   id?: string | number;
   dataTestId?: string | number;
   readOnly?: boolean;

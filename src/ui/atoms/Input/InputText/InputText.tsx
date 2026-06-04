@@ -42,6 +42,7 @@ export const InputText = ({
   phone,
   barcode,
   password,
+  digitsOnly,
   onChange,
   hasError,
   type,
@@ -63,19 +64,26 @@ export const InputText = ({
 
   const domProps = filterInputDomProps(props);
 
+  const inputType = digitsOnly ? 'text' : password ? 'password' : type || 'text';
+
   return (
     <input
       {...domProps}
       id={id}
-      type={password ? 'password' : (type || 'text')}
+      type={inputType}
+      inputMode={digitsOnly ? 'numeric' : domProps.inputMode}
+      autoComplete={digitsOnly ? 'off' : domProps.autoComplete}
       maxLength={maxLength || INPUT_TEXT_MAX_LENGTH_DEFAULT}
       data-error={hasError ? 'true' : 'false'}
       value={String(value)}
       className={inputClasses}
       onChange={(e) => {
         const eventMask = { ...e };
-        if ((cpf || cnpj || phone || barcode) && eventMask.target) {
-          const valueMask = helpers.getNumbersOfString(e?.target.value);
+        if (eventMask.target && (cpf || cnpj || phone || barcode || digitsOnly)) {
+          let valueMask = helpers.getNumbersOfString(e.target.value);
+          if (digitsOnly && maxLength) {
+            valueMask = valueMask.slice(0, maxLength);
+          }
           eventMask.target.value = valueMask;
         }
         onChange &&

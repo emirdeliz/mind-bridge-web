@@ -27,6 +27,7 @@ export const INPUT_CUSTOM_PROP_KEYS = [
   'textarea',
   'date',
   'password',
+  'digitsOnly',
   'transparent',
   'countryState',
   'alignCenter',

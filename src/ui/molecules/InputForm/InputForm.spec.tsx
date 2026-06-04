@@ -1,4 +1,4 @@
-import { render } from '@test';
+import { fireEvent, render, screen } from '@test';
 import { InputForm } from './InputForm';
 
 describe('/ui/molecules/InputForm', () => {
@@ -34,5 +34,17 @@ describe('/ui/molecules/InputForm', () => {
 
     const inputPass = container.querySelector(`#${PASSWORD_ID}`);
     expect(inputPass).toBeInTheDocument();
+  });
+
+  it('digitsOnly accepts numbers and strips letters', () => {
+    const onChange = jest.fn();
+    render(
+      <InputForm digitsOnly maxLength={5} id="patient-pin" value="" onChange={onChange}>
+        PIN
+      </InputForm>
+    );
+
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '12a3' } });
+    expect(onChange).toHaveBeenLastCalledWith('123');
   });
 });
