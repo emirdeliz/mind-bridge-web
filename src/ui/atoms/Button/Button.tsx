@@ -1,4 +1,5 @@
 import { MouseEventHandler, ReactNode } from 'react';
+import { filterButtonDomProps } from '@helpers/filterDomProps';
 
 export interface ButtonProps {
   children?: ReactNode;
@@ -132,9 +133,11 @@ export const Button = ({
     outlined ? 'bg-transparent' : '',
   ].filter(Boolean).join(' ');
 
+  const domProps = filterButtonDomProps(props);
+
   return (
     <button
-      {...props}
+      {...domProps}
       title={title}
       disabled={!clickable}
       data-testid={dataTestId}

@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { filterInputDomProps } from '@helpers/filterDomProps';
 import { InputProps } from '../Input';
 
 const INPUT_NUMBER_MAX_LENGTH_DEFAULT = 12;
@@ -142,9 +143,11 @@ export const InputNumber = ({
     ? internalValue.replace('.', ',')
     : String(value ?? '');
 
+  const domProps = filterInputDomProps(props);
+
   return (
     <input
-      {...props}
+      {...domProps}
       id={id}
       value={displayValue}
       maxLength={maxLength || INPUT_NUMBER_MAX_LENGTH_DEFAULT}

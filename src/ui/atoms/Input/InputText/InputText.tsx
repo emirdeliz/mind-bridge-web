@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useMemo } from 'react';
 import * as helpers from '@helpers';
+import { filterInputDomProps } from '@helpers/filterDomProps';
 import { applyMaskMaybe, InputProps } from '../Input';
 
 const INPUT_TEXT_MAX_LENGTH_DEFAULT = 255;
@@ -60,9 +61,11 @@ export const InputText = ({
     .filter(Boolean)
     .join(' ');
 
+  const domProps = filterInputDomProps(props);
+
   return (
     <input
-      {...props}
+      {...domProps}
       id={id}
       type={password ? 'password' : (type || 'text')}
       maxLength={maxLength || INPUT_TEXT_MAX_LENGTH_DEFAULT}

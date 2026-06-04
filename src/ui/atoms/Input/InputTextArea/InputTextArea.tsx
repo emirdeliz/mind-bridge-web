@@ -1,4 +1,5 @@
 import React from 'react';
+import { filterInputDomProps } from '@helpers/filterDomProps';
 import { InputProps } from '../Input';
 
 const TEXT_AREA_MAX_LENGTH = 65_535;
@@ -16,9 +17,11 @@ export const InputTextArea = ({ maxLength, rows, dataTestId, hasError, disabled,
     isReadonly && 'mb-field-readonly',
   ].filter(Boolean).join(' ');
 
+  const domProps = filterInputDomProps(props);
+
   return (
     <textarea
-      {...props}
+      {...domProps}
       id={id}
       rows={rows}
       disabled={disabled}

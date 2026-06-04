@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { filterLabelDomProps } from '@helpers/filterDomProps';
 
 export interface LabelProps {
   children: ReactNode;
@@ -29,8 +30,10 @@ export const Label = ({ children, target, fw3, n2, fs3, error, disabled, ...prop
     !disabled && !error && 'hover:text-gray-800',
   ].filter(Boolean).join(' ');
 
+  const domProps = filterLabelDomProps(props);
+
   return (
-    <label className={labelClasses} htmlFor={String(target)} {...props}>
+    <label className={labelClasses} htmlFor={String(target)} {...domProps}>
       {children}
     </label>
   );

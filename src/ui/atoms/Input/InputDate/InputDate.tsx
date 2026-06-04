@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { filterInputDomProps } from '@helpers/filterDomProps';
 import { InputProps } from '../Input';
 
 export const InputDate = ({
@@ -38,9 +39,11 @@ export const InputDate = ({
     hasError && 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200',
   ].filter(Boolean).join(' ');
 
+  const domProps = filterInputDomProps(props);
+
   return (
     <input
-      {...props}
+      {...domProps}
       id={String(id)}
       data-testid={dataTestId || ''}
       data-error={hasError ? 'true' : 'false'}

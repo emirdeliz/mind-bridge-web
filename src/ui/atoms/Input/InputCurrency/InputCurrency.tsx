@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { filterInputDomProps } from '@helpers/filterDomProps';
 import { applyMaskMaybe, InputProps } from '../Input';
 
 const INPUT_CURRENCY_MAX_LENGTH_DEFAULT = 12;
@@ -48,9 +49,11 @@ export const InputCurrency = ({
     hasError && 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200',
   ].filter(Boolean).join(' ');
 
+  const domProps = filterInputDomProps(props);
+
   return (
     <input
-      {...props}
+      {...domProps}
       id={id}
       value={value}
       maxLength={maxLength || INPUT_CURRENCY_MAX_LENGTH_DEFAULT}

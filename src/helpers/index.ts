@@ -1,6 +1,12 @@
 export * from './caseTransform';
-
-export const filterDOMProps = <T extends object>(props: T): T => props;
+export {
+  filterDOMProps,
+  filterInputDomProps,
+  filterLabelDomProps,
+  filterButtonDomProps,
+  omitProps,
+  INPUT_CUSTOM_PROP_KEYS,
+} from './filterDomProps';
 
 export const getProfileInitials = (fullName: string, fallback = "??"): string => {
   const parts = fullName.trim().split(/\s+/).filter(Boolean);
