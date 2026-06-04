@@ -46,13 +46,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   });
 
   if (error || !data.session?.access_token) {
-    return unauthorized(res);
+    return unauthorized(res, error?.message ?? 'Invalid email or password');
   }
 
-  const session = await buildUserAuthView(data.session.access_token);
+  const session = await buildUserAuthView(supabase, data.session.access_token);
   if (!session) {
     await supabase.auth.signOut();
-    return unauthorized(res);
+    return unauthorized(
+      res,
+      'Perfil não encontrado. Verifique as migrations do Supabase ou contate o suporte.'
+    );
   }
 
   return res.status(200).json({ session: toPublicSession(session) });

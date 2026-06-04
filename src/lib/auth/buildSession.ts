@@ -1,63 +1,66 @@
-import type { UserAuthViewDto, UserProfile } from '@api';
-import { keysToCamel } from '@helpers';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
-import { serverApiRequest } from '../http/serverApiRequest';
+import type { UserAuthViewDto, UserProfile, UserRole } from '@api';
 
-type MeProfileResponse = {
+type ProfileRow = {
   id: string;
   email: string;
-  role: UserAuthViewDto['role'];
-  fullName: string | null;
+  role: UserRole;
+  full_name: string | null;
   age: string | null;
   address: string | null;
   phone: string | null;
   language: UserProfile['language'] | null;
 };
 
-type MeResponse = {
-  id: string;
-  email: string;
-  role: UserAuthViewDto['role'];
-  profile: MeProfileResponse | null;
-};
+const mapProfileRow = (row: ProfileRow): UserProfile => ({
+  fullName: row.full_name ?? '',
+  age: row.age ?? '',
+  address: row.address ?? '',
+  phone: row.phone ?? '',
+  language: row.language ?? 'pt',
+});
 
-export const fetchMeFromToken = async (accessToken: string) => {
-  const response = await serverApiRequest<MeResponse>('/me', { accessToken });
-  const data = keysToCamel<MeResponse>(response);
-  const profileRow = data.profile;
+const isUserRole = (value: unknown): value is UserRole =>
+  value === 'patient' || value === 'psychologist';
 
-  const profile: UserProfile = {
-    fullName: profileRow?.fullName ?? '',
-    age: profileRow?.age ?? '',
-    address: profileRow?.address ?? '',
-    phone: profileRow?.phone ?? '',
-    language: profileRow?.language ?? 'pt',
-  };
-
-  return {
-    id: data.id,
-    email: data.email,
-    role: data.role,
-    profile,
-  };
-};
-
-export const buildUserAuthView = async (
+/** Loads session from Supabase Auth + profiles (no mind-bridge-be required). */
+export const buildUserAuthViewFromSupabase = async (
+  supabase: SupabaseClient,
   accessToken: string
 ): Promise<UserAuthViewDto | null> => {
-  try {
-    const me = await fetchMeFromToken(accessToken);
-    return {
-      id: me.id,
-      email: me.email,
-      role: me.role,
-      provider: 'password',
-      profile: me.profile,
-    };
-  } catch {
+  const { data: userData, error: userError } =
+    await supabase.auth.getUser(accessToken);
+
+  if (userError || !userData.user?.id || !userData.user.email) {
     return null;
   }
+
+  const { data: row, error: profileError } = await supabase
+    .from('profiles')
+    .select('id, email, role, full_name, age, address, phone, language')
+    .eq('id', userData.user.id)
+    .maybeSingle();
+
+  if (profileError || !row || !isUserRole(row.role)) {
+    return null;
+  }
+
+  return {
+    id: userData.user.id,
+    email: userData.user.email,
+    role: row.role,
+    provider: 'password',
+    profile: mapProfileRow(row as ProfileRow),
+  };
 };
+
+/** @deprecated Use buildUserAuthViewFromSupabase — kept as alias for auth routes. */
+export const buildUserAuthView = async (
+  supabase: SupabaseClient,
+  accessToken: string
+): Promise<UserAuthViewDto | null> =>
+  buildUserAuthViewFromSupabase(supabase, accessToken);
 
 /** Safe for JSON props and /api/auth/session — never includes accessToken. */
 export const toPublicSession = (session: UserAuthViewDto): UserAuthViewDto => ({

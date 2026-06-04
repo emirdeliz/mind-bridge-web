@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import type { UserRole } from "@api";
 import { isValidPhone, phoneDigits } from "@helpers";
 import { getRoleRoute, useAuth } from "@services";
-import { Button, Flex, Input, RouteLink, Select, Title } from "@atoms";
+import { Button, Flex, Input, RouteLink, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card, Form, FormError } from "@molecules";
 import { AppShell } from "@templates";
+
+const PUBLIC_REGISTER_ROLE = "psychologist" as const;
 
 export const RegisterPage = () => {
   const router = useRouter();
@@ -16,7 +17,6 @@ export const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<UserRole>("patient");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -32,7 +32,10 @@ export const RegisterPage = () => {
     <AppShell title={t("APP_TITLE")} subtitle={t("REGISTER_SUBTITLE")} variant="auth">
       <Card padding="lg" shadow="md">
         <Title fs3 fw3 mb2>
-          {t("REGISTER")}
+          {t("REGISTER_PSYCHOLOGIST_TITLE")}
+        </Title>
+        <Title s2 gray mb2 block leadingRelaxed>
+          {t("REGISTER_PSYCHOLOGIST_HINT")}
         </Title>
         <Form
           onSubmit={async (event) => {
@@ -59,7 +62,7 @@ export const RegisterPage = () => {
                 email: email.trim(),
                 phone: phoneDigits(phone),
                 password,
-                role,
+                role: PUBLIC_REGISTER_ROLE,
                 provider: "password",
               });
               void router.replace("/?registered=1");
@@ -72,14 +75,6 @@ export const RegisterPage = () => {
             }
           }}
         >
-          <Select
-            value={role}
-            onChange={(value) => setRole(value as UserRole)}
-            options={[
-              { label: t("ROLE_PATIENT"), value: "patient" },
-              { label: t("ROLE_PSYCHOLOGIST"), value: "psychologist" },
-            ]}
-          />
           <Input
             placeholder={t("EMAIL")}
             value={email}
@@ -102,7 +97,7 @@ export const RegisterPage = () => {
           />
           <FormError error={error}>
             <Button type="submit" wFull>
-              {t("CREATE_ACCOUNT")}
+              {t("CREATE_PSYCHOLOGIST_ACCOUNT")}
             </Button>
           </FormError>
         </Form>

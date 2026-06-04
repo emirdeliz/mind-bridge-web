@@ -24,9 +24,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return badRequest(res, 'Invalid registration payload');
   }
 
+  if (payload.role !== 'psychologist') {
+    return badRequest(
+      res,
+      'Only psychologists can register here. Patients are created by their psychologist.'
+    );
+  }
+
   if (isServerAuthBypassEnabled()) {
-    setBypassCookie(res, payload.role);
-    return res.status(200).json({ session: createBypassSession(payload.role) });
+    setBypassCookie(res, 'psychologist');
+    return res.status(200).json({ session: createBypassSession('psychologist') });
   }
 
   const password = payload.password?.trim();
@@ -41,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     email: payload.email,
     password,
     options: {
-      data: { role: payload.role, phone: normalizedPhone },
+      data: { role: 'psychologist', phone: normalizedPhone },
     },
   });
 
@@ -61,10 +68,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: profileError.message });
   }
 
-  const session = await buildUserAuthView(data.session.access_token);
+  const session = await buildUserAuthView(supabase, data.session.access_token);
   if (!session) {
     await supabase.auth.signOut();
-    return unauthorized(res);
+    return unauthorized(
+      res,
+      'Conta criada, mas o perfil não foi encontrado. Execute as migrations do Supabase.'
+    );
   }
 
   return res.status(200).json({ session: toPublicSession(session) });

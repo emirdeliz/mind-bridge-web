@@ -34,7 +34,7 @@ export const getServerSession = async (
     return null;
   }
 
-  const user = await buildUserAuthView(data.session.access_token);
+  const user = await buildUserAuthView(supabase, data.session.access_token);
   if (!user) {
     await supabase.auth.signOut();
     return null;

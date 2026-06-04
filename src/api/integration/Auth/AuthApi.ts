@@ -53,15 +53,11 @@ export const loginWithPasswordApi = async (
   email: string,
   password: string
 ): Promise<UserAuthViewDto | null> => {
-  try {
-    const data = await authFetch<AuthMutationResponse>('/api/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    });
-    return data?.session ?? null;
-  } catch {
-    return null;
-  }
+  const data = await authFetch<AuthMutationResponse>('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  });
+  return data?.session ?? null;
 };
 
 export const registerUserApi = async (

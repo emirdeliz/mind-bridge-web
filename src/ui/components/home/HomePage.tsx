@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import { getRoleRoute, useAuth } from "@services";
-import { Button, Flex, Input, RouteLink, Select, Title } from "@atoms";
+import { Button, Flex, Input, RouteLink, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card, Form, FormError } from "@molecules";
 import { AppShell } from "@templates";
@@ -21,7 +21,6 @@ export const HomePage = () => {
   const authBypass = isAuthBypassEnabled();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"patient" | "psychologist">("patient");
   const [error, setError] = useState("");
   const [forgotMode, setForgotMode] = useState(false);
   const [forgotMessage, setForgotMessage] = useState("");
@@ -121,22 +120,22 @@ export const HomePage = () => {
               onSubmit={async (event) => {
                 event.preventDefault();
                 setError("");
-                const user = await loginWithPassword(email, password);
-                if (!user) {
-                  setError(t("INVALID_CREDENTIALS"));
-                  return;
+                try {
+                  const user = await loginWithPassword(email, password);
+                  if (!user) {
+                    setError(t("INVALID_CREDENTIALS"));
+                    return;
+                  }
+                  navigateByRole(user.role);
+                } catch (loginError) {
+                  setError(
+                    loginError instanceof Error
+                      ? loginError.message
+                      : t("INVALID_CREDENTIALS")
+                  );
                 }
-                navigateByRole(user.role);
               }}
             >
-              <Select
-                value={role}
-                onChange={(value) => setRole(value as "patient" | "psychologist")}
-                options={[
-                  { label: t("ROLE_PATIENT"), value: "patient" },
-                  { label: t("ROLE_PSYCHOLOGIST"), value: "psychologist" },
-                ]}
-              />
               <Input
                 placeholder={t("EMAIL")}
                 value={email}
@@ -172,7 +171,7 @@ export const HomePage = () => {
                 {t("AUTH_OR")}
               </Title>
               <RouteLink href="/register" inline>
-                {t("AUTH_REGISTER_LINK")}
+                {t("AUTH_REGISTER_PSYCHOLOGIST_LINK")}
               </RouteLink>
             </Flex>
           </>

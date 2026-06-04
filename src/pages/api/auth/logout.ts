@@ -7,15 +7,17 @@ import { isServerAuthBypassEnabled } from '@lib/supabase/env';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
-    return methodNotAllowed(res);
+    methodNotAllowed(res);
+    return;
   }
 
   if (isServerAuthBypassEnabled()) {
     clearBypassCookie(res);
-    return res.status(204).end();
+    res.status(204).end();
+    return;
   }
 
   const supabase = createSupabaseServerClient(req, res);
   await supabase.auth.signOut();
-  return res.status(204).end();
+  res.status(204).end();
 }
