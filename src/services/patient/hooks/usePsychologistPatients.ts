@@ -10,17 +10,13 @@ import {
   filterMockPatients,
   MOCK_PSYCHOLOGIST_PATIENTS,
 } from '@constants';
-import { generatePatientPassword } from '@helpers';
+import {
+  generatePatientPassword,
+  isValidPhone,
+  phoneDigits,
+} from '@helpers';
 import { useI18n } from '@i18n';
 import { isAuthBypassEnabled, useAuth } from '@services';
-
-const phoneDigits = (phone: string | null | undefined) =>
-  (phone ?? '').replace(/\D/g, '');
-
-const isValidPhone = (phone: string | null | undefined) => {
-  const digits = phoneDigits(phone);
-  return digits.length >= 10 && digits.length <= 11;
-};
 
 const emptyForm = (): PsychologistPatientSaveOrUpdateDto => ({
   fullName: '',

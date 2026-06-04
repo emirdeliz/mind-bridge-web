@@ -15,6 +15,14 @@ export const getNumbersOfString = (value: string): string => value.replace(/\D/g
 export const generatePatientPassword = (): string =>
   String(Math.floor(10000 + Math.random() * 90000));
 
+export const phoneDigits = (phone: string | null | undefined): string =>
+  (phone ?? "").replace(/\D/g, "");
+
+export const isValidPhone = (phone: string | null | undefined): boolean => {
+  const digits = phoneDigits(phone);
+  return digits.length >= 10 && digits.length <= 11;
+};
+
 export const maskCPF = (value: string): string => value;
 export const maskCNPJ = (value: string): string => value;
 /** Celular BR: (DD) XXXXX-XXXX (11 dígitos) ou (DD) XXXX-XXXX (10 dígitos). */

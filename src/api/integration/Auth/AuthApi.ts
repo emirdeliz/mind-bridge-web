@@ -5,6 +5,7 @@ import {
   type UserProfile,
   type UserRole,
 } from '@api';
+import { phoneDigits } from '@helpers';
 import { fetchMeApi } from './meApi';
 import { getSupabaseClient } from '../supabaseClient';
 import { isAuthBypassEnabled } from '../../../services/auth/authBypass';
@@ -140,7 +141,7 @@ export const registerUserApi = async (
         fullName: '',
         age: '',
         address: '',
-        phone: '',
+        phone: phoneDigits(payload.phone),
         language: 'pt',
       },
     };
@@ -157,16 +158,30 @@ export const registerUserApi = async (
     throw new Error('Password is required');
   }
 
+  const normalizedPhone = phoneDigits(payload.phone);
+
   const { data, error } = await supabase.auth.signUp({
     email: payload.email,
     password,
     options: {
-      data: { role: payload.role },
+      data: { role: payload.role, phone: normalizedPhone },
     },
   });
 
-  if (error || !data.session?.access_token) {
+  if (error || !data.session?.access_token || !data.user?.id) {
     throw new Error(error?.message ?? 'Registration failed');
+  }
+
+  const { error: profileError } = await supabase
+    .from('profiles')
+    .update({
+      phone: normalizedPhone,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', data.user.id);
+
+  if (profileError) {
+    throw new Error(profileError.message);
   }
 
   const session = await buildSessionFromSupabase(data.session.access_token);

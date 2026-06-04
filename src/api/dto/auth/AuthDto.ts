@@ -22,6 +22,7 @@ export interface UserAuthViewDto {
 export interface UserAuthSaveOrUpdateDto {
   email: string;
   password?: string;
+  phone: string;
   role: UserRole;
   provider: AuthProvider;
 }
