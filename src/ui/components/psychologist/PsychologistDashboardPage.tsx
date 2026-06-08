@@ -107,7 +107,10 @@ export const PsychologistDashboardPage = () => {
       </Card>
       <Flex col wFull gap4>
         <div className="mb-chart-card-row">
-          <ChartCard title={t("CHART_INTERACTION_CHANNELS")}>
+          <ChartCard
+            title={t("CHART_INTERACTION_CHANNELS")}
+            tooltip={t("TOOLTIP_CHART_INTERACTION_CHANNELS")}
+          >
             <ChartDonut
               data={snapshot.interactionChannels}
               centerText={channelCenterText}
@@ -137,7 +140,10 @@ export const PsychologistDashboardPage = () => {
             height={300}
           />
         </ChartCard>
-        <ChartCard title={t("CHART_WEEKLY_INTERACTIONS")}>
+        <ChartCard
+          title={t("CHART_WEEKLY_INTERACTIONS")}
+          tooltip={t("TOOLTIP_CHART_WEEKLY_INTERACTIONS")}
+        >
           <ChartBarVertical
             categories={snapshot.weeklyInteractionCategories}
             series={snapshot.weeklyInteractionSeries}
