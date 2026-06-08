@@ -40,8 +40,10 @@ export const PsychologistDashboardPage = () => {
   const { loading, isPsychologist } = usePsychologistGuard();
   const patientId =
     typeof router.query.patientId === "string" ? router.query.patientId : undefined;
+  const refreshKey =
+    typeof router.query.refreshed === "string" ? router.query.refreshed : undefined;
   const { snapshot, channelCenterText, loading: dashboardLoading } =
-    usePsychologistDashboardData(patientId);
+    usePsychologistDashboardData(patientId, refreshKey);
   const patientName =
     typeof router.query.patientName === "string" && router.query.patientName.trim()
       ? router.query.patientName

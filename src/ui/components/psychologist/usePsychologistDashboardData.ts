@@ -3,17 +3,23 @@ import { useEffect, useState } from "react";
 import { usePsychologistClinicalContent } from "@services";
 
 import {
-  bumpDashboardSnapshot,
   emptyDashboardSnapshot,
   getDashboardChannelTotal,
   type PsychologistDashboardSnapshot,
 } from "./psychologistDashboardSnapshot";
 
-const DASHBOARD_BUMP_KEY = "mb.psychologist.dashboardBump";
-
-export const usePsychologistDashboardData = (patientId: string | undefined) => {
-  const { content, loading, error } = usePsychologistClinicalContent(patientId);
+export const usePsychologistDashboardData = (
+  patientId: string | undefined,
+  refreshKey?: string,
+) => {
+  const { content, loading, error, reload } = usePsychologistClinicalContent(patientId);
   const [snapshot, setSnapshot] = useState<PsychologistDashboardSnapshot | null>(null);
+
+  useEffect(() => {
+    if (refreshKey) {
+      void reload();
+    }
+  }, [refreshKey, reload]);
 
   useEffect(() => {
     if (!content?.dashboardSnapshot) {
@@ -23,16 +29,7 @@ export const usePsychologistDashboardData = (patientId: string | undefined) => {
       return;
     }
 
-    let next = content.dashboardSnapshot;
-    if (
-      typeof window !== "undefined" &&
-      patientId &&
-      window.sessionStorage.getItem(DASHBOARD_BUMP_KEY) === patientId
-    ) {
-      next = bumpDashboardSnapshot(next);
-      window.sessionStorage.removeItem(DASHBOARD_BUMP_KEY);
-    }
-    setSnapshot(next);
+    setSnapshot(content.dashboardSnapshot);
   }, [content, loading, patientId]);
 
   const resolved = snapshot ?? emptyDashboardSnapshot();

@@ -2,14 +2,16 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import type { ClinicalChatMessageDto } from "@api";
-import { savePsychologistPatientClinicalContentApi } from "@api";
+import {
+  endPsychologistSessionApi,
+  savePsychologistPatientClinicalContentApi,
+} from "@api";
 import { useAiAgent, usePsychologistClinicalContent } from "@services";
 import { Button, Flex, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card, ConfirmModal, TextAreaWithSave } from "@molecules";
 import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
 
-import { bumpDashboardSnapshot } from "./psychologistDashboardSnapshot";
 import {
   AGENTIC_SUMMARY_PAGE_SIZE,
   getCurrentSessionNoteIndex,
@@ -17,8 +19,6 @@ import {
 } from "./psychologistSessionTypes";
 import { SessionHistoryNavButtons } from "./SessionHistoryNavButtons";
 import { usePsychologistGuard } from "./usePsychologistGuard";
-
-const DASHBOARD_BUMP_KEY = "mb.psychologist.dashboardBump";
 
 const toChatMessages = (seed: ClinicalChatMessageDto[]) =>
   seed.map((item) => ({
@@ -30,7 +30,7 @@ const toChatMessages = (seed: ClinicalChatMessageDto[]) =>
 
 export const PsychologistSessionPage = () => {
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const { loading: guardLoading, isPsychologist } = usePsychologistGuard();
   const patientId =
     typeof router.query.patientId === "string" ? router.query.patientId : undefined;
@@ -50,6 +50,7 @@ export const PsychologistSessionPage = () => {
   const [savingContext, setSavingContext] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [endSessionModalVisible, setEndSessionModalVisible] = useState(false);
+  const [endingSession, setEndingSession] = useState(false);
 
   const currentSessionNoteIndex = getCurrentSessionNoteIndex(sessionNotes);
   const currentSessionNote =
@@ -170,6 +171,46 @@ export const PsychologistSessionPage = () => {
     }
   }, [patientId, savingContext, psychologistContext, reloadContent, t]);
 
+  const confirmEndSession = useCallback(async () => {
+    if (!patientId || endingSession) {
+      return;
+    }
+
+    setEndingSession(true);
+    setSaveError("");
+
+    try {
+      await endPsychologistSessionApi(patientId, {
+        currentSessionNoteContent: currentSessionConsiderations,
+        language,
+      });
+      setEndSessionModalVisible(false);
+      void router.push({
+        pathname: "/psychologist",
+        query: {
+          patientId,
+          patientName: patientName ?? "",
+          refreshed: Date.now().toString(),
+        },
+      });
+    } catch (error) {
+      setEndSessionModalVisible(false);
+      setSaveError(
+        error instanceof Error ? error.message : t("SESSION_END_ERROR"),
+      );
+    } finally {
+      setEndingSession(false);
+    }
+  }, [
+    patientId,
+    endingSession,
+    currentSessionConsiderations,
+    patientName,
+    language,
+    router,
+    t,
+  ]);
+
   if (guardLoading || contentLoading || !isPsychologist) {
     return null;
   }
@@ -177,22 +218,6 @@ export const PsychologistSessionPage = () => {
   if (!patientId) {
     return null;
   }
-
-  const confirmEndSession = () => {
-    setEndSessionModalVisible(false);
-
-    if (typeof window !== "undefined") {
-      window.sessionStorage.setItem(DASHBOARD_BUMP_KEY, patientId);
-    }
-    void router.push({
-      pathname: "/psychologist",
-      query: {
-        patientId,
-        patientName: patientName ?? "",
-        refreshed: Date.now().toString(),
-      },
-    });
-  };
 
   const sessionSubtitle = patientName
     ? `${t("PSYCHOLOGIST_SESSION_SUBTITLE")} — ${patientName}`
@@ -215,8 +240,12 @@ export const PsychologistSessionPage = () => {
         >
           {t("BACK_TO_PSYCHOLOGIST_PATIENTS")}
         </Button>
-        <Button type="button" onClick={() => setEndSessionModalVisible(true)}>
-          {t("END_SESSION")}
+        <Button
+          type="button"
+          clickable={!endingSession}
+          onClick={() => setEndSessionModalVisible(true)}
+        >
+          {endingSession ? t("SESSION_ENDING") : t("END_SESSION")}
         </Button>
       </Flex>
 
@@ -227,8 +256,12 @@ export const PsychologistSessionPage = () => {
         confirmLabel={t("END_SESSION")}
         cancelLabel={t("PSYCHOLOGIST_PATIENTS_MODAL_CANCEL")}
         confirmVariant="danger"
-        onClose={() => setEndSessionModalVisible(false)}
-        onConfirm={confirmEndSession}
+        onClose={() => {
+          if (!endingSession) {
+            setEndSessionModalVisible(false);
+          }
+        }}
+        onConfirm={() => void confirmEndSession()}
       />
       {saveError ? (
         <Title s1 gray>

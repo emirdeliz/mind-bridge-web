@@ -1,3 +1,4 @@
+import type { AppLanguage } from '../../dto/auth/AuthDto';
 import type { PatientClinicalContentDto } from '../../dto/clinical/ClinicalContentDto';
 import { apiRequest } from '../../http/apiClient';
 import { keysToCamel } from '@helpers';
@@ -36,6 +37,25 @@ export const savePsychologistPatientClinicalContentApi = async (
     `/psychologist/patients/${patientId}/clinical-content`,
     {
       method: 'PATCH',
+      body: data,
+    }
+  );
+  return keysToCamel<ClinicalContentResponse>(response).content;
+};
+
+export type EndPsychologistSessionDto = {
+  currentSessionNoteContent?: string | null;
+  language?: AppLanguage;
+};
+
+export const endPsychologistSessionApi = async (
+  patientId: string,
+  data: EndPsychologistSessionDto = {}
+): Promise<PatientClinicalContentDto> => {
+  const response = await apiRequest<ClinicalContentResponse>(
+    `/psychologist/patients/${patientId}/end-session`,
+    {
+      method: 'POST',
       body: data,
     }
   );
