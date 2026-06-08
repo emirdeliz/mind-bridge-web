@@ -180,8 +180,15 @@ export const PsychologistSessionPage = () => {
     setSaveError("");
 
     try {
+      const considerationsForEndSession =
+        currentSessionNote && !isViewingPreviousSession
+          ? (sessionNotesById[currentSessionNote.id] ??
+            currentSessionNote.content ??
+            "")
+          : currentSessionConsiderations;
+
       await endPsychologistSessionApi(patientId, {
-        currentSessionNoteContent: currentSessionConsiderations,
+        currentSessionNoteContent: considerationsForEndSession,
         language,
       });
       setEndSessionModalVisible(false);
@@ -205,6 +212,9 @@ export const PsychologistSessionPage = () => {
     patientId,
     endingSession,
     currentSessionConsiderations,
+    currentSessionNote,
+    isViewingPreviousSession,
+    sessionNotesById,
     patientName,
     language,
     router,
