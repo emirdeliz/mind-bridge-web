@@ -72,7 +72,13 @@ export const PsychologistSessionPage = () => {
     );
     const currentIndex = getCurrentSessionNoteIndex(content.sessionNotes);
     setSelectedSessionIndex(currentIndex >= 0 ? currentIndex : 0);
-    setMessages(toChatMessages(content.psychologistChatSeed));
+    const seedMessages = toChatMessages(content.psychologistChatSeed);
+    setMessages((prev) => {
+      if (!prev.length || seedMessages.length >= prev.length) {
+        return seedMessages;
+      }
+      return prev;
+    });
   }, [content, setMessages]);
 
   const chatMessages = messages;
