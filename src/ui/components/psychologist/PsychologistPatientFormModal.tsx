@@ -125,28 +125,21 @@ export const PsychologistPatientFormModal = ({
                   {t('PSYCHOLOGIST_PATIENTS_COL_PHONE')}
                 </InputForm>
 
-                {showCreateAccount ? (
-                  <InputForm
-                    required
-                    type="email"
-                    autoComplete="email"
-                    value={form.email ?? ''}
-                    placeholder={t('EMAIL')}
-                    onChange={(value) => onChange({ email: String(value) })}
-                  >
-                    {t('EMAIL')}
-                  </InputForm>
-                ) : (
-                  <InputForm
-                    readOnly
-                    type="email"
-                    value={form.email ?? ''}
-                    placeholder={t('EMAIL')}
-                    onChange={() => undefined}
-                  >
-                    {t('EMAIL')}
-                  </InputForm>
-                )}
+                <InputForm
+                  required
+                  readOnly={!showCreateAccount}
+                  type="email"
+                  autoComplete="email"
+                  value={form.email ?? ''}
+                  placeholder={t('EMAIL')}
+                  onChange={
+                    showCreateAccount
+                      ? (value) => onChange({ email: String(value) })
+                      : undefined
+                  }
+                >
+                  {t('EMAIL')}
+                </InputForm>
 
                 {showCreateAccount ? (
                   <>

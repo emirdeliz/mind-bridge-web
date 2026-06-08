@@ -14,13 +14,10 @@ export const InputReadOnly = ({
   ...props
 }: InputProps) => {
   const readOnlyClasses = [
-    'flex items-center',
-    'h-12', // Altura padronizada (48px)
-    'min-h-[48px]', // Altura mínima garantida
-    'px-4 py-3', // Padding padronizado (16px horizontal, 12px vertical)
-    'bg-gray-100 text-gray-700',
-    'border border-gray-200 rounded-md',
-    'cursor-not-allowed',
+    'mb-field',
+    'flex w-full min-w-0 items-center',
+    'cursor-default border-mb-border/60 bg-mb-bg/40 text-mb-muted',
+    'opacity-100',
   ].join(' ');
 
   return (
