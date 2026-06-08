@@ -51,6 +51,7 @@
   "PSYCHOLOGIST_SESSION_SUBTITLE": "Registra consideraciones, consulta la IA y ajusta el contexto clínico durante la consulta.",
   "START_SESSION": "Iniciar sesión",
   "END_SESSION": "Finalizar sesión",
+  "END_SESSION_CONFIRM": "¿Desea finalizar esta sesión?",
   "BACK_TO_PSYCHOLOGIST_DASHBOARD": "Volver al panel",
   "BACK_TO_PSYCHOLOGIST_PATIENTS": "Volver a pacientes",
   "PSYCHOLOGIST_DASHBOARD_PATIENT": "Paciente en seguimiento",

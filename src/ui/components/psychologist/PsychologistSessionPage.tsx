@@ -178,6 +178,10 @@ export const PsychologistSessionPage = () => {
   }
 
   const endSession = () => {
+    if (!window.confirm(t("END_SESSION_CONFIRM"))) {
+      return;
+    }
+
     if (typeof window !== "undefined") {
       window.sessionStorage.setItem(DASHBOARD_BUMP_KEY, patientId);
     }

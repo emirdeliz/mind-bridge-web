@@ -51,6 +51,7 @@
   "PSYCHOLOGIST_SESSION_SUBTITLE": "Record session notes, consult the AI, and tune clinical context during the appointment.",
   "START_SESSION": "Start session",
   "END_SESSION": "End session",
+  "END_SESSION_CONFIRM": "End this session?",
   "BACK_TO_PSYCHOLOGIST_DASHBOARD": "Back to dashboard",
   "BACK_TO_PSYCHOLOGIST_PATIENTS": "Back to patients",
   "PSYCHOLOGIST_DASHBOARD_PATIENT": "Patient in care",

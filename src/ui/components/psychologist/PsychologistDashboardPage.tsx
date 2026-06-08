@@ -78,6 +78,16 @@ export const PsychologistDashboardPage = () => {
       subtitle={t("PSYCHOLOGIST_DASHBOARD_SUBTITLE")}
       variant="dashboard"
     >
+      <Flex row wFull alignCenter wrap gap4>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => void router.push("/psychologist/patients")}
+        >
+          {t("BACK_TO_PSYCHOLOGIST_PATIENTS")}
+        </Button>
+      </Flex>
+
       <Card padding="lg" shadow="md">
         <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
           <Flex col gap2>
