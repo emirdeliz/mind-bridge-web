@@ -1,6 +1,7 @@
 export interface PsychologistPatientViewDto {
   id: string;
   fullName: string | null;
+  email: string | null;
   phone: string | null;
   lastConsultationAt: string | null;
   isDeleted: boolean;

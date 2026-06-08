@@ -73,6 +73,7 @@ export const usePsychologistPatients = () => {
     setForm({
       id: patient.id,
       fullName: patient.fullName ?? '',
+      email: patient.email ?? '',
       phone: patient.phone ?? '',
       password: '',
     });

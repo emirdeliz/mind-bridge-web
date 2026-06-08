@@ -3,6 +3,8 @@ import {
   formatNumberAsCurrency,
   formatDateAsDDMMYYYYAndTime,
   formatStringOrNumberAsCnpj,
+  maskPhone,
+  phoneDigits,
 } from '@helpers';
 import { GenericObject } from '@types';
 import {
@@ -73,7 +75,7 @@ const compareSortValuesByType = <T>(
     return 0;
   }
 
-  const { cnpj, currency, date, dateAndTime, bool, num } = column || {};
+  const { cnpj, currency, date, dateAndTime, phone, bool, num } = column || {};
   const isSortAsc = sorterColumn === TableSort.ASC;
 
   switch (true) {
@@ -92,6 +94,13 @@ const compareSortValuesByType = <T>(
             new Date(String(valueB)).getTime()
         : new Date(String(valueB)).getTime() -
             new Date(String(valueA)).getTime();
+    }
+    case phone: {
+      const digitsA = phoneDigits(String(valueA));
+      const digitsB = phoneDigits(String(valueB));
+      return isSortAsc
+        ? digitsA.localeCompare(digitsB)
+        : digitsB.localeCompare(digitsA);
     }
     default: {
       const valueAUpperCase = String(valueA).toUpperCase();
@@ -112,7 +121,7 @@ const formatValueMaybe = <T>(
     return '-';
   }
 
-  const { cnpj, currency, date, dateAndTime } = column;
+  const { cnpj, currency, date, dateAndTime, phone } = column;
   switch (true) {
     case cnpj:
       return formatStringOrNumberAsCnpj(String(value));
@@ -122,6 +131,8 @@ const formatValueMaybe = <T>(
       return formatDateAsDDMMYYYY(String(value));
     case dateAndTime:
       return formatDateAsDDMMYYYYAndTime(String(value));
+    case phone:
+      return maskPhone(String(value));
   }
   return `${value}`;
 };

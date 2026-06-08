@@ -120,11 +120,33 @@ export const PsychologistPatientFormModal = ({
                   phone
                   value={form.phone ?? ''}
                   placeholder={t('PSYCHOLOGIST_PATIENTS_COL_PHONE')}
-                  helpText={t('PSYCHOLOGIST_PATIENTS_MODAL_PHONE_HELP')}
                   onChange={(value) => onChange({ phone: String(value) })}
                 >
                   {t('PSYCHOLOGIST_PATIENTS_COL_PHONE')}
                 </InputForm>
+
+                {showCreateAccount ? (
+                  <InputForm
+                    required
+                    type="email"
+                    autoComplete="email"
+                    value={form.email ?? ''}
+                    placeholder={t('EMAIL')}
+                    onChange={(value) => onChange({ email: String(value) })}
+                  >
+                    {t('EMAIL')}
+                  </InputForm>
+                ) : (
+                  <InputForm
+                    readOnly
+                    type="email"
+                    value={form.email ?? ''}
+                    placeholder={t('EMAIL')}
+                    onChange={() => undefined}
+                  >
+                    {t('EMAIL')}
+                  </InputForm>
+                )}
 
                 {showCreateAccount ? (
                   <>
@@ -132,14 +154,9 @@ export const PsychologistPatientFormModal = ({
                     <Title s2 textAccent mb2 block>
                       {t('PSYCHOLOGIST_PATIENTS_MODAL_ACCOUNT_SECTION')}
                     </Title>
-                    <InputForm
-                      required
-                      value={form.email ?? ''}
-                      placeholder={t('EMAIL')}
-                      onChange={(value) => onChange({ email: String(value) })}
-                    >
-                      {t('EMAIL')}
-                    </InputForm>
+                    <Title s2 gray block leadingRelaxed mb2>
+                      {t('PSYCHOLOGIST_PATIENTS_MODAL_ACCOUNT_HELP')}
+                    </Title>
                     <InputForm
                       required
                       password
@@ -147,11 +164,13 @@ export const PsychologistPatientFormModal = ({
                       maxLength={5}
                       autoComplete="new-password"
                       placeholder={t('PSYCHOLOGIST_PATIENTS_MODAL_INITIAL_PASSWORD')}
-                      helpText={t('PSYCHOLOGIST_PATIENTS_MODAL_INITIAL_PASSWORD_HELP')}
                       onChange={(value) => onChange({ password: String(value) })}
                     >
                       {t('PSYCHOLOGIST_PATIENTS_MODAL_INITIAL_PASSWORD')}
                     </InputForm>
+                    <Title s2 gray block leadingRelaxed>
+                      {t('PSYCHOLOGIST_PATIENTS_MODAL_INITIAL_PASSWORD_HELP')}
+                    </Title>
                   </>
                 ) : null}
 

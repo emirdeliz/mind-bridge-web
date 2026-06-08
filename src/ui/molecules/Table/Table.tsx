@@ -7,6 +7,7 @@ export interface TableColumnProps<T> {
   cnpj?: boolean;
   date?: boolean;
   dateAndTime?: boolean;
+  phone?: boolean;
   bool?: boolean;
   num?: boolean;
   disableSort?: boolean;
