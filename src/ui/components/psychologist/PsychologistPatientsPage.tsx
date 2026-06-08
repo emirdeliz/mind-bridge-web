@@ -4,12 +4,13 @@ import { useCallback, useMemo, type MouseEvent, type ReactNode } from 'react';
 import { useRouter } from 'next/router';
 
 import type { PsychologistPatientViewDto } from '@api';
-import { usePsychologistPatients } from '@services';
+import { usePsychologistPatientContext, usePsychologistPatients } from '@services';
 import { Button, Checkbox, Flex, Icon, Title } from '@atoms';
 import { useI18n } from '@i18n';
 import { Card, InputSearch, Table, Tooltip } from '@molecules';
 import { AppShell } from '@templates';
 
+import { PsychologistPatientContextModal } from './PsychologistPatientContextModal';
 import { PsychologistPatientFormModal } from './PsychologistPatientFormModal';
 import { usePsychologistGuard } from './usePsychologistGuard';
 
@@ -44,6 +45,18 @@ export const PsychologistPatientsPage = () => {
     savePatient,
     deletePatient,
   } = usePsychologistPatients();
+  const {
+    contextModalOpen,
+    contextPatient,
+    contextValue,
+    loadingContext,
+    savingContext,
+    contextError,
+    openContextModal,
+    closeContextModal,
+    updateContext,
+    saveContext,
+  } = usePsychologistPatientContext();
 
   const openPatientDashboard = useCallback(
     (patient: PsychologistPatientViewDto) => {
@@ -87,6 +100,27 @@ export const PsychologistPatientsPage = () => {
             </Button>
           </span>
         </Tooltip>
+        <Tooltip title={t('PSYCHOLOGIST_PATIENTS_ACTION_CONTEXT')} top minWidth={10}>
+          <span className="inline-block">
+            <Button
+              type="button"
+              xs
+              sm
+              circle
+              variant="secondary"
+              outlined
+              clickable={!row.isDeleted}
+              onClick={() => {
+                void openContextModal({
+                  id: row.id,
+                  fullName: row.fullName,
+                });
+              }}
+            >
+              <Icon.Cog sm white />
+            </Button>
+          </span>
+        </Tooltip>
         <Tooltip title={t('PSYCHOLOGIST_PATIENTS_ACTION_EDIT')} top minWidth={10}>
           <span className="inline-block">
             <Button
@@ -125,7 +159,7 @@ export const PsychologistPatientsPage = () => {
         </Tooltip>
       </div>
     ),
-    [t, router, openEditModal, deletePatient]
+    [t, router, openContextModal, openEditModal, deletePatient]
   );
 
   const tableData = useMemo((): PatientTableRow[] => {
@@ -228,6 +262,18 @@ export const PsychologistPatientsPage = () => {
         onClose={closeModal}
         onConfirm={() => void savePatient()}
         onChange={updateForm}
+      />
+
+      <PsychologistPatientContextModal
+        visible={contextModalOpen}
+        patientName={contextPatient?.fullName}
+        value={contextValue}
+        loading={loadingContext}
+        saving={savingContext}
+        error={contextError}
+        onClose={closeContextModal}
+        onConfirm={() => void saveContext()}
+        onChange={updateContext}
       />
     </AppShell>
   );

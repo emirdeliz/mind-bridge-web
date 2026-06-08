@@ -47,7 +47,6 @@ export const PsychologistSessionPage = () => {
   const [selectedSessionIndex, setSelectedSessionIndex] = useState(0);
   const [agenticSummaryPage, setAgenticSummaryPage] = useState(0);
   const [savingNotes, setSavingNotes] = useState(false);
-  const [savingContext, setSavingContext] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [endSessionModalVisible, setEndSessionModalVisible] = useState(false);
   const [endingSession, setEndingSession] = useState(false);
@@ -148,28 +147,6 @@ export const PsychologistSessionPage = () => {
     reloadContent,
     t,
   ]);
-
-  const savePsychologistContext = useCallback(async () => {
-    if (!patientId || savingContext) {
-      return;
-    }
-
-    setSavingContext(true);
-    setSaveError("");
-
-    try {
-      await savePsychologistPatientClinicalContentApi(patientId, {
-        sessionContext: psychologistContext,
-      });
-      await reloadContent();
-    } catch (error) {
-      setSaveError(
-        error instanceof Error ? error.message : t("SESSION_SAVE_ERROR"),
-      );
-    } finally {
-      setSavingContext(false);
-    }
-  }, [patientId, savingContext, psychologistContext, reloadContent, t]);
 
   const confirmEndSession = useCallback(async () => {
     if (!patientId || endingSession) {
@@ -345,21 +322,6 @@ export const PsychologistSessionPage = () => {
         showAudio={false}
         sectionTooltip={t("TOOLTIP_PSYCHOLOGIST_CHAT")}
       />
-      <Card padding="lg" shadow="md">
-        <DashboardSectionTitle
-          title={t("PSYCHOLOGIST_CONTEXT_FOR_AI")}
-          tooltip={t("TOOLTIP_PSYCHOLOGIST_CONTEXT")}
-        />
-        <Flex col wFull>
-          <TextAreaWithSave
-            rows={4}
-            value={psychologistContext}
-            saveLabel={t("SAVE")}
-            onSave={() => void savePsychologistContext()}
-            onChange={(event) => setPsychologistContext(event.target.value)}
-          />
-        </Flex>
-      </Card>
       <Card padding="lg" shadow="md">
         <DashboardSectionTitle
           title={t("INTERACTION_SUMMARY")}
