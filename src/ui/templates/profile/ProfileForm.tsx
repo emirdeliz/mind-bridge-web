@@ -7,7 +7,7 @@ import { Card, Form, FormGroup, InputForm, LanguageSelect } from "@molecules";
 
 interface ProfileFormProps {
   initialData: UserProfile;
-  onSave: (data: UserProfile) => void;
+  onSave: (data: UserProfile) => void | Promise<void>;
 }
 
 export const ProfileForm = ({ initialData, onSave }: ProfileFormProps) => (
@@ -16,6 +16,7 @@ export const ProfileForm = ({ initialData, onSave }: ProfileFormProps) => (
 
 const ProfileFormContent = ({ initialData, onSave }: ProfileFormProps) => {
   const { t, language: activeLanguage } = useI18n();
+  const [saving, setSaving] = useState(false);
   const [data, setData] = useState<UserProfile>({
     ...initialData,
     language: initialData.language ?? activeLanguage ?? DEFAULT_APP_LANGUAGE,
@@ -29,7 +30,9 @@ const ProfileFormContent = ({ initialData, onSave }: ProfileFormProps) => {
       <Form
         onSubmit={(event) => {
           event.preventDefault();
-          onSave(data);
+          if (saving) return;
+          setSaving(true);
+          void Promise.resolve(onSave(data)).finally(() => setSaving(false));
         }}
       >
         <InputForm
@@ -72,7 +75,7 @@ const ProfileFormContent = ({ initialData, onSave }: ProfileFormProps) => {
             onChange={(language) => setData({ ...data, language })}
           />
         </FormGroup>
-        <Button type="submit" wFull>
+        <Button type="submit" wFull clickable={!saving}>
           {t("SAVE_PROFILE")}
         </Button>
       </Form>

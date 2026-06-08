@@ -90,15 +90,11 @@ export const getSessionApi = async (): Promise<UserAuthViewDto | null> => {
 export const saveProfileApi = async (
   profile: UserProfile
 ): Promise<UserAuthViewDto | null> => {
-  try {
-    const data = await authFetch<AuthMutationResponse>('/api/auth/profile', {
-      method: 'PATCH',
-      body: JSON.stringify(profile),
-    });
-    return data?.session ?? null;
-  } catch {
-    return null;
-  }
+  const data = await authFetch<AuthMutationResponse>('/api/auth/profile', {
+    method: 'PATCH',
+    body: JSON.stringify(profile),
+  });
+  return data?.session ?? null;
 };
 
 export const requestPasswordResetApi = async (

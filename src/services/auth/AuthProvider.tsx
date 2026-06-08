@@ -102,7 +102,9 @@ export const AuthProvider = ({ children, initialAuth }: AuthProviderProps) => {
 
   const saveProfile = useCallback(async (profile: UserProfile) => {
     const updated = normalizeSession(await saveProfileApi(profile));
-    setSession(updated);
+    if (updated) {
+      setSession(updated);
+    }
     return updated;
   }, []);
 

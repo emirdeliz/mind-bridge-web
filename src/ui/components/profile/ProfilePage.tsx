@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 
-import type { UserRole } from "@api";
+import type { UserProfile, UserRole } from "@api";
 import { getRoleRoute, useAuth } from "@services";
 import { useI18n } from "@i18n";
 import { AppShell, ProfileForm } from "@templates";
@@ -26,21 +26,34 @@ export const ProfilePage = ({ area }: ProfilePageProps) => {
     }
   }, [area, loading, session, router]);
 
+  const handleSave = useCallback(
+    async (profile: UserProfile) => {
+      if (profile.language) {
+        setLanguage(profile.language);
+      }
+
+      const updated = await saveProfile(profile);
+      if (!updated) {
+        return;
+      }
+
+      if (typeof window !== "undefined" && window.history.length > 1) {
+        await router.back();
+        return;
+      }
+
+      await router.replace(getRoleRoute(area));
+    },
+    [area, router, saveProfile, setLanguage],
+  );
+
   if (loading || !session || session.role !== area) {
     return null;
   }
 
   return (
     <AppShell title={t("PROFILE_PAGE_TITLE")} subtitle={t("PROFILE_PAGE_SUBTITLE")} variant="dashboard">
-      <ProfileForm
-        initialData={session.profile}
-        onSave={(profile) => {
-          if (profile.language) {
-            setLanguage(profile.language);
-          }
-          void saveProfile(profile);
-        }}
-      />
+      <ProfileForm initialData={session.profile} onSave={handleSave} />
     </AppShell>
   );
 };
