@@ -52,6 +52,7 @@
   "START_SESSION": "Iniciar sesión",
   "END_SESSION": "Finalizar sesión",
   "BACK_TO_PSYCHOLOGIST_DASHBOARD": "Volver al panel",
+  "BACK_TO_PSYCHOLOGIST_PATIENTS": "Volver a pacientes",
   "PSYCHOLOGIST_DASHBOARD_PATIENT": "Paciente en seguimiento",
   "PSYCHOLOGIST_DASHBOARD_PATIENT_HINT": "últimos 7 días",
   "CHART_MOOD_TREND": "Evolución del humor",

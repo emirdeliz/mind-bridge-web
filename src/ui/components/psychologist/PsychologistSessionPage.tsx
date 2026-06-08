@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import type { ClinicalChatMessageDto } from "@api";
 import { savePsychologistPatientClinicalContentApi } from "@api";
 import { useAiAgent, usePsychologistClinicalContent } from "@services";
-import { Button, Flex, RouteLink, Title } from "@atoms";
+import { Button, Flex, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card, TextAreaWithSave } from "@molecules";
 import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
@@ -199,9 +199,13 @@ export const PsychologistSessionPage = () => {
       variant="dashboard"
     >
       <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
-        <RouteLink href="/psychologist/patients" inline>
-          {t("PSYCHOLOGIST_PATIENTS_NAV")}
-        </RouteLink>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => void router.push("/psychologist/patients")}
+        >
+          {t("BACK_TO_PSYCHOLOGIST_PATIENTS")}
+        </Button>
         <Button type="button" onClick={endSession}>
           {t("END_SESSION")}
         </Button>

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 
-import { Button, Flex, RouteLink, Title } from "@atoms";
+import { Button, Flex, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card, ChartCard } from "@molecules";
 import { AppShell } from "@templates";
@@ -78,12 +78,6 @@ export const PsychologistDashboardPage = () => {
       subtitle={t("PSYCHOLOGIST_DASHBOARD_SUBTITLE")}
       variant="dashboard"
     >
-      <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
-        <RouteLink href="/psychologist/patients" inline>
-          {t("PSYCHOLOGIST_PATIENTS_NAV")}
-        </RouteLink>
-      </Flex>
-
       <Card padding="lg" shadow="md">
         <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
           <Flex col gap2>

@@ -52,6 +52,7 @@
   "START_SESSION": "Start session",
   "END_SESSION": "End session",
   "BACK_TO_PSYCHOLOGIST_DASHBOARD": "Back to dashboard",
+  "BACK_TO_PSYCHOLOGIST_PATIENTS": "Back to patients",
   "PSYCHOLOGIST_DASHBOARD_PATIENT": "Patient in care",
   "PSYCHOLOGIST_DASHBOARD_PATIENT_HINT": "last 7 days",
   "CHART_MOOD_TREND": "Mood trend",
