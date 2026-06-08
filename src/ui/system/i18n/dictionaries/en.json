@@ -52,6 +52,8 @@
   "START_SESSION": "Start session",
   "END_SESSION": "End session",
   "END_SESSION_CONFIRM": "End this session?",
+  "END_SESSION_CONFIRM_TITLE": "End session?",
+  "END_SESSION_CONFIRM_MESSAGE": "You will return to the patient dashboard. Saved session notes and chat history will be kept.",
   "BACK_TO_PSYCHOLOGIST_DASHBOARD": "Back to dashboard",
   "BACK_TO_PSYCHOLOGIST_PATIENTS": "Back to patients",
   "PSYCHOLOGIST_DASHBOARD_PATIENT": "Patient in care",

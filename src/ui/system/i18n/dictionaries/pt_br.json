@@ -52,6 +52,8 @@
   "START_SESSION": "Iniciar sessão",
   "END_SESSION": "Encerrar sessão",
   "END_SESSION_CONFIRM": "Deseja encerrar esta sessão?",
+  "END_SESSION_CONFIRM_TITLE": "Encerrar sessão?",
+  "END_SESSION_CONFIRM_MESSAGE": "Você voltará ao painel do paciente. O histórico da sessão e as considerações já salvas serão mantidos.",
   "BACK_TO_PSYCHOLOGIST_DASHBOARD": "Voltar ao painel",
   "BACK_TO_PSYCHOLOGIST_PATIENTS": "Voltar aos pacientes",
   "PSYCHOLOGIST_DASHBOARD_PATIENT": "Paciente em acompanhamento",

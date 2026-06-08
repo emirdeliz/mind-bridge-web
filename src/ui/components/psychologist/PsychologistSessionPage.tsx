@@ -6,7 +6,7 @@ import { savePsychologistPatientClinicalContentApi } from "@api";
 import { useAiAgent, usePsychologistClinicalContent } from "@services";
 import { Button, Flex, Title } from "@atoms";
 import { useI18n } from "@i18n";
-import { Card, TextAreaWithSave } from "@molecules";
+import { Card, ConfirmModal, TextAreaWithSave } from "@molecules";
 import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
 
 import { bumpDashboardSnapshot } from "./psychologistDashboardSnapshot";
@@ -49,6 +49,7 @@ export const PsychologistSessionPage = () => {
   const [savingNotes, setSavingNotes] = useState(false);
   const [savingContext, setSavingContext] = useState(false);
   const [saveError, setSaveError] = useState("");
+  const [endSessionModalVisible, setEndSessionModalVisible] = useState(false);
 
   const currentSessionNoteIndex = getCurrentSessionNoteIndex(sessionNotes);
   const currentSessionNote =
@@ -177,10 +178,8 @@ export const PsychologistSessionPage = () => {
     return null;
   }
 
-  const endSession = () => {
-    if (!window.confirm(t("END_SESSION_CONFIRM"))) {
-      return;
-    }
+  const confirmEndSession = () => {
+    setEndSessionModalVisible(false);
 
     if (typeof window !== "undefined") {
       window.sessionStorage.setItem(DASHBOARD_BUMP_KEY, patientId);
@@ -216,10 +215,21 @@ export const PsychologistSessionPage = () => {
         >
           {t("BACK_TO_PSYCHOLOGIST_PATIENTS")}
         </Button>
-        <Button type="button" onClick={endSession}>
+        <Button type="button" onClick={() => setEndSessionModalVisible(true)}>
           {t("END_SESSION")}
         </Button>
       </Flex>
+
+      <ConfirmModal
+        visible={endSessionModalVisible}
+        title={t("END_SESSION_CONFIRM_TITLE")}
+        message={t("END_SESSION_CONFIRM_MESSAGE")}
+        confirmLabel={t("END_SESSION")}
+        cancelLabel={t("PSYCHOLOGIST_PATIENTS_MODAL_CANCEL")}
+        confirmVariant="danger"
+        onClose={() => setEndSessionModalVisible(false)}
+        onConfirm={confirmEndSession}
+      />
       {saveError ? (
         <Title s1 gray>
           {saveError}
