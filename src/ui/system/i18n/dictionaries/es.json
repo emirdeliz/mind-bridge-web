@@ -101,6 +101,7 @@
   "SESSION_NOTES_AGENTIC_SUMMARY": "Resumen agéntico de sesiones anteriores",
   "SESSION_CONSIDERATIONS": "Consideraciones de la sesión de psicoterapia",
   "SESSION_CONSIDERATIONS_PLACEHOLDER": "Añade consideraciones durante la sesión...",
+  "SESSION_SAVE_ERROR": "No se pudo guardar. Inténtalo de nuevo.",
   "DEFAULT_PATIENT_AI_CONTEXT": "Apoyar la reflexión diaria y la conciencia emocional con un lenguaje empático.",
   "DEFAULT_PSYCHOLOGIST_AI_CONTEXT": "Fomentar rutinas saludables, escucha activa y preguntas reflexivas.",
   "AI_SUMMARY_NO_INTERACTIONS": "Aún no hay interacciones.",

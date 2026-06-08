@@ -101,6 +101,7 @@
   "SESSION_NOTES_AGENTIC_SUMMARY": "Agentic summary of previous sessions",
   "SESSION_CONSIDERATIONS": "Psychotherapy Session Considerations",
   "SESSION_CONSIDERATIONS_PLACEHOLDER": "Add in-session considerations...",
+  "SESSION_SAVE_ERROR": "Could not save. Please try again.",
   "DEFAULT_PATIENT_AI_CONTEXT": "Support daily reflection and emotional awareness with empathetic language.",
   "DEFAULT_PSYCHOLOGIST_AI_CONTEXT": "Encourage healthy routines, active listening, and reflective questioning.",
   "AI_SUMMARY_NO_INTERACTIONS": "No interactions yet.",
