@@ -50,10 +50,18 @@ export const PsychologistSessionPage = () => {
   const [savingContext, setSavingContext] = useState(false);
   const [saveError, setSaveError] = useState("");
 
+  const currentSessionNoteIndex = getCurrentSessionNoteIndex(sessionNotes);
+  const currentSessionNote =
+    currentSessionNoteIndex >= 0 ? sessionNotes[currentSessionNoteIndex] : undefined;
+  const currentSessionConsiderations = currentSessionNote
+    ? (sessionNotesById[currentSessionNote.id] ?? currentSessionNote.content ?? "")
+    : "";
+
   const { messages, sendMessage, setMessages, sending } = useAiAgent({
     mode: "psychologist",
     patientId,
     clinicalContext: psychologistContext,
+    sessionConsiderations: currentSessionConsiderations,
   });
 
   useEffect(() => {

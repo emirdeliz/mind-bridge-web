@@ -21,11 +21,12 @@ export const postPsychologistChatApi = async (
   patientId: string,
   message: string,
   clinicalContext?: string,
-  language?: AppLanguage
+  language?: AppLanguage,
+  sessionConsiderations?: string
 ): Promise<string> => {
   const response = await apiRequest<ChatResponse>('/ai/psychologist/chat', {
     method: 'POST',
-    body: { patientId, message, clinicalContext, language },
+    body: { patientId, message, clinicalContext, sessionConsiderations, language },
   });
   return response.message;
 };

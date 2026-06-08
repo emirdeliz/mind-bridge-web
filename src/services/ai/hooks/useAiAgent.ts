@@ -15,6 +15,8 @@ export type UseAiAgentOptions = {
   mode: "patient" | "psychologist";
   patientId?: string;
   clinicalContext?: string;
+  /** Current psychotherapy session notes (psychologist mode). */
+  sessionConsiderations?: string;
   careContext?: string;
 };
 
@@ -73,6 +75,7 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
                 cleanText,
                 options.clinicalContext,
                 language,
+                options.sessionConsiderations,
               );
 
         const agentMessage: ChatMessage = {
