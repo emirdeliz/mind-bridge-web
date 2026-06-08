@@ -22,3 +22,22 @@ export const getPsychologistPatientClinicalContentApi = async (
   );
   return keysToCamel<ClinicalContentResponse>(response).content;
 };
+
+export type UpdatePsychologistClinicalSessionDto = {
+  sessionContext?: string | null;
+  currentSessionNoteContent?: string | null;
+};
+
+export const savePsychologistPatientClinicalContentApi = async (
+  patientId: string,
+  data: UpdatePsychologistClinicalSessionDto
+): Promise<PatientClinicalContentDto> => {
+  const response = await apiRequest<ClinicalContentResponse>(
+    `/psychologist/patients/${patientId}/clinical-content`,
+    {
+      method: 'PATCH',
+      body: data,
+    }
+  );
+  return keysToCamel<ClinicalContentResponse>(response).content;
+};

@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import type { ClinicalChatMessageDto } from "@api";
+import { savePsychologistPatientClinicalContentApi } from "@api";
 import { useAiAgent, usePsychologistClinicalContent } from "@services";
 import { Button, Flex, RouteLink, Title } from "@atoms";
 import { useI18n } from "@i18n";
@@ -38,12 +39,16 @@ export const PsychologistSessionPage = () => {
       ? router.query.patientName
       : undefined;
 
-  const { content, loading: contentLoading } = usePsychologistClinicalContent(patientId);
+  const { content, loading: contentLoading, reload: reloadContent } =
+    usePsychologistClinicalContent(patientId);
   const sessionNotes = content?.sessionNotes ?? [];
   const [psychologistContext, setPsychologistContext] = useState("");
   const [sessionNotesById, setSessionNotesById] = useState<Record<string, string>>({});
   const [selectedSessionIndex, setSelectedSessionIndex] = useState(0);
   const [agenticSummaryPage, setAgenticSummaryPage] = useState(0);
+  const [savingNotes, setSavingNotes] = useState(false);
+  const [savingContext, setSavingContext] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   const { messages, sendMessage, setMessages, sending } = useAiAgent({
     mode: "psychologist",
@@ -64,17 +69,13 @@ export const PsychologistSessionPage = () => {
 
   const chatMessages = messages;
 
-  if (guardLoading || contentLoading || !isPsychologist) {
-    return null;
-  }
-
-  if (!patientId) {
-    return null;
-  }
-
   const selectedSession = sessionNotes[selectedSessionIndex];
-  const isCurrentSession = Boolean(selectedSession?.isCurrent);
-  const sessionNotesValue = selectedSession ? (sessionNotesById[selectedSession.id] ?? "") : "";
+  const isViewingPreviousSession = Boolean(
+    selectedSession && selectedSession.isCurrent !== true,
+  );
+  const sessionNotesValue = selectedSession
+    ? (sessionNotesById[selectedSession.id] ?? selectedSession.content ?? "")
+    : "";
   const canGoToOlderSession = selectedSessionIndex < sessionNotes.length - 1;
   const canGoToNewerSession = selectedSessionIndex > 0;
   const olderSession = canGoToOlderSession ? sessionNotes[selectedSessionIndex + 1] : undefined;
@@ -100,6 +101,67 @@ export const PsychologistSessionPage = () => {
     previousSessionsAgenticSummaries[agenticWindowStart + AGENTIC_SUMMARY_PAGE_SIZE];
   const newerAgenticBatch =
     previousSessionsAgenticSummaries[agenticWindowStart - AGENTIC_SUMMARY_PAGE_SIZE];
+
+  const saveSessionConsiderations = useCallback(async () => {
+    if (!patientId || isViewingPreviousSession || !selectedSession || savingNotes) {
+      return;
+    }
+
+    setSavingNotes(true);
+    setSaveError("");
+
+    try {
+      await savePsychologistPatientClinicalContentApi(patientId, {
+        currentSessionNoteContent:
+          sessionNotesById[selectedSession.id] ?? selectedSession.content ?? "",
+      });
+      await reloadContent();
+    } catch (error) {
+      setSaveError(
+        error instanceof Error ? error.message : t("SESSION_SAVE_ERROR"),
+      );
+    } finally {
+      setSavingNotes(false);
+    }
+  }, [
+    patientId,
+    isViewingPreviousSession,
+    selectedSession,
+    savingNotes,
+    sessionNotesById,
+    reloadContent,
+    t,
+  ]);
+
+  const savePsychologistContext = useCallback(async () => {
+    if (!patientId || savingContext) {
+      return;
+    }
+
+    setSavingContext(true);
+    setSaveError("");
+
+    try {
+      await savePsychologistPatientClinicalContentApi(patientId, {
+        sessionContext: psychologistContext,
+      });
+      await reloadContent();
+    } catch (error) {
+      setSaveError(
+        error instanceof Error ? error.message : t("SESSION_SAVE_ERROR"),
+      );
+    } finally {
+      setSavingContext(false);
+    }
+  }, [patientId, savingContext, psychologistContext, reloadContent, t]);
+
+  if (guardLoading || contentLoading || !isPsychologist) {
+    return null;
+  }
+
+  if (!patientId) {
+    return null;
+  }
 
   const endSession = () => {
     if (typeof window !== "undefined") {
@@ -136,6 +198,11 @@ export const PsychologistSessionPage = () => {
           {t("END_SESSION")}
         </Button>
       </Flex>
+      {saveError ? (
+        <Title s1 gray>
+          {saveError}
+        </Title>
+      ) : null}
       <Flex col wFull gap4>
         <Card padding="lg" shadow="md">
           <DashboardSectionTitle
@@ -167,7 +234,7 @@ export const PsychologistSessionPage = () => {
               }
             />
           </Flex>
-          {!isCurrentSession ? (
+          {isViewingPreviousSession ? (
             <Title s1 gray mb4>
               {t("SESSION_NOTES_READONLY_HINT")}
             </Title>
@@ -177,9 +244,15 @@ export const PsychologistSessionPage = () => {
               rows={6}
               placeholder={t("SESSION_CONSIDERATIONS_PLACEHOLDER")}
               value={sessionNotesValue}
-              readOnly={!isCurrentSession}
+              readOnly={isViewingPreviousSession}
+              saveLabel={t("SAVE")}
+              onSave={
+                isViewingPreviousSession
+                  ? undefined
+                  : () => void saveSessionConsiderations()
+              }
               onChange={(event) => {
-                if (!selectedSession?.isCurrent) return;
+                if (isViewingPreviousSession || !selectedSession) return;
                 setSessionNotesById((prev) => ({
                   ...prev,
                   [selectedSession.id]: event.target.value,
@@ -205,6 +278,8 @@ export const PsychologistSessionPage = () => {
           <TextAreaWithSave
             rows={4}
             value={psychologistContext}
+            saveLabel={t("SAVE")}
+            onSave={() => void savePsychologistContext()}
             onChange={(event) => setPsychologistContext(event.target.value)}
           />
         </Flex>

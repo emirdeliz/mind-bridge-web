@@ -1,0 +1,52 @@
+import type {
+  DashboardSnapshotDto,
+  PatientClinicalContentDto,
+  SessionNoteEntryDto,
+} from "@api";
+
+const emptyDashboardSnapshot = (): DashboardSnapshotDto => ({
+  moodTrendCategories: [],
+  moodTrendSeries: [],
+  weeklyInteractionCategories: [],
+  weeklyInteractionSeries: [],
+  interactionChannels: [],
+  moodDiaryAdherencePercent: 0,
+  clinicalThemeCategories: [],
+  clinicalThemeSeries: [],
+  lastUpdatedAt: new Date().toISOString(),
+});
+
+const formatSessionDateBr = (date: Date): string => {
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
+export const buildCurrentSessionNote = (): SessionNoteEntryDto => {
+  const now = new Date();
+  const sessionDate = formatSessionDateBr(now);
+  const isoDate = now.toISOString().slice(0, 10);
+
+  return {
+    id: `session-${isoDate}`,
+    label: `Sessão ${sessionDate} (atual)`,
+    sessionDate,
+    content: "",
+    isCurrent: true,
+  };
+};
+
+export const emptyClinicalContentForPatient = (
+  patientId: string,
+): PatientClinicalContentDto => ({
+  patientId,
+  dashboardSnapshot: emptyDashboardSnapshot(),
+  sessionContext: null,
+  sessionNotes: [buildCurrentSessionNote()],
+  sessionInsights: [],
+  psychologistSummary: null,
+  psychologistChatSeed: [],
+  patientChatSeed: [],
+  patientSummary: null,
+});

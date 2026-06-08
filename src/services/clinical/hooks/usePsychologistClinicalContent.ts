@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 
 import type { PatientClinicalContentDto } from "@api";
 import { getPsychologistPatientClinicalContentApi } from "@api";
+import { ApiError } from "@api/http/apiClient";
 import { useAuth } from "@services";
+import { emptyClinicalContentForPatient } from "@services/clinical/clinicalContentDefaults";
 
 export const usePsychologistClinicalContent = (patientId: string | undefined) => {
   const { session } = useAuth();
@@ -24,10 +26,15 @@ export const usePsychologistClinicalContent = (patientId: string | undefined) =>
       const data = await getPsychologistPatientClinicalContentApi(patientId);
       setContent(data);
     } catch (loadError) {
-      setError(
-        loadError instanceof Error ? loadError.message : "Failed to load clinical content",
-      );
-      setContent(null);
+      if (loadError instanceof ApiError && loadError.status === 404) {
+        setContent(emptyClinicalContentForPatient(patientId));
+        setError("");
+      } else {
+        setError(
+          loadError instanceof Error ? loadError.message : "Failed to load clinical content",
+        );
+        setContent(null);
+      }
     } finally {
       setLoading(false);
     }
