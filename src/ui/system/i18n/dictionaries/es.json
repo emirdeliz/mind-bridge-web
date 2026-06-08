@@ -88,6 +88,7 @@
   "CHAT_AGENT_LABEL": "Agente",
   "CHAT_USER_LABEL": "Tú",
   "CHAT_NO_MESSAGES": "Aún no hay mensajes.",
+  "CHAT_AGENT_TYPING": "El agente está respondiendo",
   "CHAT_MESSAGE_PLACEHOLDER": "Escribe tu mensaje...",
   "AUDIO": "Audio",
   "SEND": "Enviar",

@@ -265,6 +265,7 @@ export const PsychologistSessionPage = () => {
       <ChatPanel
         messages={chatMessages}
         onSend={sendMessage}
+        sending={sending}
         tallScroll
         showAudio={false}
         sectionTooltip={t("TOOLTIP_PSYCHOLOGIST_CHAT")}

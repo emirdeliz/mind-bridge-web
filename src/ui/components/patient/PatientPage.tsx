@@ -36,7 +36,7 @@ export const PatientPage = () => {
   const { session, loading } = useAuth();
   const { content, loading: contentLoading } = usePatientClinicalContent();
   const [careContext] = useState(() => t("DEFAULT_PATIENT_AI_CONTEXT"));
-  const { messages, sendMessage, setMessages } = useAiAgent({
+  const { messages, sendMessage, setMessages, sending } = useAiAgent({
     mode: "patient",
     careContext,
   });
@@ -85,6 +85,7 @@ export const PatientPage = () => {
       <ChatPanel
         messages={messages}
         onSend={sendMessage}
+        sending={sending}
         sectionTooltip={t("TOOLTIP_PATIENT_CHAT")}
       />
       <Card padding="lg" shadow="md">
