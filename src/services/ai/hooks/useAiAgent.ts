@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 
+import type { AppLanguage } from "@api";
 import { postPatientChatApi, postPsychologistChatApi } from "@api";
 import { translateTemplate, useI18n } from "@i18n";
 import { useAuth } from "@services";
@@ -20,9 +21,18 @@ export type UseAiAgentOptions = {
   careContext?: string;
 };
 
+const resolveRequestLanguage = (
+  uiLanguage: AppLanguage,
+  profileLanguage?: AppLanguage
+): AppLanguage => uiLanguage ?? profileLanguage ?? "pt";
+
 export const useAiAgent = (options: UseAiAgentOptions) => {
   const { t, language } = useI18n();
   const { session } = useAuth();
+  const requestLanguage = resolveRequestLanguage(
+    language,
+    session?.profile?.language,
+  );
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
@@ -69,12 +79,12 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
       try {
         const reply =
           options.mode === "patient"
-            ? await postPatientChatApi(cleanText, options.careContext, language)
+            ? await postPatientChatApi(cleanText, options.careContext, requestLanguage)
             : await postPsychologistChatApi(
                 options.patientId!,
                 cleanText,
                 options.clinicalContext,
-                language,
+                requestLanguage,
                 options.sessionConsiderations,
               );
 
@@ -93,7 +103,7 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
         setSending(false);
       }
     },
-    [options, sending, session, t, language],
+    [options, sending, session, t, requestLanguage],
   );
 
   return {
