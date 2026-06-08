@@ -18,7 +18,6 @@ export type UseAiAgentOptions = {
   clinicalContext?: string;
   /** Current psychotherapy session notes (psychologist mode). */
   sessionConsiderations?: string;
-  careContext?: string;
 };
 
 const resolveRequestLanguage = (
@@ -79,7 +78,7 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
       try {
         const reply =
           options.mode === "patient"
-            ? await postPatientChatApi(cleanText, options.careContext, requestLanguage)
+            ? await postPatientChatApi(cleanText, requestLanguage)
             : await postPsychologistChatApi(
                 options.patientId!,
                 cleanText,

@@ -36,11 +36,9 @@ export const PatientPage = () => {
   const { t } = useI18n();
   const { session, loading } = useAuth();
   const { content, loading: contentLoading } = usePatientClinicalContent();
-  const [careContext] = useState(() => t("DEFAULT_PATIENT_AI_CONTEXT"));
   const [usedAudioInput, setUsedAudioInput] = useState(false);
   const { messages, sendMessage, setMessages, sending } = useAiAgent({
     mode: "patient",
-    careContext,
   });
 
   useEffect(() => {

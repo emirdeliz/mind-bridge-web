@@ -7,12 +7,11 @@ type ChatResponse = {
 
 export const postPatientChatApi = async (
   message: string,
-  careContext?: string,
   language?: AppLanguage
 ): Promise<string> => {
   const response = await apiRequest<ChatResponse>('/ai/patient/chat', {
     method: 'POST',
-    body: { message, careContext, language },
+    body: { message, language },
   });
   return response.message;
 };
