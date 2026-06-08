@@ -19,7 +19,7 @@ export type UseAiAgentOptions = {
 };
 
 export const useAiAgent = (options: UseAiAgentOptions) => {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const { session } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [sending, setSending] = useState(false);
@@ -67,11 +67,12 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
       try {
         const reply =
           options.mode === "patient"
-            ? await postPatientChatApi(cleanText, options.careContext)
+            ? await postPatientChatApi(cleanText, options.careContext, language)
             : await postPsychologistChatApi(
                 options.patientId!,
                 cleanText,
                 options.clinicalContext,
+                language,
               );
 
         const agentMessage: ChatMessage = {
@@ -89,7 +90,7 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
         setSending(false);
       }
     },
-    [options, sending, session, t],
+    [options, sending, session, t, language],
   );
 
   return {
