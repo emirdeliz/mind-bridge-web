@@ -75,7 +75,7 @@ export const PsychologistSessionPage = () => {
     setSelectedSessionIndex(currentIndex >= 0 ? currentIndex : 0);
     const seedMessages = toChatMessages(content.psychologistChatSeed);
     setMessages((prev) => {
-      if (!prev.length || seedMessages.length >= prev.length) {
+      if (!seedMessages.length || !prev.length || seedMessages.length >= prev.length) {
         return seedMessages;
       }
       return prev;
@@ -169,14 +169,10 @@ export const PsychologistSessionPage = () => {
         language,
       });
       setEndSessionModalVisible(false);
-      void router.push({
-        pathname: "/psychologist",
-        query: {
-          patientId,
-          patientName: patientName ?? "",
-          refreshed: Date.now().toString(),
-        },
-      });
+      setMessages([]);
+      setSelectedSessionIndex(0);
+      setAgenticSummaryPage(0);
+      await reloadContent();
     } catch (error) {
       setEndSessionModalVisible(false);
       setSaveError(
@@ -192,9 +188,9 @@ export const PsychologistSessionPage = () => {
     currentSessionNote,
     isViewingPreviousSession,
     sessionNotesById,
-    patientName,
     language,
-    router,
+    reloadContent,
+    setMessages,
     t,
   ]);
 

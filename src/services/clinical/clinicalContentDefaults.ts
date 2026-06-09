@@ -23,14 +23,20 @@ const formatSessionDateBr = (date: Date): string => {
   return `${day}/${month}/${year}`;
 };
 
+const formatSessionTimeBr = (date: Date): string => {
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
+};
+
 export const buildCurrentSessionNote = (): SessionNoteEntryDto => {
   const now = new Date();
   const sessionDate = formatSessionDateBr(now);
-  const isoDate = now.toISOString().slice(0, 10);
+  const sessionTime = formatSessionTimeBr(now);
 
   return {
-    id: `session-${isoDate}`,
-    label: `Sessão ${sessionDate} (atual)`,
+    id: `session-${now.toISOString().replace(/[:.]/g, "-")}`,
+    label: `Sessão ${sessionDate} ${sessionTime} (atual)`,
     sessionDate,
     content: "",
     isCurrent: true,
