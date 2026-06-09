@@ -63,6 +63,7 @@ export const PsychologistSessionPage = () => {
     patientId,
     clinicalContext: psychologistContext,
     sessionConsiderations: currentSessionConsiderations,
+    onAgentReply: reloadContent,
   });
 
   useEffect(() => {
@@ -129,6 +130,7 @@ export const PsychologistSessionPage = () => {
       await savePsychologistPatientClinicalContentApi(patientId, {
         currentSessionNoteContent:
           sessionNotesById[selectedSession.id] ?? selectedSession.content ?? "",
+        language,
       });
       await reloadContent();
     } catch (error) {
@@ -144,6 +146,7 @@ export const PsychologistSessionPage = () => {
     selectedSession,
     savingNotes,
     sessionNotesById,
+    language,
     reloadContent,
     t,
   ]);

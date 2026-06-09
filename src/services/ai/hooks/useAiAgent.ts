@@ -18,6 +18,8 @@ export type UseAiAgentOptions = {
   clinicalContext?: string;
   /** Current psychotherapy session notes (psychologist mode). */
   sessionConsiderations?: string;
+  /** Called after a successful agent reply (psychologist mode). */
+  onAgentReply?: () => void | Promise<void>;
 };
 
 const resolveRequestLanguage = (
@@ -94,6 +96,9 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
           createdAt: new Date().toISOString(),
         };
         setMessages((prev) => [...prev, agentMessage]);
+        if (options.mode === "psychologist" && options.onAgentReply) {
+          await options.onAgentReply();
+        }
       } catch (sendError) {
         setError(
           sendError instanceof Error ? sendError.message : t("AI_ERROR_GENERIC"),

@@ -27,6 +27,7 @@ export const getPsychologistPatientClinicalContentApi = async (
 export type UpdatePsychologistClinicalSessionDto = {
   sessionContext?: string | null;
   currentSessionNoteContent?: string | null;
+  language?: AppLanguage;
 };
 
 export const savePsychologistPatientClinicalContentApi = async (
