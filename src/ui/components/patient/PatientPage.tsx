@@ -11,9 +11,9 @@ import {
   useAuth,
   usePatientClinicalContent,
 } from "@services";
-import { Button, Flex, RouteLink, Title } from "@atoms";
+import { RouteLink, Title } from "@atoms";
 import { useI18n } from "@i18n";
-import { Alert, Card, Tooltip } from "@molecules";
+import { Alert, Card } from "@molecules";
 import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
 
 const PROFILE_FIELD_I18N_KEYS: Record<Exclude<keyof UserProfile, "language">, string> = {
@@ -35,10 +35,12 @@ export const PatientPage = () => {
   const router = useRouter();
   const { t } = useI18n();
   const { session, loading } = useAuth();
-  const { content, loading: contentLoading } = usePatientClinicalContent();
+  const { content, loading: contentLoading, reload: reloadContent } =
+    usePatientClinicalContent();
   const [usedAudioInput, setUsedAudioInput] = useState(false);
   const { messages, sendMessage, setMessages, sending } = useAiAgent({
     mode: "patient",
+    onAgentReply: () => reloadContent({ silent: true }),
   });
 
   useEffect(() => {
@@ -111,30 +113,6 @@ export const PatientPage = () => {
           {patientSummary}
         </Title>
       </Card>
-      <Flex row wrap wFull gap4>
-        <Tooltip title={t("TOOLTIP_PATIENT_NOTIFICATIONS")} top width={300}>
-          <Button
-            variant="secondary"
-            outlined
-            onClick={async () => {
-              if (!("Notification" in window)) return;
-              if (Notification.permission !== "granted") await Notification.requestPermission();
-              if (Notification.permission === "granted") {
-                new Notification(t("NOTIFICATION_TITLE"), {
-                  body: t("NOTIFICATION_BODY"),
-                });
-                try {
-                  await logPatientInteractionApi("notification", "web");
-                } catch {
-                  // Notification shown; logging is best-effort.
-                }
-              }
-            }}
-          >
-            {t("ENABLE_NOTIFICATIONS")}
-          </Button>
-        </Tooltip>
-      </Flex>
     </AppShell>
   );
 };

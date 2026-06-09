@@ -18,7 +18,7 @@ export type UseAiAgentOptions = {
   clinicalContext?: string;
   /** Current psychotherapy session notes (psychologist mode). */
   sessionConsiderations?: string;
-  /** Called after a successful agent reply (psychologist mode). */
+  /** Called after a successful agent reply. */
   onAgentReply?: () => void | Promise<void>;
 };
 
@@ -96,7 +96,7 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
           createdAt: new Date().toISOString(),
         };
         setMessages((prev) => [...prev, agentMessage]);
-        if (options.mode === "psychologist" && options.onAgentReply) {
+        if (options.onAgentReply) {
           await options.onAgentReply();
         }
       } catch (sendError) {
