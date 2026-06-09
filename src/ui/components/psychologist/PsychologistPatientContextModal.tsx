@@ -1,10 +1,15 @@
 'use client';
 
-import type { FormEvent, MouseEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent, type MouseEvent } from 'react';
 
-import { Button, Flex, Icon, Input, Overlay, Title } from '@atoms';
+import { Button, Flex, Icon, Input, Overlay, Select, Title } from '@atoms';
 import { translateTemplate, useI18n } from '@i18n';
-import { Card } from '@molecules';
+import { Card, FormGroup } from '@molecules';
+
+import {
+  PSYCHOLOGIST_PATIENT_CONTEXT_EXAMPLE_IDS,
+  psychologistPatientContextExampleI18nKey,
+} from './psychologistPatientContextExamples';
 
 type PsychologistPatientContextModalProps = {
   visible: boolean;
@@ -30,6 +35,43 @@ export const PsychologistPatientContextModal = ({
   onChange,
 }: PsychologistPatientContextModalProps) => {
   const { t } = useI18n();
+  const [selectedExampleId, setSelectedExampleId] = useState('');
+
+  useEffect(() => {
+    if (!visible) {
+      setSelectedExampleId('');
+    }
+  }, [visible]);
+
+  const exampleSelectOptions = useMemo(
+    () => [
+      {
+        value: '',
+        label: t('PSYCHOLOGIST_PATIENTS_CONTEXT_EXAMPLE_SELECT_PLACEHOLDER'),
+      },
+      ...PSYCHOLOGIST_PATIENT_CONTEXT_EXAMPLE_IDS.map((id) => ({
+        value: id,
+        label: t(psychologistPatientContextExampleI18nKey(id, 'LABEL')),
+      })),
+    ],
+    [t],
+  );
+
+  const handleExampleSelect = (rawValue: string | number) => {
+    const exampleId = String(rawValue);
+    setSelectedExampleId(exampleId);
+    if (!exampleId) {
+      return;
+    }
+    onChange(
+      t(
+        psychologistPatientContextExampleI18nKey(
+          exampleId as (typeof PSYCHOLOGIST_PATIENT_CONTEXT_EXAMPLE_IDS)[number],
+          'TEXT',
+        ),
+      ),
+    );
+  };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -103,6 +145,18 @@ export const PsychologistPatientContextModal = ({
                   {error}
                 </div>
               ) : null}
+
+              <FormGroup
+                label={t('PSYCHOLOGIST_PATIENTS_CONTEXT_EXAMPLE_SELECT_LABEL')}
+                helpText={t('PSYCHOLOGIST_PATIENTS_CONTEXT_EXAMPLE_SELECT_HELP')}
+              >
+                <Select
+                  value={selectedExampleId}
+                  disabled={loading}
+                  options={exampleSelectOptions}
+                  onChange={handleExampleSelect}
+                />
+              </FormGroup>
 
               <Flex col wFull gap2>
                 <Title s2 fw3 block>
