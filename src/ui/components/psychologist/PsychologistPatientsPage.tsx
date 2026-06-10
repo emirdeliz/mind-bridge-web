@@ -10,6 +10,7 @@ import { useI18n } from '@i18n';
 import { Card, InputSearch, Table, Tooltip } from '@molecules';
 import { AppShell } from '@templates';
 
+import { PsychologistInviteCodePanel } from './PsychologistInviteCodePanel';
 import { PsychologistPatientContextModal } from './PsychologistPatientContextModal';
 import { PsychologistPatientFormModal } from './PsychologistPatientFormModal';
 import { usePsychologistGuard } from './usePsychologistGuard';
@@ -204,7 +205,8 @@ export const PsychologistPatientsPage = () => {
       subtitle={t('PSYCHOLOGIST_PATIENTS_SUBTITLE')}
       variant="dashboard"
     >
-      <Flex row wFull wrap alignCenter justifySpaceBetween gap4>
+      <PsychologistInviteCodePanel />
+      <Flex row wFull wrap alignCenter justifySpaceBetween gap4 mt4>
         <Flex row flex1 wFull gap4 alignCenter>
           <div className="min-w-0 flex-1 w-full">
             <InputSearch value={search} onChange={setSearch} />

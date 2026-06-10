@@ -24,4 +24,6 @@ export interface UserAuthSaveOrUpdateDto {
   phone: string;
   role: UserRole;
   provider: AuthProvider;
+  inviteCode?: string;
+  fullName?: string;
 }
