@@ -48,6 +48,7 @@ export interface TitleProps {
   inline?: boolean;
   maxW2xl?: boolean;
   leadingRelaxed?: boolean;
+  preLine?: boolean;
   py8?: boolean;
 }
 
@@ -94,6 +95,7 @@ export const Title = (props: TitleProps) => {
     else if (props.block) baseClasses.push('block');
     if (props.maxW2xl) baseClasses.push('max-w-2xl');
     if (props.leadingRelaxed) baseClasses.push('leading-relaxed');
+    if (props.preLine) baseClasses.push('whitespace-pre-line');
     if (props.py8) baseClasses.push('py-8');
     if (props.lowercase) baseClasses.push('lowercase');
     if (props.capitalize) baseClasses.push('capitalize');

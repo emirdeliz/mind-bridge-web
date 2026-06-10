@@ -7,19 +7,27 @@ type ClinicalContentResponse = {
   content: PatientClinicalContentDto;
 };
 
-export const getPatientClinicalContentApi =
-  async (): Promise<PatientClinicalContentDto> => {
-    const response = await apiRequest<ClinicalContentResponse>(
-      '/patient/clinical-content'
-    );
-    return keysToCamel<ClinicalContentResponse>(response).content;
-  };
+const withLanguageQuery = (path: string, language?: AppLanguage): string =>
+  language ? `${path}?language=${encodeURIComponent(language)}` : path;
 
-export const getPsychologistPatientClinicalContentApi = async (
-  patientId: string
+export const getPatientClinicalContentApi = async (
+  language?: AppLanguage
 ): Promise<PatientClinicalContentDto> => {
   const response = await apiRequest<ClinicalContentResponse>(
-    `/psychologist/patients/${patientId}/clinical-content`
+    withLanguageQuery('/patient/clinical-content', language)
+  );
+  return keysToCamel<ClinicalContentResponse>(response).content;
+};
+
+export const getPsychologistPatientClinicalContentApi = async (
+  patientId: string,
+  language?: AppLanguage
+): Promise<PatientClinicalContentDto> => {
+  const response = await apiRequest<ClinicalContentResponse>(
+    withLanguageQuery(
+      `/psychologist/patients/${patientId}/clinical-content`,
+      language
+    )
   );
   return keysToCamel<ClinicalContentResponse>(response).content;
 };

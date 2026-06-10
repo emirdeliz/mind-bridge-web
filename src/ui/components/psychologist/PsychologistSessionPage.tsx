@@ -210,7 +210,8 @@ export const PsychologistSessionPage = () => {
     : t("PSYCHOLOGIST_SESSION_SUBTITLE");
 
   const insights = content?.sessionInsights ?? [];
-  const psychologistSummary = content?.psychologistSummary ?? "";
+  const psychologistSummary =
+    content?.psychologistSummary?.trim() || t("AI_SUMMARY_NO_INTERACTIONS");
 
   return (
     <AppShell
@@ -326,7 +327,7 @@ export const PsychologistSessionPage = () => {
           title={t("INTERACTION_SUMMARY")}
           tooltip={t("TOOLTIP_PSYCHOLOGIST_SUMMARY")}
         />
-        <Title s1 gray>
+        <Title s1 gray preLine leadingRelaxed>
           {psychologistSummary}
         </Title>
       </Card>
@@ -336,16 +337,22 @@ export const PsychologistSessionPage = () => {
           tooltip={t("TOOLTIP_PSYCHOLOGIST_INSIGHTS")}
         />
         <Flex col wFull gap4>
-          {insights.map((insight) => (
-            <Flex col wFull key={insight.title} gap1>
-              <Title s2 textAccent>
-                {insight.title}
-              </Title>
-              <Title s1 gray>
-                {insight.body}
-              </Title>
-            </Flex>
-          ))}
+          {insights.length ? (
+            insights.map((insight) => (
+              <Flex col wFull key={insight.title} gap1>
+                <Title s2 textAccent>
+                  {insight.title}
+                </Title>
+                <Title s1 gray>
+                  {insight.body}
+                </Title>
+              </Flex>
+            ))
+          ) : (
+            <Title s1 gray>
+              {t("AI_SUMMARY_NO_INTERACTIONS")}
+            </Title>
+          )}
         </Flex>
       </Card>
       {previousSessionsAgenticSummaries.length > 0 ? (

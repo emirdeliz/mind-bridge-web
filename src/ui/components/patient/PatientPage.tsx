@@ -113,7 +113,7 @@ export const PatientPage = () => {
       />
       <Card padding="lg" shadow="md">
         <DashboardSectionTitle title={t("INTERACTION_SUMMARY")} tooltip={t("TOOLTIP_PATIENT_SUMMARY")} />
-        <Title s1 gray>
+        <Title s1 gray preLine leadingRelaxed>
           {patientSummary}
         </Title>
       </Card>

@@ -3,10 +3,12 @@ import { useCallback, useEffect, useState } from "react";
 import type { PatientClinicalContentDto } from "@api";
 import { getPsychologistPatientClinicalContentApi } from "@api";
 import { ApiError } from "@api/http/apiClient";
+import { useI18n } from "@i18n";
 import { useAuth } from "@services";
 import { emptyClinicalContentForPatient } from "@services/clinical/clinicalContentDefaults";
 
 export const usePsychologistClinicalContent = (patientId: string | undefined) => {
+  const { language } = useI18n();
   const { session } = useAuth();
   const [content, setContent] = useState<PatientClinicalContentDto | null>(null);
   const [loading, setLoading] = useState(true);
@@ -23,7 +25,10 @@ export const usePsychologistClinicalContent = (patientId: string | undefined) =>
     setError("");
 
     try {
-      const data = await getPsychologistPatientClinicalContentApi(patientId);
+      const data = await getPsychologistPatientClinicalContentApi(
+        patientId,
+        language,
+      );
       setContent(data);
     } catch (loadError) {
       if (loadError instanceof ApiError && loadError.status === 404) {
@@ -38,7 +43,7 @@ export const usePsychologistClinicalContent = (patientId: string | undefined) =>
     } finally {
       setLoading(false);
     }
-  }, [session, patientId]);
+  }, [session, patientId, language]);
 
   useEffect(() => {
     void load();
