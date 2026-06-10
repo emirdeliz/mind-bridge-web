@@ -58,7 +58,7 @@ export const RegisterPage = () => {
         <Title fs3 fw3 mb2>
           {isPatientRegister ? t("REGISTER_PATIENT_TITLE") : t("REGISTER_PSYCHOLOGIST_TITLE")}
         </Title>
-        <Title s2 gray mb2 block leadingRelaxed>
+        <Title s2 gray mb4 block leadingRelaxed>
           {isPatientRegister ? t("REGISTER_PATIENT_HINT") : t("REGISTER_PSYCHOLOGIST_HINT")}
         </Title>
         <Form
@@ -86,11 +86,6 @@ export const RegisterPage = () => {
               return;
             }
 
-            if (isPatientRegister && !inviteCode.trim()) {
-              setError(t("REGISTER_ERROR_INVITE_CODE_REQUIRED"));
-              return;
-            }
-
             try {
               await registerPublicAccount({
                 email: email.trim(),
@@ -99,7 +94,10 @@ export const RegisterPage = () => {
                 role: registerRole,
                 provider: "password",
                 fullName: isPatientRegister ? fullName.trim() : undefined,
-                inviteCode: isPatientRegister ? inviteCode.trim() : undefined,
+                inviteCode:
+                  isPatientRegister && inviteCode.trim()
+                    ? inviteCode.trim()
+                    : undefined,
               });
               void router.replace("/?registered=1");
             } catch (registerError) {
@@ -117,18 +115,6 @@ export const RegisterPage = () => {
               value={fullName}
               onChange={(event) => setFullName(event.target.value)}
             />
-          ) : null}
-          {isPatientRegister ? (
-            <Input
-              placeholder={t("REGISTER_INVITE_CODE_PLACEHOLDER")}
-              value={inviteCode}
-              onChange={(event) => setInviteCode(event.target.value.toUpperCase())}
-            />
-          ) : null}
-          {isPatientRegister ? (
-            <Title s2 gray block>
-              {t("REGISTER_INVITE_CODE_HELP")}
-            </Title>
           ) : null}
           <Input
             placeholder={t("EMAIL")}
@@ -150,6 +136,18 @@ export const RegisterPage = () => {
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
+          {isPatientRegister ? (
+            <Input
+              placeholder={t("REGISTER_INVITE_CODE_PLACEHOLDER")}
+              value={inviteCode}
+              onChange={(event) => setInviteCode(event.target.value.toUpperCase())}
+            />
+          ) : null}
+          {isPatientRegister ? (
+            <Title s2 gray block>
+              {t("REGISTER_INVITE_CODE_HELP")}
+            </Title>
+          ) : null}
           <FormError error={error}>
             <Button type="submit" wFull>
               {isPatientRegister

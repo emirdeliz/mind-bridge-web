@@ -25,10 +25,6 @@ const registerPatientViaBackend = async (
     return { ok: false, error: 'Password is required', status: 400 };
   }
 
-  if (!inviteCode) {
-    return { ok: false, error: 'Invite code is required', status: 400 };
-  }
-
   if (!fullName) {
     return { ok: false, error: 'Full name is required', status: 400 };
   }
@@ -48,7 +44,7 @@ const registerPatientViaBackend = async (
         password,
         phone: phoneDigits(payload.phone),
         fullName,
-        inviteCode,
+        ...(inviteCode ? { inviteCode } : {}),
       }),
     });
   } catch {
