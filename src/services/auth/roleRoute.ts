@@ -7,4 +7,16 @@ export const getRoleRoute = (role: UserRole | null | undefined): string => {
   return "/patient";
 };
 
-export const getProfileRoute = (role: UserRole): string => `${getRoleRoute(role)}/profile`;
+export const getProfileRoute = (role: UserRole): string => {
+  if (role === "psychologist") {
+    return "/psychologist/profile";
+  }
+  return "/patient/profile";
+};
+
+export const getBillingRoute = (role: UserRole): string | null => {
+  if (role === "psychologist") {
+    return "/psychologist/billing";
+  }
+  return null;
+};

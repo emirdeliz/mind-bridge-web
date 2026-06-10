@@ -20,6 +20,8 @@ export interface ChartLineProps {
   series: ChartLineSeries[];
   title?: string;
   unit?: string;
+  /** When set, formats tooltip values (overrides `unit` suffix). */
+  formatTooltipValue?: (value: number) => string;
   hideWhenEmpty?: boolean;
   height?: string | number;
 }
@@ -29,6 +31,7 @@ export const ChartLine = memo(({
   series,
   title,
   unit = '',
+  formatTooltipValue,
   hideWhenEmpty = true,
   height = 260,
 }: ChartLineProps) => {
@@ -50,13 +53,21 @@ export const ChartLine = memo(({
     title: title ? mbChartTitleStyle(title) : undefined,
     tooltip: {
       trigger: 'axis',
-      formatter: unit
-        ? (params: { axisValue: string; seriesName: string; value: number }[]) => {
-            const header = params[0]?.axisValue ?? '';
-            const rows = params.map((p) => `${p.seriesName}: ${p.value}${unit}`).join('<br/>');
-            return `${header}<br/>${rows}`;
-          }
-        : undefined,
+      formatter:
+        formatTooltipValue || unit
+          ? (params: { axisValue: string; seriesName: string; value: number }[]) => {
+              const header = params[0]?.axisValue ?? '';
+              const rows = params
+                .map((p) => {
+                  const formatted = formatTooltipValue
+                    ? formatTooltipValue(p.value)
+                    : `${p.value}${unit}`;
+                  return `${p.seriesName}: ${formatted}`;
+                })
+                .join('<br/>');
+              return `${header}<br/>${rows}`;
+            }
+          : undefined,
     },
     legend: series.length > 1 ? { bottom: 0, textStyle: { color: '#8b9ab8' } } : { show: false },
     grid: {
@@ -83,7 +94,7 @@ export const ChartLine = memo(({
       lineStyle: { color: s.color, width: 2 },
       areaStyle: s.areaStyle ? { opacity: 0.12, color: s.color } : undefined,
     })),
-  }), [categories, series, title, unit, showMarkers]);
+  }), [categories, series, title, unit, formatTooltipValue, showMarkers]);
 
   const heightCss = typeof height === 'number' ? `${height}px` : height;
   const categoryKey = useMemo(() => categories.join('\0'), [categories]);

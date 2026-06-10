@@ -1,4 +1,13 @@
+import { formatCurrencyForAppLanguage } from './formatNumber';
+
 export * from './caseTransform';
+export {
+  formatCentsAsCurrencyForAppLanguage,
+  formatCurrencyForAppLanguage,
+  formatNumberForAppLanguage,
+  formatNumberForIrisAppLanguage,
+  localeForAppLanguage,
+} from './formatNumber';
 export {
   filterDOMProps,
   filterInputDomProps,
@@ -56,7 +65,6 @@ export const maskRG = (value: string): string => value;
 export const maskCountryState = (value: string): string => value;
 export const maskMoney = (value: number): string => String(value);
 
-export const formatNumberForIrisAppLanguage = (value: number): string => String(value);
 
 export const formatDateAsDDMMYYYY = (value: Date | string): string =>
   (value instanceof Date ? value : new Date(value)).toLocaleDateString("pt-BR");
@@ -129,6 +137,6 @@ export const formatDateAsDDMMYYYYAndTime = (value: Date | string): string => {
 };
 
 export const formatNumberAsCurrency = (value: number): string =>
-  value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  formatCurrencyForAppLanguage(value, "pt");
 
 export const formatStringOrNumberAsCnpj = (value: string | number): string => String(value);

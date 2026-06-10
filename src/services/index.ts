@@ -1,4 +1,5 @@
 export * from "./auth/hooks/useAuth";
+export * from "./billing";
 export * from "./clinical";
 export * from "./patient";
 export * from "./auth/authBypass";
