@@ -6,12 +6,35 @@ import { DashboardSectionTitle } from "../dashboard/DashboardSectionTitle";
 import { useI18n } from "@i18n";
 import {
   Card,
+  ChatInteractionDivider,
   ChatMessageBubble,
   ChatScrollArea,
   ChatTypingIndicator,
   Form,
   Tooltip,
 } from "@molecules";
+
+const shouldShowInteractionDivider = (
+  messages: ChatMessage[],
+  index: number,
+): boolean => {
+  if (index === 0) {
+    return false;
+  }
+
+  const message = messages[index];
+  const previous = messages[index - 1];
+
+  if (message.isInteractionStart) {
+    return true;
+  }
+
+  return Boolean(
+    message.interactionId &&
+      previous.interactionId &&
+      message.interactionId !== previous.interactionId,
+  );
+};
 
 interface ChatPanelProps {
   messages: ChatMessage[];
@@ -20,6 +43,7 @@ interface ChatPanelProps {
   sending?: boolean;
   tallScroll?: boolean;
   showAudio?: boolean;
+  showInteractionDividers?: boolean;
   sectionTooltip?: string;
 }
 
@@ -30,6 +54,7 @@ export const ChatPanel = ({
   sending = false,
   tallScroll,
   showAudio = true,
+  showInteractionDividers = false,
   sectionTooltip,
 }: ChatPanelProps) => {
   const { t } = useI18n();
@@ -69,13 +94,18 @@ export const ChatPanel = ({
         isTyping={sending}
         lastMessageId={lastMessageId}
       >
-        {messages.map((message) => (
-          <ChatMessageBubble
-            key={message.id}
-            sender={message.sender}
-            label={message.sender === "agent" ? t("CHAT_AGENT_LABEL") : t("CHAT_USER_LABEL")}
-            text={message.text}
-          />
+        {messages.map((message, index) => (
+          <div key={message.id}>
+            {showInteractionDividers &&
+            shouldShowInteractionDivider(messages, index) ? (
+              <ChatInteractionDivider label={t("CHAT_NEW_INTERACTION")} />
+            ) : null}
+            <ChatMessageBubble
+              sender={message.sender}
+              label={message.sender === "agent" ? t("CHAT_AGENT_LABEL") : t("CHAT_USER_LABEL")}
+              text={message.text}
+            />
+          </div>
         ))}
         {sending ? (
           <ChatTypingIndicator

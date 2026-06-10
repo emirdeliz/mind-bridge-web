@@ -29,6 +29,8 @@ const toChatMessages = (seed: ClinicalChatMessageDto[]): ChatMessage[] =>
     sender: item.sender,
     text: item.text,
     createdAt: item.createdAt,
+    interactionId: item.interactionId,
+    isInteractionStart: item.isInteractionStart,
   }));
 
 export const PatientPage = () => {
@@ -105,6 +107,7 @@ export const PatientPage = () => {
         onSend={(text) => void handleSendMessage(text)}
         onSpeechToText={() => setUsedAudioInput(true)}
         sending={sending}
+        showInteractionDividers
         sectionTooltip={t("TOOLTIP_PATIENT_CHAT")}
       />
       <Card padding="lg" shadow="md">

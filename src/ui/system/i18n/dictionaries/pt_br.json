@@ -141,6 +141,7 @@
   "CHAT_NO_MESSAGES": "Nenhuma mensagem ainda.",
   "CHAT_AGENT_TYPING": "O agente está respondendo",
   "CHAT_MESSAGE_PLACEHOLDER": "Escreva sua mensagem...",
+  "CHAT_NEW_INTERACTION": "Nova conversa",
   "AUDIO": "Áudio",
   "SEND": "Enviar",
   "INTERACTION_SUMMARY": "Resumo das interações",

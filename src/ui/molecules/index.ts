@@ -4,6 +4,7 @@ export * from "./Calendar/Calendar";
 export * from "./Card/Card";
 export * from "./ChartCard/ChartCard";
 export * from "./ConfirmModal/ConfirmModal";
+export * from "./ChatInteractionDivider/ChatInteractionDivider";
 export * from "./ChatMessageBubble/ChatMessageBubble";
 export * from "./ChatScrollArea/ChatScrollArea";
 export * from "./ChatTypingIndicator/ChatTypingIndicator";

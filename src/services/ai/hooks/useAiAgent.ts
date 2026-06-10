@@ -10,6 +10,8 @@ export interface ChatMessage {
   sender: "user" | "agent";
   text: string;
   createdAt: string;
+  interactionId?: string;
+  isInteractionStart?: boolean;
 }
 
 export type UseAiAgentOptions = {
@@ -78,24 +80,48 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
       setError("");
 
       try {
-        const reply =
-          options.mode === "patient"
-            ? await postPatientChatApi(cleanText, requestLanguage)
-            : await postPsychologistChatApi(
-                options.patientId!,
-                cleanText,
-                options.clinicalContext,
-                requestLanguage,
-                options.sessionConsiderations,
-              );
+        if (options.mode === "patient") {
+          const response = await postPatientChatApi(cleanText, requestLanguage);
+          if (response.messages?.length) {
+            setMessages((prev) => [
+              ...prev.slice(0, -1),
+              ...response.messages!.map((item) => ({
+                id: item.id,
+                sender: item.sender,
+                text: item.text,
+                createdAt: item.createdAt,
+                interactionId: item.interactionId,
+                isInteractionStart: item.isInteractionStart,
+              })),
+            ]);
+          } else {
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: crypto.randomUUID(),
+                sender: "agent",
+                text: response.message,
+                createdAt: new Date().toISOString(),
+              },
+            ]);
+          }
+        } else {
+          const reply = await postPsychologistChatApi(
+            options.patientId!,
+            cleanText,
+            options.clinicalContext,
+            requestLanguage,
+            options.sessionConsiderations,
+          );
 
-        const agentMessage: ChatMessage = {
-          id: crypto.randomUUID(),
-          sender: "agent",
-          text: reply,
-          createdAt: new Date().toISOString(),
-        };
-        setMessages((prev) => [...prev, agentMessage]);
+          const agentMessage: ChatMessage = {
+            id: crypto.randomUUID(),
+            sender: "agent",
+            text: reply,
+            createdAt: new Date().toISOString(),
+          };
+          setMessages((prev) => [...prev, agentMessage]);
+        }
         if (options.onAgentReply) {
           await options.onAgentReply();
         }

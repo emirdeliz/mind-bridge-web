@@ -163,6 +163,14 @@
     @apply rounded-xl border border-mb-border/80 bg-mb-bg/50 p-3 backdrop-blur-sm;
   }
 
+  .mb-chat-interaction-divider {
+    @apply my-4 flex items-center gap-3;
+  }
+
+  .mb-chat-interaction-divider-line {
+    @apply h-px flex-1 bg-mb-border/80;
+  }
+
   .mb-chat-form-action {
     @apply flex shrink-0 items-center self-stretch;
   }

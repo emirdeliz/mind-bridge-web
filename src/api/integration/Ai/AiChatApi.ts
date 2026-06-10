@@ -1,19 +1,24 @@
 import type { AppLanguage } from '../../dto/auth/AuthDto';
+import type { ClinicalChatMessageDto } from '../../dto/clinical/ClinicalContentDto';
 import { apiRequest } from '../../http/apiClient';
 
-type ChatResponse = {
+type PatientChatResponse = {
+  message: string;
+  messages?: ClinicalChatMessageDto[];
+};
+
+type PsychologistChatResponse = {
   message: string;
 };
 
 export const postPatientChatApi = async (
   message: string,
   language?: AppLanguage
-): Promise<string> => {
-  const response = await apiRequest<ChatResponse>('/ai/patient/chat', {
+): Promise<PatientChatResponse> => {
+  return apiRequest<PatientChatResponse>('/ai/patient/chat', {
     method: 'POST',
     body: { message, language },
   });
-  return response.message;
 };
 
 export const postPsychologistChatApi = async (
@@ -23,7 +28,7 @@ export const postPsychologistChatApi = async (
   language?: AppLanguage,
   sessionConsiderations?: string
 ): Promise<string> => {
-  const response = await apiRequest<ChatResponse>('/ai/psychologist/chat', {
+  const response = await apiRequest<PsychologistChatResponse>('/ai/psychologist/chat', {
     method: 'POST',
     body: { patientId, message, clinicalContext, sessionConsiderations, language },
   });

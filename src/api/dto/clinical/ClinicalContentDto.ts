@@ -3,6 +3,8 @@ export type ClinicalChatMessageDto = {
   sender: 'user' | 'agent';
   text: string;
   createdAt: string;
+  interactionId?: string;
+  isInteractionStart?: boolean;
 };
 
 export type SessionNoteEntryDto = {
