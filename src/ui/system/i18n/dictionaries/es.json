@@ -1,6 +1,6 @@
 {
   "APP_TITLE": "Mind Bridge Web",
-  "HOME_SUBTITLE": "Inicia sesión con contraseña, Google o Facebook usando el mismo modelo de usuario de la app móvil.",
+  "HOME_SUBTITLE": "Inicia sesión con correo y contraseña usando el mismo modelo de usuario de la app móvil.",
   "REGISTER_SUBTITLE": "Registro solo para psicólogos. Los pacientes los da de alta su psicólogo en el área de pacientes.",
   "REGISTER_PSYCHOLOGIST_TITLE": "Registro de psicólogo",
   "REGISTER_PSYCHOLOGIST_HINT": "Los pacientes no se registran aquí: el psicólogo crea el acceso desde la lista de pacientes.",

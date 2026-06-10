@@ -1,6 +1,6 @@
 {
   "APP_TITLE": "Mind Bridge Web",
-  "HOME_SUBTITLE": "Login with password, Google, or Facebook using the same user model as the mobile app.",
+  "HOME_SUBTITLE": "Sign in with email and password using the same user model as the mobile app.",
   "REGISTER_SUBTITLE": "Registration for psychologists only. Patients are added by their psychologist in the patients area.",
   "REGISTER_PSYCHOLOGIST_TITLE": "Psychologist registration",
   "REGISTER_PSYCHOLOGIST_HINT": "Patients do not sign up here — the psychologist creates patient access from the patient list.",
