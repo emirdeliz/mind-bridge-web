@@ -116,7 +116,7 @@
   "PSYCHOLOGIST_BILLING_CHART_COST": "Net cost",
   "PSYCHOLOGIST_BILLING_CHART_PATIENTS": "Patients",
   "TOOLTIP_PSYCHOLOGIST_BILLING_CURRENT": "Current month values based on active, non-deleted patients.",
-  "TOOLTIP_PSYCHOLOGIST_BILLING_FORMULA": "Unit price comes from the platform pricing table in Supabase.",
+  "TOOLTIP_PSYCHOLOGIST_BILLING_FORMULA": "The per-patient price is set by the platform and applied automatically to your bill.",
   "TOOLTIP_PSYCHOLOGIST_BILLING_COST_CHART": "Monthly history of net cost after discounts.",
   "TOOLTIP_PSYCHOLOGIST_BILLING_PATIENTS_CHART": "Number of enabled patients recorded each month.",
   "COMPLETE_PROFILE": "Complete profile",

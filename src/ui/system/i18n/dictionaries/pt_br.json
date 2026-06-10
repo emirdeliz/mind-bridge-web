@@ -116,7 +116,7 @@
   "PSYCHOLOGIST_BILLING_CHART_COST": "Custo líquido",
   "PSYCHOLOGIST_BILLING_CHART_PATIENTS": "Pacientes",
   "TOOLTIP_PSYCHOLOGIST_BILLING_CURRENT": "Valores do mês corrente com base nos pacientes ativos e não excluídos.",
-  "TOOLTIP_PSYCHOLOGIST_BILLING_FORMULA": "O preço unitário vem da tabela de preços da plataforma no Supabase.",
+  "TOOLTIP_PSYCHOLOGIST_BILLING_FORMULA": "O preço por paciente é definido pela plataforma e aplicado automaticamente na cobrança.",
   "TOOLTIP_PSYCHOLOGIST_BILLING_COST_CHART": "Histórico mensal do custo líquido após descontos.",
   "TOOLTIP_PSYCHOLOGIST_BILLING_PATIENTS_CHART": "Quantidade de pacientes habilitados registrada em cada mês.",
   "COMPLETE_PROFILE": "Completar perfil",

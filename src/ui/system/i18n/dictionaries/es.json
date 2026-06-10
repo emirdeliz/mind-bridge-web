@@ -116,7 +116,7 @@
   "PSYCHOLOGIST_BILLING_CHART_COST": "Costo neto",
   "PSYCHOLOGIST_BILLING_CHART_PATIENTS": "Pacientes",
   "TOOLTIP_PSYCHOLOGIST_BILLING_CURRENT": "Valores del mes actual según pacientes activos y no eliminados.",
-  "TOOLTIP_PSYCHOLOGIST_BILLING_FORMULA": "El precio unitario proviene de la tabla de precios de la plataforma en Supabase.",
+  "TOOLTIP_PSYCHOLOGIST_BILLING_FORMULA": "El precio por paciente lo define la plataforma y se aplica automáticamente en la facturación.",
   "TOOLTIP_PSYCHOLOGIST_BILLING_COST_CHART": "Historial mensual del costo neto después de descuentos.",
   "TOOLTIP_PSYCHOLOGIST_BILLING_PATIENTS_CHART": "Cantidad de pacientes habilitados registrada cada mes.",
   "COMPLETE_PROFILE": "Completar perfil",
