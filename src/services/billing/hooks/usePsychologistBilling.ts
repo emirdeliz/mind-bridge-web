@@ -5,7 +5,7 @@ import { getPsychologistBillingApi } from "@api";
 import { ApiError } from "@api/http/apiClient";
 import { useAuth } from "@services";
 
-export const usePsychologistBilling = () => {
+export const usePsychologistBilling = (billingMonth?: string | null) => {
   const { session } = useAuth();
   const [billing, setBilling] = useState<PsychologistBillingSummaryDto | null>(null);
   const [loading, setLoading] = useState(true);
@@ -22,7 +22,7 @@ export const usePsychologistBilling = () => {
     setError("");
 
     try {
-      const data = await getPsychologistBillingApi();
+      const data = await getPsychologistBillingApi(billingMonth ?? undefined);
       setBilling(data);
     } catch (loadError) {
       setBilling(null);
@@ -36,7 +36,7 @@ export const usePsychologistBilling = () => {
     } finally {
       setLoading(false);
     }
-  }, [session]);
+  }, [billingMonth, session]);
 
   useEffect(() => {
     void load();

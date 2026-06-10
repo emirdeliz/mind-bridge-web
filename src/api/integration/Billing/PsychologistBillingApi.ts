@@ -6,8 +6,14 @@ type BillingResponse = {
   billing: PsychologistBillingSummaryDto;
 };
 
-export const getPsychologistBillingApi =
-  async (): Promise<PsychologistBillingSummaryDto> => {
-    const response = await apiRequest<BillingResponse>('/psychologist/billing');
-    return keysToCamel<BillingResponse>(response).billing;
-  };
+export const getPsychologistBillingApi = async (
+  billingMonth?: string,
+): Promise<PsychologistBillingSummaryDto> => {
+  const query = billingMonth
+    ? `?month=${encodeURIComponent(billingMonth)}`
+    : '';
+  const response = await apiRequest<BillingResponse>(
+    `/psychologist/billing${query}`,
+  );
+  return keysToCamel<BillingResponse>(response).billing;
+};

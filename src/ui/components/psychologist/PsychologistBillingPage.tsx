@@ -1,22 +1,31 @@
 "use client";
 
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 
-import type { AppLanguage } from "@api";
+import type { AppLanguage, PsychologistBillablePatientDto } from "@api";
 import { Button, Flex, Title } from "@atoms";
 import {
   formatCentsAsCurrencyForAppLanguage,
   formatCurrencyForAppLanguage,
+  formatDateAsDDMMYYYYAndTime,
   localeForAppLanguage,
 } from "@helpers";
 import { translateTemplate, useI18n } from "@i18n";
-import { Card, ChartCard } from "@molecules";
+import { Card, ChartCard, Table } from "@molecules";
 import { AppShell, DashboardSectionTitle } from "@templates";
-import { usePsychologistBilling } from "@services";
+import {
+  canNavigateToPreviousBillingMonth,
+  previousBillingMonth,
+  usePsychologistBilling,
+} from "@services";
 
 import { usePsychologistGuard } from "./usePsychologistGuard";
+
+type BillablePatientTableRow = PsychologistBillablePatientDto & {
+  actions: null;
+};
 
 const ChartLine = dynamic(
   () => import("../../atoms/Chart/Line/ChartLine").then((mod) => mod.ChartLine),
@@ -40,8 +49,13 @@ export const PsychologistBillingPage = () => {
   const router = useRouter();
   const { t, language } = useI18n();
   const { loading: guardLoading, isPsychologist } = usePsychologistGuard();
-  const { billing, loading: billingLoading, error } = usePsychologistBilling();
+  const [selectedBillingMonth, setSelectedBillingMonth] = useState<string | null>(null);
+  const { billing, loading: billingLoading, error } = usePsychologistBilling(selectedBillingMonth);
   const history = billing?.history ?? [];
+  const oldestBillingMonth = history[0]?.billingMonth;
+  const canGoToPreviousMonth = billing?.billingMonth
+    ? canNavigateToPreviousBillingMonth(billing.billingMonth, oldestBillingMonth)
+    : false;
   const monthCategories = useMemo(
     () => history.map((entry) => formatBillingMonth(entry.billingMonth, language)),
     [history, language],
@@ -74,6 +88,89 @@ export const PsychologistBillingPage = () => {
     [language, currency],
   );
 
+  const formatBillingDateTime = useCallback(
+    (value: string | null) => (value ? formatDateAsDDMMYYYYAndTime(value) : "—"),
+    [],
+  );
+
+  const resolvePatientStatusLabel = useCallback(
+    (patient: PsychologistBillablePatientDto) => {
+      if (patient.isCurrentlyEnabled) {
+        return t("PSYCHOLOGIST_BILLING_PATIENT_STATUS_ACTIVE");
+      }
+
+      if (patient.deactivatedDuringMonth) {
+        return t("PSYCHOLOGIST_BILLING_PATIENT_STATUS_DEACTIVATED_IN_MONTH");
+      }
+
+      return t("PSYCHOLOGIST_BILLING_PATIENT_STATUS_INACTIVE");
+    },
+    [t],
+  );
+
+  const billablePatientsTableData = useMemo((): BillablePatientTableRow[] => {
+    return (billing?.billablePatients ?? []).map((patient) => ({
+      ...patient,
+      actions: null,
+    }));
+  }, [billing?.billablePatients]);
+
+  const billablePatientsColumns = useMemo(
+    () => [
+      {
+        key: "fullName" as const,
+        label: t("PSYCHOLOGIST_BILLING_PATIENTS_COL_NAME"),
+      },
+      {
+        key: "enabledAt" as const,
+        label: t("PSYCHOLOGIST_BILLING_PATIENTS_COL_ENABLED_AT"),
+        dateAndTime: true,
+      },
+      {
+        key: "disabledAt" as const,
+        label: t("PSYCHOLOGIST_BILLING_PATIENTS_COL_DISABLED_AT"),
+        customCellRender: (row: BillablePatientTableRow) => (
+          <Title s2 white>
+            {formatBillingDateTime(row.disabledAt)}
+          </Title>
+        ),
+      },
+      {
+        key: "patientId" as const,
+        label: t("PSYCHOLOGIST_BILLING_PATIENTS_COL_STATUS"),
+        disableSort: true,
+        customCellRender: (row: BillablePatientTableRow) => (
+          <Title s2 white={row.isCurrentlyEnabled} textAccent={row.deactivatedDuringMonth}>
+            {resolvePatientStatusLabel(row)}
+          </Title>
+        ),
+      },
+    ],
+    [formatBillingDateTime, resolvePatientStatusLabel, t],
+  );
+
+  const billablePatientsMonthLabel = billing?.billingMonth
+    ? formatBillingMonth(billing.billingMonth, language)
+    : "";
+
+  const billingPeriodTitle = billing?.isCurrentMonth
+    ? t("PSYCHOLOGIST_BILLING_CURRENT_MONTH")
+    : translateTemplate(t("PSYCHOLOGIST_BILLING_SELECTED_MONTH"), {
+        month: billablePatientsMonthLabel,
+      });
+
+  const goToPreviousMonth = () => {
+    if (!billing?.billingMonth || !canGoToPreviousMonth) {
+      return;
+    }
+
+    setSelectedBillingMonth(previousBillingMonth(billing.billingMonth));
+  };
+
+  const goToCurrentMonth = () => {
+    setSelectedBillingMonth(null);
+  };
+
   if (guardLoading || billingLoading || !isPsychologist) {
     return null;
   }
@@ -105,6 +202,24 @@ export const PsychologistBillingPage = () => {
         >
           {t("BACK_TO_PSYCHOLOGIST_PATIENTS")}
         </Button>
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={!canGoToPreviousMonth || billingLoading}
+          onClick={goToPreviousMonth}
+        >
+          {t("PSYCHOLOGIST_BILLING_PREVIOUS_MONTH")}
+        </Button>
+        {!billing?.isCurrentMonth ? (
+          <Button
+            type="button"
+            variant="primary"
+            disabled={billingLoading}
+            onClick={goToCurrentMonth}
+          >
+            {t("PSYCHOLOGIST_BILLING_BACK_TO_CURRENT_MONTH")}
+          </Button>
+        ) : null}
       </Flex>
 
       {error ? (
@@ -117,7 +232,7 @@ export const PsychologistBillingPage = () => {
         <div className="mb-chart-card-row">
           <Card padding="lg" shadow="md">
             <DashboardSectionTitle
-              title={t("PSYCHOLOGIST_BILLING_CURRENT_MONTH")}
+              title={billingPeriodTitle}
               tooltip={t("TOOLTIP_PSYCHOLOGIST_BILLING_CURRENT")}
             />
             <Flex col wFull gap2>
@@ -126,7 +241,8 @@ export const PsychologistBillingPage = () => {
                   count: String(billing?.enabledPatientCount ?? 0),
                 })}
               </Title>
-              {(billing?.currentlyEnabledPatientCount ?? 0) !==
+              {billing?.isCurrentMonth &&
+              (billing?.currentlyEnabledPatientCount ?? 0) !==
               (billing?.enabledPatientCount ?? 0) ? (
                 <Title s2 gray>
                   {translateTemplate(t("PSYCHOLOGIST_BILLING_CURRENTLY_ENABLED_PATIENTS"), {
@@ -199,6 +315,27 @@ export const PsychologistBillingPage = () => {
             height={300}
           />
         </ChartCard>
+
+        <Card padding="lg" shadow="md">
+          <DashboardSectionTitle
+            title={translateTemplate(t("PSYCHOLOGIST_BILLING_PATIENTS_DETAIL_TITLE"), {
+              month: billablePatientsMonthLabel,
+            })}
+            tooltip={t("TOOLTIP_PSYCHOLOGIST_BILLING_PATIENTS_DETAIL")}
+          />
+          {billablePatientsTableData.length === 0 ? (
+            <Title s1 gray>
+              {t("PSYCHOLOGIST_BILLING_PATIENTS_EMPTY")}
+            </Title>
+          ) : (
+            <Table<BillablePatientTableRow>
+              variant="dark"
+              columns={billablePatientsColumns}
+              dataSource={billablePatientsTableData}
+              sortable
+            />
+          )}
+        </Card>
       </Flex>
     </AppShell>
   );

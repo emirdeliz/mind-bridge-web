@@ -4,7 +4,14 @@ import type { ChatMessage } from "@services";
 import { Button, Flex, Input, Title } from "@atoms";
 import { DashboardSectionTitle } from "../dashboard/DashboardSectionTitle";
 import { useI18n } from "@i18n";
-import { Card, ChatMessageBubble, ChatTypingIndicator, Form, Tooltip } from "@molecules";
+import {
+  Card,
+  ChatMessageBubble,
+  ChatScrollArea,
+  ChatTypingIndicator,
+  Form,
+  Tooltip,
+} from "@molecules";
 
 interface ChatPanelProps {
   messages: ChatMessage[];
@@ -27,6 +34,7 @@ export const ChatPanel = ({
 }: ChatPanelProps) => {
   const { t } = useI18n();
   const [text, setText] = useState("");
+  const lastMessageId = messages.at(-1)?.id;
 
   const startAudioInput = () => {
     const SpeechRecognition =
@@ -55,7 +63,12 @@ export const ChatPanel = ({
           {t("AI_AGENT_CHAT")}
         </Title>
       )}
-      <Flex col mb4 overflowY gap4 chatScroll maxH320={!tallScroll} maxH480={tallScroll}>
+      <ChatScrollArea
+        tallScroll={tallScroll}
+        messageCount={messages.length}
+        isTyping={sending}
+        lastMessageId={lastMessageId}
+      >
         {messages.map((message) => (
           <ChatMessageBubble
             key={message.id}
@@ -75,7 +88,7 @@ export const ChatPanel = ({
             {t("CHAT_NO_MESSAGES")}
           </Title>
         ) : null}
-      </Flex>
+      </ChatScrollArea>
       <Form
         onSubmit={(event) => {
           event.preventDefault();

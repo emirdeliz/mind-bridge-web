@@ -5,6 +5,7 @@ export * from "./Card/Card";
 export * from "./ChartCard/ChartCard";
 export * from "./ConfirmModal/ConfirmModal";
 export * from "./ChatMessageBubble/ChatMessageBubble";
+export * from "./ChatScrollArea/ChatScrollArea";
 export * from "./ChatTypingIndicator/ChatTypingIndicator";
 export * from "./Dropdown/Dropdown";
 export * from "./ErrorMessage/ErrorMessage";
