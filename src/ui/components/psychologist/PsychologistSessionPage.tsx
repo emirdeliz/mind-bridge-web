@@ -343,7 +343,7 @@ export const PsychologistSessionPage = () => {
                 <Title s2 textAccent>
                   {insight.title}
                 </Title>
-                <Title s1 gray>
+                <Title s1 gray preLine leadingRelaxed>
                   {insight.body}
                 </Title>
               </Flex>
