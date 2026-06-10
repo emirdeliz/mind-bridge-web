@@ -8,13 +8,20 @@ import { Card, Form, FormGroup, InputForm, LanguageSelect } from "@molecules";
 interface ProfileFormProps {
   initialData: UserProfile;
   onSave: (data: UserProfile) => void | Promise<void>;
+  onBack?: () => void;
+  backLabel?: string;
 }
 
-export const ProfileForm = ({ initialData, onSave }: ProfileFormProps) => (
-  <ProfileFormContent initialData={initialData} onSave={onSave} />
+export const ProfileForm = ({ initialData, onSave, onBack, backLabel }: ProfileFormProps) => (
+  <ProfileFormContent
+    initialData={initialData}
+    onSave={onSave}
+    onBack={onBack}
+    backLabel={backLabel}
+  />
 );
 
-const ProfileFormContent = ({ initialData, onSave }: ProfileFormProps) => {
+const ProfileFormContent = ({ initialData, onSave, onBack, backLabel }: ProfileFormProps) => {
   const { t, language: activeLanguage } = useI18n();
   const [saving, setSaving] = useState(false);
   const [data, setData] = useState<UserProfile>({
@@ -75,9 +82,26 @@ const ProfileFormContent = ({ initialData, onSave }: ProfileFormProps) => {
             onChange={(language) => setData({ ...data, language })}
           />
         </FormGroup>
-        <Button type="submit" wFull clickable={!saving}>
-          {t("SAVE_PROFILE")}
-        </Button>
+        <Flex row wFull gap4 alignCenter>
+          {onBack ? (
+            <Flex flex1 wFull>
+              <Button
+                type="button"
+                variant="secondary"
+                wFull
+                onClick={onBack}
+                clickable={!saving}
+              >
+                {backLabel ?? t("BACK")}
+              </Button>
+            </Flex>
+          ) : null}
+          <Flex flex1 wFull>
+            <Button type="submit" wFull clickable={!saving}>
+              {t("SAVE_PROFILE")}
+            </Button>
+          </Flex>
+        </Flex>
       </Form>
     </Card>
   );

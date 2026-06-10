@@ -26,6 +26,15 @@ export const ProfilePage = ({ area }: ProfilePageProps) => {
     }
   }, [area, loading, session, router]);
 
+  const handleBack = useCallback(() => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      void router.back();
+      return;
+    }
+
+    void router.replace(getRoleRoute(area));
+  }, [area, router]);
+
   const handleSave = useCallback(
     async (profile: UserProfile) => {
       if (profile.language) {
@@ -53,7 +62,11 @@ export const ProfilePage = ({ area }: ProfilePageProps) => {
 
   return (
     <AppShell title={t("PROFILE_PAGE_TITLE")} subtitle={t("PROFILE_PAGE_SUBTITLE")} variant="dashboard">
-      <ProfileForm initialData={session.profile} onSave={handleSave} />
+      <ProfileForm
+        initialData={session.profile}
+        onSave={handleSave}
+        onBack={area === "psychologist" ? handleBack : undefined}
+      />
     </AppShell>
   );
 };
