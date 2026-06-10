@@ -9,6 +9,8 @@ export * from "./ChatMessageBubble/ChatMessageBubble";
 export * from "./ChatScrollArea/ChatScrollArea";
 export * from "./ChatTypingIndicator/ChatTypingIndicator";
 export * from "./Dropdown/Dropdown";
+export * from "./EnumeratedTextList/EnumeratedTextList";
+export * from "./InteractionSummaryBody/InteractionSummaryBody";
 export * from "./ErrorMessage/ErrorMessage";
 export * from "./Form/Form";
 export * from "./FormError/FormError";

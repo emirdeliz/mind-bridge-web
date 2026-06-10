@@ -13,7 +13,7 @@ import {
 } from "@services";
 import { RouteLink, Title } from "@atoms";
 import { useI18n } from "@i18n";
-import { Alert, Card } from "@molecules";
+import { Alert, Card, InteractionSummaryBody } from "@molecules";
 import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
 
 const PROFILE_FIELD_I18N_KEYS: Record<Exclude<keyof UserProfile, "language">, string> = {
@@ -89,8 +89,8 @@ export const PatientPage = () => {
     return null;
   }
 
-  const patientSummary =
-    content?.patientSummary ?? t("AI_SUMMARY_NO_INTERACTIONS");
+  const patientSummaryText = content?.patientSummary?.trim() ?? "";
+  const hasPatientSummary = Boolean(patientSummaryText);
 
   return (
     <AppShell title={t("PATIENT_AREA_TITLE")} subtitle={t("PATIENT_AREA_SUBTITLE")} variant="dashboard">
@@ -113,9 +113,13 @@ export const PatientPage = () => {
       />
       <Card padding="lg" shadow="md">
         <DashboardSectionTitle title={t("INTERACTION_SUMMARY")} tooltip={t("TOOLTIP_PATIENT_SUMMARY")} />
-        <Title s1 gray preLine leadingRelaxed>
-          {patientSummary}
-        </Title>
+        {hasPatientSummary ? (
+          <InteractionSummaryBody text={patientSummaryText} />
+        ) : (
+          <Title s1 gray>
+            {t("AI_SUMMARY_NO_INTERACTIONS")}
+          </Title>
+        )}
       </Card>
     </AppShell>
   );

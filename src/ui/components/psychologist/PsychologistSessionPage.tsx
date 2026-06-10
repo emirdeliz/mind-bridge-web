@@ -9,7 +9,12 @@ import {
 import { useAiAgent, usePsychologistClinicalContent } from "@services";
 import { Button, Flex, Title } from "@atoms";
 import { useI18n } from "@i18n";
-import { Card, ConfirmModal, TextAreaWithSave } from "@molecules";
+import {
+  Card,
+  ConfirmModal,
+  InteractionSummaryBody,
+  TextAreaWithSave,
+} from "@molecules";
 import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
 
 import {
@@ -18,6 +23,7 @@ import {
   getPreviousSessionsAgenticSummaries,
 } from "./psychologistSessionTypes";
 import { SessionHistoryNavButtons } from "./SessionHistoryNavButtons";
+import { SessionInsightBody } from "./SessionInsightBody";
 import { usePsychologistGuard } from "./usePsychologistGuard";
 
 const toChatMessages = (seed: ClinicalChatMessageDto[]) =>
@@ -210,8 +216,8 @@ export const PsychologistSessionPage = () => {
     : t("PSYCHOLOGIST_SESSION_SUBTITLE");
 
   const insights = content?.sessionInsights ?? [];
-  const psychologistSummary =
-    content?.psychologistSummary?.trim() || t("AI_SUMMARY_NO_INTERACTIONS");
+  const psychologistSummaryText = content?.psychologistSummary?.trim() ?? "";
+  const hasPsychologistSummary = Boolean(psychologistSummaryText);
 
   return (
     <AppShell
@@ -327,9 +333,13 @@ export const PsychologistSessionPage = () => {
           title={t("INTERACTION_SUMMARY")}
           tooltip={t("TOOLTIP_PSYCHOLOGIST_SUMMARY")}
         />
-        <Title s1 gray preLine leadingRelaxed>
-          {psychologistSummary}
-        </Title>
+        {hasPsychologistSummary ? (
+          <InteractionSummaryBody text={psychologistSummaryText} />
+        ) : (
+          <Title s1 gray>
+            {t("AI_SUMMARY_NO_INTERACTIONS")}
+          </Title>
+        )}
       </Card>
       <Card padding="lg" shadow="md">
         <DashboardSectionTitle
@@ -343,9 +353,7 @@ export const PsychologistSessionPage = () => {
                 <Title s2 textAccent>
                   {insight.title}
                 </Title>
-                <Title s1 gray preLine leadingRelaxed>
-                  {insight.body}
-                </Title>
+                <SessionInsightBody title={insight.title} body={insight.body} />
               </Flex>
             ))
           ) : (
