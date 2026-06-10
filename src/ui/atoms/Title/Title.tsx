@@ -45,6 +45,7 @@ export interface TitleProps {
   textAccent?: boolean;
   trackingWide?: boolean;
   block?: boolean;
+  inline?: boolean;
   maxW2xl?: boolean;
   leadingRelaxed?: boolean;
   py8?: boolean;
@@ -89,7 +90,8 @@ export const Title = (props: TitleProps) => {
     if (props.trackingWide) baseClasses.push('tracking-wide');
     if (props.textXs) baseClasses.push('text-xs');
     if (props.textAccent) baseClasses.push('text-mb-accent');
-    if (props.block) baseClasses.push('block');
+    if (props.inline) baseClasses.push('inline');
+    else if (props.block) baseClasses.push('block');
     if (props.maxW2xl) baseClasses.push('max-w-2xl');
     if (props.leadingRelaxed) baseClasses.push('leading-relaxed');
     if (props.py8) baseClasses.push('py-8');

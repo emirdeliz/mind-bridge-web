@@ -261,12 +261,15 @@ export const PsychologistBillingPage = () => {
                 })}
               </Title>
               {billing?.discount ? (
-                <Title s2 textAccent>
+                <Title s2 gray>
                   {translateTemplate(t("PSYCHOLOGIST_BILLING_DISCOUNT_APPLIED"), {
                     percent: String(billing.discount.discountPercent),
-                    label: billing.discount.label ?? t("PSYCHOLOGIST_BILLING_DISCOUNT_DEFAULT_LABEL"),
-                    amount: discountAmount,
-                  })}
+                    label:
+                      billing.discount.label ?? t("PSYCHOLOGIST_BILLING_DISCOUNT_DEFAULT_LABEL"),
+                  })}{" "}
+                  <Title s2 error inline>
+                    -{discountAmount}
+                  </Title>
                 </Title>
               ) : (
                 <Title s1 gray>

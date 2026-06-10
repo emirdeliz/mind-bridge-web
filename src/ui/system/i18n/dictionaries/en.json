@@ -109,7 +109,7 @@
   "PSYCHOLOGIST_BILLING_CURRENTLY_ENABLED_PATIENTS": "Currently active patients: {{count}}",
   "PSYCHOLOGIST_BILLING_UNIT_PRICE": "Price per patient: {{price}}",
   "PSYCHOLOGIST_BILLING_GROSS_AMOUNT": "Subtotal: {{amount}}",
-  "PSYCHOLOGIST_BILLING_DISCOUNT_APPLIED": "Special discount ({{percent}}% — {{label}}): -{{amount}}",
+  "PSYCHOLOGIST_BILLING_DISCOUNT_APPLIED": "Special discount ({{percent}}% — {{label}}):",
   "PSYCHOLOGIST_BILLING_DISCOUNT_DEFAULT_LABEL": "Active discount",
   "PSYCHOLOGIST_BILLING_NO_DISCOUNT": "No special discount applied.",
   "PSYCHOLOGIST_BILLING_NET_AMOUNT": "Monthly total: {{amount}}",
