@@ -51,12 +51,15 @@ The script runs a local `npm run build` before upload. Skip it with `SKIP_BUILD=
 
 Set environment variables in the Vercel dashboard (see `.env.example`):
 
-| Variable | Scope |
-|----------|--------|
-| `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `API_BASE_URL` | Server only |
-| `AUTH_BYPASS` | Server only (`true` for local demo auth) |
-| `NEXT_PUBLIC_AUTH_BYPASS` | Client UI flag for bypass buttons only |
-| `NEXT_PUBLIC_APP_URL` | Password-reset redirect |
+| Variable | Scope | Example |
+|----------|--------|---------|
+| `SUPABASE_URL`, `SUPABASE_ANON_KEY` | Server only | Supabase Cloud project |
+| `API_BASE_URL` | Server only | `https://mind-bridge-be.onrender.com` |
+| `NEXT_PUBLIC_APP_URL` | Public | `https://your-app.vercel.app` |
+| `AUTH_BYPASS` | Server only | `false` in production |
+| `NEXT_PUBLIC_AUTH_BYPASS` | Client UI flag | `false` in production |
+
+**Cloud stack (free tier):** Supabase Cloud + Vercel (this app) + backend on Render ([render.yaml](../mind-bridge-be/render.yaml)) with Gemini API on the backend.
 
 For production, set `NEXT_PUBLIC_AUTH_BYPASS=false` and `AUTH_BYPASS=false`.
 
