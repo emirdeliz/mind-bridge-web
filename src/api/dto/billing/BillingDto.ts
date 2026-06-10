@@ -15,6 +15,7 @@ export type PsychologistBillingMonthlyEntryDto = {
 
 export type PsychologistBillingSummaryDto = {
   enabledPatientCount: number;
+  currentlyEnabledPatientCount: number;
   unitPriceCents: number;
   currency: string;
   grossAmountCents: number;

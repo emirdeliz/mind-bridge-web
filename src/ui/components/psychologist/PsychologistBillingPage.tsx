@@ -126,6 +126,14 @@ export const PsychologistBillingPage = () => {
                   count: String(billing?.enabledPatientCount ?? 0),
                 })}
               </Title>
+              {(billing?.currentlyEnabledPatientCount ?? 0) !==
+              (billing?.enabledPatientCount ?? 0) ? (
+                <Title s2 gray>
+                  {translateTemplate(t("PSYCHOLOGIST_BILLING_CURRENTLY_ENABLED_PATIENTS"), {
+                    count: String(billing?.currentlyEnabledPatientCount ?? 0),
+                  })}
+                </Title>
+              ) : null}
               <Title s1 gray>
                 {translateTemplate(t("PSYCHOLOGIST_BILLING_UNIT_PRICE"), {
                   price: unitPrice,
