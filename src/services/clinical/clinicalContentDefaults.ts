@@ -55,4 +55,5 @@ export const emptyClinicalContentForPatient = (
   psychologistChatSeed: [],
   patientChatSeed: [],
   patientSummary: null,
+  likertCheckIn: null,
 });

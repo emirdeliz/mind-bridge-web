@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import type { ClinicalChatMessageDto } from "@api";
+import type { ClinicalChatMessageDto, LikertCheckInDto } from "@api";
 import {
   type ChatMessage,
   getRoleRoute,
@@ -13,6 +13,8 @@ import { Title } from "@atoms";
 import { useI18n } from "@i18n";
 import { Card, InteractionSummaryBody } from "@molecules";
 import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
+
+import { PatientLikertCheckInPanel } from "./PatientLikertCheckInPanel";
 
 const toChatMessages = (seed: ClinicalChatMessageDto[]): ChatMessage[] =>
   seed.map((item) => ({
@@ -31,10 +33,15 @@ export const PatientPage = () => {
   const { session, loading } = useAuth();
   const { content, loading: contentLoading, reload: reloadContent } =
     usePatientClinicalContent();
+  const [likertCheckIn, setLikertCheckIn] = useState<LikertCheckInDto | null>(null);
   const { messages, sendMessage, setMessages, sending } = useAiAgent({
     mode: "patient",
     onAgentReply: () => reloadContent({ silent: true }),
   });
+
+  useEffect(() => {
+    setLikertCheckIn(content?.likertCheckIn ?? null);
+  }, [content?.likertCheckIn]);
 
   useEffect(() => {
     if (content?.patientChatSeed) {
@@ -62,6 +69,10 @@ export const PatientPage = () => {
 
   return (
     <AppShell title={t("PATIENT_AREA_TITLE")} subtitle={t("PATIENT_AREA_SUBTITLE")} variant="dashboard">
+      <PatientLikertCheckInPanel
+        initialCheckIn={likertCheckIn}
+        onSaved={(saved) => setLikertCheckIn(saved)}
+      />
       <ChatPanel
         messages={messages}
         onSend={(text) => void sendMessage(text)}
