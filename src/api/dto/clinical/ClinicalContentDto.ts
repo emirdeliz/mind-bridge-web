@@ -5,6 +5,7 @@ export type ClinicalChatMessageDto = {
   createdAt: string;
   interactionId?: string;
   isInteractionStart?: boolean;
+  isInteractionEnd?: boolean;
 };
 
 export type SessionNoteEntryDto = {

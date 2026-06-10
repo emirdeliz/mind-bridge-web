@@ -14,7 +14,7 @@ import {
   Tooltip,
 } from "@molecules";
 
-const shouldShowInteractionDivider = (
+const shouldShowInteractionDividerBefore = (
   messages: ChatMessage[],
   index: number,
 ): boolean => {
@@ -24,6 +24,10 @@ const shouldShowInteractionDivider = (
 
   const message = messages[index];
   const previous = messages[index - 1];
+
+  if (previous?.isInteractionEnd) {
+    return false;
+  }
 
   if (message.isInteractionStart) {
     return true;
@@ -97,7 +101,7 @@ export const ChatPanel = ({
         {messages.map((message, index) => (
           <div key={message.id}>
             {showInteractionDividers &&
-            shouldShowInteractionDivider(messages, index) ? (
+            shouldShowInteractionDividerBefore(messages, index) ? (
               <ChatInteractionDivider label={t("CHAT_NEW_INTERACTION")} />
             ) : null}
             <ChatMessageBubble
@@ -105,6 +109,9 @@ export const ChatPanel = ({
               label={message.sender === "agent" ? t("CHAT_AGENT_LABEL") : t("CHAT_USER_LABEL")}
               text={message.text}
             />
+            {showInteractionDividers && message.isInteractionEnd ? (
+              <ChatInteractionDivider label={t("CHAT_INTERACTION_END")} />
+            ) : null}
           </div>
         ))}
         {sending ? (

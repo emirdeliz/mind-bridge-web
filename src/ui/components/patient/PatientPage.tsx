@@ -31,6 +31,7 @@ const toChatMessages = (seed: ClinicalChatMessageDto[]): ChatMessage[] =>
     createdAt: item.createdAt,
     interactionId: item.interactionId,
     isInteractionStart: item.isInteractionStart,
+    isInteractionEnd: item.isInteractionEnd,
   }));
 
 export const PatientPage = () => {

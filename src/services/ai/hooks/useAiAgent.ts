@@ -12,6 +12,7 @@ export interface ChatMessage {
   createdAt: string;
   interactionId?: string;
   isInteractionStart?: boolean;
+  isInteractionEnd?: boolean;
 }
 
 export type UseAiAgentOptions = {
@@ -92,6 +93,7 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
                 createdAt: item.createdAt,
                 interactionId: item.interactionId,
                 isInteractionStart: item.isInteractionStart,
+                isInteractionEnd: item.isInteractionEnd,
               })),
             ]);
           } else {

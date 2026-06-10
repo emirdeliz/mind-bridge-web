@@ -142,6 +142,7 @@
   "CHAT_AGENT_TYPING": "The agent is responding",
   "CHAT_MESSAGE_PLACEHOLDER": "Write your message...",
   "CHAT_NEW_INTERACTION": "New conversation",
+  "CHAT_INTERACTION_END": "Conversation closed",
   "AUDIO": "Audio",
   "SEND": "Send",
   "INTERACTION_SUMMARY": "Interaction Summary",
