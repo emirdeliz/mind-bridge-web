@@ -9,36 +9,40 @@ export interface CheckboxProps<T> {
   onChange?: (checked: boolean) => void;
 }
 
-export const Checkbox = <T extends GenericObject> ({ id, checked = false, disabled = false, label, onChange }: CheckboxProps<T>) => {
-  const checkboxWrapperClasses = [
-    'flex items-center gap-2',
-  ].join(' ');
-
+export const Checkbox = <T extends GenericObject>({
+  id,
+  checked = false,
+  disabled = false,
+  label,
+  onChange,
+}: CheckboxProps<T>) => {
   const checkboxClasses = [
-    'w-4 h-4',
+    'h-4 w-4 shrink-0',
     'checkbox-primary-theme',
-    'bg-gray-100',
-    'border-gray-300',
-    'rounded',
+    'rounded border-gray-300 bg-gray-100',
     'focus:ring-2',
-  ].join(' ');
+    disabled && 'cursor-not-allowed opacity-60',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const labelClasses = [
-    'text-sm font-medium text-gray-700',
-    'cursor-pointer',
+    'flex items-center gap-2',
+    'text-sm font-medium text-mb-text',
+    disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
   ].join(' ');
 
   return (
-    <div className={checkboxWrapperClasses}>
+    <label className={labelClasses}>
       <input
         className={checkboxClasses}
         id={id}
         type="checkbox"
         checked={checked}
         disabled={disabled}
-        onChange={(e) => onChange && onChange(e.target.checked)}
+        onChange={(event) => onChange?.(event.target.checked)}
       />
-      {label && <label className={labelClasses} htmlFor={id}>{label}</label>}
-    </div>
+      {label ? <span>{label}</span> : null}
+    </label>
   );
 };

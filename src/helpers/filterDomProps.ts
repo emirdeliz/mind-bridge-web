@@ -67,6 +67,7 @@ export const INPUT_CUSTOM_PROP_KEYS = [
 export const FIELD_PROP_KEYS = [
   ...INPUT_CUSTOM_PROP_KEYS,
   'value',
+  'checked',
   'onChange',
   'onBlur',
   'onPaste',

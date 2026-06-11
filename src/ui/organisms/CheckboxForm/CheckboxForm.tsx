@@ -1,30 +1,45 @@
 import { Checkbox, CheckboxProps } from '@atoms';
-import { FormGroup } from '@molecules';
+import { FormGroup, FormGroupProps } from '@molecules';
 import { GenericObject } from '@types';
 
-export interface CheckboxFormProps<T> extends Omit<CheckboxProps<T>, 'onChange'> {
+export interface CheckboxFormProps<T>
+  extends Omit<CheckboxProps<T>, 'onChange' | 'label'>,
+    Pick<FormGroupProps, 'optional' | 'helpText' | 'error' | 'required' | 'fw3' | 'row'> {
   children: string;
-  required?: boolean;
   checked?: boolean;
   onChange?: (checked: boolean) => void;
 }
 
-export const CheckboxForm = <T extends GenericObject> ({
+export const CheckboxForm = <T extends GenericObject>({
   checked,
   children,
   onChange,
-  ...props
+  id,
+  disabled,
+  required,
+  optional,
+  error,
+  helpText,
+  fw3,
+  row,
 }: CheckboxFormProps<T>) => {
-  const id = children ? children.replace(/\s/g, '_') : String(props.id);
-  
+  const fieldId = id ?? children.replace(/\s/g, '_');
+
   return (
-    <FormGroup target={id} {...props}>
+    <FormGroup
+      required={required}
+      optional={optional}
+      error={error}
+      helpText={helpText}
+      fw3={fw3}
+      row={row}
+    >
       <Checkbox
+        id={fieldId}
         label={children}
-        {...props}
-        id={id}
         checked={checked}
-        onChange={(e) => onChange && onChange(e)}
+        disabled={disabled}
+        onChange={onChange}
       />
     </FormGroup>
   );
