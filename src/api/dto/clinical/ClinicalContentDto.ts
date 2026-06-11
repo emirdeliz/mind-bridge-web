@@ -60,6 +60,19 @@ export type LikertCheckInDto = {
   updatedAt: string | null;
 };
 
+export type PatientAnamnesisDto = {
+  chiefComplaint: string;
+  currentHistory: string;
+  personalHistory: string;
+  familyHistory: string;
+  socialHistory: string;
+  medicalPsychiatricHistory: string;
+  lifeHabits: string;
+  emotionalBehavioral: string;
+  therapeuticGoals: string;
+  psychologistNotes: string;
+};
+
 export type PatientClinicalContentDto = {
   patientId: string;
   dashboardSnapshot: DashboardSnapshotDto;
@@ -71,4 +84,5 @@ export type PatientClinicalContentDto = {
   patientChatSeed: ClinicalChatMessageDto[];
   patientSummary: string | null;
   likertCheckIn: LikertCheckInDto | null;
+  anamnesis: PatientAnamnesisDto;
 };

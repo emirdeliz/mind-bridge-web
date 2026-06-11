@@ -1,14 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { PsychologistPatientSaveOrUpdateDto, PsychologistPatientViewDto } from '@api';
+import type {
+  PatientAnamnesisDto,
+  PsychologistPatientSaveOrUpdateDto,
+  PsychologistPatientViewDto,
+} from '@api';
 import {
   deletePsychologistPatientApi,
+  getPsychologistPatientClinicalContentApi,
   getPsychologistPatientsApi,
   restorePsychologistPatientApi,
   saveOrEditPsychologistPatientApi,
+  savePsychologistPatientAnamnesisApi,
 } from '@api';
 import { isValidPatientInitialPassword, isValidPhone, phoneDigits } from '@helpers';
 import { useI18n } from '@i18n';
+import { emptyPatientAnamnesis } from '../../clinical/clinicalContentDefaults';
 import { shouldSilentReload, type ReloadOptions } from '../../common/reloadOptions';
 import { useAuth } from '@services';
 
@@ -32,6 +39,8 @@ export const usePsychologistPatients = () => {
   const [formError, setFormError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState<PsychologistPatientSaveOrUpdateDto>(emptyForm());
+  const [anamnesis, setAnamnesis] = useState<PatientAnamnesisDto>(emptyPatientAnamnesis());
+  const [loadingAnamnesis, setLoadingAnamnesis] = useState(false);
   const patientsRef = useRef(patients);
   patientsRef.current = patients;
 
@@ -75,11 +84,13 @@ export const usePsychologistPatients = () => {
 
   const openCreateModal = useCallback(() => {
     setForm(emptyForm());
+    setAnamnesis(emptyPatientAnamnesis());
+    setLoadingAnamnesis(false);
     setFormError('');
     setModalOpen(true);
   }, []);
 
-  const openEditModal = useCallback((patient: PsychologistPatientViewDto) => {
+  const openEditModal = useCallback(async (patient: PsychologistPatientViewDto) => {
     setForm({
       id: patient.id,
       fullName: patient.fullName ?? '',
@@ -87,13 +98,30 @@ export const usePsychologistPatients = () => {
       phone: patient.phone ?? '',
       password: '',
     });
+    setAnamnesis(emptyPatientAnamnesis());
     setFormError('');
     setModalOpen(true);
-  }, []);
+    setLoadingAnamnesis(true);
+
+    try {
+      const content = await getPsychologistPatientClinicalContentApi(patient.id);
+      setAnamnesis(content.anamnesis ?? emptyPatientAnamnesis());
+    } catch (loadError) {
+      setFormError(
+        loadError instanceof Error
+          ? loadError.message
+          : t('PSYCHOLOGIST_PATIENTS_ANAMNESIS_LOAD_ERROR')
+      );
+    } finally {
+      setLoadingAnamnesis(false);
+    }
+  }, [t]);
 
   const closeModal = useCallback(() => {
     setModalOpen(false);
     setForm(emptyForm());
+    setAnamnesis(emptyPatientAnamnesis());
+    setLoadingAnamnesis(false);
     setFormError('');
   }, []);
 
@@ -104,6 +132,11 @@ export const usePsychologistPatients = () => {
     },
     []
   );
+
+  const updateAnamnesis = useCallback((patch: Partial<PatientAnamnesisDto>) => {
+    setAnamnesis((current) => ({ ...current, ...patch }));
+    setFormError('');
+  }, []);
 
   const savePatient = useCallback(async () => {
     if (!form.fullName?.trim()) {
@@ -148,6 +181,11 @@ export const usePsychologistPatients = () => {
         phone: normalizedPhone,
         password: form.password?.trim() || undefined,
       });
+
+      if (form.id) {
+        await savePsychologistPatientAnamnesisApi(form.id, anamnesis);
+      }
+
       closeModal();
       await loadPatients({ silent: true });
     } catch (saveError) {
@@ -157,7 +195,7 @@ export const usePsychologistPatients = () => {
     } finally {
       setSaving(false);
     }
-  }, [form, closeModal, loadPatients, session, t]);
+  }, [form, anamnesis, closeModal, loadPatients, session, t]);
 
   const deletePatient = useCallback(
     async (patientId: string) => {
@@ -217,10 +255,13 @@ export const usePsychologistPatients = () => {
     formError,
     modalOpen,
     form,
+    anamnesis,
+    loadingAnamnesis,
     openCreateModal,
     openEditModal,
     closeModal,
     updateForm,
+    updateAnamnesis,
     savePatient,
     deletePatient,
     restorePatient,

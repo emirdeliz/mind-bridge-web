@@ -46,10 +46,13 @@ export const PsychologistPatientsPage = () => {
     formError,
     modalOpen,
     form,
+    anamnesis,
+    loadingAnamnesis,
     openCreateModal,
     openEditModal,
     closeModal,
     updateForm,
+    updateAnamnesis,
     savePatient,
     deletePatient,
     restorePatient,
@@ -350,11 +353,14 @@ export const PsychologistPatientsPage = () => {
       <PsychologistPatientFormModal
         visible={modalOpen}
         form={form}
+        anamnesis={anamnesis}
+        loadingAnamnesis={loadingAnamnesis}
         saving={saving}
         formError={formError}
         onClose={closeModal}
         onConfirm={() => void savePatient()}
         onChange={updateForm}
+        onAnamnesisChange={updateAnamnesis}
       />
 
       <PsychologistPatientContextModal
