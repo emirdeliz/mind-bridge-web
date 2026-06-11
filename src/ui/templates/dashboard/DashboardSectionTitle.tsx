@@ -1,9 +1,12 @@
+import { type ReactNode } from "react";
+
 import { Button, Flex, Icon, Title } from "@atoms";
 import { Tooltip } from "@molecules";
 
 interface DashboardSectionTitleProps {
   title: string;
   tooltip: string;
+  trailing?: ReactNode;
   onSave?: () => void;
   saveDisabled?: boolean;
   saveLabel?: string;
@@ -12,6 +15,7 @@ interface DashboardSectionTitleProps {
 export const DashboardSectionTitle = ({
   title,
   tooltip,
+  trailing,
   onSave,
   saveDisabled = false,
   saveLabel,
@@ -27,20 +31,25 @@ export const DashboardSectionTitle = ({
         </span>
       </Tooltip>
     </Flex>
-    {onSave ? (
-      <Button
-        type="button"
-        xs
-        sm
-        circle
-        variant="secondary"
-        outlined
-        clickable={!saveDisabled}
-        title={saveLabel}
-        onClick={onSave}
-      >
-        <Icon.Floppy sm />
-      </Button>
+    {trailing || onSave ? (
+      <Flex row alignCenter gap4>
+        {trailing}
+        {onSave ? (
+          <Button
+            type="button"
+            xs
+            sm
+            circle
+            variant="secondary"
+            outlined
+            clickable={!saveDisabled}
+            title={saveLabel}
+            onClick={onSave}
+          >
+            <Icon.Floppy sm />
+          </Button>
+        ) : null}
+      </Flex>
     ) : null}
   </Flex>
 );
