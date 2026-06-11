@@ -19,17 +19,23 @@ import { Tooltip } from "@molecules";
 import {
   appointmentDragId,
   combineLocalDateAndTime,
+  getAppointmentSlotCoverage,
   getWeekDateKeys,
   parseAppointmentDragId,
   parseSlotId,
   slotId,
-  toLocalDateKey,
   toLocalTime,
 } from "@services";
+
+type SlotAppointmentView = {
+  appointment: PsychologistAppointmentDto;
+  variant: "start" | "continuation";
+};
 
 type SchedulingWeekGridProps = {
   weekStart: string;
   slotTimes: string[];
+  sessionDurationMinutes: number;
   appointments: PsychologistAppointmentDto[];
   tzOffset: number;
   saving?: boolean;
@@ -48,6 +54,7 @@ const stopBadgeAction = (event: MouseEvent) => {
 type AppointmentBadgeProps = {
   appointment: PsychologistAppointmentDto;
   tzOffset: number;
+  variant: "start" | "continuation";
   disabled?: boolean;
   onOpenContact: (appointment: PsychologistAppointmentDto) => void;
   onOpenAppointment: (appointment: PsychologistAppointmentDto) => void;
@@ -56,6 +63,7 @@ type AppointmentBadgeProps = {
 const AppointmentBadge = ({
   appointment,
   tzOffset,
+  variant,
   disabled,
   onOpenContact,
   onOpenAppointment,
@@ -77,6 +85,35 @@ const AppointmentBadge = ({
   const timeLabel = appointment.isPersonalCommitment
     ? `${startTime} – ${endTime}`
     : startTime;
+
+  const personalBadgeContent = (
+    <>
+      <span className="mb-scheduling-badge-name">{label}</span>
+      <span className="mb-scheduling-badge-time">{timeLabel}</span>
+    </>
+  );
+
+  if (variant === "continuation") {
+    if (!appointment.isPersonalCommitment) {
+      return (
+        <div
+          className="mb-scheduling-badge mb-scheduling-badge-continuation"
+          title={label}
+          aria-hidden="true"
+        />
+      );
+    }
+
+    return (
+      <div
+        className="mb-scheduling-badge mb-scheduling-badge-personal mb-scheduling-badge-continuation-personal"
+        title={`${label} · ${timeLabel}`}
+      >
+        <div className="mb-scheduling-badge-continuation-content">{personalBadgeContent}</div>
+      </div>
+    );
+  }
+
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: appointmentDragId(appointment.id),
     disabled,
@@ -87,16 +124,21 @@ const AppointmentBadge = ({
     opacity: isDragging ? 0.65 : 1,
   };
 
+  const badgeClassName = appointment.isPersonalCommitment
+    ? "mb-scheduling-badge mb-scheduling-badge-personal"
+    : "mb-scheduling-badge";
+
   return (
-    <div
-      ref={setNodeRef}
-      className="mb-scheduling-badge"
-      style={style}
-      title={label}
-    >
+    <div ref={setNodeRef} className={badgeClassName} style={style} title={label}>
       <div className="mb-scheduling-badge-drag" {...listeners} {...attributes}>
-        <span className="mb-scheduling-badge-name">{label}</span>
-        <span className="mb-scheduling-badge-time">{timeLabel}</span>
+        {appointment.isPersonalCommitment ? (
+          personalBadgeContent
+        ) : (
+          <>
+            <span className="mb-scheduling-badge-name">{label}</span>
+            <span className="mb-scheduling-badge-time">{timeLabel}</span>
+          </>
+        )}
       </div>
       <div className="mb-scheduling-badge-actions" onPointerDown={stopBadgeAction}>
         {!appointment.isPersonalCommitment ? (
@@ -147,7 +189,7 @@ const AppointmentBadge = ({
 type SlotCellProps = {
   dateKey: string;
   time: string;
-  appointment: PsychologistAppointmentDto | null;
+  slotView: SlotAppointmentView | null;
   tzOffset: number;
   disabled?: boolean;
   onSlotClick: (dateKey: string, time: string) => void;
@@ -158,7 +200,7 @@ type SlotCellProps = {
 const SlotCell = ({
   dateKey,
   time,
-  appointment,
+  slotView,
   tzOffset,
   disabled,
   onSlotClick,
@@ -170,27 +212,30 @@ const SlotCell = ({
     disabled,
   });
 
+  const occupied = slotView !== null;
+
   return (
     <div
       ref={setNodeRef}
-      className={`mb-scheduling-slot${isOver ? " mb-scheduling-slot-over" : ""}`}
+      className={`mb-scheduling-slot${isOver ? " mb-scheduling-slot-over" : ""}${occupied ? " mb-scheduling-slot-occupied" : ""}`}
       onClick={() => {
-        if (!appointment && !disabled) {
+        if (!occupied && !disabled) {
           onSlotClick(dateKey, time);
         }
       }}
       onKeyDown={(event) => {
-        if (event.key === "Enter" && !appointment && !disabled) {
+        if (event.key === "Enter" && !occupied && !disabled) {
           onSlotClick(dateKey, time);
         }
       }}
       role="button"
-      tabIndex={appointment ? -1 : 0}
+      tabIndex={occupied ? -1 : 0}
       aria-label={`${dateKey} ${time}`}
     >
-      {appointment ? (
+      {slotView ? (
         <AppointmentBadge
-          appointment={appointment}
+          appointment={slotView.appointment}
+          variant={slotView.variant}
           tzOffset={tzOffset}
           disabled={disabled}
           onOpenContact={onOpenContact}
@@ -215,6 +260,7 @@ const formatDayHeader = (dateKey: string, language: string): string => {
 export const SchedulingWeekGrid = ({
   weekStart,
   slotTimes,
+  sessionDurationMinutes,
   appointments,
   tzOffset,
   saving = false,
@@ -233,14 +279,29 @@ export const SchedulingWeekGrid = ({
   );
 
   const appointmentBySlot = useMemo(() => {
-    const map = new Map<string, PsychologistAppointmentDto>();
+    const map = new Map<string, SlotAppointmentView>();
+
     for (const appointment of appointments) {
-      const dateKey = toLocalDateKey(new Date(appointment.startsAt), tzOffset);
-      const time = toLocalTime(new Date(appointment.startsAt), tzOffset);
-      map.set(slotId(dateKey, time), appointment);
+      for (const dateKey of weekDateKeys) {
+        const coverage = getAppointmentSlotCoverage(
+          appointment,
+          dateKey,
+          slotTimes,
+          sessionDurationMinutes,
+          tzOffset,
+        );
+
+        for (const { slotTime, isStart } of coverage) {
+          map.set(slotId(dateKey, slotTime), {
+            appointment,
+            variant: isStart ? "start" : "continuation",
+          });
+        }
+      }
     }
+
     return map;
-  }, [appointments, tzOffset]);
+  }, [appointments, sessionDurationMinutes, slotTimes, tzOffset, weekDateKeys]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const appointmentId = parseAppointmentDragId(String(event.active.id));
@@ -279,21 +340,22 @@ export const SchedulingWeekGrid = ({
               <div key={`label-${time}`} className="mb-scheduling-time-label">
                 {time}
               </div>,
-            ...weekDateKeys.map((dateKey) => {
-              const key = slotId(dateKey, time);
-              const slotAppointment = appointmentBySlot.get(key) ?? null;
-              return (
-                <SlotCell
-                  key={key}
-                  dateKey={dateKey}
-                  time={time}
-                  appointment={slotAppointment}
-                  tzOffset={tzOffset}
-                  disabled={
-                    saving ||
-                    (slotAppointment !== null && movingAppointmentId === slotAppointment.id)
-                  }
-                  onSlotClick={onSlotClick}
+              ...weekDateKeys.map((dateKey) => {
+                const key = slotId(dateKey, time);
+                const slotView = appointmentBySlot.get(key) ?? null;
+                return (
+                  <SlotCell
+                    key={key}
+                    dateKey={dateKey}
+                    time={time}
+                    slotView={slotView}
+                    tzOffset={tzOffset}
+                    disabled={
+                      saving ||
+                      (slotView?.variant === "start" &&
+                        movingAppointmentId === slotView.appointment.id)
+                    }
+                    onSlotClick={onSlotClick}
                     onOpenContact={onOpenContact}
                     onOpenAppointment={onOpenAppointment}
                   />

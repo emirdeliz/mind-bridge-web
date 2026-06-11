@@ -45,8 +45,8 @@ export type CreatePatientAppointmentPayload = {
 export type CreatePersonalCommitmentPayload = {
   isPersonalCommitment: true;
   startsAt: string;
-  endTime: string;
   personalDescription: string;
+  durationMinutes?: number;
   weekStart: string;
   tzOffset: number;
 };

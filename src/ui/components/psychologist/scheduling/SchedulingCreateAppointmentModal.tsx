@@ -1,19 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import type { PsychologistPatientViewDto } from "@api";
 import { getPsychologistPatientsApi } from "@api";
 import { Button, Flex, Icon, Input, Overlay, Select, Title } from "@atoms";
 import { useI18n } from "@i18n";
-import { Card, Form, FormGroup, InputForm } from "@molecules";
+import { Card, Form, FormGroup } from "@molecules";
 import { SwitchForm } from "@organisms";
-import { combineLocalDateAndTime, parseTimeToMinutes } from "@services";
+import {
+  combineLocalDateAndTime,
+  personalDurationMinutesFromSlotRange,
+} from "@services";
 
 type SchedulingCreateAppointmentModalProps = {
   visible: boolean;
   dateKey: string | null;
   time: string | null;
+  slotTimes: string[];
+  sessionDurationMinutes: number;
   tzOffset: number;
   saving?: boolean;
   onClose: () => void;
@@ -29,7 +34,7 @@ export type CreateSchedulingAppointmentInput =
   | {
       kind: "personal";
       startsAt: string;
-      endTime: string;
+      durationMinutes: number;
       personalDescription: string;
     };
 
@@ -37,6 +42,8 @@ export const SchedulingCreateAppointmentModal = ({
   visible,
   dateKey,
   time,
+  slotTimes,
+  sessionDurationMinutes,
   tzOffset,
   saving = false,
   onClose,
@@ -52,6 +59,19 @@ export const SchedulingCreateAppointmentModal = ({
   const [loadingPatients, setLoadingPatients] = useState(false);
   const [formError, setFormError] = useState("");
 
+  const slotOptions = useMemo(
+    () => slotTimes.map((slot) => ({ value: slot, label: slot })),
+    [slotTimes],
+  );
+
+  const endSlotOptions = useMemo(() => {
+    const startIndex = slotTimes.indexOf(startTime);
+    if (startIndex < 0) {
+      return slotOptions;
+    }
+    return slotTimes.slice(startIndex).map((slot) => ({ value: slot, label: slot }));
+  }, [slotOptions, slotTimes, startTime]);
+
   useEffect(() => {
     if (!visible) {
       return;
@@ -59,7 +79,7 @@ export const SchedulingCreateAppointmentModal = ({
     setPatientId("");
     setIsPersonalCommitment(false);
     setStartTime(time ?? "");
-    setEndTime("");
+    setEndTime(time ?? "");
     setPersonalDescription("");
     setFormError("");
     setLoadingPatients(true);
@@ -74,6 +94,9 @@ export const SchedulingCreateAppointmentModal = ({
   }
 
   const slotLabel = `${dateKey.split("-").reverse().join("/")} ${time}`;
+  const personalSlotLabel = isPersonalCommitment
+    ? `${dateKey.split("-").reverse().join("/")} ${startTime} – ${endTime}`
+    : slotLabel;
 
   return (
     <Overlay visible={visible} zIndex={40} onClick={saving ? undefined : onClose}>
@@ -91,7 +114,7 @@ export const SchedulingCreateAppointmentModal = ({
                   {t("PSYCHOLOGIST_SCHEDULING_CREATE_TITLE")}
                 </Title>
                 <Title s2 gray block leadingRelaxed>
-                  {slotLabel}
+                  {personalSlotLabel}
                 </Title>
               </Flex>
               <Button
@@ -113,12 +136,15 @@ export const SchedulingCreateAppointmentModal = ({
 
                 if (isPersonalCommitment) {
                   const description = personalDescription.trim();
-                  if (!startTime || !endTime) {
+                  const durationMinutes = personalDurationMinutesFromSlotRange(
+                    startTime,
+                    endTime,
+                    slotTimes,
+                    sessionDurationMinutes,
+                  );
+
+                  if (!startTime || !endTime || durationMinutes === null) {
                     setFormError(t("PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_TIME_ERROR"));
-                    return;
-                  }
-                  if (parseTimeToMinutes(endTime) <= parseTimeToMinutes(startTime)) {
-                    setFormError(t("PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_RANGE_ERROR"));
                     return;
                   }
                   if (!description) {
@@ -134,18 +160,18 @@ export const SchedulingCreateAppointmentModal = ({
                   void onConfirm({
                     kind: "personal",
                     startsAt,
-                    endTime,
+                    durationMinutes,
                     personalDescription: description,
                   });
                   return;
                 }
 
+                const startsAt = combineLocalDateAndTime(dateKey, time, tzOffset).toISOString();
                 if (!patientId) {
                   setFormError(t("PSYCHOLOGIST_SCHEDULING_CREATE_PATIENT_ERROR"));
                   return;
                 }
                 setFormError("");
-                const startsAt = combineLocalDateAndTime(dateKey, time, tzOffset).toISOString();
                 void onConfirm({
                   kind: "patient",
                   patientId,
@@ -160,6 +186,10 @@ export const SchedulingCreateAppointmentModal = ({
                   disabled={saving}
                   onChange={(selected) => {
                     setIsPersonalCommitment(selected);
+                    if (selected) {
+                      setStartTime(time);
+                      setEndTime(time);
+                    }
                     setFormError("");
                   }}
                 >
@@ -170,26 +200,42 @@ export const SchedulingCreateAppointmentModal = ({
                   <>
                     <Flex row wFull gap5>
                       <Flex flex1 wFull>
-                        <InputForm
-                          type="time"
-                          value={startTime}
-                          disabled={saving}
+                        <FormGroup
+                          label={t("PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_START")}
+                          target="scheduling-personal-start"
                           required
-                          onChange={(value) => setStartTime(String(value))}
                         >
-                          {t("PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_START")}
-                        </InputForm>
+                          <Select
+                            id="scheduling-personal-start"
+                            value={startTime}
+                            disabled={saving}
+                            options={slotOptions}
+                            onChange={(value) => {
+                              const nextStart = String(value);
+                              setStartTime(nextStart);
+                              const startIndex = slotTimes.indexOf(nextStart);
+                              const endIndex = slotTimes.indexOf(endTime);
+                              if (startIndex < 0 || endIndex < startIndex) {
+                                setEndTime(nextStart);
+                              }
+                            }}
+                          />
+                        </FormGroup>
                       </Flex>
                       <Flex flex1 wFull>
-                        <InputForm
-                          type="time"
-                          value={endTime}
-                          disabled={saving}
+                        <FormGroup
+                          label={t("PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_END")}
+                          target="scheduling-personal-end"
                           required
-                          onChange={(value) => setEndTime(String(value))}
                         >
-                          {t("PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_END")}
-                        </InputForm>
+                          <Select
+                            id="scheduling-personal-end"
+                            value={endTime}
+                            disabled={saving}
+                            options={endSlotOptions}
+                            onChange={(value) => setEndTime(String(value))}
+                          />
+                        </FormGroup>
                       </Flex>
                     </Flex>
 

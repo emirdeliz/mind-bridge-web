@@ -235,6 +235,7 @@ export const PsychologistSchedulingPage = () => {
                   slotTimes={week.slotTimes}
                   appointments={week.appointments}
                   tzOffset={tzOffset}
+                  sessionDurationMinutes={week.settings.sessionDurationMinutes}
                   saving={saving}
                   movingAppointmentId={movingAppointmentId}
                   onSlotClick={(dateKey, time) => setCreateSlot({ dateKey, time })}
@@ -298,6 +299,8 @@ export const PsychologistSchedulingPage = () => {
         visible={Boolean(createSlot)}
         dateKey={createSlot?.dateKey ?? null}
         time={createSlot?.time ?? null}
+        slotTimes={week?.slotTimes ?? []}
+        sessionDurationMinutes={week?.settings.sessionDurationMinutes ?? 50}
         tzOffset={tzOffset}
         saving={saving}
         onClose={() => {
@@ -313,7 +316,7 @@ export const PsychologistSchedulingPage = () => {
             await createAppointment({
               isPersonalCommitment: true,
               startsAt: input.startsAt,
-              endTime: input.endTime,
+              durationMinutes: input.durationMinutes,
               personalDescription: input.personalDescription,
             });
           } else {

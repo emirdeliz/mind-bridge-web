@@ -351,12 +351,40 @@
     @apply min-h-[3.25rem] cursor-pointer border-b border-r border-mb-border/60 bg-mb-surface p-1 transition hover:bg-mb-surface-elevated/80;
   }
 
+  .mb-scheduling-slot-occupied {
+    @apply cursor-default hover:bg-mb-surface;
+  }
+
   .mb-scheduling-slot-over {
     @apply bg-mb-primary/15 ring-1 ring-inset ring-mb-primary/50;
   }
 
   .mb-scheduling-badge {
-    @apply flex w-full flex-col gap-1 rounded-lg border border-mb-primary/40 bg-mb-primary/20 p-1 text-left;
+    @apply flex h-full min-h-[2.75rem] w-full flex-col gap-1 rounded-lg border border-mb-primary/40 bg-mb-primary/20 p-1 text-left;
+  }
+
+  .mb-scheduling-badge-personal {
+    @apply border-amber-500/55 bg-amber-500/20 shadow-sm shadow-amber-950/20;
+  }
+
+  .mb-scheduling-badge-personal .mb-scheduling-badge-name {
+    @apply text-amber-50;
+  }
+
+  .mb-scheduling-badge-personal .mb-scheduling-badge-time {
+    @apply text-amber-200/90;
+  }
+
+  .mb-scheduling-badge-continuation {
+    @apply min-h-[2.75rem] rounded-lg border p-0;
+  }
+
+  .mb-scheduling-badge-continuation-personal {
+    @apply border-amber-500/45 bg-amber-500/20 p-1 shadow-sm shadow-amber-950/15;
+  }
+
+  .mb-scheduling-badge-continuation-content {
+    @apply flex h-full w-full flex-col items-start justify-center gap-0.5 px-0.5;
   }
 
   .mb-scheduling-badge-drag {

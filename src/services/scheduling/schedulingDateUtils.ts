@@ -116,3 +116,55 @@ export const parseAppointmentDragId = (id: string): string | null => {
   }
   return id.split("|")[1] ?? null;
 };
+
+export type AppointmentSlotCoverage = {
+  slotTime: string;
+  isStart: boolean;
+};
+
+export const personalDurationMinutesFromSlotRange = (
+  startTime: string,
+  endTime: string,
+  slotTimes: string[],
+  sessionDurationMinutes: number,
+): number | null => {
+  const startIndex = slotTimes.indexOf(startTime);
+  const endIndex = slotTimes.indexOf(endTime);
+  if (startIndex < 0 || endIndex < 0 || endIndex < startIndex) {
+    return null;
+  }
+  return (endIndex - startIndex + 1) * sessionDurationMinutes;
+};
+
+export const getAppointmentSlotCoverage = (
+  appointment: {
+    startsAt: string;
+    durationMinutes: number;
+    isPersonalCommitment: boolean;
+  },
+  dateKey: string,
+  slotTimes: string[],
+  sessionDurationMinutes: number,
+  tzOffset: number,
+): AppointmentSlotCoverage[] => {
+  const appointmentDateKey = toLocalDateKey(new Date(appointment.startsAt), tzOffset);
+  if (appointmentDateKey !== dateKey) {
+    return [];
+  }
+
+  const startTime = toLocalTime(new Date(appointment.startsAt), tzOffset);
+  const appointmentStartMs = new Date(appointment.startsAt).getTime();
+  const appointmentEndMs = appointmentStartMs + appointment.durationMinutes * 60_000;
+
+  if (!appointment.isPersonalCommitment) {
+    return slotTimes.includes(startTime) ? [{ slotTime: startTime, isStart: true }] : [];
+  }
+
+  return slotTimes
+    .filter((slotTime) => {
+      const slotStartMs = combineLocalDateAndTime(dateKey, slotTime, tzOffset).getTime();
+      const slotEndMs = slotStartMs + sessionDurationMinutes * 60_000;
+      return appointmentStartMs < slotEndMs && appointmentEndMs > slotStartMs;
+    })
+    .map((slotTime) => ({ slotTime, isStart: slotTime === startTime }));
+};
