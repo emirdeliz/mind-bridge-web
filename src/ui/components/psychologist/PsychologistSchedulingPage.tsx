@@ -148,7 +148,7 @@ export const PsychologistSchedulingPage = () => {
       subtitle={t("PSYCHOLOGIST_SCHEDULING_SUBTITLE")}
       variant="dashboard"
     >
-      <Flex row wFull alignCenter justifyEnd gap4 mb4>
+      <Flex row wFull alignCenter justifyEnd gap4>
         <Button
           type="button"
           variant="secondary"
