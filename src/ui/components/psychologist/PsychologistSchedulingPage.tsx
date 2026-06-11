@@ -38,6 +38,7 @@ export const PsychologistSchedulingPage = () => {
     saveSettings,
     createAppointment,
     moveAppointment,
+    updatePersonalCommitment,
     removeAppointment,
   } = usePsychologistScheduling(weekStart);
 
@@ -272,6 +273,7 @@ export const PsychologistSchedulingPage = () => {
         appointment={editAppointment}
         weekStart={week?.weekStart ?? weekStart}
         slotTimes={week?.slotTimes ?? []}
+        sessionDurationMinutes={week?.settings.sessionDurationMinutes ?? 50}
         tzOffset={tzOffset}
         saving={saving}
         onClose={() => {
@@ -279,11 +281,19 @@ export const PsychologistSchedulingPage = () => {
             setEditAppointment(null);
           }
         }}
-        onSave={async (startsAt) => {
+        onSave={async (input) => {
           if (!editAppointment) {
             return;
           }
-          await handleMoveAppointment(editAppointment.id, startsAt);
+          if (input.kind === "personal") {
+            await updatePersonalCommitment(editAppointment.id, {
+              startsAt: input.startsAt,
+              durationMinutes: input.durationMinutes,
+              personalDescription: input.personalDescription,
+            });
+          } else {
+            await handleMoveAppointment(editAppointment.id, input.startsAt);
+          }
           setEditAppointment(null);
         }}
         onDelete={async () => {

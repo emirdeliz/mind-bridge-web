@@ -136,6 +136,21 @@ export const personalDurationMinutesFromSlotRange = (
   return (endIndex - startIndex + 1) * sessionDurationMinutes;
 };
 
+export const personalEndSlotTimeFromDuration = (
+  startTime: string,
+  durationMinutes: number,
+  slotTimes: string[],
+  sessionDurationMinutes: number,
+): string => {
+  const startIndex = slotTimes.indexOf(startTime);
+  if (startIndex < 0 || sessionDurationMinutes <= 0) {
+    return startTime;
+  }
+  const slotCount = Math.max(1, Math.round(durationMinutes / sessionDurationMinutes));
+  const endIndex = Math.min(startIndex + slotCount - 1, slotTimes.length - 1);
+  return slotTimes[endIndex] ?? startTime;
+};
+
 export const getAppointmentSlotCoverage = (
   appointment: {
     startsAt: string;

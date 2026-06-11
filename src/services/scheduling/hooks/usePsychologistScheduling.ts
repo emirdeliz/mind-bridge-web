@@ -12,6 +12,7 @@ import {
   deletePsychologistAppointmentApi,
   getPsychologistSchedulingWeekApi,
   movePsychologistAppointmentApi,
+  updatePsychologistPersonalCommitmentApi,
   updatePsychologistSchedulingSettingsApi,
   type CreateAppointmentInput,
   type UpdateSchedulingSettingsPayload,
@@ -209,6 +210,36 @@ export const usePsychologistScheduling = (weekStart: string | null) => {
     [tzOffset, weekStart],
   );
 
+  const updatePersonalCommitment = useCallback(
+    async (
+      appointmentId: string,
+      payload: {
+        startsAt: string;
+        durationMinutes: number;
+        personalDescription: string;
+      },
+    ) => {
+      setSaving(true);
+      setError("");
+      try {
+        await updatePsychologistPersonalCommitmentApi(appointmentId, payload);
+        await load({ silent: true });
+      } catch (updateError) {
+        setError(
+          updateError instanceof ApiError
+            ? updateError.message
+            : updateError instanceof Error
+              ? updateError.message
+              : "Failed to update personal commitment",
+        );
+        throw updateError;
+      } finally {
+        setSaving(false);
+      }
+    },
+    [load],
+  );
+
   const removeAppointment = useCallback(
     async (appointmentId: string) => {
       setSaving(true);
@@ -243,6 +274,7 @@ export const usePsychologistScheduling = (weekStart: string | null) => {
     saveSettings,
     createAppointment,
     moveAppointment,
+    updatePersonalCommitment,
     removeAppointment,
   };
 };

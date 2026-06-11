@@ -65,6 +65,12 @@ export type MoveAppointmentPayload = {
   tzOffset: number;
 };
 
+export type UpdatePersonalCommitmentPayload = {
+  startsAt: string;
+  durationMinutes: number;
+  personalDescription: string;
+};
+
 export const getPsychologistSchedulingWeekApi = async (
   weekStart: string,
   tzOffset: number,
@@ -95,6 +101,20 @@ export const createPsychologistAppointmentApi = async (
     "/psychologist/scheduling/appointments",
     {
       method: "POST",
+      body: payload,
+    },
+  );
+  return keysToCamel<CreateAppointmentResponse>(response).appointment;
+};
+
+export const updatePsychologistPersonalCommitmentApi = async (
+  appointmentId: string,
+  payload: UpdatePersonalCommitmentPayload,
+): Promise<PsychologistAppointmentDto> => {
+  const response = await apiRequest<CreateAppointmentResponse>(
+    `/psychologist/scheduling/appointments/${appointmentId}`,
+    {
+      method: "PATCH",
       body: payload,
     },
   );
