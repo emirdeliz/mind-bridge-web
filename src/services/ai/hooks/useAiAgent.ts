@@ -80,6 +80,8 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
       setSending(true);
       setError("");
 
+      let succeeded = false;
+
       try {
         if (options.mode === "patient") {
           const response = await postPatientChatApi(cleanText, requestLanguage);
@@ -124,15 +126,17 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
           };
           setMessages((prev) => [...prev, agentMessage]);
         }
-        if (options.onAgentReply) {
-          await options.onAgentReply();
-        }
+        succeeded = true;
       } catch (sendError) {
         setError(
           sendError instanceof Error ? sendError.message : t("AI_ERROR_GENERIC"),
         );
       } finally {
         setSending(false);
+      }
+
+      if (succeeded && options.onAgentReply) {
+        await options.onAgentReply();
       }
     },
     [options, sending, session, t, requestLanguage],
