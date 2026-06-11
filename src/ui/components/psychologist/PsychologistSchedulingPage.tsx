@@ -10,7 +10,6 @@ import { translateTemplate, useI18n } from "@i18n";
 import { Card, ConfirmModal, PageLoader } from "@molecules";
 import { AppShell, DashboardSectionTitle } from "@templates";
 import {
-  combineLocalDateAndTime,
   getWeekDateKeys,
   getWeekStartIso,
   shiftWeekStartIso,
@@ -299,22 +298,30 @@ export const PsychologistSchedulingPage = () => {
         visible={Boolean(createSlot)}
         dateKey={createSlot?.dateKey ?? null}
         time={createSlot?.time ?? null}
+        tzOffset={tzOffset}
         saving={saving}
         onClose={() => {
           if (!saving) {
             setCreateSlot(null);
           }
         }}
-        onConfirm={async (patientId) => {
+        onConfirm={async (input) => {
           if (!createSlot) {
             return;
           }
-          const startsAt = combineLocalDateAndTime(
-            createSlot.dateKey,
-            createSlot.time,
-            tzOffset,
-          ).toISOString();
-          await createAppointment({ patientId, startsAt });
+          if (input.kind === "personal") {
+            await createAppointment({
+              isPersonalCommitment: true,
+              startsAt: input.startsAt,
+              endTime: input.endTime,
+              personalDescription: input.personalDescription,
+            });
+          } else {
+            await createAppointment({
+              patientId: input.patientId,
+              startsAt: input.startsAt,
+            });
+          }
           setCreateSlot(null);
         }}
       />

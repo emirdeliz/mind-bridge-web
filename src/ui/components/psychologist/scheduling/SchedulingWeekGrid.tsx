@@ -61,10 +61,22 @@ const AppointmentBadge = ({
   onOpenAppointment,
 }: AppointmentBadgeProps) => {
   const { t } = useI18n();
-  const label =
-    appointment.patientFullName?.trim() ||
-    appointment.patientEmail ||
-    appointment.patientId;
+  const label = appointment.isPersonalCommitment
+    ? appointment.notes?.trim() || t("PSYCHOLOGIST_SCHEDULING_PERSONAL_COMMITMENT")
+    : appointment.patientFullName?.trim() ||
+      appointment.patientEmail ||
+      appointment.patientId ||
+      "";
+  const startTime = toLocalTime(new Date(appointment.startsAt), tzOffset);
+  const endTime = toLocalTime(
+    new Date(
+      new Date(appointment.startsAt).getTime() + appointment.durationMinutes * 60_000,
+    ),
+    tzOffset,
+  );
+  const timeLabel = appointment.isPersonalCommitment
+    ? `${startTime} – ${endTime}`
+    : startTime;
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: appointmentDragId(appointment.id),
     disabled,
@@ -84,30 +96,30 @@ const AppointmentBadge = ({
     >
       <div className="mb-scheduling-badge-drag" {...listeners} {...attributes}>
         <span className="mb-scheduling-badge-name">{label}</span>
-        <span className="mb-scheduling-badge-time">
-          {toLocalTime(new Date(appointment.startsAt), tzOffset)}
-        </span>
+        <span className="mb-scheduling-badge-time">{timeLabel}</span>
       </div>
       <div className="mb-scheduling-badge-actions" onPointerDown={stopBadgeAction}>
-        <Tooltip title={t("PSYCHOLOGIST_SCHEDULING_BADGE_CONTACT")} top minWidth={10}>
-          <span className="mb-scheduling-badge-action">
-            <Button
-              type="button"
-              xs
-              sm
-              circle
-              variant="secondary"
-              outlined
-              clickable={!disabled}
-              onClick={(event) => {
-                stopBadgeAction(event);
-                onOpenContact(appointment);
-              }}
-            >
-              <Icon.User sm white />
-            </Button>
-          </span>
-        </Tooltip>
+        {!appointment.isPersonalCommitment ? (
+          <Tooltip title={t("PSYCHOLOGIST_SCHEDULING_BADGE_CONTACT")} top minWidth={10}>
+            <span className="mb-scheduling-badge-action">
+              <Button
+                type="button"
+                xs
+                sm
+                circle
+                variant="secondary"
+                outlined
+                clickable={!disabled}
+                onClick={(event) => {
+                  stopBadgeAction(event);
+                  onOpenContact(appointment);
+                }}
+              >
+                <Icon.User sm white />
+              </Button>
+            </span>
+          </Tooltip>
+        ) : null}
         <Tooltip title={t("PSYCHOLOGIST_SCHEDULING_BADGE_APPOINTMENT")} top minWidth={10}>
           <span className="mb-scheduling-badge-action">
             <Button

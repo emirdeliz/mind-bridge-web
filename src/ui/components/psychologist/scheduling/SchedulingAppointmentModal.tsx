@@ -61,10 +61,12 @@ export const SchedulingAppointmentModal = ({
     return null;
   }
 
-  const patientLabel =
-    appointment.patientFullName?.trim() ||
-    appointment.patientEmail ||
-    appointment.patientId;
+  const appointmentLabel = appointment.isPersonalCommitment
+    ? appointment.notes?.trim() || t("PSYCHOLOGIST_SCHEDULING_PERSONAL_COMMITMENT")
+    : appointment.patientFullName?.trim() ||
+      appointment.patientEmail ||
+      appointment.patientId ||
+      "";
 
   const dateOptions = weekDateKeys.map((key) => ({
     value: key,
@@ -93,7 +95,7 @@ export const SchedulingAppointmentModal = ({
                     {t("PSYCHOLOGIST_SCHEDULING_APPOINTMENT_TITLE")}
                   </Title>
                   <Title s2 gray block leadingRelaxed>
-                    {patientLabel}
+                    {appointmentLabel}
                   </Title>
                 </Flex>
                 <Button

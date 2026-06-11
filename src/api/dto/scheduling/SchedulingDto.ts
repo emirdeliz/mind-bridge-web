@@ -15,12 +15,13 @@ export type PsychologistSchedulingSettingsDto = {
 export type PsychologistAppointmentDto = {
   id: string;
   psychologistId: string;
-  patientId: string;
+  patientId: string | null;
   patientFullName: string | null;
   patientEmail: string | null;
   startsAt: string;
   durationMinutes: number;
   notes: string | null;
+  isPersonalCommitment: boolean;
 };
 
 export type PsychologistSchedulingWeekDto = {

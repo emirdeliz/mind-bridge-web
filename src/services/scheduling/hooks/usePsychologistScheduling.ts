@@ -13,7 +13,7 @@ import {
   getPsychologistSchedulingWeekApi,
   movePsychologistAppointmentApi,
   updatePsychologistSchedulingSettingsApi,
-  type CreateAppointmentPayload,
+  type CreateAppointmentInput,
   type UpdateSchedulingSettingsPayload,
 } from "@api";
 import { shouldSilentReload, type ReloadOptions } from "../../common/reloadOptions";
@@ -104,7 +104,7 @@ export const usePsychologistScheduling = (weekStart: string | null) => {
   );
 
   const createAppointment = useCallback(
-    async (payload: Omit<CreateAppointmentPayload, "weekStart" | "tzOffset">) => {
+    async (payload: CreateAppointmentInput) => {
       if (!weekStart) {
         return;
       }

@@ -32,14 +32,32 @@ export type UpdateSchedulingSettingsPayload = {
   tzOffset: number;
 };
 
-export type CreateAppointmentPayload = {
+export type CreatePatientAppointmentPayload = {
   patientId: string;
   startsAt: string;
   durationMinutes?: number;
   notes?: string | null;
   weekStart: string;
   tzOffset: number;
+  isPersonalCommitment?: false;
 };
+
+export type CreatePersonalCommitmentPayload = {
+  isPersonalCommitment: true;
+  startsAt: string;
+  endTime: string;
+  personalDescription: string;
+  weekStart: string;
+  tzOffset: number;
+};
+
+export type CreateAppointmentPayload =
+  | CreatePatientAppointmentPayload
+  | CreatePersonalCommitmentPayload;
+
+export type CreateAppointmentInput =
+  | Omit<CreatePatientAppointmentPayload, "weekStart" | "tzOffset">
+  | Omit<CreatePersonalCommitmentPayload, "weekStart" | "tzOffset">;
 
 export type MoveAppointmentPayload = {
   startsAt: string;
