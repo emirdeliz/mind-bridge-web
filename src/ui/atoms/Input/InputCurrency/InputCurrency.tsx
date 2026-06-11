@@ -1,14 +1,36 @@
-import * as helpers from '@helpers';
 import React, {
   ChangeEvent,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { filterInputDomProps } from '@helpers';
 import { applyMaskMaybe, InputProps } from '../Input';
 
-const INPUT_CURRENCY_MAX_LENGTH_DEFAULT = 12;
+const INPUT_CURRENCY_MAX_LENGTH_DEFAULT = 16;
+
+const toEditableAmount = (value: InputProps['value']): number | '' => {
+  if (value === '' || value === null || value === undefined) {
+    return '';
+  }
+
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric) || numeric === 0) {
+    return '';
+  }
+
+  return numeric;
+};
+
+const parseCurrencyInputToAmount = (rawValue: string): number | '' => {
+  const digits = rawValue.replace(/\D/g, '');
+  if (!digits) {
+    return '';
+  }
+
+  return parseInt(digits, 10) / 100;
+};
 
 export const InputCurrency = ({
   maxLength,
@@ -18,35 +40,29 @@ export const InputCurrency = ({
   hasError,
   ...props
 }: InputProps) => {
-  const [valueAsString, setValueAsString] = useState<number | string>(props.value as number || 0);
+  const [valueAsString, setValueAsString] = useState<number | ''>(
+    () => toEditableAmount(props.value),
+  );
+  const lastExternalValue = useRef(props.value);
   const id = useMemo(() => String(props.id), [props.id]);
   const value = useMemo(
     () => applyMaskMaybe(valueAsString, { currency: true }),
-    [valueAsString]
+    [valueAsString],
   );
 
-  // Sync internal state when props.value changes externally
   useEffect(() => {
-    if (props.value !== undefined && props.value !== valueAsString) {
-      setValueAsString(props.value as number);
+    if (props.value === lastExternalValue.current) {
+      return;
     }
+
+    lastExternalValue.current = props.value;
+    setValueAsString(toEditableAmount(props.value));
   }, [props.value]);
-  
+
   const inputClasses = [
-    'w-full',
-    'h-12', // Altura padronizada (48px)
-    'min-h-[48px]', // Altura mínima garantida
-    'bg-white text-gray-900',
-    'border border-gray-300', // Borda restaurada com cor correta
-    'outline-none rounded-lg',
-    'px-4 py-3', // Padding padronizado (16px horizontal, 12px vertical)
-    'text-base',
-    'font-poppins',
-    'transition-all duration-200 ease-in-out',
-    'placeholder:text-gray-400 placeholder:font-normal',
-    'disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed',
+    'mb-field block w-full min-w-0',
     'input-focus-primary',
-    hasError && 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200',
+    hasError && 'mb-field-error',
   ].filter(Boolean).join(' ');
 
   const domProps = filterInputDomProps(props);
@@ -61,18 +77,17 @@ export const InputCurrency = ({
       className={inputClasses}
       onKeyDown={onKeyDown}
       onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        // Normalize decimal separator: convert dot to comma for Brazilian locale
-        const normalizedValue = e.target.value.replace(/\.(?=\d{0,2}$)/, ',');
-        setValueAsString(normalizedValue);
+        setValueAsString(parseCurrencyInputToAmount(e.target.value));
       }}
       onBlur={(e) => {
+        const numericValue = parseCurrencyInputToAmount(e.target.value);
+        lastExternalValue.current = numericValue === '' ? '' : numericValue;
+
         const eventAsNumber = {
           ...e,
           target: {
             ...e?.target,
-            value: e.target.value
-              ? Number(value.replace(/\./g, '').replace(',', '.').replace('R$', '').trim())
-              : '',
+            value: numericValue === '' ? '' : numericValue,
           },
         } as ChangeEvent<HTMLInputElement>;
 

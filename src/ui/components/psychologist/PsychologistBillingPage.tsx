@@ -194,32 +194,43 @@ export const PsychologistBillingPage = () => {
       subtitle={t("PSYCHOLOGIST_BILLING_SUBTITLE")}
       variant="dashboard"
     >
-      <Flex row wFull alignCenter wrap gap4>
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={() => void router.push("/psychologist/patients")}
-        >
-          {t("BACK_TO_PSYCHOLOGIST_PATIENTS")}
-        </Button>
-        <Button
-          type="button"
-          variant="secondary"
-          disabled={!canGoToPreviousMonth || billingLoading}
-          onClick={goToPreviousMonth}
-        >
-          {t("PSYCHOLOGIST_BILLING_PREVIOUS_MONTH")}
-        </Button>
-        {!billing?.isCurrentMonth ? (
+      <Flex row wFull alignCenter wrap justifySpaceBetween gap4>
+        <Flex row alignCenter wrap gap4>
           <Button
             type="button"
-            variant="primary"
-            disabled={billingLoading}
-            onClick={goToCurrentMonth}
+            variant="secondary"
+            onClick={() => void router.push("/psychologist/patients")}
           >
-            {t("PSYCHOLOGIST_BILLING_BACK_TO_CURRENT_MONTH")}
+            {t("BACK_TO_PSYCHOLOGIST_PATIENTS")}
           </Button>
-        ) : null}
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => void router.push("/psychologist/patient-payments")}
+          >
+            {t("PSYCHOLOGIST_PATIENT_PAYMENTS_GO_TO_PAYMENTS")}
+          </Button>
+        </Flex>
+        <Flex row alignCenter wrap gap4>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={!canGoToPreviousMonth || billingLoading}
+            onClick={goToPreviousMonth}
+          >
+            {t("PSYCHOLOGIST_BILLING_PREVIOUS_MONTH")}
+          </Button>
+          {!billing?.isCurrentMonth ? (
+            <Button
+              type="button"
+              variant="primary"
+              disabled={billingLoading}
+              onClick={goToCurrentMonth}
+            >
+              {t("PSYCHOLOGIST_BILLING_BACK_TO_CURRENT_MONTH")}
+            </Button>
+          ) : null}
+        </Flex>
       </Flex>
 
       {error ? (

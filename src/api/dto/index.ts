@@ -3,3 +3,4 @@ export * from "./billing/BillingDto";
 export * from "./clinical/ClinicalContentDto";
 export * from "./invite/InviteCodeDto";
 export * from "./patient/PatientDto";
+export * from "./patient-payment/PatientPaymentDto";
