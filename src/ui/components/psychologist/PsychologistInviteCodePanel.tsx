@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import {
   getPsychologistInviteCodeApi,
-  regeneratePsychologistInviteCodeApi,
+  // regeneratePsychologistInviteCodeApi,
 } from "@api";
 import { Button, Flex, Title } from "@atoms";
 import { useI18n } from "@i18n";
@@ -12,7 +12,7 @@ export const PsychologistInviteCodePanel = () => {
   const { t } = useI18n();
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(true);
-  const [regenerating, setRegenerating] = useState(false);
+  // const [regenerating, setRegenerating] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
 
@@ -46,28 +46,28 @@ export const PsychologistInviteCodePanel = () => {
     window.setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleRegenerate = async () => {
-    if (
-      !window.confirm(t("PSYCHOLOGIST_INVITE_CODE_REGENERATE_CONFIRM"))
-    ) {
-      return;
-    }
-
-    setRegenerating(true);
-    setError("");
-    try {
-      const data = await regeneratePsychologistInviteCodeApi();
-      setCode(data.code);
-    } catch (regenerateError) {
-      setError(
-        regenerateError instanceof Error
-          ? regenerateError.message
-          : t("PSYCHOLOGIST_INVITE_CODE_REGENERATE_ERROR")
-      );
-    } finally {
-      setRegenerating(false);
-    }
-  };
+  // const handleRegenerate = async () => {
+  //   if (
+  //     !window.confirm(t("PSYCHOLOGIST_INVITE_CODE_REGENERATE_CONFIRM"))
+  //   ) {
+  //     return;
+  //   }
+  //
+  //   setRegenerating(true);
+  //   setError("");
+  //   try {
+  //     const data = await regeneratePsychologistInviteCodeApi();
+  //     setCode(data.code);
+  //   } catch (regenerateError) {
+  //     setError(
+  //       regenerateError instanceof Error
+  //         ? regenerateError.message
+  //         : t("PSYCHOLOGIST_INVITE_CODE_REGENERATE_ERROR")
+  //     );
+  //   } finally {
+  //     setRegenerating(false);
+  //   }
+  // };
 
   return (
     <Card padding="md" shadow="sm">
@@ -96,7 +96,7 @@ export const PsychologistInviteCodePanel = () => {
             <Button type="button" variant="secondary" outlined onClick={() => void handleCopy()}>
               {copied ? t("PSYCHOLOGIST_INVITE_CODE_COPIED") : t("PSYCHOLOGIST_INVITE_CODE_COPY")}
             </Button>
-            <Button
+            {/* <Button
               type="button"
               variant="secondary"
               outlined
@@ -106,7 +106,7 @@ export const PsychologistInviteCodePanel = () => {
               {regenerating
                 ? t("PSYCHOLOGIST_INVITE_CODE_REGENERATING")
                 : t("PSYCHOLOGIST_INVITE_CODE_REGENERATE")}
-            </Button>
+            </Button> */}
           </Flex>
         )}
       </Flex>
