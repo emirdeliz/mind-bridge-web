@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import { useRouter } from "next/router";
 
 import type { PsychologistAppointmentDto, SchedulingConflictPreviewDto } from "@api";
 import { Button, Flex, Icon, Title } from "@atoms";
@@ -24,6 +25,7 @@ import { SchedulingWeekGrid } from "./scheduling/SchedulingWeekGrid";
 import { usePsychologistGuard } from "./usePsychologistGuard";
 
 export const PsychologistSchedulingPage = () => {
+  const router = useRouter();
   const { t, language } = useI18n();
   const { loading: guardLoading, isPsychologist } = usePsychologistGuard();
   const [weekStart, setWeekStart] = useState(() => getWeekStartIso());
@@ -148,7 +150,14 @@ export const PsychologistSchedulingPage = () => {
       subtitle={t("PSYCHOLOGIST_SCHEDULING_SUBTITLE")}
       variant="dashboard"
     >
-      <Flex row wFull alignCenter justifyEnd gap4>
+      <Flex row wFull alignCenter justifySpaceBetween gap4 wrap>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => router.back()}
+        >
+          {t("BACK")}
+        </Button>
         <Button
           type="button"
           variant="secondary"
