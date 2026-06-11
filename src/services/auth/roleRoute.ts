@@ -27,3 +27,10 @@ export const getPatientPaymentsRoute = (role: UserRole): string | null => {
   }
   return null;
 };
+
+export const getSchedulingRoute = (role: UserRole): string | null => {
+  if (role === "psychologist") {
+    return "/psychologist/scheduling";
+  }
+  return null;
+};

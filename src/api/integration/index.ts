@@ -8,3 +8,4 @@ export * from "./Patient/PatientInteractionsApi";
 export * from "./Patient/PatientInviteCodeApi";
 export * from "./Patient/PatientLikertApi";
 export * from "./Patient/PsychologistPatientApi";
+export * from "./Scheduling/PsychologistSchedulingApi";
