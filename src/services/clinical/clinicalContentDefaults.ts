@@ -1,8 +1,24 @@
 import type {
   DashboardSnapshotDto,
+  PatientAnamnesisDto,
   PatientClinicalContentDto,
   SessionNoteEntryDto,
 } from "@api";
+
+const emptyPatientAnamnesis = (): PatientAnamnesisDto => ({
+  chiefComplaint: '',
+  currentHistory: '',
+  personalHistory: '',
+  familyHistory: '',
+  socialHistory: '',
+  medicalPsychiatricHistory: '',
+  lifeHabits: '',
+  emotionalBehavioral: '',
+  therapeuticGoals: '',
+  psychologistNotes: '',
+});
+
+export { emptyPatientAnamnesis };
 
 const emptyDashboardSnapshot = (): DashboardSnapshotDto => ({
   moodTrendCategories: [],
@@ -56,4 +72,5 @@ export const emptyClinicalContentForPatient = (
   patientChatSeed: [],
   patientSummary: null,
   likertCheckIn: null,
+  anamnesis: emptyPatientAnamnesis(),
 });

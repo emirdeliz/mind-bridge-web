@@ -70,3 +70,34 @@ export const endPsychologistSessionApi = async (
   );
   return keysToCamel<ClinicalContentResponse>(response).content;
 };
+
+export type SavePsychologistPatientAnamnesisDto = {
+  chiefComplaint?: string;
+  currentHistory?: string;
+  personalHistory?: string;
+  familyHistory?: string;
+  socialHistory?: string;
+  medicalPsychiatricHistory?: string;
+  lifeHabits?: string;
+  emotionalBehavioral?: string;
+  therapeuticGoals?: string;
+  psychologistNotes?: string;
+};
+
+type AnamnesisResponse = {
+  anamnesis: SavePsychologistPatientAnamnesisDto;
+};
+
+export const savePsychologistPatientAnamnesisApi = async (
+  patientId: string,
+  data: SavePsychologistPatientAnamnesisDto
+): Promise<SavePsychologistPatientAnamnesisDto> => {
+  const response = await apiRequest<AnamnesisResponse>(
+    `/psychologist/patients/${patientId}/anamnesis`,
+    {
+      method: 'PATCH',
+      body: data,
+    }
+  );
+  return keysToCamel<AnamnesisResponse>(response).anamnesis;
+};
