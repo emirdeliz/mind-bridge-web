@@ -14,14 +14,16 @@ export const usePsychologistClinicalContent = (patientId: string | undefined) =>
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (options?: { silent?: boolean }) => {
     if (!session || !patientId) {
       setContent(null);
       setLoading(false);
       return;
     }
 
-    setLoading(true);
+    if (!options?.silent) {
+      setLoading(true);
+    }
     setError("");
 
     try {

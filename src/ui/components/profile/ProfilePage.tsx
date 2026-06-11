@@ -1,7 +1,9 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import type { UserProfile, UserRole } from "@api";
+import { linkPatientInviteCodeApi } from "@api";
+import { Title } from "@atoms";
 import { getRoleRoute, useAuth } from "@services";
 import { useI18n } from "@i18n";
 import { AppShell, ProfileForm } from "@templates";
@@ -14,6 +16,7 @@ export const ProfilePage = ({ area }: ProfilePageProps) => {
   const router = useRouter();
   const { t, setLanguage } = useI18n();
   const { session, loading, saveProfile } = useAuth();
+  const [saveError, setSaveError] = useState("");
 
   useEffect(() => {
     if (loading) return;
@@ -36,13 +39,26 @@ export const ProfilePage = ({ area }: ProfilePageProps) => {
   }, [area, router]);
 
   const handleSave = useCallback(
-    async (profile: UserProfile) => {
+    async (profile: UserProfile, inviteCode?: string) => {
+      setSaveError("");
+
       if (profile.language) {
         setLanguage(profile.language);
       }
 
-      const updated = await saveProfile(profile);
-      if (!updated) {
+      try {
+        const updated = await saveProfile(profile);
+        if (!updated) {
+          return;
+        }
+
+        if (area === "patient" && inviteCode?.trim()) {
+          await linkPatientInviteCodeApi(inviteCode);
+        }
+      } catch (error) {
+        setSaveError(
+          error instanceof Error ? error.message : t("PROFILE_SAVE_ERROR")
+        );
         return;
       }
 
@@ -53,7 +69,7 @@ export const ProfilePage = ({ area }: ProfilePageProps) => {
 
       await router.replace(getRoleRoute(area));
     },
-    [area, router, saveProfile, setLanguage],
+    [area, router, saveProfile, setLanguage, t],
   );
 
   if (loading || !session || session.role !== area) {
@@ -62,10 +78,16 @@ export const ProfilePage = ({ area }: ProfilePageProps) => {
 
   return (
     <AppShell title={t("PROFILE_PAGE_TITLE")} subtitle={t("PROFILE_PAGE_SUBTITLE")} variant="dashboard">
+      {saveError ? (
+        <Title s2 error block mb4>
+          {saveError}
+        </Title>
+      ) : null}
       <ProfileForm
         initialData={session.profile}
         onSave={handleSave}
-        onBack={area === "psychologist" ? handleBack : undefined}
+        onBack={handleBack}
+        showInviteCodeField={area === "patient"}
       />
     </AppShell>
   );

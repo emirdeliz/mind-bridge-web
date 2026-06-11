@@ -69,7 +69,7 @@ export const PsychologistSessionPage = () => {
     patientId,
     clinicalContext: psychologistContext,
     sessionConsiderations: currentSessionConsiderations,
-    onAgentReply: reloadContent,
+    onAgentReply: () => reloadContent({ silent: true }),
   });
 
   useEffect(() => {

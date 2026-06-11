@@ -62,11 +62,18 @@ export const loginWithPasswordApi = async (
 
 export const registerUserApi = async (
   payload: UserAuthSaveOrUpdateDto
-): Promise<UserAuthViewDto> => {
-  const data = await authFetch<AuthMutationResponse>('/api/auth/register', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  });
+): Promise<UserAuthViewDto | null> => {
+  const data = await authFetch<AuthMutationResponse & { ok?: boolean }>(
+    '/api/auth/register',
+    {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }
+  );
+
+  if (payload.role === 'patient') {
+    return null;
+  }
 
   if (!data?.session) {
     throw new Error('Registration failed');

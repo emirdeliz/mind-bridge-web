@@ -168,10 +168,16 @@ export const HomePage = () => {
             </Form>
             <Flex row justifyCenter alignCenter wrap gap2 mt6 wFull>
               <Title s1 gray center>
-                {t("AUTH_OR")}
+                {t("AUTH_REGISTER_PROMPT_PREFIX")}
               </Title>
               <RouteLink href="/register" inline>
-                {t("AUTH_REGISTER_PSYCHOLOGIST_LINK")}
+                {t("AUTH_REGISTER_AS_PSYCHOLOGIST")}
+              </RouteLink>
+              <Title s1 gray center>
+                {t("AUTH_OR")}
+              </Title>
+              <RouteLink href="/register?role=patient" inline>
+                {t("AUTH_REGISTER_AS_PATIENT")}
               </RouteLink>
             </Flex>
           </>
