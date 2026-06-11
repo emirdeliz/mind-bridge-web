@@ -17,7 +17,7 @@ export const usePsychologistDashboardData = (
 
   useEffect(() => {
     if (refreshKey) {
-      void reload();
+      void reload({ silent: true });
     }
   }, [refreshKey, reload]);
 

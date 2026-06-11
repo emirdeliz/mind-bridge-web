@@ -75,8 +75,13 @@ export const AuthProvider = ({ children, initialAuth }: AuthProviderProps) => {
     }
   }, [initialAuth]);
 
+  const sessionRef = useRef(session);
+  sessionRef.current = session;
+
   const refreshSession = useCallback(async () => {
-    setLoading(true);
+    if (sessionRef.current === null) {
+      setLoading(true);
+    }
     const currentSession = normalizeSession(await getSessionApi());
     setSession(currentSession);
     setLoading(false);

@@ -6,7 +6,7 @@ import {
 } from "@api";
 import { Button, Flex, Title } from "@atoms";
 import { useI18n } from "@i18n";
-import { Card } from "@molecules";
+import { Card, PageLoader } from "@molecules";
 
 export const PsychologistInviteCodePanel = () => {
   const { t } = useI18n();
@@ -81,9 +81,7 @@ export const PsychologistInviteCodePanel = () => {
           </Title>
         </Flex>
         {loading ? (
-          <Title s2 gray block>
-            {t("PSYCHOLOGIST_INVITE_CODE_LOADING")}
-          </Title>
+          <PageLoader />
         ) : error ? (
           <Title s2 error block>
             {error}

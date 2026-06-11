@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { PsychologistBillingSummaryDto } from "@api";
 import { getPsychologistBillingApi, ApiError } from "@api";
+import { shouldSilentReload, type ReloadOptions } from "../../common/reloadOptions";
 import { useAuth } from "@services";
 
 export const usePsychologistBilling = (billingMonth?: string | null) => {
@@ -9,36 +10,44 @@ export const usePsychologistBilling = (billingMonth?: string | null) => {
   const [billing, setBilling] = useState<PsychologistBillingSummaryDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const billingRef = useRef(billing);
+  billingRef.current = billing;
 
-  const load = useCallback(async () => {
-    if (!session || session.role !== "psychologist") {
-      setBilling(null);
-      setLoading(false);
-      return;
-    }
+  const load = useCallback(
+    async (options?: ReloadOptions) => {
+      if (!session || session.role !== "psychologist") {
+        setBilling(null);
+        setLoading(false);
+        return;
+      }
 
-    setLoading(true);
-    setError("");
+      const silent = shouldSilentReload(options, billingRef.current !== null);
+      if (!silent) {
+        setLoading(true);
+      }
+      setError("");
 
-    try {
-      const data = await getPsychologistBillingApi(billingMonth ?? undefined);
-      setBilling(data);
-    } catch (loadError) {
-      setBilling(null);
-      setError(
-        loadError instanceof ApiError
-          ? loadError.message
-          : loadError instanceof Error
+      try {
+        const data = await getPsychologistBillingApi(billingMonth ?? undefined);
+        setBilling(data);
+      } catch (loadError) {
+        setBilling(null);
+        setError(
+          loadError instanceof ApiError
             ? loadError.message
-            : "Failed to load billing",
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [billingMonth, session]);
+            : loadError instanceof Error
+              ? loadError.message
+              : "Failed to load billing",
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [billingMonth, session],
+  );
 
   useEffect(() => {
-    void load();
+    void load({ silent: false });
   }, [load]);
 
   return { billing, loading, error, reload: load };

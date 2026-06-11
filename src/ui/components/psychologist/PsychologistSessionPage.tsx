@@ -13,6 +13,7 @@ import {
   Card,
   ConfirmModal,
   InteractionSummaryBody,
+  PageLoader,
   TextAreaWithSave,
 } from "@molecules";
 import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
@@ -138,7 +139,7 @@ export const PsychologistSessionPage = () => {
           sessionNotesById[selectedSession.id] ?? selectedSession.content ?? "",
         language,
       });
-      await reloadContent();
+      await reloadContent({ silent: true });
     } catch (error) {
       setSaveError(
         error instanceof Error ? error.message : t("SESSION_SAVE_ERROR"),
@@ -181,7 +182,7 @@ export const PsychologistSessionPage = () => {
       setMessages([]);
       setSelectedSessionIndex(0);
       setAgenticSummaryPage(0);
-      await reloadContent();
+      await reloadContent({ silent: true });
     } catch (error) {
       setEndSessionModalVisible(false);
       setSaveError(
@@ -203,13 +204,16 @@ export const PsychologistSessionPage = () => {
     t,
   ]);
 
-  if (guardLoading || contentLoading || !isPsychologist) {
+  if (!isPsychologist && !guardLoading) {
     return null;
   }
 
-  if (!patientId) {
+  if (!patientId && !guardLoading) {
     return null;
   }
+
+  const showFullPageLoader =
+    guardLoading || !patientId || (contentLoading && !content);
 
   const sessionSubtitle = patientName
     ? `${t("PSYCHOLOGIST_SESSION_SUBTITLE")} — ${patientName}`
@@ -242,6 +246,10 @@ export const PsychologistSessionPage = () => {
         </Button>
       </Flex>
 
+      {showFullPageLoader ? (
+        <PageLoader />
+      ) : (
+        <>
       <ConfirmModal
         visible={endSessionModalVisible}
         title={t("END_SESSION_CONFIRM_TITLE")}
@@ -406,6 +414,8 @@ export const PsychologistSessionPage = () => {
           </Flex>
         </Card>
       ) : null}
+        </>
+      )}
     </AppShell>
   );
 };

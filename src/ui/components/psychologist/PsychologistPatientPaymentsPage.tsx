@@ -12,7 +12,7 @@ import {
   localeForAppLanguage,
 } from "@helpers";
 import { translateTemplate, useI18n } from "@i18n";
-import { Card, ChartCard, ConfirmModal, Table, Tooltip } from "@molecules";
+import { Card, ChartCard, ConfirmModal, PageLoader, Table, Tooltip } from "@molecules";
 import { AppShell, DashboardSectionTitle } from "@templates";
 import {
   canNavigateToPreviousBillingMonth,
@@ -239,9 +239,12 @@ export const PsychologistPatientPaymentsPage = () => {
     setDeletePaymentId(null);
   };
 
-  if (guardLoading || loading || !isPsychologist) {
+  if (!isPsychologist && !guardLoading) {
     return null;
   }
+
+  const showFullPageLoader = guardLoading || (loading && !summary);
+  const showContentLoader = !showFullPageLoader && loading && summary !== null;
 
   const periodTitle = summary?.isCurrentMonth
     ? t("PSYCHOLOGIST_PATIENT_PAYMENTS_CURRENT_MONTH")
@@ -289,12 +292,20 @@ export const PsychologistPatientPaymentsPage = () => {
         </Flex>
       </Flex>
 
+      {showFullPageLoader ? (
+        <PageLoader />
+      ) : (
+        <>
       {error ? (
         <Title s1 gray>
           {error}
         </Title>
       ) : null}
 
+      {showContentLoader ? (
+        <PageLoader />
+      ) : (
+        <>
       <div className="mb-chart-card-row">
         <Card padding="lg" shadow="md">
           <DashboardSectionTitle
@@ -358,6 +369,10 @@ export const PsychologistPatientPaymentsPage = () => {
           />
         )}
       </Card>
+        </>
+      )}
+        </>
+      )}
 
       <PatientPaymentRegisterModal
         visible={Boolean(registerPatient)}

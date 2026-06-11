@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { PsychologistPatientSaveOrUpdateDto, PsychologistPatientViewDto } from '@api';
 import {
@@ -9,6 +9,7 @@ import {
 } from '@api';
 import { isValidPatientInitialPassword, isValidPhone, phoneDigits } from '@helpers';
 import { useI18n } from '@i18n';
+import { shouldSilentReload, type ReloadOptions } from '../../common/reloadOptions';
 import { useAuth } from '@services';
 
 const emptyForm = (): PsychologistPatientSaveOrUpdateDto => ({
@@ -31,34 +32,42 @@ export const usePsychologistPatients = () => {
   const [formError, setFormError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState<PsychologistPatientSaveOrUpdateDto>(emptyForm());
+  const patientsRef = useRef(patients);
+  patientsRef.current = patients;
 
   useEffect(() => {
     const timer = window.setTimeout(() => setDebouncedSearch(search), 300);
     return () => window.clearTimeout(timer);
   }, [search]);
 
-  const loadPatients = useCallback(async () => {
-    if (!session) {
-      setPatients([]);
-      setLoading(false);
-      return;
-    }
+  const loadPatients = useCallback(
+    async (options?: ReloadOptions) => {
+      if (!session) {
+        setPatients([]);
+        setLoading(false);
+        return;
+      }
 
-    setLoading(true);
-    setError('');
+      const silent = shouldSilentReload(options, patientsRef.current.length > 0);
+      if (!silent) {
+        setLoading(true);
+      }
+      setError('');
 
-    try {
-      const list = await getPsychologistPatientsApi(debouncedSearch, includeDeleted);
-      setPatients(list);
-    } catch (loadError) {
-      setError(
-        loadError instanceof Error ? loadError.message : 'Failed to load patients'
-      );
-      setPatients([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [session, debouncedSearch, includeDeleted]);
+      try {
+        const list = await getPsychologistPatientsApi(debouncedSearch, includeDeleted);
+        setPatients(list);
+      } catch (loadError) {
+        setError(
+          loadError instanceof Error ? loadError.message : 'Failed to load patients'
+        );
+        setPatients([]);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [session, debouncedSearch, includeDeleted],
+  );
 
   useEffect(() => {
     void loadPatients();
@@ -134,14 +143,13 @@ export const usePsychologistPatients = () => {
     setFormError('');
 
     try {
-      // Patient account via API — psychologist session stays active (no public register redirect).
       await saveOrEditPsychologistPatientApi({
         ...form,
         phone: normalizedPhone,
         password: form.password?.trim() || undefined,
       });
       closeModal();
-      await loadPatients();
+      await loadPatients({ silent: true });
     } catch (saveError) {
       setFormError(
         saveError instanceof Error ? saveError.message : 'Failed to save patient'
@@ -162,7 +170,7 @@ export const usePsychologistPatients = () => {
 
       try {
         await deletePsychologistPatientApi(patientId);
-        await loadPatients();
+        await loadPatients({ silent: true });
       } catch (deleteError) {
         setError(
           deleteError instanceof Error
@@ -185,7 +193,7 @@ export const usePsychologistPatients = () => {
 
       try {
         await restorePsychologistPatientApi(patientId);
-        await loadPatients();
+        await loadPatients({ silent: true });
       } catch (restoreError) {
         setError(
           restoreError instanceof Error

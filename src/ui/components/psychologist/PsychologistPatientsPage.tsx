@@ -7,7 +7,7 @@ import type { PsychologistPatientViewDto } from '@api';
 import { usePsychologistPatientContext, usePsychologistPatients } from '@services';
 import { Button, Checkbox, Flex, Icon, Title } from '@atoms';
 import { translateTemplate, useI18n } from '@i18n';
-import { Card, ConfirmModal, InputSearch, Switch, Table, Tooltip } from '@molecules';
+import { Card, ConfirmModal, InputSearch, PageLoader, Switch, Table, Tooltip } from '@molecules';
 import { AppShell } from '@templates';
 
 import { PsychologistInviteCodePanel } from './PsychologistInviteCodePanel';
@@ -243,7 +243,7 @@ export const PsychologistPatientsPage = () => {
     [t]
   );
 
-  if (guardLoading || !isPsychologist) {
+  if (!isPsychologist && !guardLoading) {
     return null;
   }
 
@@ -260,6 +260,10 @@ export const PsychologistPatientsPage = () => {
       subtitle={t('PSYCHOLOGIST_PATIENTS_SUBTITLE')}
       variant="dashboard"
     >
+      {guardLoading ? (
+        <PageLoader />
+      ) : (
+        <>
       <PsychologistInviteCodePanel />
       <Flex row wFull wrap alignCenter justifySpaceBetween gap4 mt4>
         <Flex row flex1 wFull gap4 alignCenter>
@@ -287,10 +291,8 @@ export const PsychologistPatientsPage = () => {
         </Title>
       ) : null}
 
-      {loading ? (
-        <Title s1 gray>
-          {t('PSYCHOLOGIST_PATIENTS_LOADING')}
-        </Title>
+      {loading && patients.length === 0 ? (
+        <PageLoader />
       ) : tableData.length === 0 ? (
         <Card padding="md" shadow="sm">
           <Title s1 gray>
@@ -366,6 +368,8 @@ export const PsychologistPatientsPage = () => {
         onConfirm={() => void saveContext()}
         onChange={updateContext}
       />
+        </>
+      )}
     </AppShell>
   );
 };

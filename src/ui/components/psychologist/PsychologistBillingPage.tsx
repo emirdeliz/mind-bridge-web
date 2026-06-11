@@ -13,7 +13,7 @@ import {
   localeForAppLanguage,
 } from "@helpers";
 import { translateTemplate, useI18n } from "@i18n";
-import { Card, ChartCard, Table } from "@molecules";
+import { Card, ChartCard, PageLoader, Table } from "@molecules";
 import { AppShell, DashboardSectionTitle } from "@templates";
 import {
   canNavigateToPreviousBillingMonth,
@@ -171,9 +171,12 @@ export const PsychologistBillingPage = () => {
     setSelectedBillingMonth(null);
   };
 
-  if (guardLoading || billingLoading || !isPsychologist) {
+  if (!isPsychologist && !guardLoading) {
     return null;
   }
+
+  const showFullPageLoader = guardLoading || (billingLoading && !billing);
+  const showContentLoader = !showFullPageLoader && billingLoading && billing !== null;
 
   const unitPrice = billing
     ? formatCentsAsCurrencyForAppLanguage(billing.unitPriceCents, language, currency)
@@ -233,12 +236,19 @@ export const PsychologistBillingPage = () => {
         </Flex>
       </Flex>
 
+      {showFullPageLoader ? (
+        <PageLoader />
+      ) : (
+        <>
       {error ? (
         <Title s1 gray>
           {error}
         </Title>
       ) : null}
 
+      {showContentLoader ? (
+        <PageLoader />
+      ) : (
       <Flex col wFull gap4>
         <div className="mb-chart-card-row">
           <Card padding="lg" shadow="md">
@@ -351,6 +361,9 @@ export const PsychologistBillingPage = () => {
           )}
         </Card>
       </Flex>
+      )}
+        </>
+      )}
     </AppShell>
   );
 };

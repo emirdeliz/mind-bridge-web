@@ -6,6 +6,7 @@ import { linkPatientInviteCodeApi } from "@api";
 import { Title } from "@atoms";
 import { getRoleRoute, useAuth } from "@services";
 import { useI18n } from "@i18n";
+import { PageLoader } from "@molecules";
 import { AppShell, ProfileForm } from "@templates";
 
 interface ProfilePageProps {
@@ -72,12 +73,17 @@ export const ProfilePage = ({ area }: ProfilePageProps) => {
     [area, router, saveProfile, setLanguage, t],
   );
 
-  if (loading || !session || session.role !== area) {
+  const isAllowed = Boolean(session) && session?.role === area;
+  if (!isAllowed && !loading) {
     return null;
   }
 
   return (
     <AppShell title={t("PROFILE_PAGE_TITLE")} subtitle={t("PROFILE_PAGE_SUBTITLE")} variant="dashboard">
+      {loading || !isAllowed ? (
+        <PageLoader />
+      ) : (
+        <>
       {saveError ? (
         <Title s2 error block mb4>
           {saveError}
@@ -89,6 +95,8 @@ export const ProfilePage = ({ area }: ProfilePageProps) => {
         onBack={handleBack}
         showInviteCodeField={area === "patient"}
       />
+        </>
+      )}
     </AppShell>
   );
 };

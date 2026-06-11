@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { PsychologistPatientPaymentsSummaryDto } from "@api";
 import {
@@ -8,6 +8,7 @@ import {
   type UpsertPatientPaymentPayload,
   ApiError,
 } from "@api";
+import { shouldSilentReload, type ReloadOptions } from "../../common/reloadOptions";
 import { useAuth } from "@services";
 
 export const usePsychologistPatientPayments = (billingMonth?: string | null) => {
@@ -18,36 +19,44 @@ export const usePsychologistPatientPayments = (billingMonth?: string | null) => 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const summaryRef = useRef(summary);
+  summaryRef.current = summary;
 
-  const load = useCallback(async () => {
-    if (!session || session.role !== "psychologist") {
-      setSummary(null);
-      setLoading(false);
-      return;
-    }
+  const load = useCallback(
+    async (options?: ReloadOptions) => {
+      if (!session || session.role !== "psychologist") {
+        setSummary(null);
+        setLoading(false);
+        return;
+      }
 
-    setLoading(true);
-    setError("");
+      const silent = shouldSilentReload(options, summaryRef.current !== null);
+      if (!silent) {
+        setLoading(true);
+      }
+      setError("");
 
-    try {
-      const data = await getPsychologistPatientPaymentsApi(billingMonth ?? undefined);
-      setSummary(data);
-    } catch (loadError) {
-      setSummary(null);
-      setError(
-        loadError instanceof ApiError
-          ? loadError.message
-          : loadError instanceof Error
+      try {
+        const data = await getPsychologistPatientPaymentsApi(billingMonth ?? undefined);
+        setSummary(data);
+      } catch (loadError) {
+        setSummary(null);
+        setError(
+          loadError instanceof ApiError
             ? loadError.message
-            : "Failed to load patient payments",
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [billingMonth, session]);
+            : loadError instanceof Error
+              ? loadError.message
+              : "Failed to load patient payments",
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [billingMonth, session],
+  );
 
   useEffect(() => {
-    void load();
+    void load({ silent: false });
   }, [load]);
 
   const savePayment = useCallback(
@@ -56,7 +65,7 @@ export const usePsychologistPatientPayments = (billingMonth?: string | null) => 
       setError("");
       try {
         await upsertPsychologistPatientPaymentApi(payload);
-        await load();
+        await load({ silent: true });
       } catch (saveError) {
         setError(
           saveError instanceof ApiError
@@ -79,7 +88,7 @@ export const usePsychologistPatientPayments = (billingMonth?: string | null) => 
       setError("");
       try {
         await deletePsychologistPatientPaymentApi(paymentId);
-        await load();
+        await load({ silent: true });
       } catch (deleteError) {
         setError(
           deleteError instanceof ApiError
