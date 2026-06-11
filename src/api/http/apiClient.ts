@@ -9,9 +9,9 @@ export class ApiError extends Error {
 }
 
 type ApiRequestOptions = {
-  method?: 'GET' | 'POST' | 'PATCH' | 'DELETE';
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   body?: unknown;
-  query?: Record<string, string | boolean | undefined>;
+  query?: Record<string, string | boolean | number | undefined>;
 };
 
 const buildProxyUrl = (path: string, query?: ApiRequestOptions['query']): string => {

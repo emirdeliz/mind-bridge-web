@@ -2,6 +2,7 @@ export * from "./auth/hooks/useAuth";
 export * from "./billing";
 export * from "./clinical";
 export * from "./patient";
+export * from "./scheduling";
 export * from "./auth/authBypass";
 export * from "./auth/roleRoute";
 export * from "./ai/hooks/useAiAgent";
