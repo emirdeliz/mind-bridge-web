@@ -6,7 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { filterInputDomProps } from '@helpers/filterDomProps';
+import { filterInputDomProps } from '@helpers';
 import { InputProps } from '../Input';
 
 const INPUT_NUMBER_MAX_LENGTH_DEFAULT = 12;

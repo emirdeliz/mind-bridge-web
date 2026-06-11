@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { filterInputDomProps } from '@helpers/filterDomProps';
+import { filterInputDomProps } from '@helpers';
 import { applyMaskMaybe, InputProps } from '../Input';
 
 const INPUT_CURRENCY_MAX_LENGTH_DEFAULT = 12;

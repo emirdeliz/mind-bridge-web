@@ -1,7 +1,9 @@
 import { Input, InputProps } from '@atoms';
-import { FormGroup } from '../FormGroup/FormGroup';
+import { FormGroup, FormGroupProps } from '../FormGroup/FormGroup';
 
-export interface InputFormProps extends Omit<InputProps, 'onChange'> {
+export interface InputFormProps
+  extends Omit<InputProps, 'onChange'>,
+    Pick<FormGroupProps, 'optional' | 'helpText' | 'error' | 'required' | 'fw3' | 'row'> {
   children: string;
   value?: string | number;
   onChange?: (value: string | number) => void;

@@ -1,10 +1,11 @@
 import { MouseEventHandler, ReactNode } from 'react';
-import { filterButtonDomProps } from '@helpers/filterDomProps';
+import { filterButtonDomProps } from '@helpers';
 
 export interface ButtonProps {
   children?: ReactNode;
   dataTestId?: string;
   clickable?: boolean;
+  disabled?: boolean;
   rounded?: boolean;
   outlined?: boolean;
   wFull?: boolean;
@@ -40,6 +41,7 @@ export const Button = ({
   children,
   dataTestId = 'button-atom',
   clickable = true,
+  disabled = false,
   onClick,
   title,
   type = 'button',
@@ -67,6 +69,8 @@ export const Button = ({
   chip = false,
   ...props
 }: ButtonProps) => {
+  const isDisabled = disabled || !clickable;
+
   // Construir classes Tailwind dinamicamente
   const sizeClasses = xs ? 'px-2 py-1 text-xs' : 
                      sm ? 'px-3 py-1.5 text-sm' : 
@@ -90,8 +94,8 @@ export const Button = ({
   };
 
   const borderClasses = outlined ? 'border-2' : 'border-2 border-transparent';
-  const opacityClasses = clickable ? 'opacity-100' : 'opacity-50';
-  const cursorClasses = clickable ? 'cursor-pointer' : 'cursor-not-allowed';
+  const opacityClasses = isDisabled ? 'opacity-50' : 'opacity-100';
+  const cursorClasses = isDisabled ? 'cursor-not-allowed' : 'cursor-pointer';
   
   // Construir margens
   const marginClasses = [
@@ -139,12 +143,12 @@ export const Button = ({
     <button
       {...domProps}
       title={title}
-      disabled={!clickable}
+      disabled={isDisabled}
       data-testid={dataTestId}
       type={type}
       className={`${buttonClasses} ${maxWidth ? `max-w-[${maxWidth}]` : 'max-w-full'} ${minWidth ? `min-w-[${minWidth}]` : ''}`}
       onClick={(e) => {
-        if (clickable && onClick) {
+        if (!isDisabled && onClick) {
           onClick(e);
         }
       }}

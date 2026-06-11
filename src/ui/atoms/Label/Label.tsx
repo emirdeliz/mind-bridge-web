@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { filterLabelDomProps } from '@helpers/filterDomProps';
+import { filterLabelDomProps } from '@helpers';
 
 export interface LabelProps {
   children: ReactNode;

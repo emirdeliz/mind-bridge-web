@@ -4,7 +4,7 @@ import { EnumeratedTextList } from "@molecules";
 import {
   isEnumeratedInsightTitle,
   parseInsightListItems,
-} from "@utils/enumeratedTextList";
+} from "@utils";
 
 type SessionInsightBodyProps = {
   title: string;

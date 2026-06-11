@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import type { PsychologistBillingSummaryDto } from "@api";
-import { getPsychologistBillingApi } from "@api";
-import { ApiError } from "@api/http/apiClient";
+import { getPsychologistBillingApi, ApiError } from "@api";
 import { useAuth } from "@services";
 
 export const usePsychologistBilling = (billingMonth?: string | null) => {

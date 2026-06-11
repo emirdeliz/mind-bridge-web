@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { filterInputDomProps } from '@helpers/filterDomProps';
+import { filterInputDomProps } from '@helpers';
 import { InputProps } from '../Input';
 
 export const InputDate = ({

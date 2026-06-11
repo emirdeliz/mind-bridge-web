@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 
 import type { PatientClinicalContentDto } from "@api";
-import { getPsychologistPatientClinicalContentApi } from "@api";
-import { ApiError } from "@api/http/apiClient";
+import { getPsychologistPatientClinicalContentApi, ApiError } from "@api";
 import { useI18n } from "@i18n";
 import { useAuth } from "@services";
-import { emptyClinicalContentForPatient } from "@services/clinical/clinicalContentDefaults";
+import { emptyClinicalContentForPatient } from "../clinicalContentDefaults";
 
 export const usePsychologistClinicalContent = (patientId: string | undefined) => {
   const { language } = useI18n();

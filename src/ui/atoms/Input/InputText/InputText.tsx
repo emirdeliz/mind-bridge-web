@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useMemo } from 'react';
 import * as helpers from '@helpers';
-import { filterInputDomProps } from '@helpers/filterDomProps';
+import { filterInputDomProps } from '@helpers';
 import { applyMaskMaybe, InputProps } from '../Input';
 
 const INPUT_TEXT_MAX_LENGTH_DEFAULT = 255;
@@ -43,6 +43,8 @@ export const InputText = ({
   barcode,
   password,
   digitsOnly,
+  inputMode,
+  autoComplete,
   onChange,
   hasError,
   type,
@@ -71,8 +73,8 @@ export const InputText = ({
       {...domProps}
       id={id}
       type={inputType}
-      inputMode={digitsOnly ? 'numeric' : domProps.inputMode}
-      autoComplete={digitsOnly ? 'off' : domProps.autoComplete}
+      inputMode={digitsOnly ? 'numeric' : inputMode}
+      autoComplete={digitsOnly ? 'off' : autoComplete}
       maxLength={maxLength || INPUT_TEXT_MAX_LENGTH_DEFAULT}
       data-error={hasError ? 'true' : 'false'}
       value={String(value)}

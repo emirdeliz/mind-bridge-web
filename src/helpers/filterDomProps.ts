@@ -98,6 +98,7 @@ export const LABEL_CUSTOM_PROP_KEYS = ['fw3', 'n2', 'fs3', 'error', 'target'] as
 
 export const BUTTON_CUSTOM_PROP_KEYS = [
   'clickable',
+  'disabled',
   'rounded',
   'outlined',
   'wFull',

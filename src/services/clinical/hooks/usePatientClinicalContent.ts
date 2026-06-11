@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 
-import type { PatientClinicalContentDto } from "@api";
-import { getPatientClinicalContentApi } from "@api";
-import { ApiError } from "@api/http/apiClient";
+import { PatientClinicalContentDto, ApiError, getPatientClinicalContentApi } from "@api";
 import { useI18n } from "@i18n";
 import { useAuth } from "@services";
-import { emptyClinicalContentForPatient } from "@services/clinical/clinicalContentDefaults";
+import { emptyClinicalContentForPatient } from "../clinicalContentDefaults";
 
 export const usePatientClinicalContent = () => {
   const { language } = useI18n();

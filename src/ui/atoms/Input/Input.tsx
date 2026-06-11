@@ -51,6 +51,7 @@ export interface InputProps extends FormControl {
   onPaste?: (e: ClipboardEvent) => void;
   onKeyDown?: (e: KeyboardEvent) => void;
   autoComplete?: string;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>['inputMode'];
   /** Referência a um `<datalist id="...">` (HTML5). */
   list?: string;
   type?: string;

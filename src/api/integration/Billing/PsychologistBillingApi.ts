@@ -1,5 +1,4 @@
-import type { PsychologistBillingSummaryDto } from '@api';
-import { apiRequest } from '@api/http/apiClient';
+import { apiRequest, type PsychologistBillingSummaryDto } from '@api';
 import { keysToCamel } from '@helpers';
 
 type BillingResponse = {

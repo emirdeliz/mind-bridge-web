@@ -1,5 +1,5 @@
 import React from 'react';
-import { filterInputDomProps } from '@helpers/filterDomProps';
+import { filterInputDomProps } from '@helpers';
 import { InputProps } from '../Input';
 
 const TEXT_AREA_MAX_LENGTH = 65_535;
