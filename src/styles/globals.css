@@ -77,6 +77,18 @@
     -webkit-text-fill-color: #8b9ab8;
   }
 
+  input.mb-field[type="time"],
+  input.mb-field[type="date"] {
+    color-scheme: dark;
+  }
+
+  input.mb-field[type="time"]::-webkit-calendar-picker-indicator,
+  input.mb-field[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.9;
+    filter: invert(1) brightness(1.35);
+  }
+
   .mb-field-error {
     @apply border-mb-danger bg-red-950/30 focus:border-mb-danger focus:ring-red-500/25;
   }
@@ -365,5 +377,17 @@
 
   .mb-scheduling-badge-time {
     @apply text-[0.65rem] font-medium text-mb-muted;
+  }
+
+  .mb-scheduling-break-row {
+    @apply w-full;
+  }
+
+  .mb-scheduling-break-row .form-group {
+    @apply mb-0;
+  }
+
+  .mb-scheduling-break-delete {
+    @apply flex h-12 shrink-0 items-center justify-center;
   }
 }

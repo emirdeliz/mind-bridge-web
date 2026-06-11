@@ -120,7 +120,7 @@ export const SchedulingSettingsModal = ({
                 >
                   {t("PSYCHOLOGIST_SCHEDULING_SETTINGS_DURATION")}
                 </InputForm>
-                <Flex row wFull gap4>
+                <Flex row wFull gap5>
                   <Flex flex1 wFull>
                     <InputForm
                       type="time"
@@ -148,7 +148,8 @@ export const SchedulingSettingsModal = ({
                     {t("PSYCHOLOGIST_SCHEDULING_SETTINGS_BREAKS")}
                   </Title>
                   {breakIntervals.map((interval, index) => (
-                    <Flex key={`break-${index}`} row wFull gap4 alignEnd>
+                    <div key={`break-${index}`} className="mb-scheduling-break-row">
+                      <Flex row wFull gap5 alignEnd>
                       <Flex flex1 wFull>
                         <InputForm
                           type="time"
@@ -183,22 +184,25 @@ export const SchedulingSettingsModal = ({
                           {t("PSYCHOLOGIST_SCHEDULING_SETTINGS_BREAK_END")}
                         </InputForm>
                       </Flex>
-                      <Button
-                        type="button"
-                        variant="danger"
-                        outlined
-                        circle
-                        clickable={!saving && breakIntervals.length > 1}
-                        title={t("PSYCHOLOGIST_SCHEDULING_SETTINGS_REMOVE_BREAK")}
-                        onClick={() => {
-                          setBreakIntervals((current) =>
-                            current.filter((_, itemIndex) => itemIndex !== index),
-                          );
-                        }}
-                      >
-                        <Icon.TrashEmpty sm white />
-                      </Button>
-                    </Flex>
+                      <span className="mb-scheduling-break-delete">
+                        <Button
+                          type="button"
+                          variant="danger"
+                          outlined
+                          circle
+                          clickable={!saving && breakIntervals.length > 1}
+                          title={t("PSYCHOLOGIST_SCHEDULING_SETTINGS_REMOVE_BREAK")}
+                          onClick={() => {
+                            setBreakIntervals((current) =>
+                              current.filter((_, itemIndex) => itemIndex !== index),
+                            );
+                          }}
+                        >
+                          <Icon.TrashEmpty sm white />
+                        </Button>
+                      </span>
+                      </Flex>
+                    </div>
                   ))}
                   <Button
                     type="button"
