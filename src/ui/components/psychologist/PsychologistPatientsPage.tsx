@@ -23,13 +23,17 @@ const stopRowClick = (event: MouseEvent) => {
   event.stopPropagation();
 };
 
+type PatientToggleConfirmAction = 'enable' | 'disable';
+
 export const PsychologistPatientsPage = () => {
   const router = useRouter();
   const { t } = useI18n();
   const { loading: guardLoading, isPsychologist } = usePsychologistGuard();
-  const [disableConfirmPatient, setDisableConfirmPatient] =
+  const [toggleConfirmPatient, setToggleConfirmPatient] =
     useState<PsychologistPatientViewDto | null>(null);
-  const [disablingPatient, setDisablingPatient] = useState(false);
+  const [toggleConfirmAction, setToggleConfirmAction] =
+    useState<PatientToggleConfirmAction | null>(null);
+  const [toggleConfirmLoading, setToggleConfirmLoading] = useState(false);
   const {
     patients,
     search,
@@ -78,28 +82,44 @@ export const PsychologistPatientsPage = () => {
 
   const handlePatientActiveChange = useCallback(
     (patient: PsychologistPatientViewDto, active: boolean) => {
-      if (active) {
-        void restorePatient(patient.id);
-        return;
-      }
-      setDisableConfirmPatient(patient);
+      setToggleConfirmPatient(patient);
+      setToggleConfirmAction(active ? 'enable' : 'disable');
     },
-    [restorePatient]
+    []
   );
 
-  const confirmDisablePatient = useCallback(async () => {
-    if (!disableConfirmPatient || disablingPatient) {
+  const closeToggleConfirm = useCallback(() => {
+    if (toggleConfirmLoading) {
+      return;
+    }
+    setToggleConfirmPatient(null);
+    setToggleConfirmAction(null);
+  }, [toggleConfirmLoading]);
+
+  const confirmPatientToggle = useCallback(async () => {
+    if (!toggleConfirmPatient || !toggleConfirmAction || toggleConfirmLoading) {
       return;
     }
 
-    setDisablingPatient(true);
+    setToggleConfirmLoading(true);
     try {
-      await deletePatient(disableConfirmPatient.id);
-      setDisableConfirmPatient(null);
+      if (toggleConfirmAction === 'enable') {
+        await restorePatient(toggleConfirmPatient.id);
+      } else {
+        await deletePatient(toggleConfirmPatient.id);
+      }
+      setToggleConfirmPatient(null);
+      setToggleConfirmAction(null);
     } finally {
-      setDisablingPatient(false);
+      setToggleConfirmLoading(false);
     }
-  }, [disableConfirmPatient, disablingPatient, deletePatient]);
+  }, [
+    toggleConfirmPatient,
+    toggleConfirmAction,
+    toggleConfirmLoading,
+    restorePatient,
+    deletePatient,
+  ]);
 
   const buildRowActions = useCallback(
     (row: PsychologistPatientViewDto): ReactNode => (
@@ -227,10 +247,12 @@ export const PsychologistPatientsPage = () => {
     return null;
   }
 
-  const disablePatientName =
-    disableConfirmPatient?.fullName?.trim() ||
-    disableConfirmPatient?.email ||
+  const toggleConfirmPatientName =
+    toggleConfirmPatient?.fullName?.trim() ||
+    toggleConfirmPatient?.email ||
     '';
+
+  const isEnableConfirm = toggleConfirmAction === 'enable';
 
   return (
     <AppShell
@@ -290,25 +312,37 @@ export const PsychologistPatientsPage = () => {
       )}
 
       <ConfirmModal
-        visible={Boolean(disableConfirmPatient)}
-        title={t('PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_TITLE')}
+        visible={Boolean(toggleConfirmPatient && toggleConfirmAction)}
+        title={t(
+          isEnableConfirm
+            ? 'PSYCHOLOGIST_PATIENTS_ENABLE_CONFIRM_TITLE'
+            : 'PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_TITLE'
+        )}
         message={
-          disablePatientName
+          toggleConfirmPatientName
             ? translateTemplate(
-                t('PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_MESSAGE_NAMED'),
-                { name: disablePatientName }
+                t(
+                  isEnableConfirm
+                    ? 'PSYCHOLOGIST_PATIENTS_ENABLE_CONFIRM_MESSAGE_NAMED'
+                    : 'PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_MESSAGE_NAMED'
+                ),
+                { name: toggleConfirmPatientName }
               )
-            : t('PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_MESSAGE')
+            : t(
+                isEnableConfirm
+                  ? 'PSYCHOLOGIST_PATIENTS_ENABLE_CONFIRM_MESSAGE'
+                  : 'PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_MESSAGE'
+              )
         }
-        confirmLabel={t('PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_ACTION')}
+        confirmLabel={t(
+          isEnableConfirm
+            ? 'PSYCHOLOGIST_PATIENTS_ENABLE_CONFIRM_ACTION'
+            : 'PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_ACTION'
+        )}
         cancelLabel={t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
-        confirmVariant="danger"
-        onClose={() => {
-          if (!disablingPatient) {
-            setDisableConfirmPatient(null);
-          }
-        }}
-        onConfirm={() => void confirmDisablePatient()}
+        confirmVariant={isEnableConfirm ? 'primary' : 'danger'}
+        onClose={closeToggleConfirm}
+        onConfirm={() => void confirmPatientToggle()}
       />
 
       <PsychologistPatientFormModal

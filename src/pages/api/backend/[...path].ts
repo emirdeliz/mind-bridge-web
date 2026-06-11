@@ -11,6 +11,23 @@ export const config = {
   },
 };
 
+const hasJsonRequestBody = (req: NextApiRequest): boolean => {
+  if (req.method === 'GET' || req.method === 'HEAD') {
+    return false;
+  }
+
+  const raw = req.body;
+  if (raw === undefined || raw === null || raw === '') {
+    return false;
+  }
+
+  if (typeof raw === 'object' && !Array.isArray(raw) && Object.keys(raw).length === 0) {
+    return false;
+  }
+
+  return true;
+};
+
 const isConnectionError = (error: unknown): boolean => {
   if (!(error instanceof Error)) {
     return false;
@@ -64,9 +81,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   };
 
   let body: string | undefined;
-  if (req.method !== 'GET' && req.method !== 'HEAD' && req.body !== undefined) {
+  if (hasJsonRequestBody(req)) {
     headers['Content-Type'] = 'application/json';
-    body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+    body =
+      typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
   }
 
   let upstream: Response;
