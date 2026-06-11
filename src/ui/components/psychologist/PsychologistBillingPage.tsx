@@ -13,7 +13,7 @@ import {
   localeForAppLanguage,
 } from "@helpers";
 import { translateTemplate, useI18n } from "@i18n";
-import { Card, ChartCard, Table } from "@molecules";
+import { Card, ChartCard, PageLoader, Table } from "@molecules";
 import { AppShell, DashboardSectionTitle } from "@templates";
 import {
   canNavigateToPreviousBillingMonth,
@@ -171,9 +171,12 @@ export const PsychologistBillingPage = () => {
     setSelectedBillingMonth(null);
   };
 
-  if (guardLoading || billingLoading || !isPsychologist) {
+  if (!isPsychologist && !guardLoading) {
     return null;
   }
+
+  const showFullPageLoader = guardLoading || (billingLoading && !billing);
+  const showContentLoader = !showFullPageLoader && billingLoading && billing !== null;
 
   const unitPrice = billing
     ? formatCentsAsCurrencyForAppLanguage(billing.unitPriceCents, language, currency)
@@ -194,40 +197,58 @@ export const PsychologistBillingPage = () => {
       subtitle={t("PSYCHOLOGIST_BILLING_SUBTITLE")}
       variant="dashboard"
     >
-      <Flex row wFull alignCenter wrap gap4>
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={() => void router.push("/psychologist/patients")}
-        >
-          {t("BACK_TO_PSYCHOLOGIST_PATIENTS")}
-        </Button>
-        <Button
-          type="button"
-          variant="secondary"
-          disabled={!canGoToPreviousMonth || billingLoading}
-          onClick={goToPreviousMonth}
-        >
-          {t("PSYCHOLOGIST_BILLING_PREVIOUS_MONTH")}
-        </Button>
-        {!billing?.isCurrentMonth ? (
+      <Flex row wFull alignCenter wrap justifySpaceBetween gap4>
+        <Flex row alignCenter wrap gap4>
           <Button
             type="button"
-            variant="primary"
-            disabled={billingLoading}
-            onClick={goToCurrentMonth}
+            variant="secondary"
+            onClick={() => void router.push("/psychologist/patients")}
           >
-            {t("PSYCHOLOGIST_BILLING_BACK_TO_CURRENT_MONTH")}
+            {t("BACK_TO_PSYCHOLOGIST_PATIENTS")}
           </Button>
-        ) : null}
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => void router.push("/psychologist/patient-payments")}
+          >
+            {t("PSYCHOLOGIST_PATIENT_PAYMENTS_GO_TO_PAYMENTS")}
+          </Button>
+        </Flex>
+        <Flex row alignCenter wrap gap4>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={!canGoToPreviousMonth || billingLoading}
+            onClick={goToPreviousMonth}
+          >
+            {t("PSYCHOLOGIST_BILLING_PREVIOUS_MONTH")}
+          </Button>
+          {!billing?.isCurrentMonth ? (
+            <Button
+              type="button"
+              variant="primary"
+              disabled={billingLoading}
+              onClick={goToCurrentMonth}
+            >
+              {t("PSYCHOLOGIST_BILLING_BACK_TO_CURRENT_MONTH")}
+            </Button>
+          ) : null}
+        </Flex>
       </Flex>
 
+      {showFullPageLoader ? (
+        <PageLoader />
+      ) : (
+        <>
       {error ? (
         <Title s1 gray>
           {error}
         </Title>
       ) : null}
 
+      {showContentLoader ? (
+        <PageLoader />
+      ) : (
       <Flex col wFull gap4>
         <div className="mb-chart-card-row">
           <Card padding="lg" shadow="md">
@@ -340,6 +361,9 @@ export const PsychologistBillingPage = () => {
           )}
         </Card>
       </Flex>
+      )}
+        </>
+      )}
     </AppShell>
   );
 };

@@ -11,7 +11,7 @@ import {
 } from "@services";
 import { Title } from "@atoms";
 import { useI18n } from "@i18n";
-import { Card, InteractionSummaryBody } from "@molecules";
+import { Card, InteractionSummaryBody, PageLoader } from "@molecules";
 import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
 
 import { PatientLikertCheckInPanel } from "./PatientLikertCheckInPanel";
@@ -60,15 +60,23 @@ export const PatientPage = () => {
     }
   }, [loading, session, router]);
 
-  if (loading || contentLoading || !session || session.role !== "patient") {
+  const isPatient = session?.role === "patient";
+  if (!isPatient && !loading) {
     return null;
   }
+
+  const showFullPageLoader =
+    loading || (contentLoading && !content) || !isPatient;
 
   const patientSummaryText = content?.patientSummary?.trim() ?? "";
   const hasPatientSummary = Boolean(patientSummaryText);
 
   return (
     <AppShell title={t("PATIENT_AREA_TITLE")} subtitle={t("PATIENT_AREA_SUBTITLE")} variant="dashboard">
+      {showFullPageLoader ? (
+        <PageLoader />
+      ) : (
+        <>
       <PatientLikertCheckInPanel
         initialCheckIn={likertCheckIn}
         onSaved={(saved) => setLikertCheckIn(saved)}
@@ -91,6 +99,8 @@ export const PatientPage = () => {
           </Title>
         )}
       </Card>
+        </>
+      )}
     </AppShell>
   );
 };

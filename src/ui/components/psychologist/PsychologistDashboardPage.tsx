@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 
 import { Button, Flex, Title } from "@atoms";
 import { useI18n } from "@i18n";
-import { Card, ChartCard } from "@molecules";
+import { Card, ChartCard, PageLoader } from "@molecules";
 import { AppShell } from "@templates";
 
 import { usePsychologistDashboardData } from "./usePsychologistDashboardData";
@@ -58,11 +58,17 @@ export const PsychologistDashboardPage = () => {
     }
   }, [router, patientId, loading]);
 
-  if (loading || dashboardLoading || !isPsychologist || !patientId) {
+  if (!isPsychologist && !loading) {
     return null;
   }
 
-  const displayName = patientName ?? patientId;
+  if (!patientId && !loading) {
+    return null;
+  }
+
+  const showFullPageLoader = loading || !patientId || dashboardLoading;
+
+  const displayName = patientName ?? patientId ?? "";
 
   const startSession = () => {
     void router.push({
@@ -90,6 +96,10 @@ export const PsychologistDashboardPage = () => {
         </Button>
       </Flex>
 
+      {showFullPageLoader ? (
+        <PageLoader />
+      ) : (
+        <>
       <Card padding="lg" shadow="md">
         <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
           <Flex col gap2>
@@ -160,6 +170,8 @@ export const PsychologistDashboardPage = () => {
           />
         </ChartCard>
       </Flex>
+        </>
+      )}
     </AppShell>
   );
 };

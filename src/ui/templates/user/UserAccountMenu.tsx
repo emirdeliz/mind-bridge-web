@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 import { getProfileInitials } from "@helpers";
 import { useOnClickOutside } from "@hooks";
-import { getBillingRoute, getProfileRoute, useAuth } from "@services";
+import { getBillingRoute, getPatientPaymentsRoute, getProfileRoute, useAuth } from "@services";
 import { useI18n } from "@i18n";
 
 export const UserAccountMenu = () => {
@@ -30,6 +30,7 @@ export const UserAccountMenu = () => {
   );
   const profileHref = getProfileRoute(session.role);
   const billingHref = getBillingRoute(session.role);
+  const patientPaymentsHref = getPatientPaymentsRoute(session.role);
 
   return (
     <div ref={anchorRef} className="mb-user-menu-anchor">
@@ -51,6 +52,16 @@ export const UserAccountMenu = () => {
           {billingHref ? (
             <NextLink href={billingHref} className="mb-user-menu-item" role="menuitem" onClick={closeMenu}>
               {t("USER_MENU_MY_BILLING")}
+            </NextLink>
+          ) : null}
+          {patientPaymentsHref ? (
+            <NextLink
+              href={patientPaymentsHref}
+              className="mb-user-menu-item"
+              role="menuitem"
+              onClick={closeMenu}
+            >
+              {t("USER_MENU_PATIENT_PAYMENTS")}
             </NextLink>
           ) : null}
           <button

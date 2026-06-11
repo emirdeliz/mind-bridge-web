@@ -63,7 +63,48 @@ export const maskPhone = (value: string): string => {
 export const maskBarcode = (value: string): string => value;
 export const maskRG = (value: string): string => value;
 export const maskCountryState = (value: string): string => value;
-export const maskMoney = (value: number): string => String(value);
+export const maskMoney = (value: number | string): string => {
+  if (value === "" || value === null || value === undefined) {
+    return "";
+  }
+
+  if (typeof value === "string") {
+    const stripped = value.replace(/[^\d,]/g, "");
+    if (!stripped) {
+      return "";
+    }
+
+    const [integerRaw, decimalRaw = ""] = stripped.split(",");
+    const integerDigits = integerRaw.replace(/\D/g, "");
+    const decimalDigits = decimalRaw.replace(/\D/g, "").slice(0, 2);
+
+    if (!integerDigits && !decimalDigits) {
+      return "";
+    }
+
+    const integerPart = integerDigits
+      ? Number(integerDigits).toLocaleString("pt-BR")
+      : "0";
+
+    if (stripped.includes(",") || decimalDigits.length > 0) {
+      return `R$ ${integerPart},${decimalDigits.padEnd(2, "0").slice(0, 2)}`;
+    }
+
+    return `R$ ${integerPart}`;
+  }
+
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric) || numeric === 0) {
+    return "";
+  }
+
+  return numeric.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+};
 
 
 export const formatDateAsDDMMYYYY = (value: Date | string): string =>

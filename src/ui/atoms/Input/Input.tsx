@@ -97,7 +97,7 @@ export const applyMaskMaybe = (
     case countryState:
       return helpers.maskCountryState(valueAsString);
     case currency:
-      return helpers.maskMoney(value as number);
+      return helpers.maskMoney(value as number | string);
     default:
       return valueAsString;
   }

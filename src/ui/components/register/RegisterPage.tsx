@@ -5,7 +5,7 @@ import { isValidPhone, phoneDigits } from "@helpers";
 import { getRoleRoute, useAuth } from "@services";
 import { Button, Flex, Input, RouteLink, Title } from "@atoms";
 import { useI18n } from "@i18n";
-import { Card, Form, FormError } from "@molecules";
+import { Card, Form, FormError, PageLoader } from "@molecules";
 import { AppShell } from "@templates";
 
 type RegisterRole = "psychologist" | "patient";
@@ -43,7 +43,17 @@ export const RegisterPage = () => {
   }, [router.isReady, router.query.code, registerRole]);
 
   if (loading || session) {
-    return null;
+    return (
+      <AppShell
+        title={t("APP_TITLE")}
+        subtitle={
+          isPatientRegister ? t("REGISTER_PATIENT_SUBTITLE") : t("REGISTER_PSYCHOLOGIST_SUBTITLE")
+        }
+        variant="auth"
+      >
+        <PageLoader />
+      </AppShell>
+    );
   }
 
   return (

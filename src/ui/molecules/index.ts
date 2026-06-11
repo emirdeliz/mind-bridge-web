@@ -22,6 +22,7 @@ export * from "./LanguageSwitcher/LanguageSwitcher";
 export * from "./MenuButton/MenuButton";
 export * from "./Modal/Modal";
 export * from "./ModalTemplate/ModalTemplate";
+export * from "./PageLoader/PageLoader";
 export * from "./ProgressBar/ProgressBar";
 export * from "./ShowSkeleton/ShowSkeleton";
 export * from "./StepProgressBar/StepProgressBar";

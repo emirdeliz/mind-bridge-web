@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { getRoleRoute, useAuth } from "@services";
 import { Button, Flex, Input, RouteLink, Title } from "@atoms";
 import { useI18n } from "@i18n";
-import { Card, Form, FormError } from "@molecules";
+import { Card, Form, FormError, PageLoader } from "@molecules";
 import { AppShell } from "@templates";
 
 export const HomePage = () => {
@@ -36,10 +36,6 @@ export const HomePage = () => {
     void router.replace(getRoleRoute(userRole));
   };
 
-  if (loading || session) {
-    return null;
-  }
-
   const handleForgotPassword = async () => {
     setError("");
     setForgotMessage("");
@@ -61,6 +57,14 @@ export const HomePage = () => {
 
     setForgotMessage(t("FORGOT_PASSWORD_SUCCESS"));
   };
+
+  if (loading || session) {
+    return (
+      <AppShell title={t("APP_TITLE")} subtitle={t("HOME_SUBTITLE")} variant="auth">
+        <PageLoader />
+      </AppShell>
+    );
+  }
 
   return (
     <AppShell title={t("APP_TITLE")} subtitle={t("HOME_SUBTITLE")} variant="auth">
