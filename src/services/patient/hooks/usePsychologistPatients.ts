@@ -4,6 +4,7 @@ import type { PsychologistPatientSaveOrUpdateDto, PsychologistPatientViewDto } f
 import {
   deletePsychologistPatientApi,
   getPsychologistPatientsApi,
+  restorePsychologistPatientApi,
   saveOrEditPsychologistPatientApi,
 } from '@api';
 import { isValidPatientInitialPassword, isValidPhone, phoneDigits } from '@helpers';
@@ -173,6 +174,29 @@ export const usePsychologistPatients = () => {
     [session, loadPatients, t]
   );
 
+  const restorePatient = useCallback(
+    async (patientId: string) => {
+      if (!session) {
+        setError(t('PSYCHOLOGIST_PATIENTS_API_UNAVAILABLE'));
+        return;
+      }
+
+      setError('');
+
+      try {
+        await restorePsychologistPatientApi(patientId);
+        await loadPatients();
+      } catch (restoreError) {
+        setError(
+          restoreError instanceof Error
+            ? restoreError.message
+            : 'Failed to restore patient'
+        );
+      }
+    },
+    [session, loadPatients, t]
+  );
+
   return {
     patients,
     search,
@@ -191,5 +215,6 @@ export const usePsychologistPatients = () => {
     updateForm,
     savePatient,
     deletePatient,
+    restorePatient,
   };
 };

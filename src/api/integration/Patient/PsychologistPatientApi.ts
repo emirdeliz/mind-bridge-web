@@ -73,3 +73,13 @@ export const deletePsychologistPatientApi = async (
     method: 'DELETE',
   });
 };
+
+export const restorePsychologistPatientApi = async (
+  patientId: string
+): Promise<PsychologistPatientViewDto> => {
+  const response = await apiRequest<PatientResponse>(
+    `/psychologist/patients/${patientId}/restore`,
+    { method: 'POST' }
+  );
+  return keysToCamel<PatientResponse>(response).patient;
+};

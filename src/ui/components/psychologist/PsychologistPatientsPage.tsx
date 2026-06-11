@@ -1,13 +1,13 @@
 'use client';
 
-import { useCallback, useMemo, type MouseEvent, type ReactNode } from 'react';
+import { useCallback, useMemo, useState, type MouseEvent, type ReactNode } from 'react';
 import { useRouter } from 'next/router';
 
 import type { PsychologistPatientViewDto } from '@api';
 import { usePsychologistPatientContext, usePsychologistPatients } from '@services';
 import { Button, Checkbox, Flex, Icon, Title } from '@atoms';
-import { useI18n } from '@i18n';
-import { Card, InputSearch, Table, Tooltip } from '@molecules';
+import { translateTemplate, useI18n } from '@i18n';
+import { Card, ConfirmModal, InputSearch, Switch, Table, Tooltip } from '@molecules';
 import { AppShell } from '@templates';
 
 import { PsychologistInviteCodePanel } from './PsychologistInviteCodePanel';
@@ -27,6 +27,9 @@ export const PsychologistPatientsPage = () => {
   const router = useRouter();
   const { t } = useI18n();
   const { loading: guardLoading, isPsychologist } = usePsychologistGuard();
+  const [disableConfirmPatient, setDisableConfirmPatient] =
+    useState<PsychologistPatientViewDto | null>(null);
+  const [disablingPatient, setDisablingPatient] = useState(false);
   const {
     patients,
     search,
@@ -45,6 +48,7 @@ export const PsychologistPatientsPage = () => {
     updateForm,
     savePatient,
     deletePatient,
+    restorePatient,
   } = usePsychologistPatients();
   const {
     contextModalOpen,
@@ -72,21 +76,47 @@ export const PsychologistPatientsPage = () => {
     [router]
   );
 
+  const handlePatientActiveChange = useCallback(
+    (patient: PsychologistPatientViewDto, active: boolean) => {
+      if (active) {
+        void restorePatient(patient.id);
+        return;
+      }
+      setDisableConfirmPatient(patient);
+    },
+    [restorePatient]
+  );
+
+  const confirmDisablePatient = useCallback(async () => {
+    if (!disableConfirmPatient || disablingPatient) {
+      return;
+    }
+
+    setDisablingPatient(true);
+    try {
+      await deletePatient(disableConfirmPatient.id);
+      setDisableConfirmPatient(null);
+    } finally {
+      setDisablingPatient(false);
+    }
+  }, [disableConfirmPatient, disablingPatient, deletePatient]);
+
   const buildRowActions = useCallback(
     (row: PsychologistPatientViewDto): ReactNode => (
       <div
-        className="flex flex-row items-center justify-center gap-2"
+        className="flex flex-row items-center justify-center gap-1.5"
         onClick={stopRowClick}
         role="presentation"
       >
         <Tooltip title={t('PSYCHOLOGIST_PATIENTS_ACTION_SESSION')} top minWidth={10}>
-          <span className="inline-block">
+          <span className="inline-flex h-8 w-8 items-center justify-center">
             <Button
               type="button"
               xs
               sm
               circle
               variant="primary"
+              clickable={!row.isDeleted}
               onClick={() => {
                 void router.push({
                   pathname: '/psychologist/session',
@@ -102,7 +132,7 @@ export const PsychologistPatientsPage = () => {
           </span>
         </Tooltip>
         <Tooltip title={t('PSYCHOLOGIST_PATIENTS_ACTION_CONTEXT')} top minWidth={10}>
-          <span className="inline-block">
+          <span className="inline-flex h-8 w-8 items-center justify-center">
             <Button
               type="button"
               xs
@@ -123,7 +153,7 @@ export const PsychologistPatientsPage = () => {
           </span>
         </Tooltip>
         <Tooltip title={t('PSYCHOLOGIST_PATIENTS_ACTION_EDIT')} top minWidth={10}>
-          <span className="inline-block">
+          <span className="inline-flex h-8 w-8 items-center justify-center">
             <Button
               type="button"
               xs
@@ -138,29 +168,27 @@ export const PsychologistPatientsPage = () => {
             </Button>
           </span>
         </Tooltip>
-        <Tooltip title={t('PSYCHOLOGIST_PATIENTS_ACTION_DELETE')} top minWidth={10}>
-          <span className="inline-block">
-            <Button
-              type="button"
-              xs
+        <Tooltip
+          title={
+            row.isDeleted
+              ? t('PSYCHOLOGIST_PATIENTS_SWITCH_INACTIVE')
+              : t('PSYCHOLOGIST_PATIENTS_SWITCH_ACTIVE')
+          }
+          top
+          minWidth={10}
+        >
+          <span className="ml-1.5 inline-flex h-8 w-8 items-center justify-center">
+            <Switch
               sm
-              circle
-              variant="danger"
-              outlined
-              clickable={!row.isDeleted}
-              onClick={() => {
-                if (window.confirm(t('PSYCHOLOGIST_PATIENTS_DELETE_CONFIRM'))) {
-                  void deletePatient(row.id);
-                }
-              }}
-            >
-              <Icon.TrashEmpty sm white />
-            </Button>
+              id={`patient-active-${row.id}`}
+              selected={!row.isDeleted}
+              onChange={(active) => handlePatientActiveChange(row, active)}
+            />
           </span>
         </Tooltip>
       </div>
     ),
-    [t, router, openContextModal, openEditModal, deletePatient]
+    [t, router, openContextModal, openEditModal, handlePatientActiveChange]
   );
 
   const tableData = useMemo((): PatientTableRow[] => {
@@ -198,6 +226,11 @@ export const PsychologistPatientsPage = () => {
   if (guardLoading || !isPsychologist) {
     return null;
   }
+
+  const disablePatientName =
+    disableConfirmPatient?.fullName?.trim() ||
+    disableConfirmPatient?.email ||
+    '';
 
   return (
     <AppShell
@@ -255,6 +288,28 @@ export const PsychologistPatientsPage = () => {
           }}
         />
       )}
+
+      <ConfirmModal
+        visible={Boolean(disableConfirmPatient)}
+        title={t('PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_TITLE')}
+        message={
+          disablePatientName
+            ? translateTemplate(
+                t('PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_MESSAGE_NAMED'),
+                { name: disablePatientName }
+              )
+            : t('PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_MESSAGE')
+        }
+        confirmLabel={t('PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_ACTION')}
+        cancelLabel={t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
+        confirmVariant="danger"
+        onClose={() => {
+          if (!disablingPatient) {
+            setDisableConfirmPatient(null);
+          }
+        }}
+        onConfirm={() => void confirmDisablePatient()}
+      />
 
       <PsychologistPatientFormModal
         visible={modalOpen}
