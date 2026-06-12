@@ -108,9 +108,9 @@ export const PatientLikertCheckInPanel = ({
       <Title s2 gray block mb4 leadingRelaxed>
         {t("LIKERT_CHECKIN_HINT")}
       </Title>
-      <Flex col wFull gap4>
+      <div className="grid w-full grid-cols-2 gap-4">
         {LIKERT_DIMENSION_IDS.map((dimension) => (
-          <Flex col wFull gap2 key={dimension}>
+          <Flex col wFull gap2 key={dimension} alignStretch>
             <Title s2 fw3 block>
               {t(dimensionLabelKey(dimension))}
             </Title>
@@ -139,12 +139,9 @@ export const PatientLikertCheckInPanel = ({
             </Flex>
           </Flex>
         ))}
-      </Flex>
-      <Title s2 gray block mt4>
-        {t("LIKERT_SCALE_LEGEND")}
-      </Title>
+      </div>
       {error ? (
-        <Title s2 error block mt2>
+        <Title s2 error block mt4>
           {error}
         </Title>
       ) : null}
