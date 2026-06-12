@@ -98,22 +98,28 @@ export const ChatPanel = ({
         isTyping={sending}
         lastMessageId={lastMessageId}
       >
-        {messages.map((message, index) => (
-          <div key={message.id}>
-            {showInteractionDividers &&
-            shouldShowInteractionDividerBefore(messages, index) ? (
-              <ChatInteractionDivider label={t("CHAT_NEW_INTERACTION")} />
-            ) : null}
-            <ChatMessageBubble
-              sender={message.sender}
-              label={message.sender === "agent" ? t("CHAT_AGENT_LABEL") : t("CHAT_USER_LABEL")}
-              text={message.text}
-            />
-            {showInteractionDividers && message.isInteractionEnd ? (
-              <ChatInteractionDivider label={t("CHAT_INTERACTION_END")} />
-            ) : null}
-          </div>
-        ))}
+        {messages.map((message, index) => {
+          if (message.sender === "agent" && !message.text.trim()) {
+            return null;
+          }
+
+          return (
+            <div key={message.id}>
+              {showInteractionDividers &&
+              shouldShowInteractionDividerBefore(messages, index) ? (
+                <ChatInteractionDivider label={t("CHAT_NEW_INTERACTION")} />
+              ) : null}
+              <ChatMessageBubble
+                sender={message.sender}
+                label={message.sender === "agent" ? t("CHAT_AGENT_LABEL") : t("CHAT_USER_LABEL")}
+                text={message.text}
+              />
+              {showInteractionDividers && message.isInteractionEnd ? (
+                <ChatInteractionDivider label={t("CHAT_INTERACTION_END")} />
+              ) : null}
+            </div>
+          );
+        })}
         {sending ? (
           <ChatTypingIndicator
             label={t("CHAT_AGENT_LABEL")}

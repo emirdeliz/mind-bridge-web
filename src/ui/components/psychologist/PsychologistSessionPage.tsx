@@ -70,7 +70,6 @@ export const PsychologistSessionPage = () => {
     patientId,
     clinicalContext: psychologistContext,
     sessionConsiderations: currentSessionConsiderations,
-    onAgentReply: () => reloadContent({ silent: true }),
   });
 
   useEffect(() => {
@@ -374,8 +373,8 @@ export const PsychologistSessionPage = () => {
       {previousSessionsAgenticSummaries.length > 0 ? (
         <Card padding="lg" shadow="md">
           <DashboardSectionTitle
-            title={t("SESSION_AGENTIC_SUMMARIES")}
-            tooltip={t("TOOLTIP_SESSION_AGENTIC_SUMMARIES")}
+            title={t("SESSION_NOTES_AGENTIC_SUMMARY")}
+            tooltip={t("TOOLTIP_SESSION_NOTES_AGENTIC_SUMMARY")}
           />
           <Flex row wFull alignCenter justifySpaceBetween wrap gap4 mb4>
             <Title s1 gray>

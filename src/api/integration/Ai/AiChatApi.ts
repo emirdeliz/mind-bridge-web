@@ -2,6 +2,12 @@ import type { AppLanguage } from '../../dto/auth/AuthDto';
 import type { ClinicalChatMessageDto } from '../../dto/clinical/ClinicalContentDto';
 import { apiRequest } from '../../http/apiClient';
 
+export {
+  streamPatientChatApi,
+  streamPsychologistChatApi,
+} from '../../http/aiStream';
+export type { AiStreamEvent, StreamPatientChatResult } from '../../http/aiStream';
+
 type PatientChatResponse = {
   message: string;
   messages?: ClinicalChatMessageDto[];

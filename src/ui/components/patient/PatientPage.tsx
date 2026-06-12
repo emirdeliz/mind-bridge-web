@@ -31,12 +31,11 @@ export const PatientPage = () => {
   const router = useRouter();
   const { t } = useI18n();
   const { session, loading } = useAuth();
-  const { content, loading: contentLoading, reload: reloadContent } =
+  const { content, loading: contentLoading } =
     usePatientClinicalContent();
   const [likertCheckIn, setLikertCheckIn] = useState<LikertCheckInDto | null>(null);
   const { messages, sendMessage, setMessages, sending } = useAiAgent({
     mode: "patient",
-    onAgentReply: () => reloadContent({ silent: true }),
   });
 
   useEffect(() => {

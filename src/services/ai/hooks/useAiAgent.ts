@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 
 import type { AppLanguage } from "@api";
-import { postPatientChatApi, postPsychologistChatApi } from "@api";
+import { streamPatientChatApi, streamPsychologistChatApi } from "@api";
 import { translateTemplate, useI18n } from "@i18n";
 import { useAuth } from "@services";
 
@@ -21,8 +21,6 @@ export type UseAiAgentOptions = {
   clinicalContext?: string;
   /** Current psychotherapy session notes (psychologist mode). */
   sessionConsiderations?: string;
-  /** Called after a successful agent reply. */
-  onAgentReply?: () => void | Promise<void>;
 };
 
 const resolveRequestLanguage = (
@@ -54,6 +52,16 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
     });
   }, [messages, t]);
 
+  const appendAgentDelta = useCallback((agentMessageId: string, delta: string) => {
+    setMessages((prev) =>
+      prev.map((message) =>
+        message.id === agentMessageId
+          ? { ...message, text: message.text + delta }
+          : message
+      )
+    );
+  }, []);
+
   const sendMessage = useCallback(
     async (text: string) => {
       const cleanText = text.trim();
@@ -75,19 +83,29 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
         text: cleanText,
         createdAt: new Date().toISOString(),
       };
+      const agentMessageId = crypto.randomUUID();
+      const streamingAgentMessage: ChatMessage = {
+        id: agentMessageId,
+        sender: "agent",
+        text: "",
+        createdAt: new Date().toISOString(),
+      };
 
-      setMessages((prev) => [...prev, userMessage]);
+      setMessages((prev) => [...prev, userMessage, streamingAgentMessage]);
       setSending(true);
       setError("");
 
-      let succeeded = false;
-
       try {
         if (options.mode === "patient") {
-          const response = await postPatientChatApi(cleanText, requestLanguage);
+          const response = await streamPatientChatApi(
+            cleanText,
+            requestLanguage,
+            (delta) => appendAgentDelta(agentMessageId, delta)
+          );
+
           if (response.messages?.length) {
             setMessages((prev) => [
-              ...prev.slice(0, -1),
+              ...prev.slice(0, -2),
               ...response.messages!.map((item) => ({
                 id: item.id,
                 sender: item.sender,
@@ -99,47 +117,42 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
               })),
             ]);
           } else {
-            setMessages((prev) => [
-              ...prev,
-              {
-                id: crypto.randomUUID(),
-                sender: "agent",
-                text: response.message,
-                createdAt: new Date().toISOString(),
-              },
-            ]);
+            setMessages((prev) =>
+              prev.map((message) =>
+                message.id === agentMessageId
+                  ? { ...message, text: response.message }
+                  : message
+              )
+            );
           }
         } else {
-          const reply = await postPsychologistChatApi(
+          const reply = await streamPsychologistChatApi(
             options.patientId!,
             cleanText,
             options.clinicalContext,
             requestLanguage,
             options.sessionConsiderations,
+            (delta) => appendAgentDelta(agentMessageId, delta)
           );
 
-          const agentMessage: ChatMessage = {
-            id: crypto.randomUUID(),
-            sender: "agent",
-            text: reply,
-            createdAt: new Date().toISOString(),
-          };
-          setMessages((prev) => [...prev, agentMessage]);
+          setMessages((prev) =>
+            prev.map((message) =>
+              message.id === agentMessageId
+                ? { ...message, text: reply }
+                : message
+            )
+          );
         }
-        succeeded = true;
       } catch (sendError) {
+        setMessages((prev) => prev.filter((message) => message.id !== agentMessageId));
         setError(
           sendError instanceof Error ? sendError.message : t("AI_ERROR_GENERIC"),
         );
       } finally {
         setSending(false);
       }
-
-      if (succeeded && options.onAgentReply) {
-        await options.onAgentReply();
-      }
     },
-    [options, sending, session, t, requestLanguage],
+    [appendAgentDelta, options, sending, session, t, requestLanguage],
   );
 
   return {
