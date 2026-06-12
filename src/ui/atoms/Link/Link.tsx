@@ -2,8 +2,9 @@ import React, { MouseEvent, ReactNode, RefObject, useRef } from 'react';
 import { TitleProps } from '..';
 import { Icon, IconProps } from '../Icon/Icon';
 
-export interface LinkProps extends TitleProps {
+export interface LinkProps extends Omit<TitleProps, 'id'> {
   children?: ReactNode;
+  id?: string;
   href?: string;
   target?: string;
   role?: string;
@@ -15,13 +16,13 @@ export interface LinkProps extends TitleProps {
 
 export interface LinkIconProps extends LinkProps, IconProps {}
 
-export const Link = ({ children, dataTestId, ...props }: LinkProps) => {
+export const Link = ({ children, dataTestId, noUnderline, ...props }: LinkProps) => {
   const linkClasses = [
     'text-primary-theme',
     'hover:text-primary-theme-dark',
     'cursor-pointer',
     'transition-colors duration-200',
-    props.noUnderline ? '' : 'underline',
+    noUnderline ? '' : 'underline',
   ].filter(Boolean).join(' ');
 
   return (

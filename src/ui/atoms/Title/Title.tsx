@@ -13,6 +13,7 @@ export interface TitleProps {
   center?: boolean;
   justify?: boolean;
   role?: string;
+  id?: string | number;
   maxWidth?: number;
   white?: boolean;
   blue?: boolean;
@@ -27,6 +28,7 @@ export interface TitleProps {
   mb3?: boolean;
   mb4?: boolean;
   mt2?: boolean;
+  mt4?: boolean;
   ml5?: boolean;
   p2?: boolean;
   p5?: boolean;
@@ -129,6 +131,7 @@ export const Title = (props: TitleProps) => {
     if (props.mb3) baseClasses.push('mb-3');
     if (props.mb4) baseClasses.push('mb-4');
     if (props.mt2) baseClasses.push('mt-2');
+    if (props.mt4) baseClasses.push('mt-4');
     if (props.ml5) baseClasses.push('ml-5');
     if (props.p2) baseClasses.push('p-2');
     if (props.p5) baseClasses.push('p-5');
@@ -153,7 +156,11 @@ export const Title = (props: TitleProps) => {
   };
 
   return (
-    <div className={getTitleClasses()} role={props.role}>
+    <div
+      className={getTitleClasses()}
+      id={props.id !== undefined ? String(props.id) : undefined}
+      role={props.role}
+    >
       {props.children}
     </div>
   );
