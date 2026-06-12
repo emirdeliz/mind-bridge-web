@@ -14,6 +14,13 @@ export const getProfileRoute = (role: UserRole): string => {
   return "/patient/profile";
 };
 
+export const getPatientsRoute = (role: UserRole): string | null => {
+  if (role === "psychologist") {
+    return "/psychologist/patients";
+  }
+  return null;
+};
+
 export const getBillingRoute = (role: UserRole): string | null => {
   if (role === "psychologist") {
     return "/psychologist/billing";

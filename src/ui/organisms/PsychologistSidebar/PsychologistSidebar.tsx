@@ -8,6 +8,7 @@ import { Icon, Title } from "@atoms";
 import {
   getBillingRoute,
   getPatientPaymentsRoute,
+  getPatientsRoute,
   getSchedulingRoute,
   getSettingsRoute,
 } from "@services";
@@ -42,6 +43,11 @@ export const PsychologistSidebar = () => {
 
   const navItems = useMemo(
     () => [
+      {
+        href: getPatientsRoute("psychologist") ?? "/psychologist/patients",
+        label: t("PSYCHOLOGIST_PATIENTS_NAV"),
+        icon: <Icon.Users sm />,
+      },
       {
         href: getBillingRoute("psychologist") ?? "/psychologist/billing",
         label: t("USER_MENU_MY_BILLING"),
