@@ -155,6 +155,104 @@
     @apply text-sm font-medium text-mb-muted;
   }
 
+  .mb-dashboard-layout {
+    @apply flex min-h-screen w-full;
+  }
+
+  .mb-sidebar {
+    @apply flex min-h-screen w-60 shrink-0 flex-col border-r border-mb-border/80 bg-mb-surface/95 backdrop-blur-xl transition-[width] duration-200;
+  }
+
+  .mb-sidebar-collapsed {
+    @apply w-[4.5rem];
+  }
+
+  .mb-sidebar-header {
+    @apply flex shrink-0 items-center border-b border-mb-border/80 p-3;
+  }
+
+  .mb-sidebar-header-expanded {
+    @apply justify-end;
+  }
+
+  .mb-sidebar-header-collapsed {
+    @apply justify-center px-2;
+  }
+
+  .mb-sidebar-header-toggle-slot {
+    @apply flex w-full justify-center;
+  }
+
+  .mb-sidebar-header-toggle-slot > div {
+    @apply flex justify-center;
+  }
+
+  .mb-sidebar-toggle {
+    @apply inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-mb-border/70 bg-mb-surface/60 text-mb-muted transition-all duration-200 hover:bg-mb-surface-elevated hover:text-mb-text;
+  }
+
+  .mb-sidebar-nav {
+    @apply flex flex-1 flex-col gap-1 p-3;
+  }
+
+  .mb-sidebar-collapsed .mb-sidebar-nav {
+    @apply items-center px-2;
+  }
+
+  .mb-sidebar-nav-item-slot {
+    @apply flex w-full justify-center;
+  }
+
+  .mb-sidebar-nav-item-slot > div {
+    @apply flex w-full justify-center;
+  }
+
+  .mb-sidebar-footer {
+    @apply border-t border-mb-border/80 p-3;
+  }
+
+  .mb-sidebar-footer-collapsed {
+    @apply flex justify-center px-2;
+  }
+
+  .mb-sidebar-footer-toggle-slot {
+    @apply flex w-full justify-center;
+  }
+
+  .mb-sidebar-footer-toggle-slot > div {
+    @apply flex justify-center;
+  }
+
+  .mb-sidebar-footer-icon {
+    @apply h-10 w-10;
+  }
+
+  .mb-sidebar-nav-item {
+    @apply block rounded-xl px-3 py-2.5 text-mb-muted transition-all duration-200 hover:bg-mb-surface-elevated hover:text-mb-text;
+  }
+
+  .mb-sidebar-nav-item-collapsed {
+    @apply flex h-10 w-10 items-center justify-center p-0;
+  }
+
+  .mb-sidebar-nav-item-active {
+    @apply bg-mb-accent/15 text-mb-accent ring-1 ring-mb-accent/25;
+  }
+
+  .mb-sidebar-nav-item-active .mb-sidebar-nav-icon {
+    @apply text-mb-accent;
+  }
+
+  .mb-sidebar-nav-icon {
+    @apply inline-flex h-8 w-8 shrink-0 items-center justify-center text-mb-muted;
+  }
+
+  .mb-sidebar-nav-icon [class^="icon-"]:before,
+  .mb-sidebar-nav-icon [class*=" icon-"]:before {
+    margin: 0;
+    font-size: 1.125rem;
+  }
+
   .mb-nav-link {
     @apply rounded-lg px-3 py-2 text-sm font-medium text-mb-muted transition-all duration-200 hover:bg-mb-surface-elevated hover:text-mb-text;
   }

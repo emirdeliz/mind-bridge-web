@@ -1,6 +1,7 @@
 export * from "./Ai/AiChatApi";
 export * from "./Auth/AuthApi";
 export * from "./Billing/PsychologistBillingApi";
+export * from "./ChatShortcut/PsychologistChatShortcutsApi";
 export * from "./PatientPayment/PsychologistPatientPaymentApi";
 export * from "./Clinical/ClinicalContentApi";
 export * from "./Invite/PsychologistInviteCodeApi";

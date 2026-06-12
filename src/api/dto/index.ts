@@ -1,4 +1,5 @@
 export * from "./auth/AuthDto";
+export * from "./chat-shortcut/PsychologistChatShortcutDto";
 export * from "./billing/BillingDto";
 export * from "./clinical/ClinicalContentDto";
 export * from "./invite/InviteCodeDto";

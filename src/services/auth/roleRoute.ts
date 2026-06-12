@@ -14,6 +14,13 @@ export const getProfileRoute = (role: UserRole): string => {
   return "/patient/profile";
 };
 
+export const getPatientsRoute = (role: UserRole): string | null => {
+  if (role === "psychologist") {
+    return "/psychologist/patients";
+  }
+  return null;
+};
+
 export const getBillingRoute = (role: UserRole): string | null => {
   if (role === "psychologist") {
     return "/psychologist/billing";
@@ -31,6 +38,13 @@ export const getPatientPaymentsRoute = (role: UserRole): string | null => {
 export const getSchedulingRoute = (role: UserRole): string | null => {
   if (role === "psychologist") {
     return "/psychologist/scheduling";
+  }
+  return null;
+};
+
+export const getSettingsRoute = (role: UserRole): string | null => {
+  if (role === "psychologist") {
+    return "/psychologist/settings";
   }
   return null;
 };

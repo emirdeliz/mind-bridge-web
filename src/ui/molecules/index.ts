@@ -25,6 +25,7 @@ export * from "./ModalTemplate/ModalTemplate";
 export * from "./PageLoader/PageLoader";
 export * from "./ProgressBar/ProgressBar";
 export * from "./ShowSkeleton/ShowSkeleton";
+export * from "./SidebarNavItem/SidebarNavItem";
 export * from "./StepProgressBar/StepProgressBar";
 export * from "./Switch/Switch";
 export * from "./Table/Table";
