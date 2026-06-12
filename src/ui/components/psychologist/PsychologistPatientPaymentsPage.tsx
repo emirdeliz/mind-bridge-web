@@ -195,7 +195,7 @@ export const PsychologistPatientPaymentsPage = () => {
     () => [
       {
         key: "fullName" as const,
-        label: t("PSYCHOLOGIST_PATIENTS_COL_NAME"),
+        label: t("PSYCHOLOGIST_PATIENT_PAYMENTS_COL_PATIENT"),
       },
       {
         key: "isCompliant" as const,
@@ -218,7 +218,7 @@ export const PsychologistPatientPaymentsPage = () => {
                   : t("PSYCHOLOGIST_PATIENT_PAYMENTS_STATUS_PENDING")}
             </Title>
             {row.unpaidBillingMonths.length > 0 ? (
-              <Title s2 gray block>
+              <Title s1 gray block leadingRelaxed>
                 {translateTemplate(t("PSYCHOLOGIST_PATIENT_PAYMENTS_UNPAID_MONTHS"), {
                   months: formatUnpaidMonths(row.unpaidBillingMonths),
                 })}
