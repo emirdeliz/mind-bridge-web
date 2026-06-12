@@ -96,7 +96,7 @@ export const PsychologistSidebar = () => {
             <Title s2 block>
               {t("APP_TITLE")}
             </Title>
-            <Title s1 gray block mt1>
+            <Title s1 gray block mt2>
               {translateTemplate(t("APP_VERSION_LABEL"), { version: APP_VERSION })}
             </Title>
           </>
