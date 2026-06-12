@@ -51,7 +51,7 @@ export const PsychologistSidebar = () => {
       {
         href: getBillingRoute("psychologist") ?? "/psychologist/billing",
         label: t("USER_MENU_MY_BILLING"),
-        icon: <Icon.Transactions sm />,
+        icon: <Icon.Bank sm />,
       },
       {
         href: getPatientPaymentsRoute("psychologist") ?? "/psychologist/patient-payments",
