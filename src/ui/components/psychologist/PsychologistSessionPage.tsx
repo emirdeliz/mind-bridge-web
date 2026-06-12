@@ -6,7 +6,12 @@ import {
   endPsychologistSessionApi,
   savePsychologistPatientClinicalContentApi,
 } from "@api";
-import { useAiAgent, usePsychologistClinicalContent } from "@services";
+import {
+  resolveChatShortcutTranslation,
+  useAiAgent,
+  usePsychologistChatShortcuts,
+  usePsychologistClinicalContent,
+} from "@services";
 import { Button, Flex, Title } from "@atoms";
 import { useI18n } from "@i18n";
 import {
@@ -72,25 +77,19 @@ export const PsychologistSessionPage = () => {
     sessionConsiderations: currentSessionConsiderations,
   });
 
+  const { shortcuts: psychologistShortcutRecords } = usePsychologistChatShortcuts();
+
   const psychologistChatShortcuts = useMemo(
-    () => [
-      {
-        id: "explore-questions",
-        label: t("PSYCHOLOGIST_CHAT_SHORTCUT_EXPLORE_LABEL"),
-        message: t("PSYCHOLOGIST_CHAT_SHORTCUT_EXPLORE_MESSAGE"),
-      },
-      {
-        id: "attention-points",
-        label: t("PSYCHOLOGIST_CHAT_SHORTCUT_ATTENTION_LABEL"),
-        message: t("PSYCHOLOGIST_CHAT_SHORTCUT_ATTENTION_MESSAGE"),
-      },
-      {
-        id: "evolution-summary",
-        label: t("PSYCHOLOGIST_CHAT_SHORTCUT_EVOLUTION_LABEL"),
-        message: t("PSYCHOLOGIST_CHAT_SHORTCUT_EVOLUTION_MESSAGE"),
-      },
-    ],
-    [t],
+    () =>
+      psychologistShortcutRecords.map((shortcut) => {
+        const translation = resolveChatShortcutTranslation(shortcut, language);
+        return {
+          id: shortcut.id,
+          label: translation.label,
+          message: translation.message,
+        };
+      }),
+    [language, psychologistShortcutRecords],
   );
 
   useEffect(() => {

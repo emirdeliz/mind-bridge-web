@@ -34,3 +34,10 @@ export const getSchedulingRoute = (role: UserRole): string | null => {
   }
   return null;
 };
+
+export const getSettingsRoute = (role: UserRole): string | null => {
+  if (role === "psychologist") {
+    return "/psychologist/settings";
+  }
+  return null;
+};

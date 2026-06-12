@@ -1,5 +1,6 @@
 export * from "./auth/hooks/useAuth";
 export * from "./billing";
+export * from "./chat-shortcut";
 export * from "./clinical";
 export * from "./patient";
 export * from "./scheduling";

@@ -4,4 +4,5 @@ export * from "./patient/PatientPage";
 export * from "./psychologist/PsychologistPage";
 export * from "./psychologist/PsychologistPatientPaymentsPage";
 export * from "./psychologist/PsychologistSchedulingPage";
+export * from "./psychologist/PsychologistSettingsPage";
 export * from "./profile/ProfilePage";
