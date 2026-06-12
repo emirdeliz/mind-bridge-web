@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 
 import type { PsychologistAppointmentDto } from "@api";
 import { getPsychologistPatientsApi } from "@api";
-import { Button, Flex, Icon, Overlay, Title } from "@atoms";
+import { Button, Flex, Icon, Loading, Overlay, Title } from "@atoms";
+import { maskPhone } from "@helpers";
 import { useI18n } from "@i18n";
-import { Card, PageLoader } from "@molecules";
+import { Card } from "@molecules";
 
 type SchedulingPatientContactModalProps = {
   visible: boolean;
@@ -79,28 +80,30 @@ export const SchedulingPatientContactModal = ({
               </Button>
             </Flex>
 
-            {loading ? (
-              <PageLoader />
-            ) : (
-              <Flex col wFull gap4>
-                <Flex col wFull gap1>
-                  <Title s2 gray block>
-                    {t("PSYCHOLOGIST_SCHEDULING_CONTACT_EMAIL")}
-                  </Title>
-                  <Title s2 block>
-                    {appointment.patientEmail?.trim() || "—"}
-                  </Title>
-                </Flex>
-                <Flex col wFull gap1>
-                  <Title s2 gray block>
-                    {t("PSYCHOLOGIST_SCHEDULING_CONTACT_PHONE")}
-                  </Title>
-                  <Title s2 block>
-                    {phone?.trim() || "—"}
-                  </Title>
-                </Flex>
+            <Flex col wFull gap4>
+              <Flex col wFull gap1>
+                <Title s2 gray block>
+                  {t("PSYCHOLOGIST_SCHEDULING_CONTACT_EMAIL")}
+                </Title>
+                <Title s2 block>
+                  {appointment.patientEmail?.trim() || "—"}
+                </Title>
               </Flex>
-            )}
+              <Flex col wFull gap1>
+                <Title s2 gray block>
+                  {t("PSYCHOLOGIST_SCHEDULING_CONTACT_PHONE")}
+                </Title>
+                {loading ? (
+                  <Flex row alignCenter py1>
+                    <Loading />
+                  </Flex>
+                ) : (
+                  <Title s2 block>
+                    {phone?.trim() ? maskPhone(phone) : "—"}
+                  </Title>
+                )}
+              </Flex>
+            </Flex>
 
             <Button type="button" variant="secondary" outlined wFull onClick={onClose}>
               {t("PSYCHOLOGIST_PATIENTS_MODAL_CANCEL")}
