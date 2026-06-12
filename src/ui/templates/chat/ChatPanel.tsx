@@ -63,7 +63,11 @@ export const ChatPanel = ({
 }: ChatPanelProps) => {
   const { t } = useI18n();
   const [text, setText] = useState("");
-  const lastMessageId = messages.at(-1)?.id;
+  const lastMessage = messages.at(-1);
+  const lastMessageId = lastMessage?.id;
+  const showTypingIndicator =
+    sending &&
+    !(lastMessage?.sender === "agent" && lastMessage.text.trim().length > 0);
 
   const startAudioInput = () => {
     const SpeechRecognition =
@@ -95,7 +99,7 @@ export const ChatPanel = ({
       <ChatScrollArea
         tallScroll={tallScroll}
         messageCount={messages.length}
-        isTyping={sending}
+        isTyping={showTypingIndicator}
         lastMessageId={lastMessageId}
       >
         {messages.map((message, index) => {
@@ -120,7 +124,7 @@ export const ChatPanel = ({
             </div>
           );
         })}
-        {sending ? (
+        {showTypingIndicator ? (
           <ChatTypingIndicator
             label={t("CHAT_AGENT_LABEL")}
             ariaLabel={t("CHAT_AGENT_TYPING")}

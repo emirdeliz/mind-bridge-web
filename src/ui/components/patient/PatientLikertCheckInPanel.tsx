@@ -29,35 +29,46 @@ export const PatientLikertCheckInPanel = ({
   const [scores, setScores] = useState<Partial<Record<LikertDimensionId, number>>>(
     () => initialCheckIn?.scores ?? {}
   );
-  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const saveTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     setScores(initialCheckIn?.scores ?? {});
-  }, [initialCheckIn]);
+  }, [initialCheckIn?.updatedAt]);
 
   const persistScores = useCallback(
-    async (nextScores: Partial<Record<LikertDimensionId, number>>) => {
+    (nextScores: Partial<Record<LikertDimensionId, number>>) => {
       if (!Object.keys(nextScores).length) {
         return;
       }
 
-      setSaving(true);
       setError("");
 
-      try {
-        const saved = await savePatientLikertCheckInApi(nextScores);
-        onSaved?.(saved);
-      } catch (saveError) {
-        setError(
-          saveError instanceof Error ? saveError.message : t("LIKERT_SAVE_ERROR")
-        );
-      } finally {
-        setSaving(false);
-      }
+      onSaved?.({
+        scores: nextScores,
+        updatedAt: new Date().toISOString(),
+      });
+
+      void savePatientLikertCheckInApi(nextScores)
+        .then((saved) => {
+          if (saved) {
+            onSaved?.(saved);
+          }
+        })
+        .catch((saveError) => {
+          setError(
+            saveError instanceof Error ? saveError.message : t("LIKERT_SAVE_ERROR")
+          );
+          if (initialCheckIn) {
+            setScores(initialCheckIn.scores ?? {});
+            onSaved?.(initialCheckIn);
+            return;
+          }
+          setScores({});
+          onSaved?.(null);
+        });
     },
-    [onSaved, t]
+    [initialCheckIn, onSaved, t]
   );
 
   const scheduleSave = useCallback(
@@ -129,16 +140,9 @@ export const PatientLikertCheckInPanel = ({
           </Flex>
         ))}
       </Flex>
-      <Flex row wFull justifySpaceBetween alignCenter mt4 wrap gap2>
-        <Title s2 gray block>
-          {t("LIKERT_SCALE_LEGEND")}
-        </Title>
-        {saving ? (
-          <Title s2 gray block>
-            {t("LIKERT_SAVING")}
-          </Title>
-        ) : null}
-      </Flex>
+      <Title s2 gray block mt4>
+        {t("LIKERT_SCALE_LEGEND")}
+      </Title>
       {error ? (
         <Title s2 error block mt2>
           {error}

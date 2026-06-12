@@ -103,6 +103,8 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
             (delta) => appendAgentDelta(agentMessageId, delta)
           );
 
+          setSending(false);
+
           if (response.messages?.length) {
             setMessages((prev) => [
               ...prev.slice(0, -2),
@@ -135,6 +137,7 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
             (delta) => appendAgentDelta(agentMessageId, delta)
           );
 
+          setSending(false);
           setMessages((prev) =>
             prev.map((message) =>
               message.id === agentMessageId
