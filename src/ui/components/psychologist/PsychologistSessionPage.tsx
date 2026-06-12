@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 
 import type { ClinicalChatMessageDto } from "@api";
@@ -71,6 +71,27 @@ export const PsychologistSessionPage = () => {
     clinicalContext: psychologistContext,
     sessionConsiderations: currentSessionConsiderations,
   });
+
+  const psychologistChatShortcuts = useMemo(
+    () => [
+      {
+        id: "explore-questions",
+        label: t("PSYCHOLOGIST_CHAT_SHORTCUT_EXPLORE_LABEL"),
+        message: t("PSYCHOLOGIST_CHAT_SHORTCUT_EXPLORE_MESSAGE"),
+      },
+      {
+        id: "attention-points",
+        label: t("PSYCHOLOGIST_CHAT_SHORTCUT_ATTENTION_LABEL"),
+        message: t("PSYCHOLOGIST_CHAT_SHORTCUT_ATTENTION_MESSAGE"),
+      },
+      {
+        id: "evolution-summary",
+        label: t("PSYCHOLOGIST_CHAT_SHORTCUT_EVOLUTION_LABEL"),
+        message: t("PSYCHOLOGIST_CHAT_SHORTCUT_EVOLUTION_MESSAGE"),
+      },
+    ],
+    [t],
+  );
 
   useEffect(() => {
     if (!content) return;
@@ -334,6 +355,7 @@ export const PsychologistSessionPage = () => {
         tallScroll
         showAudio={false}
         sectionTooltip={t("TOOLTIP_PSYCHOLOGIST_CHAT")}
+        shortcuts={psychologistChatShortcuts}
       />
       <Card padding="lg" shadow="md">
         <DashboardSectionTitle

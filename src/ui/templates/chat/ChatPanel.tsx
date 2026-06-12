@@ -40,6 +40,12 @@ const shouldShowInteractionDividerBefore = (
   );
 };
 
+export type ChatShortcut = {
+  id: string;
+  label: string;
+  message: string;
+};
+
 interface ChatPanelProps {
   messages: ChatMessage[];
   onSend: (text: string) => void;
@@ -49,6 +55,7 @@ interface ChatPanelProps {
   showAudio?: boolean;
   showInteractionDividers?: boolean;
   sectionTooltip?: string;
+  shortcuts?: ChatShortcut[];
 }
 
 export const ChatPanel = ({
@@ -60,6 +67,7 @@ export const ChatPanel = ({
   showAudio = true,
   showInteractionDividers = false,
   sectionTooltip,
+  shortcuts,
 }: ChatPanelProps) => {
   const { t } = useI18n();
   const [text, setText] = useState("");
@@ -136,6 +144,27 @@ export const ChatPanel = ({
           </Title>
         ) : null}
       </ChatScrollArea>
+      {shortcuts?.length ? (
+        <Flex row wFull wrap gap2 mb4>
+          {shortcuts.map((shortcut) => (
+            <Button
+              key={shortcut.id}
+              type="button"
+              variant="secondary"
+              outlined
+              clickable={!sending}
+              onClick={() => {
+                if (sending) {
+                  return;
+                }
+                onSend(shortcut.message);
+              }}
+            >
+              {shortcut.label}
+            </Button>
+          ))}
+        </Flex>
+      ) : null}
       <Form
         onSubmit={(event) => {
           event.preventDefault();
