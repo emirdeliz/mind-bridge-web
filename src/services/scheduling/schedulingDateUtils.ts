@@ -68,6 +68,34 @@ export const getWeekStartIso = (
   return combineLocalDateAndTime(mondayKey, "00:00", timeZoneOffsetMinutes).toISOString();
 };
 
+export const isValidLocalDate = (
+  year: number,
+  month: number,
+  day: number,
+): boolean => {
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return (
+    date.getUTCFullYear() === year &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day
+  );
+};
+
+export const getWeekStartIsoForLocalDate = (
+  month: number,
+  day: number,
+  year: number = new Date().getFullYear(),
+  timeZoneOffsetMinutes: number = getBrowserTzOffsetMinutes(),
+): string | null => {
+  if (!isValidLocalDate(year, month, day)) {
+    return null;
+  }
+
+  const dateKey = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+  const reference = combineLocalDateAndTime(dateKey, "12:00", timeZoneOffsetMinutes);
+  return getWeekStartIso(reference, timeZoneOffsetMinutes);
+};
+
 export const shiftWeekStartIso = (
   weekStartIso: string,
   weeks: number,

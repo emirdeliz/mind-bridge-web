@@ -18,6 +18,7 @@ import {
 
 import { SchedulingAppointmentModal } from "./scheduling/SchedulingAppointmentModal";
 import { SchedulingCreateAppointmentModal } from "./scheduling/SchedulingCreateAppointmentModal";
+import { SchedulingGoToDateModal } from "./scheduling/SchedulingGoToDateModal";
 import { SchedulingPatientContactModal } from "./scheduling/SchedulingPatientContactModal";
 import { SchedulingSettingsModal } from "./scheduling/SchedulingSettingsModal";
 import { SchedulingWeekGrid } from "./scheduling/SchedulingWeekGrid";
@@ -43,6 +44,7 @@ export const PsychologistSchedulingPage = () => {
   } = usePsychologistScheduling(weekStart);
 
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [goToDateOpen, setGoToDateOpen] = useState(false);
   const [contactAppointment, setContactAppointment] =
     useState<PsychologistAppointmentDto | null>(null);
   const [editAppointment, setEditAppointment] = useState<PsychologistAppointmentDto | null>(
@@ -227,6 +229,15 @@ export const PsychologistSchedulingPage = () => {
                       >
                         <Icon.RightOpen sm white />
                       </Button>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        outlined
+                        clickable={!loading && !saving}
+                        onClick={() => setGoToDateOpen(true)}
+                      >
+                        {t("PSYCHOLOGIST_SCHEDULING_GO_TO_BUTTON")}
+                      </Button>
                     </Flex>
                   }
                 />
@@ -249,6 +260,13 @@ export const PsychologistSchedulingPage = () => {
           ) : null}
         </>
       )}
+
+      <SchedulingGoToDateModal
+        visible={goToDateOpen}
+        tzOffset={tzOffset}
+        onClose={() => setGoToDateOpen(false)}
+        onGo={setWeekStart}
+      />
 
       <SchedulingSettingsModal
         visible={settingsOpen}
