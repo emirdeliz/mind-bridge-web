@@ -4,9 +4,9 @@ import {
   getPsychologistInviteCodeApi,
   // regeneratePsychologistInviteCodeApi,
 } from "@api";
-import { Button, Flex, Title } from "@atoms";
+import { Button, Flex, Loading, Title } from "@atoms";
 import { useI18n } from "@i18n";
-import { Card, PageLoader } from "@molecules";
+import { Card } from "@molecules";
 
 export const PsychologistInviteCodePanel = () => {
   const { t } = useI18n();
@@ -81,7 +81,9 @@ export const PsychologistInviteCodePanel = () => {
           </Title>
         </Flex>
         {loading ? (
-          <PageLoader />
+          <Flex row wFull alignCenter py2>
+            <Loading />
+          </Flex>
         ) : error ? (
           <Title s2 error block>
             {error}
