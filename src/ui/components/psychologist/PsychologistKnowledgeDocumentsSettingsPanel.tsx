@@ -31,6 +31,7 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
     maxFileBytes,
     loading,
     uploading,
+    deleting,
     refreshing,
     error,
     refreshStatus,
@@ -40,6 +41,8 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
   const { inputRef, pickFile, handleChange } = useKnowledgeFilePicker();
   const [deleteTarget, setDeleteTarget] = useState<KnowledgeDocumentDto | null>(null);
   const [actionError, setActionError] = useState("");
+
+  const isBusy = uploading || deleting;
 
   const maxSizeMb = formatKnowledgeMaxFileSizeMb(maxFileBytes);
 
@@ -137,7 +140,7 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
                   circle
                   variant="secondary"
                   outlined
-                  clickable={!refreshing && !loading && !uploading}
+                  clickable={!refreshing && !loading && !isBusy}
                   title={t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_REFRESH_STATUS")}
                   onClick={() => void refreshStatus()}
                 >
@@ -154,7 +157,7 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
                   circle
                   variant="secondary"
                   outlined
-                  clickable={!uploading}
+                  clickable={!isBusy}
                   title={t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPDATE")}
                   onClick={() => void handleUpdate(document)}
                 >
@@ -171,7 +174,7 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
                   circle
                   variant="secondary"
                   outlined
-                  clickable={!uploading}
+                  clickable={!isBusy}
                   title={t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETE")}
                   onClick={() => setDeleteTarget(document)}
                 >
@@ -182,7 +185,7 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
           </Flex>
         ),
       })),
-    [documents, loading, refreshStatus, refreshing, t, uploading],
+    [documents, isBusy, loading, refreshStatus, refreshing, t],
   );
 
   const columns = useMemo(
@@ -290,7 +293,7 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
           <Button
             type="button"
             variant="primary"
-            clickable={!uploading}
+            clickable={!isBusy}
             onClick={() => void handleUpload()}
           >
             {t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_ADD")}
@@ -302,6 +305,13 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
             <Loading />
             <Title s2 gray block>
               {t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPLOADING")}
+            </Title>
+          </Flex>
+        ) : deleting ? (
+          <Flex row wFull alignCenter gap2>
+            <Loading />
+            <Title s2 gray block>
+              {t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETING")}
             </Title>
           </Flex>
         ) : null}
@@ -341,7 +351,7 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
         cancelLabel={t("PSYCHOLOGIST_PATIENTS_MODAL_CANCEL")}
         confirmVariant="danger"
         onClose={() => {
-          if (!uploading) {
+          if (!isBusy) {
             setDeleteTarget(null);
           }
         }}

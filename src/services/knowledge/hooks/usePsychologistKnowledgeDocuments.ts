@@ -19,6 +19,7 @@ export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean 
   const [maxFileBytes, setMaxFileBytes] = useState(DEFAULT_KNOWLEDGE_MAX_FILE_BYTES);
   const [loading, setLoading] = useState(enabled);
   const [uploading, setUploading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
   const documentsRef = useRef(documents);
@@ -113,7 +114,7 @@ export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean 
   }, []);
 
   const removeDocument = useCallback(async (documentId: string) => {
-    setUploading(true);
+    setDeleting(true);
     setError('');
     try {
       await deleteKnowledgeDocumentApi(documentId);
@@ -124,7 +125,7 @@ export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean 
       setError(message);
       throw deleteError;
     } finally {
-      setUploading(false);
+      setDeleting(false);
     }
   }, []);
 
@@ -133,6 +134,7 @@ export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean 
     maxFileBytes,
     loading,
     uploading,
+    deleting,
     refreshing,
     error,
     reload,
