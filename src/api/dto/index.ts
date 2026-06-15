@@ -4,6 +4,7 @@ export * from "./chat-shortcut/PsychologistChatShortcutDto";
 export * from "./billing/BillingDto";
 export * from "./clinical/ClinicalContentDto";
 export * from "./invite/InviteCodeDto";
+export * from "./knowledge/KnowledgeDocumentDto";
 export * from "./patient/PatientDto";
 export * from "./patient-payment/PatientPaymentDto";
 export * from "./scheduling/SchedulingDto";

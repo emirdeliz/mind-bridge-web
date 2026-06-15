@@ -2,6 +2,7 @@ export * from "./auth/hooks/useAuth";
 export * from "./admin/hooks/useAdminPlatformMetrics";
 export * from "./billing";
 export * from "./chat-shortcut";
+export * from "./knowledge";
 export * from "./clinical";
 export * from "./patient";
 export * from "./scheduling";

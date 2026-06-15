@@ -1,9 +1,11 @@
 "use client";
 
 import { AppShell } from "@templates";
+import { Flex } from "@atoms";
 import { useI18n } from "@i18n";
 
 import { PsychologistChatShortcutsSettingsPanel } from "./PsychologistChatShortcutsSettingsPanel";
+import { PsychologistKnowledgeDocumentsSettingsPanel } from "./PsychologistKnowledgeDocumentsSettingsPanel";
 import { usePsychologistGuard } from "./usePsychologistGuard";
 
 export const PsychologistSettingsPage = () => {
@@ -20,7 +22,10 @@ export const PsychologistSettingsPage = () => {
       subtitle={t("PSYCHOLOGIST_SETTINGS_SUBTITLE")}
       variant="dashboard"
     >
-      <PsychologistChatShortcutsSettingsPanel />
+      <Flex col wFull gap4>
+        <PsychologistKnowledgeDocumentsSettingsPanel />
+        <PsychologistChatShortcutsSettingsPanel />
+      </Flex>
     </AppShell>
   );
 };

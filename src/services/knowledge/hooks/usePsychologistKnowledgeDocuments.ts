@@ -1,0 +1,115 @@
+import { useCallback, useEffect, useRef, useState, type ChangeEvent } from 'react';
+
+import type { KnowledgeDocumentDto } from '@api';
+import {
+  deleteKnowledgeDocumentApi,
+  getKnowledgeDocumentsApi,
+  uploadKnowledgeDocumentApi,
+} from '@api';
+
+export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean }) => {
+  const enabled = options?.enabled ?? true;
+  const [documents, setDocuments] = useState<KnowledgeDocumentDto[]>([]);
+  const [loading, setLoading] = useState(enabled);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState('');
+
+  const reload = useCallback(async () => {
+    if (!enabled) {
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    try {
+      const data = await getKnowledgeDocumentsApi();
+      setDocuments(data);
+    } catch (loadError) {
+      setError(
+        loadError instanceof Error ? loadError.message : 'Failed to load knowledge documents',
+      );
+      setDocuments([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [enabled]);
+
+  useEffect(() => {
+    void reload();
+  }, [reload]);
+
+  const uploadDocument = useCallback(async (file: File) => {
+    setUploading(true);
+    setError('');
+    try {
+      const result = await uploadKnowledgeDocumentApi(file);
+      setDocuments((current) => {
+        const withoutSameName = current.filter(
+          (entry) => entry.fileName.toLowerCase() !== result.document.fileName.toLowerCase(),
+        );
+        return [result.document, ...withoutSameName].sort(
+          (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+        );
+      });
+      return result;
+    } catch (uploadError) {
+      const message =
+        uploadError instanceof Error ? uploadError.message : 'Failed to upload knowledge document';
+      setError(message);
+      throw uploadError;
+    } finally {
+      setUploading(false);
+    }
+  }, []);
+
+  const removeDocument = useCallback(async (documentId: string) => {
+    setUploading(true);
+    setError('');
+    try {
+      await deleteKnowledgeDocumentApi(documentId);
+      setDocuments((current) => current.filter((entry) => entry.id !== documentId));
+    } catch (deleteError) {
+      const message =
+        deleteError instanceof Error ? deleteError.message : 'Failed to delete knowledge document';
+      setError(message);
+      throw deleteError;
+    } finally {
+      setUploading(false);
+    }
+  }, []);
+
+  return {
+    documents,
+    loading,
+    uploading,
+    error,
+    reload,
+    uploadDocument,
+    removeDocument,
+  };
+};
+
+export const useKnowledgeFilePicker = () => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const pendingResolver = useRef<((file: File | null) => void) | null>(null);
+
+  const pickFile = useCallback((): Promise<File | null> => {
+    return new Promise((resolve) => {
+      pendingResolver.current = resolve;
+      inputRef.current?.click();
+    });
+  }, []);
+
+  const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+    event.target.value = '';
+    pendingResolver.current?.(file);
+    pendingResolver.current = null;
+  }, []);
+
+  return {
+    inputRef,
+    pickFile,
+    handleChange,
+  };
+};

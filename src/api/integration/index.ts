@@ -6,6 +6,7 @@ export * from "./ChatShortcut/PsychologistChatShortcutsApi";
 export * from "./PatientPayment/PsychologistPatientPaymentApi";
 export * from "./Clinical/ClinicalContentApi";
 export * from "./Invite/PsychologistInviteCodeApi";
+export * from "./Knowledge/KnowledgeApi";
 export * from "./Patient/PatientInteractionsApi";
 export * from "./Patient/PatientInviteCodeApi";
 export * from "./Patient/PatientLikertApi";
