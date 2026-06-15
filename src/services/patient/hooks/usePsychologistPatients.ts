@@ -16,7 +16,7 @@ import {
 import { isValidPatientInitialPassword, isValidPhone, phoneDigits } from '@helpers';
 import { useI18n } from '@i18n';
 import { emptyPatientAnamnesis } from '../../clinical/clinicalContentDefaults';
-import { shouldSilentReload, type ReloadOptions } from '../../common/reloadOptions';
+import { shouldSilentReload, type ReloadOptions } from "@helpers";
 import { useAuth } from '@services';
 
 const emptyForm = (): PsychologistPatientSaveOrUpdateDto => ({

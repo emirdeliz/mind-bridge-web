@@ -66,6 +66,7 @@ export interface IconOptions {
 
 export interface IconProps extends IconOptions {
   className?: string;
+  spinning?: boolean;
   circled?: boolean;
   bordered?: boolean;
   bgColored?: boolean;
@@ -288,12 +289,13 @@ const getIcon = ({
   return 'power';
 };
 
-export const Icon = ({ className, ...props }: IconProps) => {
+export const Icon = ({ className, spinning, ...props }: IconProps) => {
   const icon = getIcon(props);
   const iconClasses = [
     'inline-flex',
     'align-middle',
     className,
+    spinning && 'animate-spin',
     props.rotate90 && 'rotate-90',
   ].filter(Boolean).join(' ');
 

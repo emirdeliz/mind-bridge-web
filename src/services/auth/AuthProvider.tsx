@@ -25,7 +25,7 @@ import {
   saveProfileApi,
 } from "@api";
 import { isAuthBypassEnabled } from "./authBypass";
-import { normalizeSession } from "./sessionUtils";
+import { normalizeSession } from "@helpers";
 
 export type AuthPageProps = {
   session: UserAuthViewDto | null;

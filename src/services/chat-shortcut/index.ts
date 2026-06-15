@@ -1,2 +1,2 @@
 export * from './hooks/usePsychologistChatShortcuts';
-export * from './resolveChatShortcutTranslation';
+export { resolveChatShortcutTranslation } from '@helpers';

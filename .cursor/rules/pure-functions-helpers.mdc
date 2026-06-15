@@ -1,0 +1,51 @@
+---
+description: Prefer helpers for pure functions; keep services for state and side effects
+globs:
+  - src/**/*.ts
+  - src/**/*.tsx
+alwaysApply: true
+---
+
+# Pure Functions → Helpers
+
+Place **pure functions** (no React, no fetch, no mutable state) in `src/helpers/`, not in `src/services/`.
+
+## Put in `src/helpers/`
+
+- Formatting, parsing, validation, mapping, and transforms
+- Date/time, routing helpers, size limits, defaults/factories without I/O
+- Functions that return the same output for the same input and have no side effects
+
+Import from `@helpers` (export via `src/helpers/index.ts`).
+
+## Keep in `src/services/`
+
+- React hooks (`use*`)
+- `AuthProvider` and other providers/context
+- Auth bypass, session orchestration, and API-backed workflows
+- Domain factories tied to a single feature area when they are not reused (e.g. `clinicalContentDefaults`)
+
+## When editing
+
+- **New pure utility** → add to `src/helpers/` (new file or existing module), export from `index.ts`
+- **Pure function inside a hook or component** → extract to `helpers/` if reused or non-trivial
+- **Do not** add pure utilities under `services/` (except thin re-exports for backward compatibility)
+
+## Examples
+
+```ts
+// ✅ helpers/schedulingDateUtils.ts
+export const getWeekStartIso = (reference: Date, tzOffset: number): string => { ... };
+
+// ✅ services/scheduling/hooks/usePsychologistScheduling.ts
+import { getWeekStartIso, shouldSilentReload } from "@helpers";
+
+// ❌ services/scheduling/schedulingDateUtils.ts — pure logic does not belong in services
+```
+
+```ts
+// ✅ helpers/knowledgeFileLimits.ts
+export const isKnowledgeFileWithinSizeLimit = (size: number, max: number): boolean => ...;
+
+// ❌ services/knowledge/knowledgeFileLimits.ts
+```

@@ -8,7 +8,7 @@ import {
   type UpsertPatientPaymentPayload,
   ApiError,
 } from "@api";
-import { shouldSilentReload, type ReloadOptions } from "../../common/reloadOptions";
+import { shouldSilentReload, type ReloadOptions } from "@helpers";
 import { useAuth } from "@services";
 
 export const usePsychologistPatientPayments = (billingMonth?: string | null) => {

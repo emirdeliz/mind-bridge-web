@@ -17,11 +17,15 @@ import {
   type CreateAppointmentInput,
   type UpdateSchedulingSettingsPayload,
 } from "@api";
-import { shouldSilentReload, type ReloadOptions } from "../../common/reloadOptions";
+import {
+  applyOptimisticMove,
+  getBrowserTzOffsetMinutes,
+  getWeekStartIso,
+  shouldSilentReload,
+  syncAppointmentsAfterMove,
+  type ReloadOptions,
+} from "@helpers";
 import { useAuth } from "@services";
-
-import { getBrowserTzOffsetMinutes, getWeekStartIso } from "../schedulingDateUtils";
-import { applyOptimisticMove, syncAppointmentsAfterMove } from "../schedulingOptimisticMove";
 
 export const usePsychologistScheduling = (weekStart: string | null) => {
   const { session } = useAuth();

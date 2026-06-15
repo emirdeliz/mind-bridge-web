@@ -2,6 +2,7 @@ export * from "./auth/hooks/useAuth";
 export * from "./admin/hooks/useAdminPlatformMetrics";
 export * from "./billing";
 export * from "./chat-shortcut";
+export * from "./knowledge";
 export * from "./clinical";
 export * from "./patient";
 export * from "./scheduling";
@@ -11,11 +12,5 @@ export * from "./ai/hooks/useAiAgent";
 export * from "./ai/agentGuardrails";
 
 export type { ChatMessage } from "./ai/hooks/useAiAgent";
-
-export type ActorChipVariant = "agent" | "human" | "system";
-
-export const actorChipVariant = (actor: string): ActorChipVariant => {
-  if (actor.toLowerCase().includes("agent")) return "agent";
-  if (actor.toLowerCase().includes("system")) return "system";
-  return "human";
-};
+export type { ActorChipVariant } from "@helpers";
+export { actorChipVariant } from "@helpers";

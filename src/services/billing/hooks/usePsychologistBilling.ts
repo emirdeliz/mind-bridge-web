@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { PsychologistBillingSummaryDto } from "@api";
 import { getPsychologistBillingApi, ApiError } from "@api";
-import { shouldSilentReload, type ReloadOptions } from "../../common/reloadOptions";
+import { shouldSilentReload, type ReloadOptions } from "@helpers";
 import { useAuth } from "@services";
 
 export const usePsychologistBilling = (billingMonth?: string | null) => {

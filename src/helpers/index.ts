@@ -16,6 +16,29 @@ export {
   omitProps,
   INPUT_CUSTOM_PROP_KEYS,
 } from './filterDomProps';
+export {
+  DEFAULT_KNOWLEDGE_MAX_FILE_BYTES,
+  formatKnowledgeMaxFileSizeMb,
+  isKnowledgeFileWithinSizeLimit,
+  resolveKnowledgeMaxFileBytes,
+} from './knowledgeFileLimits';
+export {
+  hasKnowledgeDocumentsAwaitingIndex,
+  isKnowledgeDocumentIndexed,
+  isKnowledgeDocumentIndexing,
+  type KnowledgeDocumentIndexStatus,
+} from './knowledgeIndexStatus';
+export { actorChipVariant, type ActorChipVariant } from './actorChip';
+export {
+  billingMonthFromDate,
+  canNavigateToPreviousBillingMonth,
+  previousBillingMonth,
+} from './billingMonthNavigation';
+export { resolveChatShortcutTranslation } from './chatShortcutTranslation';
+export { shouldSilentReload, type ReloadOptions } from './reloadOptions';
+export { normalizeSession } from './sessionUtils';
+export * from './schedulingDateUtils';
+export { applyOptimisticMove, syncAppointmentsAfterMove } from './schedulingOptimisticMove';
 
 export const getProfileInitials = (fullName: string, fallback = "??"): string => {
   const parts = fullName.trim().split(/\s+/).filter(Boolean);
