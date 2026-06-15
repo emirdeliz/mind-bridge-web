@@ -28,6 +28,12 @@ export {
   isKnowledgeDocumentIndexing,
   type KnowledgeDocumentIndexStatus,
 } from './knowledgeIndexStatus';
+export {
+  countLikertAnswers,
+  likertAnchorHighKey,
+  likertAnchorLowKey,
+  likertQuestionKey,
+} from './likertCheckInLabels';
 export { actorChipVariant, type ActorChipVariant } from './actorChip';
 export {
   billingMonthFromDate,
