@@ -47,6 +47,11 @@ export const UserAccountMenu = () => {
           <NextLink href={profileHref} className="mb-user-menu-item" role="menuitem" onClick={closeMenu}>
             {t("USER_MENU_EDIT_PROFILE")}
           </NextLink>
+          {session.isAdmin ? (
+            <NextLink href="/admin" className="mb-user-menu-item" role="menuitem" onClick={closeMenu}>
+              {t("USER_MENU_ADMIN")}
+            </NextLink>
+          ) : null}
           <button
             type="button"
             className="mb-user-menu-item-danger"

@@ -1,4 +1,5 @@
 export * from "./home/HomePage";
+export * from "./admin/AdminPage";
 export * from "./register/RegisterPage";
 export * from "./patient/PatientPage";
 export * from "./psychologist/PsychologistPage";

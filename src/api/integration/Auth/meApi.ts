@@ -17,6 +17,7 @@ type MeResponse = {
   id: string;
   email: string;
   role: UserRole;
+  isAdmin?: boolean;
   profile: MeProfileResponse | null;
 };
 
@@ -38,6 +39,7 @@ export const fetchMeApi = async () => {
     id: data.id,
     email: data.email,
     role: data.role,
+    isAdmin: data.isAdmin ?? false,
     profile,
   };
 };

@@ -15,6 +15,7 @@ export interface UserAuthViewDto {
   email: string;
   role: UserRole;
   provider: AuthProvider;
+  isAdmin?: boolean;
   profile: UserProfile;
 }
 

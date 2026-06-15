@@ -9,6 +9,7 @@ export const createBypassSession = (role: UserRole): UserAuthViewDto => ({
   email: role === "patient" ? "demo.patient@mindbridge.app" : "demo.psychologist@mindbridge.app",
   role,
   provider: "password",
+  isAdmin: false,
   profile: {
     fullName: role === "patient" ? "Paciente Demo" : "Psicólogo Demo",
     age: "",

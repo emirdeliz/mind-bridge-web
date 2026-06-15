@@ -24,6 +24,7 @@ export const normalizeSession = (
     email: value.email,
     role: value.role,
     provider: value.provider ?? 'password',
+    isAdmin: value.isAdmin ?? false,
     profile: {
       fullName: profile.fullName ?? '',
       age: profile.age ?? '',

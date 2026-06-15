@@ -11,6 +11,7 @@ type ProfileRow = {
   address: string | null;
   phone: string | null;
   language: UserProfile['language'] | null;
+  is_admin?: boolean | null;
 };
 
 const mapProfileRow = (row: ProfileRow): UserProfile => ({
@@ -38,7 +39,7 @@ export const buildUserAuthViewFromSupabase = async (
 
   const { data: row, error: profileError } = await supabase
     .from('profiles')
-    .select('id, email, role, full_name, age, address, phone, language')
+    .select('id, email, role, full_name, age, address, phone, language, is_admin')
     .eq('id', userData.user.id)
     .maybeSingle();
 
@@ -53,6 +54,7 @@ export const buildUserAuthViewFromSupabase = async (
     email: userData.user.email,
     role: row.role,
     provider: 'password',
+    isAdmin: Boolean((row as ProfileRow).is_admin),
     profile,
   };
 };
@@ -70,5 +72,6 @@ export const toPublicSession = (session: UserAuthViewDto): UserAuthViewDto => ({
   email: session.email,
   role: session.role,
   provider: session.provider,
+  isAdmin: session.isAdmin ?? false,
   profile: session.profile,
 });
