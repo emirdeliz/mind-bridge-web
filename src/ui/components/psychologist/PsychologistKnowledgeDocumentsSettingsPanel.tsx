@@ -31,7 +31,9 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
     maxFileBytes,
     loading,
     uploading,
+    refreshing,
     error,
+    refreshStatus,
     uploadDocument,
     removeDocument,
   } = usePsychologistKnowledgeDocuments();
@@ -126,6 +128,23 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
         updatedAt: formatDateAsDDMMYYYYAndTime(document.updatedAt),
         actions: (
           <Flex row gap2 alignCenter justifyCenter>
+            <Tooltip title={t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_REFRESH_STATUS")} top>
+              <span className="inline-flex h-8 w-8 items-center justify-center">
+                <Button
+                  type="button"
+                  xs
+                  sm
+                  circle
+                  variant="secondary"
+                  outlined
+                  clickable={!refreshing && !loading && !uploading}
+                  title={t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_REFRESH_STATUS")}
+                  onClick={() => void refreshStatus()}
+                >
+                  <Icon.History sm spinning={refreshing} white />
+                </Button>
+              </span>
+            </Tooltip>
             <Tooltip title={t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPDATE")} top>
               <span className="inline-flex h-8 w-8 items-center justify-center">
                 <Button
@@ -163,7 +182,7 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
           </Flex>
         ),
       })),
-    [documents, t, uploading],
+    [documents, loading, refreshStatus, refreshing, t, uploading],
   );
 
   const columns = useMemo(
@@ -198,14 +217,19 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
             : indexing
               ? t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_PENDING")
               : t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_FAILED");
+          const statusTooltip = indexed
+            ? t("TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_YES")
+            : indexing
+              ? t("TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_PENDING")
+              : t("TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_FAILED");
 
           return (
-            <Tooltip title={t("TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE_COL_INDEXED")} top width={300}>
+            <Tooltip title={statusTooltip} top width={300}>
               <Flex row alignCenter gap2>
                 {indexed ? (
                   <Icon.OkCircle sm />
                 ) : indexing ? (
-                  <Icon.Spin sm />
+                  <Icon.Spin sm spinning />
                 ) : (
                   <Icon.Error sm />
                 )}
@@ -230,7 +254,7 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
         key: "actions" as const,
         label: t("PSYCHOLOGIST_PATIENTS_COL_ACTIONS"),
         disableSort: true,
-        width: "104px",
+        width: "148px",
       },
     ],
     [t],

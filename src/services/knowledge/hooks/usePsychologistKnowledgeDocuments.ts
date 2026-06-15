@@ -19,6 +19,7 @@ export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean 
   const [maxFileBytes, setMaxFileBytes] = useState(DEFAULT_KNOWLEDGE_MAX_FILE_BYTES);
   const [loading, setLoading] = useState(enabled);
   const [uploading, setUploading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
   const documentsRef = useRef(documents);
 
@@ -74,6 +75,19 @@ export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean 
     return () => window.clearInterval(intervalId);
   }, [documents, enabled, reload]);
 
+  const refreshStatus = useCallback(async () => {
+    if (!enabled) {
+      return;
+    }
+
+    setRefreshing(true);
+    try {
+      await reload({ silent: true });
+    } finally {
+      setRefreshing(false);
+    }
+  }, [enabled, reload]);
+
   const uploadDocument = useCallback(async (file: File) => {
     setUploading(true);
     setError('');
@@ -119,8 +133,10 @@ export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean 
     maxFileBytes,
     loading,
     uploading,
+    refreshing,
     error,
     reload,
+    refreshStatus,
     uploadDocument,
     removeDocument,
   };
