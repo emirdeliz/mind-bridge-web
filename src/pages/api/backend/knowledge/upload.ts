@@ -4,15 +4,15 @@ import { getApiBaseUrl } from '@lib/supabase/env';
 import { getServerSession } from '@lib/auth/session.server';
 import { resolveKnowledgeMaxFileBytes } from '@helpers';
 
-const maxFileBytes = resolveKnowledgeMaxFileBytes(process.env.KNOWLEDGE_MAX_FILE_BYTES);
-const uploadSizeLimitMb = Math.ceil(maxFileBytes / (1024 * 1024)) + 1;
-
+// Next.js requires a static literal for page config. Runtime limit: KNOWLEDGE_MAX_FILE_BYTES.
 export const config = {
   api: {
     bodyParser: false,
-    sizeLimit: `${uploadSizeLimitMb}mb`,
+    sizeLimit: '10mb',
   },
 };
+
+const maxFileBytes = resolveKnowledgeMaxFileBytes(process.env.KNOWLEDGE_MAX_FILE_BYTES);
 
 const readRequestBody = async (req: NextApiRequest): Promise<Buffer> => {
   const chunks: Buffer[] = [];
