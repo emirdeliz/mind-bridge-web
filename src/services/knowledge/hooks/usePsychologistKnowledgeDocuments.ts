@@ -6,7 +6,12 @@ import {
   getKnowledgeDocumentsApi,
   uploadKnowledgeDocumentApi,
 } from '@api';
-import { DEFAULT_KNOWLEDGE_MAX_FILE_BYTES } from '@helpers';
+import {
+  DEFAULT_KNOWLEDGE_MAX_FILE_BYTES,
+  hasKnowledgeDocumentsAwaitingIndex,
+} from '@helpers';
+
+const KNOWLEDGE_INDEX_POLL_INTERVAL_MS = 4000;
 
 export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean }) => {
   const enabled = options?.enabled ?? true;
@@ -15,13 +20,21 @@ export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean 
   const [loading, setLoading] = useState(enabled);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
+  const documentsRef = useRef(documents);
 
-  const reload = useCallback(async () => {
+  useEffect(() => {
+    documentsRef.current = documents;
+  }, [documents]);
+
+  const reload = useCallback(async (options?: { silent?: boolean }) => {
     if (!enabled) {
       return;
     }
 
-    setLoading(true);
+    const silent = options?.silent ?? false;
+    if (!silent) {
+      setLoading(true);
+    }
     setError('');
     try {
       const data = await getKnowledgeDocumentsApi();
@@ -30,18 +43,36 @@ export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean 
         setMaxFileBytes(data.maxFileBytes);
       }
     } catch (loadError) {
-      setError(
-        loadError instanceof Error ? loadError.message : 'Failed to load knowledge documents',
-      );
-      setDocuments([]);
+      if (!silent) {
+        setError(
+          loadError instanceof Error ? loadError.message : 'Failed to load knowledge documents',
+        );
+        setDocuments([]);
+      }
     } finally {
-      setLoading(false);
+      if (!silent) {
+        setLoading(false);
+      }
     }
   }, [enabled]);
 
   useEffect(() => {
     void reload();
   }, [reload]);
+
+  useEffect(() => {
+    if (!enabled || !hasKnowledgeDocumentsAwaitingIndex(documentsRef.current)) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      if (hasKnowledgeDocumentsAwaitingIndex(documentsRef.current)) {
+        void reload({ silent: true });
+      }
+    }, KNOWLEDGE_INDEX_POLL_INTERVAL_MS);
+
+    return () => window.clearInterval(intervalId);
+  }, [documents, enabled, reload]);
 
   const uploadDocument = useCallback(async (file: File) => {
     setUploading(true);

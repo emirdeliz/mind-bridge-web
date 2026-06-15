@@ -22,6 +22,12 @@ export {
   isKnowledgeFileWithinSizeLimit,
   resolveKnowledgeMaxFileBytes,
 } from './knowledgeFileLimits';
+export {
+  hasKnowledgeDocumentsAwaitingIndex,
+  isKnowledgeDocumentIndexed,
+  isKnowledgeDocumentIndexing,
+  type KnowledgeDocumentIndexStatus,
+} from './knowledgeIndexStatus';
 export { actorChipVariant, type ActorChipVariant } from './actorChip';
 export {
   billingMonthFromDate,

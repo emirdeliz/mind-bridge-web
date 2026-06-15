@@ -4,9 +4,9 @@ import { useMemo, useState, type ReactNode } from "react";
 
 import type { KnowledgeDocumentDto } from "@api";
 import { Button, Flex, Icon, Loading, Title } from "@atoms";
-import { formatDateAsDDMMYYYYAndTime, formatKnowledgeMaxFileSizeMb, isKnowledgeFileWithinSizeLimit } from "@helpers";
+import { formatDateAsDDMMYYYYAndTime, formatKnowledgeMaxFileSizeMb, isKnowledgeDocumentIndexed, isKnowledgeDocumentIndexing, isKnowledgeFileWithinSizeLimit } from "@helpers";
 import { useI18n, translateTemplate } from "@i18n";
-import { Card, ConfirmModal, PageLoader, Table, Tooltip } from "@molecules";
+import { Card, ConfirmModal, Table, Tooltip } from "@molecules";
 import { DashboardSectionTitle } from "@templates";
 import {
   useKnowledgeFilePicker,
@@ -16,6 +16,7 @@ import {
 type KnowledgeDocumentTableRow = {
   id: string;
   fileName: string;
+  indexStatus: KnowledgeDocumentDto["indexStatus"];
   updatedAt: string;
   actions: ReactNode;
 };
@@ -121,9 +122,10 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
       documents.map((document) => ({
         id: document.id,
         fileName: document.fileName,
+        indexStatus: document.indexStatus,
         updatedAt: formatDateAsDDMMYYYYAndTime(document.updatedAt),
         actions: (
-          <Flex row gap2 wrap>
+          <Flex row gap2 alignCenter justifyCenter>
             <Tooltip title={t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPDATE")} top>
               <span className="inline-flex h-8 w-8 items-center justify-center">
                 <Button
@@ -176,6 +178,46 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
         ),
       },
       {
+        key: "indexStatus" as const,
+        label: (
+          <Flex row alignCenter gap1>
+            <span>{t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_COL_INDEXED")}</span>
+            <Tooltip title={t("TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE_COL_INDEXED")} top width={300}>
+              <span className="mb-tooltip-trigger inline-flex">
+                <Icon.InfoCircle xs />
+              </span>
+            </Tooltip>
+          </Flex>
+        ),
+        disableSort: true,
+        customCellRender: (row: KnowledgeDocumentTableRow) => {
+          const indexed = isKnowledgeDocumentIndexed(row.indexStatus);
+          const indexing = isKnowledgeDocumentIndexing(row.indexStatus);
+          const label = indexed
+            ? t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_YES")
+            : indexing
+              ? t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_PENDING")
+              : t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_FAILED");
+
+          return (
+            <Tooltip title={t("TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE_COL_INDEXED")} top width={300}>
+              <Flex row alignCenter gap2>
+                {indexed ? (
+                  <Icon.OkCircle sm />
+                ) : indexing ? (
+                  <Icon.Spin sm />
+                ) : (
+                  <Icon.Error sm />
+                )}
+                <Title s1 gray block leadingRelaxed>
+                  {label}
+                </Title>
+              </Flex>
+            </Tooltip>
+          );
+        },
+      },
+      {
         key: "updatedAt" as const,
         label: t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_COL_UPDATED_AT"),
         customCellRender: (row: KnowledgeDocumentTableRow) => (
@@ -188,6 +230,7 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
         key: "actions" as const,
         label: t("PSYCHOLOGIST_PATIENTS_COL_ACTIONS"),
         disableSort: true,
+        width: "104px",
       },
     ],
     [t],
@@ -238,7 +281,9 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
         ) : null}
 
         {loading ? (
-          <PageLoader />
+          <Flex row wFull alignCenter gap2>
+            <Loading />
+          </Flex>
         ) : displayError && !documents.length ? (
           <Title s2 error block>
             {displayError}

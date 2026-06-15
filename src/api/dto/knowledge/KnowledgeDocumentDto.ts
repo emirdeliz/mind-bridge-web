@@ -5,6 +5,7 @@ export type KnowledgeDocumentDto = {
   uploadedBy: string | null;
   chunkCount: number;
   status: 'active' | 'archived';
+  indexStatus: 'pending' | 'indexing' | 'indexed' | 'failed';
   createdAt: string;
   updatedAt: string;
 };

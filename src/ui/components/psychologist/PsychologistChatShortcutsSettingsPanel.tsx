@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState, type ReactNode } from "react";
 import type { PsychologistChatShortcutDto } from "@api";
 import { Button, Flex, Icon, Input, Loading, Title } from "@atoms";
 import { translateTemplate, useI18n } from "@i18n";
-import { Card, ConfirmModal, FormGroup, PageLoader, Table, Tooltip } from "@molecules";
+import { Card, ConfirmModal, FormGroup, Table, Tooltip } from "@molecules";
 import { DashboardSectionTitle } from "@templates";
 import {
   resolveChatShortcutTranslation,
@@ -298,7 +298,9 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
         </Flex>
 
         {loading ? (
-          <PageLoader />
+          <Flex row wFull alignCenter gap2>
+            <Loading />
+          </Flex>
         ) : error && !shortcuts.length ? (
           <Title s2 error block>
             {error}
