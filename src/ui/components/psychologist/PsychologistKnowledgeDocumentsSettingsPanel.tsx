@@ -244,8 +244,10 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
       {
         key: "updatedAt" as const,
         label: t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_COL_UPDATED_AT"),
+        disableSort: true,
+        width: "180px",
         customCellRender: (row: KnowledgeDocumentTableRow) => (
-          <Title s1 gray block leadingRelaxed>
+          <Title s1 gray noWrap leadingRelaxed>
             {row.updatedAt}
           </Title>
         ),
