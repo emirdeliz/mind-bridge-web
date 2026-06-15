@@ -2,11 +2,15 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { getApiBaseUrl } from '@lib/supabase/env';
 import { getServerSession } from '@lib/auth/session.server';
+import { resolveKnowledgeMaxFileBytes } from '@helpers';
+
+const maxFileBytes = resolveKnowledgeMaxFileBytes(process.env.KNOWLEDGE_MAX_FILE_BYTES);
+const uploadSizeLimitMb = Math.ceil(maxFileBytes / (1024 * 1024)) + 1;
 
 export const config = {
   api: {
     bodyParser: false,
-    sizeLimit: '12mb',
+    sizeLimit: `${uploadSizeLimitMb}mb`,
   },
 };
 
@@ -39,6 +43,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const body = await readRequestBody(req);
+  if (body.byteLength > maxFileBytes) {
+    res.status(400).json({
+      error: `PDF exceeds maximum size of ${maxFileBytes} bytes`,
+    });
+    return;
+  }
+
   const headers: Record<string, string> = {
     Accept: 'application/json',
     Authorization: `Bearer ${sessionResult.accessToken}`,

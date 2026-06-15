@@ -16,6 +16,12 @@ export {
   omitProps,
   INPUT_CUSTOM_PROP_KEYS,
 } from './filterDomProps';
+export {
+  DEFAULT_KNOWLEDGE_MAX_FILE_BYTES,
+  formatKnowledgeMaxFileSizeMb,
+  isKnowledgeFileWithinSizeLimit,
+  resolveKnowledgeMaxFileBytes,
+} from './knowledgeFileLimits';
 
 export const getProfileInitials = (fullName: string, fallback = "??"): string => {
   const parts = fullName.trim().split(/\s+/).filter(Boolean);

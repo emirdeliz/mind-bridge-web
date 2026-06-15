@@ -3,7 +3,7 @@ import type {
   KnowledgeDocumentDto,
   UploadKnowledgeDocumentResponseDto,
 } from '../../dto/knowledge/KnowledgeDocumentDto';
-import { keysToCamel } from '@helpers';
+import { keysToCamel, DEFAULT_KNOWLEDGE_MAX_FILE_BYTES } from '@helpers';
 
 type KnowledgeDocumentsListResponse = {
   documents: KnowledgeDocumentDto[];
@@ -49,7 +49,7 @@ export const getKnowledgeDocumentsApi = async (): Promise<KnowledgeDocumentsList
   const data = keysToCamel<KnowledgeDocumentsListResponse>(payload);
   return {
     documents: data.documents ?? [],
-    maxFileBytes: data.maxFileBytes,
+    maxFileBytes: data.maxFileBytes ?? DEFAULT_KNOWLEDGE_MAX_FILE_BYTES,
   };
 };
 

@@ -6,10 +6,12 @@ import {
   getKnowledgeDocumentsApi,
   uploadKnowledgeDocumentApi,
 } from '@api';
+import { DEFAULT_KNOWLEDGE_MAX_FILE_BYTES } from '@helpers';
 
 export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean }) => {
   const enabled = options?.enabled ?? true;
   const [documents, setDocuments] = useState<KnowledgeDocumentDto[]>([]);
+  const [maxFileBytes, setMaxFileBytes] = useState(DEFAULT_KNOWLEDGE_MAX_FILE_BYTES);
   const [loading, setLoading] = useState(enabled);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
@@ -23,7 +25,10 @@ export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean 
     setError('');
     try {
       const data = await getKnowledgeDocumentsApi();
-      setDocuments(data);
+      setDocuments(data.documents);
+      if (data.maxFileBytes > 0) {
+        setMaxFileBytes(data.maxFileBytes);
+      }
     } catch (loadError) {
       setError(
         loadError instanceof Error ? loadError.message : 'Failed to load knowledge documents',
@@ -80,6 +85,7 @@ export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean 
 
   return {
     documents,
+    maxFileBytes,
     loading,
     uploading,
     error,

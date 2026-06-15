@@ -4,7 +4,7 @@ import { useMemo, useState, type ReactNode } from "react";
 
 import type { KnowledgeDocumentDto } from "@api";
 import { Button, Flex, Icon, Loading, Title } from "@atoms";
-import { formatDateAsDDMMYYYYAndTime } from "@helpers";
+import { formatDateAsDDMMYYYYAndTime, formatKnowledgeMaxFileSizeMb, isKnowledgeFileWithinSizeLimit } from "@helpers";
 import { useI18n, translateTemplate } from "@i18n";
 import { Card, ConfirmModal, PageLoader, Table, Tooltip } from "@molecules";
 import { DashboardSectionTitle } from "@templates";
@@ -25,11 +25,34 @@ const isPdfFile = (file: File): boolean =>
 
 export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
   const { t } = useI18n();
-  const { documents, loading, uploading, error, uploadDocument, removeDocument } =
-    usePsychologistKnowledgeDocuments();
+  const {
+    documents,
+    maxFileBytes,
+    loading,
+    uploading,
+    error,
+    uploadDocument,
+    removeDocument,
+  } = usePsychologistKnowledgeDocuments();
   const { inputRef, pickFile, handleChange } = useKnowledgeFilePicker();
   const [deleteTarget, setDeleteTarget] = useState<KnowledgeDocumentDto | null>(null);
   const [actionError, setActionError] = useState("");
+
+  const maxSizeMb = formatKnowledgeMaxFileSizeMb(maxFileBytes);
+
+  const validateSelectedFile = (file: File): string | null => {
+    if (!isPdfFile(file)) {
+      return t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_PDF_ONLY");
+    }
+
+    if (!isKnowledgeFileWithinSizeLimit(file.size, maxFileBytes)) {
+      return translateTemplate(t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_FILE_TOO_LARGE"), {
+        maxSizeMb,
+      });
+    }
+
+    return null;
+  };
 
   const handleUpload = async () => {
     const file = await pickFile();
@@ -37,8 +60,9 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
       return;
     }
 
-    if (!isPdfFile(file)) {
-      setActionError(t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_PDF_ONLY"));
+    const validationError = validateSelectedFile(file);
+    if (validationError) {
+      setActionError(validationError);
       return;
     }
 
@@ -56,8 +80,9 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
       return;
     }
 
-    if (!isPdfFile(file)) {
-      setActionError(t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_PDF_ONLY"));
+    const validationError = validateSelectedFile(file);
+    if (validationError) {
+      setActionError(validationError);
       return;
     }
 
@@ -188,7 +213,9 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
               tooltip={t("TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE")}
             />
             <Title s2 gray block leadingRelaxed>
-              {t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_HINT")}
+              {translateTemplate(t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_HINT"), {
+                maxSizeMb,
+              })}
             </Title>
           </Flex>
           <Button
