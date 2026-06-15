@@ -1,3 +1,26 @@
 export * from "./hooks/usePsychologistScheduling";
-export * from "./schedulingDateUtils";
-export * from "./schedulingOptimisticMove";
+export {
+  applyOptimisticMove,
+  appointmentDragId,
+  combineLocalDateAndTime,
+  getAppointmentSlotCoverage,
+  getBrowserTzOffsetMinutes,
+  getMondayDateKey,
+  getWeekDateKeys,
+  getWeekStartIso,
+  getWeekStartIsoForLocalDate,
+  isValidLocalDate,
+  minutesToTime,
+  parseAppointmentDragId,
+  parseSlotId,
+  parseTimeToMinutes,
+  personalDurationMinutesFromSlotRange,
+  personalEndSlotTimeFromDuration,
+  shiftWeekStartIso,
+  slotId,
+  syncAppointmentsAfterMove,
+  toLocalDateKey,
+  toLocalTime,
+  type AppointmentSlotCoverage,
+  type SlotSettings,
+} from "@helpers";

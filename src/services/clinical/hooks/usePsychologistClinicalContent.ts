@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { PatientClinicalContentDto } from "@api";
 import { getPsychologistPatientClinicalContentApi, ApiError } from "@api";
 import { useI18n } from "@i18n";
-import { shouldSilentReload, type ReloadOptions } from "../../common/reloadOptions";
+import { shouldSilentReload, type ReloadOptions } from "@helpers";
 import { useAuth } from "@services";
 import { emptyClinicalContentForPatient } from "../clinicalContentDefaults";
 
