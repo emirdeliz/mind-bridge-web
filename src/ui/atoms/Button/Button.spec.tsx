@@ -9,7 +9,7 @@ describe('Button component test', () => {
   });
 
   it('Have button info variant', async () => {
-    const { container: buttonNode } = render(<Button variant="info" />);
+    const { container: buttonNode } = render(<Button variant='info' />);
     const button = buttonNode.firstChild as HTMLElement;
     expect(button).toBeInTheDocument();
     // Verificar se o botão tem as classes do variant info

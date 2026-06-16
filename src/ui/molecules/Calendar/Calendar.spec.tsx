@@ -39,7 +39,9 @@ describe('Calendar component test', () => {
       fireEvent.click(prevButton);
     });
 
-    const monthTitle = screen.getByText(getMonthByIndex(currentDate.getMonth() - 1)?.label || '');
+    const monthTitle = screen.getByText(
+      getMonthByIndex(currentDate.getMonth() - 1)?.label || ''
+    );
     expect(monthTitle).toBeInTheDocument();
 
     const nextButton = screen.getByTitle('Próximo mês');
@@ -47,7 +49,9 @@ describe('Calendar component test', () => {
       fireEvent.click(nextButton);
     });
 
-    const currentMonthTitle = screen.getByText(getMonthByIndex(currentDate.getMonth())?.label || '');
+    const currentMonthTitle = screen.getByText(
+      getMonthByIndex(currentDate.getMonth())?.label || ''
+    );
     expect(currentMonthTitle).toBeInTheDocument();
   });
 
@@ -59,7 +63,9 @@ describe('Calendar component test', () => {
     fireEvent.click(prevButton);
     fireEvent.click(prevButton);
 
-    const monthTitle = screen.getByText(getMonthByIndex(currentDate.getMonth() - 2)?.label || '');
+    const monthTitle = screen.getByText(
+      getMonthByIndex(currentDate.getMonth() - 2)?.label || ''
+    );
     expect(monthTitle).toBeInTheDocument();
   });
 
@@ -71,7 +77,9 @@ describe('Calendar component test', () => {
     fireEvent.click(nextButton);
     fireEvent.click(nextButton);
 
-    const monthTitle = screen.getByText(getMonthByIndex(currentDate.getMonth() + 2)?.label || '');
+    const monthTitle = screen.getByText(
+      getMonthByIndex(currentDate.getMonth() + 2)?.label || ''
+    );
     expect(monthTitle).toBeInTheDocument();
   });
 

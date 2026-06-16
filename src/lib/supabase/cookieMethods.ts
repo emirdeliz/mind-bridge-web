@@ -9,7 +9,9 @@ import { getSupabaseAnonKey, getSupabaseUrl } from './env';
 type CookieToSet = { name: string; value: string; options: SerializeOptions };
 
 const readRequestCookies = (
-  cookies: NextApiRequest['cookies'] | GetServerSidePropsContext['req']['cookies']
+  cookies:
+    | NextApiRequest['cookies']
+    | GetServerSidePropsContext['req']['cookies']
 ) =>
   Object.entries(cookies).flatMap(([name, value]) => {
     if (value === undefined || value === '') {

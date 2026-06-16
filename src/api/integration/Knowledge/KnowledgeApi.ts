@@ -24,37 +24,40 @@ const buildProxyUrl = (path: string): string => {
   return `/api/backend/${normalizedPath}`;
 };
 
-export const getKnowledgeDocumentsApi = async (): Promise<KnowledgeDocumentsListResult> => {
-  const response = await fetch(buildProxyUrl('/knowledge/documents'), {
-    method: 'GET',
-    headers: { Accept: 'application/json' },
-    credentials: 'include',
-  });
+export const getKnowledgeDocumentsApi =
+  async (): Promise<KnowledgeDocumentsListResult> => {
+    const response = await fetch(buildProxyUrl('/knowledge/documents'), {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      credentials: 'include',
+    });
 
-  const payload = (await response.json().catch(() => ({}))) as {
-    error?: string;
-    message?: string;
-    documents?: KnowledgeDocumentDto[];
-    maxFileBytes?: number;
-    max_file_bytes?: number;
+    const payload = (await response.json().catch(() => ({}))) as {
+      error?: string;
+      message?: string;
+      documents?: KnowledgeDocumentDto[];
+      maxFileBytes?: number;
+      max_file_bytes?: number;
+    };
+
+    if (!response.ok) {
+      throw new ApiError(
+        response.status,
+        payload.error ??
+          payload.message ??
+          `Request failed (${response.status})`
+      );
+    }
+
+    const data = keysToCamel<KnowledgeDocumentsListResponse>(payload);
+    return {
+      documents: data.documents ?? [],
+      maxFileBytes: data.maxFileBytes ?? DEFAULT_KNOWLEDGE_MAX_FILE_BYTES,
+    };
   };
-
-  if (!response.ok) {
-    throw new ApiError(
-      response.status,
-      payload.error ?? payload.message ?? `Request failed (${response.status})`,
-    );
-  }
-
-  const data = keysToCamel<KnowledgeDocumentsListResponse>(payload);
-  return {
-    documents: data.documents ?? [],
-    maxFileBytes: data.maxFileBytes ?? DEFAULT_KNOWLEDGE_MAX_FILE_BYTES,
-  };
-};
 
 export const uploadKnowledgeDocumentApi = async (
-  file: File,
+  file: File
 ): Promise<UploadKnowledgeDocumentResponseDto> => {
   const formData = new FormData();
   formData.append('file', file, file.name);
@@ -75,7 +78,7 @@ export const uploadKnowledgeDocumentApi = async (
   if (!response.ok) {
     throw new ApiError(
       response.status,
-      payload.error ?? payload.message ?? `Request failed (${response.status})`,
+      payload.error ?? payload.message ?? `Request failed (${response.status})`
     );
   }
 
@@ -87,12 +90,17 @@ export const uploadKnowledgeDocumentApi = async (
   return data;
 };
 
-export const deleteKnowledgeDocumentApi = async (documentId: string): Promise<void> => {
-  const response = await fetch(buildProxyUrl(`/knowledge/documents/${documentId}`), {
-    method: 'DELETE',
-    headers: { Accept: 'application/json' },
-    credentials: 'include',
-  });
+export const deleteKnowledgeDocumentApi = async (
+  documentId: string
+): Promise<void> => {
+  const response = await fetch(
+    buildProxyUrl(`/knowledge/documents/${documentId}`),
+    {
+      method: 'DELETE',
+      headers: { Accept: 'application/json' },
+      credentials: 'include',
+    }
+  );
 
   if (response.status === 204) {
     return;
@@ -106,7 +114,7 @@ export const deleteKnowledgeDocumentApi = async (documentId: string): Promise<vo
   if (!response.ok) {
     throw new ApiError(
       response.status,
-      payload.error ?? payload.message ?? `Request failed (${response.status})`,
+      payload.error ?? payload.message ?? `Request failed (${response.status})`
     );
   }
 };

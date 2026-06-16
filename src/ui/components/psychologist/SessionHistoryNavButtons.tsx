@@ -1,5 +1,5 @@
-import { Button, Flex, Icon } from "@atoms";
-import { Tooltip } from "@molecules";
+import { Button, Flex, Icon } from '@atoms';
+import { Tooltip } from '@molecules';
 
 interface SessionHistoryNavButtonsProps {
   canGoOlder: boolean;
@@ -20,13 +20,13 @@ export const SessionHistoryNavButtons = ({
 }: SessionHistoryNavButtonsProps) => (
   <Flex row alignCenter gap2>
     <Tooltip title={olderTooltip} top width={280}>
-      <span className="inline-block">
+      <span className='inline-block'>
         <Button
-          type="button"
+          type='button'
           xs
           sm
           circle
-          variant="secondary"
+          variant='secondary'
           outlined
           clickable={canGoOlder}
           onClick={onGoOlder}
@@ -36,13 +36,13 @@ export const SessionHistoryNavButtons = ({
       </span>
     </Tooltip>
     <Tooltip title={newerTooltip} top width={280}>
-      <span className="inline-block">
+      <span className='inline-block'>
         <Button
-          type="button"
+          type='button'
           xs
           sm
           circle
-          variant="secondary"
+          variant='secondary'
           outlined
           clickable={canGoNewer}
           onClick={onGoNewer}

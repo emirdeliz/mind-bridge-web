@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-import { getRoleRoute, useAuth } from "@services";
+import { getRoleRoute, useAuth } from '@services';
 
 export const useAdminGuard = () => {
   const router = useRouter();
@@ -14,7 +14,7 @@ export const useAdminGuard = () => {
       return;
     }
     if (!session) {
-      void router.replace("/");
+      void router.replace('/');
       return;
     }
     if (!session.isAdmin) {

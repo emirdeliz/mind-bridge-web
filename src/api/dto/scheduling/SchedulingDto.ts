@@ -40,11 +40,11 @@ export type SchedulingConflictPreviewDto = {
 
 export type UpdateSchedulingSettingsResultDto =
   | {
-      status: "saved";
+      status: 'saved';
       settings: PsychologistSchedulingSettingsDto;
       removedAppointmentIds: string[];
     }
   | {
-      status: "confirmation_required";
+      status: 'confirmation_required';
       conflicts: SchedulingConflictPreviewDto[];
     };

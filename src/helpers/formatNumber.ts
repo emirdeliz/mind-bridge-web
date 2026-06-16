@@ -1,20 +1,20 @@
-import type { AppLanguage } from "@api";
+import type { AppLanguage } from '@api';
 
 export const localeForAppLanguage = (language: AppLanguage): string => {
   switch (language) {
-    case "en":
-      return "en-US";
-    case "es":
-      return "es-ES";
+    case 'en':
+      return 'en-US';
+    case 'es':
+      return 'es-ES';
     default:
-      return "pt-BR";
+      return 'pt-BR';
   }
 };
 
 export const formatNumberForAppLanguage = (
   value: number,
   language: AppLanguage,
-  options?: Intl.NumberFormatOptions,
+  options?: Intl.NumberFormatOptions
 ): string =>
   new Intl.NumberFormat(localeForAppLanguage(language), options).format(value);
 
@@ -24,11 +24,11 @@ export const formatNumberForIrisAppLanguage = formatNumberForAppLanguage;
 export const formatCurrencyForAppLanguage = (
   value: number,
   language: AppLanguage,
-  currency = "BRL",
-  options?: Omit<Intl.NumberFormatOptions, "style" | "currency">,
+  currency = 'BRL',
+  options?: Omit<Intl.NumberFormatOptions, 'style' | 'currency'>
 ): string =>
   new Intl.NumberFormat(localeForAppLanguage(language), {
-    style: "currency",
+    style: 'currency',
     currency,
     minimumFractionDigits: 2,
     ...options,
@@ -37,5 +37,5 @@ export const formatCurrencyForAppLanguage = (
 export const formatCentsAsCurrencyForAppLanguage = (
   cents: number,
   language: AppLanguage,
-  currency = "BRL",
+  currency = 'BRL'
 ): string => formatCurrencyForAppLanguage(cents / 100, language, currency);

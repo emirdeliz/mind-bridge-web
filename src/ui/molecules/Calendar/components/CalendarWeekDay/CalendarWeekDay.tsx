@@ -62,7 +62,9 @@ export const CalendarWeekDay = memo(
             !onClick && 'bg-gray-100',
             onClick && !disabledDay && !!day && 'cursor-pointer',
             disabledDay && 'disabled',
-          ].filter(Boolean).join(' ');
+          ]
+            .filter(Boolean)
+            .join(' ');
 
           return (
             <div

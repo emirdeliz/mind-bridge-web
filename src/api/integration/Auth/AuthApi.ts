@@ -113,14 +113,20 @@ export const requestPasswordResetApi = async (
   }
 
   if (isAuthBypassEnabled()) {
-    return { ok: false, message: 'Password reset is not available in demo mode' };
+    return {
+      ok: false,
+      message: 'Password reset is not available in demo mode',
+    };
   }
 
   try {
-    const data = await authFetch<PasswordResetResponse>('/api/auth/password-reset', {
-      method: 'POST',
-      body: JSON.stringify({ email: trimmed }),
-    });
+    const data = await authFetch<PasswordResetResponse>(
+      '/api/auth/password-reset',
+      {
+        method: 'POST',
+        body: JSON.stringify({ email: trimmed }),
+      }
+    );
     return data ?? { ok: false };
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Request failed';
@@ -135,7 +141,9 @@ export const logoutApi = async (): Promise<void> => {
   await authFetch('/api/auth/logout', { method: 'POST' });
 };
 
-export const enterBypassApi = async (role: UserRole): Promise<UserAuthViewDto> => {
+export const enterBypassApi = async (
+  role: UserRole
+): Promise<UserAuthViewDto> => {
   const data = await authFetch<AuthMutationResponse>('/api/auth/bypass', {
     method: 'POST',
     body: JSON.stringify({ role }),

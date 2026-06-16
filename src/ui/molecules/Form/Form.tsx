@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 
-import { Flex } from "@atoms";
+import { Flex } from '@atoms';
 
 interface FormChildrenProps {
   children: ReactNode;
@@ -8,7 +8,7 @@ interface FormChildrenProps {
 }
 
 export const Form = ({ children, onSubmit }: FormChildrenProps) => (
-  <form className="modal-form w-full" onSubmit={onSubmit}>
+  <form className='modal-form w-full' onSubmit={onSubmit}>
     <Flex col wFull gap6 alignStretch>
       {children}
     </Flex>

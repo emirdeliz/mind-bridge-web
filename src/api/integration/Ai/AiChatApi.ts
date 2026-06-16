@@ -6,7 +6,10 @@ export {
   streamPatientChatApi,
   streamPsychologistChatApi,
 } from '../../http/aiStream';
-export type { AiStreamEvent, StreamPatientChatResult } from '../../http/aiStream';
+export type {
+  AiStreamEvent,
+  StreamPatientChatResult,
+} from '../../http/aiStream';
 
 type PatientChatResponse = {
   message: string;
@@ -34,9 +37,18 @@ export const postPsychologistChatApi = async (
   language?: AppLanguage,
   sessionConsiderations?: string
 ): Promise<string> => {
-  const response = await apiRequest<PsychologistChatResponse>('/ai/psychologist/chat', {
-    method: 'POST',
-    body: { patientId, message, clinicalContext, sessionConsiderations, language },
-  });
+  const response = await apiRequest<PsychologistChatResponse>(
+    '/ai/psychologist/chat',
+    {
+      method: 'POST',
+      body: {
+        patientId,
+        message,
+        clinicalContext,
+        sessionConsiderations,
+        language,
+      },
+    }
+  );
   return response.message;
 };

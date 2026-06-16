@@ -31,7 +31,7 @@ export const FormGroup = ({
   ...props
 }: FormGroupChildrenProps) => {
   const domProps = filterDOMProps(props);
-  
+
   const formGroupClasses = [
     'mb-6 w-full',
     'transition-all duration-200',
@@ -81,26 +81,14 @@ export const FormGroup = ({
             {...domProps}
           >
             {label}
-            {required && (
-              <span className={requiredClasses}>*</span>
-            )}
+            {required && <span className={requiredClasses}>*</span>}
           </Label>
-          {optional && (
-            <span className={optionalClasses}>(Opcional)</span>
-          )}
+          {optional && <span className={optionalClasses}>(Opcional)</span>}
         </div>
       )}
       {children}
-      {error && (
-        <div className={errorClasses}>
-          {error}
-        </div>
-      )}
-      {helpText && (
-        <div className={helpTextClasses}>
-          {helpText}
-        </div>
-      )}
+      {error && <div className={errorClasses}>{error}</div>}
+      {helpText && <div className={helpTextClasses}>{helpText}</div>}
     </div>
   );
 };

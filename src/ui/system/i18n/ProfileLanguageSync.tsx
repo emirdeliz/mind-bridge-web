@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
-import { useAuth } from "@services";
-import { useI18n } from "./hooks/useI18n";
+import { useAuth } from '@services';
+import { useI18n } from './hooks/useI18n';
 
 /** Applies `profile.language` from the active session to the UI locale. */
 export const ProfileLanguageSync = () => {

@@ -1,20 +1,20 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
-import type { ClinicalChatMessageDto, LikertCheckInDto } from "@api";
+import type { ClinicalChatMessageDto, LikertCheckInDto } from '@api';
 import {
   type ChatMessage,
   getRoleRoute,
   useAiAgent,
   useAuth,
   usePatientClinicalContent,
-} from "@services";
-import { Title } from "@atoms";
-import { useI18n } from "@i18n";
-import { Card, InteractionSummaryBody, PageLoader } from "@molecules";
-import { AppShell, ChatPanel, DashboardSectionTitle } from "@templates";
+} from '@services';
+import { Title } from '@atoms';
+import { useI18n } from '@i18n';
+import { Card, InteractionSummaryBody, PageLoader } from '@molecules';
+import { AppShell, ChatPanel, DashboardSectionTitle } from '@templates';
 
-import { PatientLikertCheckInPanel } from "./PatientLikertCheckInPanel";
+import { PatientLikertCheckInPanel } from './PatientLikertCheckInPanel';
 
 const toChatMessages = (seed: ClinicalChatMessageDto[]): ChatMessage[] =>
   seed.map((item) => ({
@@ -31,11 +31,12 @@ export const PatientPage = () => {
   const router = useRouter();
   const { t } = useI18n();
   const { session, loading } = useAuth();
-  const { content, loading: contentLoading } =
-    usePatientClinicalContent();
-  const [likertCheckIn, setLikertCheckIn] = useState<LikertCheckInDto | null>(null);
+  const { content, loading: contentLoading } = usePatientClinicalContent();
+  const [likertCheckIn, setLikertCheckIn] = useState<LikertCheckInDto | null>(
+    null
+  );
   const { messages, sendMessage, setMessages, sending } = useAiAgent({
-    mode: "patient",
+    mode: 'patient',
   });
 
   useEffect(() => {
@@ -51,15 +52,15 @@ export const PatientPage = () => {
   useEffect(() => {
     if (loading) return;
     if (!session) {
-      void router.replace("/");
+      void router.replace('/');
       return;
     }
-    if (session.role !== "patient") {
+    if (session.role !== 'patient') {
       void router.replace(getRoleRoute(session.role));
     }
   }, [loading, session, router]);
 
-  const isPatient = session?.role === "patient";
+  const isPatient = session?.role === 'patient';
   if (!isPatient && !loading) {
     return null;
   }
@@ -67,37 +68,44 @@ export const PatientPage = () => {
   const showFullPageLoader =
     loading || (contentLoading && !content) || !isPatient;
 
-  const patientSummaryText = content?.patientSummary?.trim() ?? "";
+  const patientSummaryText = content?.patientSummary?.trim() ?? '';
   const hasPatientSummary = Boolean(patientSummaryText);
 
   return (
-    <AppShell title={t("PATIENT_AREA_TITLE")} subtitle={t("PATIENT_AREA_SUBTITLE")} variant="dashboard">
+    <AppShell
+      title={t('PATIENT_CHAT_NAV')}
+      subtitle={t('PATIENT_AREA_SUBTITLE')}
+      variant='dashboard'
+    >
       {showFullPageLoader ? (
         <PageLoader />
       ) : (
         <>
-      <PatientLikertCheckInPanel
-        initialCheckIn={likertCheckIn}
-        onSaved={(saved) => setLikertCheckIn(saved)}
-      />
-      <ChatPanel
-        messages={messages}
-        onSend={(text) => void sendMessage(text)}
-        sending={sending}
-        showAudio={false}
-        showInteractionDividers
-        sectionTooltip={t("TOOLTIP_PATIENT_CHAT")}
-      />
-      <Card padding="lg" shadow="md">
-        <DashboardSectionTitle title={t("INTERACTION_SUMMARY")} tooltip={t("TOOLTIP_PATIENT_SUMMARY")} />
-        {hasPatientSummary ? (
-          <InteractionSummaryBody text={patientSummaryText} />
-        ) : (
-          <Title s1 gray>
-            {t("AI_SUMMARY_NO_INTERACTIONS")}
-          </Title>
-        )}
-      </Card>
+          <PatientLikertCheckInPanel
+            initialCheckIn={likertCheckIn}
+            onSaved={(saved) => setLikertCheckIn(saved)}
+          />
+          <ChatPanel
+            messages={messages}
+            onSend={(text) => void sendMessage(text)}
+            sending={sending}
+            showAudio={false}
+            showInteractionDividers
+            sectionTooltip={t('TOOLTIP_PATIENT_CHAT')}
+          />
+          <Card padding='lg' shadow='md'>
+            <DashboardSectionTitle
+              title={t('INTERACTION_SUMMARY')}
+              tooltip={t('TOOLTIP_PATIENT_SUMMARY')}
+            />
+            {hasPatientSummary ? (
+              <InteractionSummaryBody text={patientSummaryText} />
+            ) : (
+              <Title s1 gray>
+                {t('AI_SUMMARY_NO_INTERACTIONS')}
+              </Title>
+            )}
+          </Card>
         </>
       )}
     </AppShell>

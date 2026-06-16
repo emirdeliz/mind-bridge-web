@@ -1,6 +1,6 @@
-export type AdminMetricsPeriod = "month" | "3m" | "6m" | "1y";
+export type AdminMetricsPeriod = 'month' | '3m' | '6m' | '1y';
 
-export type AdminMetricsGranularity = "week" | "month";
+export type AdminMetricsGranularity = 'week' | 'month';
 
 export type AdminPlatformMetricsPointDto = {
   periodStart: string;

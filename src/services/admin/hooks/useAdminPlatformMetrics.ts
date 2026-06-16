@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 
-import type { AdminMetricsPeriod, AdminPlatformMetricsDto } from "@api";
-import { getAdminPlatformMetricsApi } from "@api";
+import type { AdminMetricsPeriod, AdminPlatformMetricsDto } from '@api';
+import { getAdminPlatformMetricsApi } from '@api';
 
 export const useAdminPlatformMetrics = (period: AdminMetricsPeriod) => {
   const [metrics, setMetrics] = useState<AdminPlatformMetricsDto | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const reload = useCallback(async () => {
     setLoading(true);
-    setError("");
+    setError('');
     try {
       const data = await getAdminPlatformMetricsApi(period);
       setMetrics(data);
@@ -20,7 +20,7 @@ export const useAdminPlatformMetrics = (period: AdminMetricsPeriod) => {
       setError(
         loadError instanceof Error
           ? loadError.message
-          : "Failed to load admin metrics",
+          : 'Failed to load admin metrics'
       );
       setMetrics(null);
     } finally {

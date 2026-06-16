@@ -14,7 +14,10 @@ type ApiRequestOptions = {
   query?: Record<string, string | boolean | number | undefined>;
 };
 
-const buildProxyUrl = (path: string, query?: ApiRequestOptions['query']): string => {
+const buildProxyUrl = (
+  path: string,
+  query?: ApiRequestOptions['query']
+): string => {
   const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
   const url = new URL(
     `/api/backend/${normalizedPath}`,
@@ -38,7 +41,9 @@ export const apiRequest = async <T>(
   options: ApiRequestOptions = {}
 ): Promise<T> => {
   if (typeof window === 'undefined') {
-    throw new Error('apiRequest is browser-only; use serverApiRequest on the server');
+    throw new Error(
+      'apiRequest is browser-only; use serverApiRequest on the server'
+    );
   }
 
   const { method = 'GET', body, query } = options;

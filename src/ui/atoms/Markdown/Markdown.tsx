@@ -15,13 +15,9 @@ const markdownParser = (text?: string) => {
 };
 
 export const Markdown = memo(({ children, ...props }: MarkdownProps) => {
-  const markdownClasses = [
-    'prose prose-sm max-w-none',
-  ].join(' ');
+  const markdownClasses = ['prose prose-sm max-w-none'].join(' ');
 
-  const paragraphClasses = [
-    'm-0',
-  ].join(' ');
+  const paragraphClasses = ['m-0'].join(' ');
 
   return (
     <div className={markdownClasses} {...props}>

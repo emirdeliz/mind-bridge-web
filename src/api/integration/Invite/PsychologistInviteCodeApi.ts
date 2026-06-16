@@ -7,7 +7,9 @@ type InviteCodeResponse = {
 
 export const getPsychologistInviteCodeApi =
   async (): Promise<PsychologistInviteCodeDto> => {
-    const data = await apiRequest<InviteCodeResponse>('/psychologist/invite-code');
+    const data = await apiRequest<InviteCodeResponse>(
+      '/psychologist/invite-code'
+    );
     return { code: data.code };
   };
 

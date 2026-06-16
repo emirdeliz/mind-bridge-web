@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useCallback, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useMemo, useState, type ReactNode } from 'react';
 
-import type { PsychologistChatShortcutDto } from "@api";
-import { Button, Flex, Icon, Input, Loading, Title } from "@atoms";
-import { translateTemplate, useI18n } from "@i18n";
-import { Card, ConfirmModal, FormGroup, Table, Tooltip } from "@molecules";
-import { DashboardSectionTitle } from "@templates";
+import type { PsychologistChatShortcutDto } from '@api';
+import { Button, Flex, Icon, Input, Loading, Title } from '@atoms';
+import { translateTemplate, useI18n } from '@i18n';
+import { Card, ConfirmModal, FormGroup, Table, Tooltip } from '@molecules';
+import { DashboardSectionTitle } from '@templates';
 import {
   resolveChatShortcutTranslation,
   usePsychologistChatShortcuts,
-} from "@services";
+} from '@services';
 
 type ShortcutFormState = {
   label: string;
@@ -29,12 +29,12 @@ type ShortcutTableRow = {
 };
 
 const emptyForm = (): ShortcutFormState => ({
-  label: "",
-  message: "",
+  label: '',
+  message: '',
 });
 
 const createPendingId = (): string =>
-  typeof crypto !== "undefined" && "randomUUID" in crypto
+  typeof crypto !== 'undefined' && 'randomUUID' in crypto
     ? crypto.randomUUID()
     : `pending-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 
@@ -59,11 +59,15 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
     removeShortcut,
   } = usePsychologistChatShortcuts();
   const [formOpen, setFormOpen] = useState(false);
-  const [editingShortcut, setEditingShortcut] = useState<PsychologistChatShortcutDto | null>(null);
+  const [editingShortcut, setEditingShortcut] =
+    useState<PsychologistChatShortcutDto | null>(null);
   const [form, setForm] = useState<ShortcutFormState>(emptyForm);
-  const [pendingDrafts, setPendingDrafts] = useState<PendingShortcutDraft[]>([]);
-  const [formError, setFormError] = useState("");
-  const [deleteTarget, setDeleteTarget] = useState<PsychologistChatShortcutDto | null>(null);
+  const [pendingDrafts, setPendingDrafts] = useState<PendingShortcutDraft[]>(
+    []
+  );
+  const [formError, setFormError] = useState('');
+  const [deleteTarget, setDeleteTarget] =
+    useState<PsychologistChatShortcutDto | null>(null);
 
   const isCreateMode = formOpen && !editingShortcut;
   const pendingSaveCount =
@@ -73,7 +77,7 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
     setEditingShortcut(null);
     setForm(emptyForm());
     setPendingDrafts([]);
-    setFormError("");
+    setFormError('');
     setFormOpen(true);
   };
 
@@ -85,7 +89,7 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
       label: translation.label,
       message: translation.message,
     });
-    setFormError("");
+    setFormError('');
     setFormOpen(true);
   };
 
@@ -97,17 +101,17 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
     setEditingShortcut(null);
     setForm(emptyForm());
     setPendingDrafts([]);
-    setFormError("");
+    setFormError('');
   };
 
   const handleAddToList = () => {
     const parsed = parseForm(form);
     if (!parsed) {
-      setFormError(t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_FORM_REQUIRED"));
+      setFormError(t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_FORM_REQUIRED'));
       return;
     }
 
-    setFormError("");
+    setFormError('');
     setPendingDrafts((current) => [
       ...current,
       {
@@ -122,18 +126,20 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
     if (saving) {
       return;
     }
-    setPendingDrafts((current) => current.filter((draft) => draft.id !== draftId));
+    setPendingDrafts((current) =>
+      current.filter((draft) => draft.id !== draftId)
+    );
   };
 
   const handleSubmit = async () => {
     if (editingShortcut) {
       const parsed = parseForm(form);
       if (!parsed) {
-        setFormError(t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_FORM_REQUIRED"));
+        setFormError(t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_FORM_REQUIRED'));
         return;
       }
 
-      setFormError("");
+      setFormError('');
       try {
         await updateShortcut(editingShortcut.id, {
           ...parsed,
@@ -156,18 +162,18 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
     }
 
     if (!drafts.length) {
-      setFormError(t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_BATCH_REQUIRED"));
+      setFormError(t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_BATCH_REQUIRED'));
       return;
     }
 
-    setFormError("");
+    setFormError('');
     try {
       await createShortcuts(
         drafts.map((draft) => ({
           label: draft.label,
           message: draft.message,
           sourceLanguage: language,
-        })),
+        }))
       );
       closeForm();
     } catch {
@@ -193,34 +199,34 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
   const buildRowActions = useCallback(
     (shortcut: PsychologistChatShortcutDto) => (
       <Flex row gap2>
-        <Tooltip title={t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_EDIT")} top>
-          <span className="inline-flex h-8 w-8 items-center justify-center">
+        <Tooltip title={t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_EDIT')} top>
+          <span className='inline-flex h-8 w-8 items-center justify-center'>
             <Button
-              type="button"
+              type='button'
               xs
               sm
               circle
-              variant="secondary"
+              variant='secondary'
               outlined
               clickable={!saving}
-              title={t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_EDIT")}
+              title={t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_EDIT')}
               onClick={() => openEditForm(shortcut)}
             >
               <Icon.Pencil sm white />
             </Button>
           </span>
         </Tooltip>
-        <Tooltip title={t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_DELETE")} top>
-          <span className="inline-flex h-8 w-8 items-center justify-center">
+        <Tooltip title={t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_DELETE')} top>
+          <span className='inline-flex h-8 w-8 items-center justify-center'>
             <Button
-              type="button"
+              type='button'
               xs
               sm
               circle
-              variant="secondary"
+              variant='secondary'
               outlined
               clickable={!saving}
-              title={t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_DELETE")}
+              title={t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_DELETE')}
               onClick={() => setDeleteTarget(shortcut)}
             >
               <Icon.TrashEmpty sm white />
@@ -229,7 +235,7 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
         </Tooltip>
       </Flex>
     ),
-    [openEditForm, saving, t],
+    [openEditForm, saving, t]
   );
 
   const tableData = useMemo((): ShortcutTableRow[] => {
@@ -247,8 +253,8 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
   const columns = useMemo(
     () => [
       {
-        key: "label" as const,
-        label: t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_LABEL"),
+        key: 'label' as const,
+        label: t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_LABEL'),
         customCellRender: (row: ShortcutTableRow) => (
           <Title s2 fw3 block>
             {row.label}
@@ -256,8 +262,8 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
         ),
       },
       {
-        key: "message" as const,
-        label: t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_MESSAGE"),
+        key: 'message' as const,
+        label: t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_MESSAGE'),
         disableSort: true,
         customCellRender: (row: ShortcutTableRow) => (
           <Title s1 gray block leadingRelaxed>
@@ -266,34 +272,34 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
         ),
       },
       {
-        key: "actions" as const,
-        label: t("PSYCHOLOGIST_PATIENTS_COL_ACTIONS"),
+        key: 'actions' as const,
+        label: t('PSYCHOLOGIST_PATIENTS_COL_ACTIONS'),
         disableSort: true,
       },
     ],
-    [t],
+    [t]
   );
 
   return (
-    <Card padding="lg" shadow="md">
+    <Card padding='lg' shadow='md'>
       <Flex col wFull gap4>
         <Flex row wFull wrap alignStart justifySpaceBetween gap4>
           <Flex col wFull gap2 flex1>
             <DashboardSectionTitle
-              title={t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_TITLE")}
-              tooltip={t("TOOLTIP_PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS")}
+              title={t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_TITLE')}
+              tooltip={t('TOOLTIP_PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS')}
             />
             <Title s2 gray block leadingRelaxed>
-              {t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_HINT")}
+              {t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_HINT')}
             </Title>
           </Flex>
           <Button
-            type="button"
-            variant="primary"
+            type='button'
+            variant='primary'
             clickable={!saving && !formOpen}
             onClick={openCreateForm}
           >
-            {t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_ADD")}
+            {t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_ADD')}
           </Button>
         </Flex>
 
@@ -307,11 +313,11 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
           </Title>
         ) : shortcuts.length === 0 ? (
           <Title s1 gray block>
-            {t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_EMPTY")}
+            {t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_EMPTY')}
           </Title>
         ) : (
           <Table<ShortcutTableRow>
-            variant="dark"
+            variant='dark'
             columns={columns}
             dataSource={tableData}
           />
@@ -324,17 +330,17 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
         ) : null}
 
         {formOpen ? (
-          <div className="w-full rounded-xl border border-mb-accent/30 bg-mb-accent/5 p-4">
+          <div className='w-full rounded-xl border border-mb-accent/30 bg-mb-accent/5 p-4'>
             <Flex col wFull gap4>
               <Title fs4 fw3 block>
                 {editingShortcut
-                  ? t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_EDIT")
-                  : t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_ADD")}
+                  ? t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_EDIT')
+                  : t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_ADD')}
               </Title>
               <Title s2 gray block leadingRelaxed>
                 {editingShortcut
-                  ? t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_FORM_HINT")
-                  : t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_BATCH_HINT")}
+                  ? t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_FORM_HINT')
+                  : t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_BATCH_HINT')}
               </Title>
 
               {formError ? (
@@ -346,14 +352,17 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
               {isCreateMode && pendingDrafts.length > 0 ? (
                 <Flex col wFull alignStretch gap4>
                   <Title s2 fw3 block>
-                    {translateTemplate(t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_PENDING_TITLE"), {
-                      count: pendingDrafts.length,
-                    })}
+                    {translateTemplate(
+                      t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_PENDING_TITLE'),
+                      {
+                        count: pendingDrafts.length,
+                      }
+                    )}
                   </Title>
                   {pendingDrafts.map((draft) => (
                     <div
                       key={draft.id}
-                      className="w-full rounded-xl border border-dashed border-mb-border/80 bg-mb-bg/40 p-4"
+                      className='w-full rounded-xl border border-dashed border-mb-border/80 bg-mb-bg/40 p-4'
                     >
                       <Flex row wFull alignStart justifySpaceBetween gap4>
                         <Flex col wFull gap1 flex1>
@@ -365,19 +374,23 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
                           </Title>
                         </Flex>
                         <Tooltip
-                          title={t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_REMOVE_PENDING")}
+                          title={t(
+                            'PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_REMOVE_PENDING'
+                          )}
                           top
                         >
-                          <span className="inline-flex h-8 w-8 items-center justify-center">
+                          <span className='inline-flex h-8 w-8 items-center justify-center'>
                             <Button
-                              type="button"
+                              type='button'
                               xs
                               sm
                               circle
-                              variant="secondary"
+                              variant='secondary'
                               outlined
                               clickable={!saving}
-                              title={t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_REMOVE_PENDING")}
+                              title={t(
+                                'PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_REMOVE_PENDING'
+                              )}
                               onClick={() => handleRemovePendingDraft(draft.id)}
                             >
                               <Icon.TrashEmpty sm white />
@@ -391,36 +404,42 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
               ) : null}
 
               <FormGroup
-                label={t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_LABEL")}
-                target="psychologist-chat-shortcut-label"
+                label={t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_LABEL')}
+                target='psychologist-chat-shortcut-label'
                 required
               >
                 <Input
-                  id="psychologist-chat-shortcut-label"
+                  id='psychologist-chat-shortcut-label'
                   value={form.label}
                   disabled={saving}
                   maxLength={120}
                   onChange={(event) => {
-                    setForm((current) => ({ ...current, label: event.target.value }));
-                    setFormError("");
+                    setForm((current) => ({
+                      ...current,
+                      label: event.target.value,
+                    }));
+                    setFormError('');
                   }}
                 />
               </FormGroup>
 
               <FormGroup
-                label={t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_MESSAGE")}
-                target="psychologist-chat-shortcut-message"
+                label={t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_MESSAGE')}
+                target='psychologist-chat-shortcut-message'
                 required
               >
                 <Input.TextArea
-                  id="psychologist-chat-shortcut-message"
+                  id='psychologist-chat-shortcut-message'
                   rows={4}
                   value={form.message}
                   disabled={saving}
                   maxLength={2000}
                   onChange={(event) => {
-                    setForm((current) => ({ ...current, message: event.target.value }));
-                    setFormError("");
+                    setForm((current) => ({
+                      ...current,
+                      message: event.target.value,
+                    }));
+                    setFormError('');
                   }}
                 />
               </FormGroup>
@@ -429,43 +448,48 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
                 <Flex row wFull alignCenter gap2>
                   <Loading />
                   <Title s2 gray block>
-                    {t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_TRANSLATING")}
+                    {t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_TRANSLATING')}
                   </Title>
                 </Flex>
               ) : null}
 
               <Flex row wFull gap4 wrap>
                 <Button
-                  type="button"
-                  variant="secondary"
+                  type='button'
+                  variant='secondary'
                   outlined
                   clickable={!saving}
                   onClick={closeForm}
                 >
-                  {t("PSYCHOLOGIST_PATIENTS_MODAL_CANCEL")}
+                  {t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
                 </Button>
                 {isCreateMode ? (
                   <Button
-                    type="button"
-                    variant="secondary"
+                    type='button'
+                    variant='secondary'
                     outlined
                     clickable={!saving}
                     onClick={handleAddToList}
                   >
-                    {t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_ADD_TO_LIST")}
+                    {t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_ADD_TO_LIST')}
                   </Button>
                 ) : null}
                 <Button
-                  type="button"
-                  variant="primary"
-                  clickable={!saving && (editingShortcut ? true : pendingSaveCount > 0)}
+                  type='button'
+                  variant='primary'
+                  clickable={
+                    !saving && (editingShortcut ? true : pendingSaveCount > 0)
+                  }
                   onClick={() => void handleSubmit()}
                 >
                   {isCreateMode && pendingSaveCount > 0
-                    ? translateTemplate(t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_SAVE_COUNT"), {
-                        count: pendingSaveCount,
-                      })
-                    : t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_SAVE")}
+                    ? translateTemplate(
+                        t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_SAVE_COUNT'),
+                        {
+                          count: pendingSaveCount,
+                        }
+                      )
+                    : t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_SAVE')}
                 </Button>
               </Flex>
             </Flex>
@@ -475,11 +499,11 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
 
       <ConfirmModal
         visible={Boolean(deleteTarget)}
-        title={t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_DELETE")}
-        message={t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_DELETE_CONFIRM")}
-        confirmLabel={t("PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_DELETE")}
-        cancelLabel={t("PSYCHOLOGIST_PATIENTS_MODAL_CANCEL")}
-        confirmVariant="danger"
+        title={t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_DELETE')}
+        message={t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_DELETE_CONFIRM')}
+        confirmLabel={t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_DELETE')}
+        cancelLabel={t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
+        confirmVariant='danger'
         onClose={() => {
           if (!saving) {
             setDeleteTarget(null);

@@ -1,14 +1,18 @@
-import type { AppProps } from "next/app";
-import { Inter } from "next/font/google";
-import { useEffect } from "react";
+import type { AppProps } from 'next/app';
+import { Inter } from 'next/font/google';
+import { useEffect } from 'react';
 
-import { I18nProvider, ProfileLanguageSync } from "@i18n";
-import { AuthProvider, type AuthPageProps } from "../services/auth/AuthProvider";
-import "@styles/globals.css";
+import { I18nProvider, ProfileLanguageSync } from '@i18n';
+import { Toast, ToastProvider } from '@molecules';
+import {
+  AuthProvider,
+  type AuthPageProps,
+} from '../services/auth/AuthProvider';
+import '@styles/globals.css';
 
 const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
+  subsets: ['latin'],
+  variable: '--font-inter',
 });
 
 type PagePropsWithAuth = {
@@ -28,10 +32,15 @@ const App = ({ Component, pageProps }: AppProps<PagePropsWithAuth>) => {
   return (
     <I18nProvider>
       <AuthProvider initialAuth={pageProps.auth}>
-        <ProfileLanguageSync />
-        <div className={`${inter.variable} ${inter.className} min-h-screen font-sans`}>
-          <Component {...pageProps} />
-        </div>
+        <ToastProvider>
+          <ProfileLanguageSync />
+          <div
+            className={`${inter.variable} ${inter.className} min-h-screen font-sans`}
+          >
+            <Component {...pageProps} />
+          </div>
+          <Toast />
+        </ToastProvider>
       </AuthProvider>
     </I18nProvider>
   );

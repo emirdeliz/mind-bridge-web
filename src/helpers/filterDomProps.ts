@@ -95,7 +95,13 @@ export const FIELD_PROP_KEYS = [
   'row',
 ] as const;
 
-export const LABEL_CUSTOM_PROP_KEYS = ['fw3', 'n2', 'fs3', 'error', 'target'] as const;
+export const LABEL_CUSTOM_PROP_KEYS = [
+  'fw3',
+  'n2',
+  'fs3',
+  'error',
+  'target',
+] as const;
 
 export const BUTTON_CUSTOM_PROP_KEYS = [
   'clickable',
@@ -127,7 +133,10 @@ export const BUTTON_CUSTOM_PROP_KEYS = [
 ] as const;
 
 export const filterInputDomProps = <T extends object>(props: T): Partial<T> =>
-  omitProps(props as Record<string, unknown>, INPUT_CUSTOM_PROP_KEYS) as Partial<T>;
+  omitProps(
+    props as Record<string, unknown>,
+    INPUT_CUSTOM_PROP_KEYS
+  ) as Partial<T>;
 
 /** FormGroup / DropdownForm — rest props forwarded to Label. */
 export const filterDOMProps = <T extends object>(props: T): Partial<T> =>
@@ -140,4 +149,7 @@ export const filterLabelDomProps = <T extends object>(props: T): Partial<T> =>
   ]) as Partial<T>;
 
 export const filterButtonDomProps = <T extends object>(props: T): Partial<T> =>
-  omitProps(props as Record<string, unknown>, BUTTON_CUSTOM_PROP_KEYS) as Partial<T>;
+  omitProps(
+    props as Record<string, unknown>,
+    BUTTON_CUSTOM_PROP_KEYS
+  ) as Partial<T>;

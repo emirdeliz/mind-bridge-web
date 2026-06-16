@@ -4,7 +4,7 @@ import { Skeleton } from './Skeleton';
 describe('Skeleton component test', () => {
   const width = '20px',
     height = '20px';
-    
+
   it('Render regular (square) Skeleton', async () => {
     const { container: skeletonNode } = render(
       <Skeleton width={width} height={height} />

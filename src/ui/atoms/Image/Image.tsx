@@ -10,14 +10,14 @@ export interface ImageProps {
   priority?: boolean;
 }
 
-export const ImageComponent = ({ 
-  src, 
-  alt, 
-  width, 
-  height, 
+export const ImageComponent = ({
+  src,
+  alt,
+  width,
+  height,
   fill = false,
   priority = false,
-  ...props 
+  ...props
 }: ImageProps) => {
   const containerClasses = [
     'relative w-full h-full',
@@ -32,7 +32,7 @@ export const ImageComponent = ({
           alt={alt}
           fill
           priority={priority}
-          className="object-contain"
+          className='object-contain'
           {...props}
         />
       </div>
@@ -47,7 +47,7 @@ export const ImageComponent = ({
         width={width || 400}
         height={height || 300}
         priority={priority}
-        className="max-w-full max-h-full object-contain"
+        className='max-w-full max-h-full object-contain'
         {...props}
       />
     </div>

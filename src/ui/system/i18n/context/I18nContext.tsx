@@ -1,9 +1,19 @@
 import type { AppLanguage } from '@api';
-import { createContext, ReactNode, use, useCallback, useEffect, useState } from 'react';
+import {
+  createContext,
+  ReactNode,
+  use,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import en from '../dictionaries/en.json';
 import es from '../dictionaries/es.json';
 import pt from '../dictionaries/pt_br.json';
-import { DEFAULT_APP_LANGUAGE, getLanguageFromSessionStorage } from '../languages';
+import {
+  DEFAULT_APP_LANGUAGE,
+  getLanguageFromSessionStorage,
+} from '../languages';
 
 type Language = AppLanguage;
 
@@ -49,7 +59,7 @@ export const I18nProvider = ({ children }: I18nProviderProps) => {
     (key: string) => {
       return i18n[language][key] ?? i18n.pt[key] ?? i18n.en[key] ?? key;
     },
-    [language],
+    [language]
   );
 
   return (

@@ -21,8 +21,8 @@ const renderDot = (
   const isCurrent = key === currentIndex;
   const checked = checkedFromParm ?? (currentIndex || 0) > key;
   return (
-    <div key={key} className="flex flex-col items-center">
-      <div className="flex items-center justify-center">
+    <div key={key} className='flex flex-col items-center'>
+      <div className='flex items-center justify-center'>
         <Dot
           xss
           data-testid={`${key}-step-dot`}
@@ -43,7 +43,7 @@ const renderDot = (
             {title}
           </Title>
           {checked && (
-            <div className="flex items-center justify-center ml-1">
+            <div className='flex items-center justify-center ml-1'>
               <Icon.Check xs white={isCurrent} />
             </div>
           )}
@@ -54,8 +54,8 @@ const renderDot = (
 };
 
 const DotDelimiter = () => (
-  <div className="flex flex-col items-center">
-    <div className="flex items-center justify-center">
+  <div className='flex flex-col items-center'>
+    <div className='flex items-center justify-center'>
       <Dot xss />
     </div>
   </div>
@@ -68,7 +68,7 @@ export const StepProgressBar = ({
 }: StepProgressBarProps) => {
   return (
     <div className={`flex flex-col items-center h-[${steps.length * 70}px]`}>
-      <div className="flex flex-col items-center">
+      <div className='flex flex-col items-center'>
         <DotDelimiter />
         {steps.map((step, index) =>
           renderDot(index, step, currentIndex, outlined)

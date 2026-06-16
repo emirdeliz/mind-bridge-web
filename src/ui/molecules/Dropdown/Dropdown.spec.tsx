@@ -11,36 +11,32 @@ describe('/ui/molecules/Dropdown', () => {
     it('Have Dropdown with options', async () => {
       const options = [
         { id: 1, label: 'Option 1' },
-        { id: 2, label: 'Option 2' }
+        { id: 2, label: 'Option 2' },
       ];
-      
+
       const { getByText } = render(
-        <Dropdown 
-          options={options} 
-          keyOfLabel="label"
-          placeholder="Select option"
+        <Dropdown
+          options={options}
+          keyOfLabel='label'
+          placeholder='Select option'
         />
       );
-      
+
       expect(getByText('Select option')).toBeInTheDocument();
     });
 
     it('Have Dropdown with selected value', async () => {
       const options = [
         { id: 1, label: 'Option 1' },
-        { id: 2, label: 'Option 2' }
+        { id: 2, label: 'Option 2' },
       ];
-      
+
       const selectedValue = { id: 1, label: 'Option 1' };
-      
+
       const { getByText } = render(
-        <Dropdown 
-          options={options} 
-          keyOfLabel="label"
-          value={selectedValue}
-        />
+        <Dropdown options={options} keyOfLabel='label' value={selectedValue} />
       );
-      
+
       expect(getByText('Option 1')).toBeInTheDocument();
     });
   });

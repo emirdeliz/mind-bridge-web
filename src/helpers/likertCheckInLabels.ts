@@ -11,6 +11,7 @@ export const likertAnchorHighKey = (dimension: LikertDimensionId): string =>
 
 export const countLikertAnswers = (
   scores: Partial<Record<LikertDimensionId, number>>,
-  dimensions: readonly LikertDimensionId[],
+  dimensions: readonly LikertDimensionId[]
 ): number =>
-  dimensions.filter((dimension) => typeof scores[dimension] === 'number').length;
+  dimensions.filter((dimension) => typeof scores[dimension] === 'number')
+    .length;

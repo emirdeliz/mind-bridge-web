@@ -1,5 +1,5 @@
-import React, { memo, ReactNode } from "react";
-import { Icon, IconProps } from "../../atoms";
+import React, { memo, ReactNode } from 'react';
+import { Icon, IconProps } from '../../atoms';
 
 interface AlertBaseProps {
   children: ReactNode;
@@ -10,9 +10,9 @@ export interface AlertProps extends AlertBaseProps {
 }
 
 const AlertComponent = memo(({ before, children }: AlertProps) => (
-  <div className="mb-alert-warning">
+  <div className='mb-alert-warning'>
     {before}
-    <div className="flex-1 leading-relaxed">{children}</div>
+    <div className='flex-1 leading-relaxed'>{children}</div>
   </div>
 ));
 

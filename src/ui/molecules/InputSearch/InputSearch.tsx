@@ -1,15 +1,19 @@
-import { Icon } from "@atoms";
-import { useI18n } from "@i18n";
+import { Icon } from '@atoms';
+import { useI18n } from '@i18n';
 
-interface InputSearchProps { 
+interface InputSearchProps {
   value?: string;
   placeholder?: string;
   onChange: (value: string) => void;
 }
 
-export const InputSearch = ({ value, onChange, placeholder }: InputSearchProps) => {
+export const InputSearch = ({
+  value,
+  onChange,
+  placeholder,
+}: InputSearchProps) => {
   const { t } = useI18n();
-  
+
   const containerClasses = ['relative w-full'].join(' ');
 
   const inputClasses = [
@@ -31,11 +35,11 @@ export const InputSearch = ({ value, onChange, placeholder }: InputSearchProps) 
 
   return (
     <div className={containerClasses}>
-      <input 
+      <input
         className={inputClasses}
-        placeholder={placeholder || t('SEARCH')} 
-        value={value} 
-        onChange={(e) => onChange(e.target.value)} 
+        placeholder={placeholder || t('SEARCH')}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
       />
       <div className={iconClasses}>
         <Icon.Search xs />

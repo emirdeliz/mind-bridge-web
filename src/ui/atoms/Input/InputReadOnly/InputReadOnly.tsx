@@ -1,5 +1,5 @@
-import { Title } from "../../Title/Title";
-import { applyMaskMaybe, InputProps } from "../Input";
+import { Title } from '../../Title/Title';
+import { applyMaskMaybe, InputProps } from '../Input';
 
 export const InputReadOnly = ({
   dataTestId,
@@ -35,4 +35,4 @@ export const InputReadOnly = ({
       </Title>
     </div>
   );
-}
+};

@@ -39,17 +39,17 @@ const radarOptions = {
       },
       grid: {
         circular: false,
-        color: "#ddd",
+        color: '#ddd',
       },
       angleLines: {
-        color: "#ccc",
+        color: '#ccc',
       },
       pointLabels: {
         font: {
           size: 15,
           weight: '500',
         },
-        color: "#333",
+        color: '#333',
         padding: 8,
       },
       animation: true,
@@ -66,7 +66,17 @@ export interface ChartRadarPointClickData {
   metadata?: unknown;
 }
 
-type PointStyleString = 'circle' | 'cross' | 'crossRot' | 'dash' | 'line' | 'rect' | 'rectRounded' | 'rectRot' | 'star' | 'triangle';
+type PointStyleString =
+  | 'circle'
+  | 'cross'
+  | 'crossRot'
+  | 'dash'
+  | 'line'
+  | 'rect'
+  | 'rectRounded'
+  | 'rectRot'
+  | 'star'
+  | 'triangle';
 type PointStyleValue = PointStyleString | HTMLImageElement | HTMLCanvasElement;
 
 interface ChartRadarDataset {
@@ -98,54 +108,63 @@ export const ChartRadar = memo(({ data, onPointClick }: ChartRadarProps) => {
   const { t } = useI18n();
   const chartRef = useRef<ChartJS<'radar'>>(null);
 
-  const hasData = data.labels.length > 0 && data.datasets.some(dataset =>
-    dataset.data.some(value => value !== null && value !== undefined && value !== 0)
-  );
-
-  // useCallback ensures proper closure over data when component re-renders
-  const handleClick = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!chartRef.current || !onPointClick) return;
-
-    // Use Chart.js native method with explicit mode for precise element detection
-    const elements = chartRef.current.getElementsAtEventForMode(
-      event.nativeEvent,
-      'nearest',
-      { intersect: true },
-      false
+  const hasData =
+    data.labels.length > 0 &&
+    data.datasets.some((dataset) =>
+      dataset.data.some(
+        (value) => value !== null && value !== undefined && value !== 0
+      )
     );
 
-    if (elements.length === 0) return;
+  // useCallback ensures proper closure over data when component re-renders
+  const handleClick = useCallback(
+    (event: React.MouseEvent<HTMLCanvasElement>) => {
+      if (!chartRef.current || !onPointClick) return;
 
-    // Get the nearest element (first one returned by 'nearest' mode)
-    const element = elements[0];
-    const datasetIndex = element.datasetIndex;
-    const dataset = data.datasets[datasetIndex];
+      // Use Chart.js native method with explicit mode for precise element detection
+      const elements = chartRef.current.getElementsAtEventForMode(
+        event.nativeEvent,
+        'nearest',
+        { intersect: true },
+        false
+      );
 
-    // Skip non-interactive datasets (e.g., Meta)
-    if (dataset.interactive === false) {
-      return;
-    }
+      if (elements.length === 0) return;
 
-    const labelIndex = element.index;
-    const label = data.labels[labelIndex];
-    const value = dataset.data[labelIndex];
-    const metadata = dataset.metadata?.[labelIndex];
+      // Get the nearest element (first one returned by 'nearest' mode)
+      const element = elements[0];
+      const datasetIndex = element.datasetIndex;
+      const dataset = data.datasets[datasetIndex];
 
-    onPointClick({
-      labelIndex,
-      label,
-      datasetIndex,
-      datasetLabel: dataset.label,
-      value,
-      metadata,
-    });
-  }, [data, onPointClick]);
+      // Skip non-interactive datasets (e.g., Meta)
+      if (dataset.interactive === false) {
+        return;
+      }
+
+      const labelIndex = element.index;
+      const label = data.labels[labelIndex];
+      const value = dataset.data[labelIndex];
+      const metadata = dataset.metadata?.[labelIndex];
+
+      onPointClick({
+        labelIndex,
+        label,
+        datasetIndex,
+        datasetLabel: dataset.label,
+        value,
+        metadata,
+      });
+    },
+    [data, onPointClick]
+  );
 
   if (!hasData) {
     return (
-      <div className="flex items-center justify-center w-full h-full bg-gray-50 rounded-lg">
+      <div className='flex items-center justify-center w-full h-full bg-gray-50 rounded-lg'>
         <Flex.Center wFull hFull>
-          <div className="text-gray-500 text-lg font-medium">{t('NO_DATA_AVAILABLE')}</div>
+          <div className='text-gray-500 text-lg font-medium'>
+            {t('NO_DATA_AVAILABLE')}
+          </div>
         </Flex.Center>
       </div>
     );
@@ -154,51 +173,65 @@ export const ChartRadar = memo(({ data, onPointClick }: ChartRadarProps) => {
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       {/* Legenda customizada flutuante - sobrepõe o gráfico */}
-      <div style={{
-        position: 'absolute',
-        top: '8px',
-        left: '8px',
-        zIndex: 10,
-        display: 'inline-flex',
-        flexDirection: 'column',
-        gap: '4px',
-        padding: '8px 12px',
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        borderRadius: '6px',
-        boxShadow: '0 2px 6px rgba(0, 0, 0, 0.12)',
-      }}>
+      <div
+        style={{
+          position: 'absolute',
+          top: '8px',
+          left: '8px',
+          zIndex: 10,
+          display: 'inline-flex',
+          flexDirection: 'column',
+          gap: '4px',
+          padding: '8px 12px',
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          borderRadius: '6px',
+          boxShadow: '0 2px 6px rgba(0, 0, 0, 0.12)',
+        }}
+      >
         {data.datasets.map((dataset, index) => {
           const isDashed = dataset.borderDash && dataset.borderDash.length > 0;
-          const strokeDasharray = isDashed ? dataset.borderDash.join(' ') : undefined;
+          const strokeDasharray = isDashed
+            ? dataset.borderDash.join(' ')
+            : undefined;
 
           return (
-            <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div
+              key={index}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+            >
               {/* Linha com bolinha no meio: -●- (tracejada se borderDash existir) */}
-              <svg width="24" height="10" style={{ flexShrink: 0 }}>
+              <svg width='24' height='10' style={{ flexShrink: 0 }}>
                 {/* Linha esquerda */}
                 <line
-                  x1="0"
-                  y1="5"
-                  x2="8"
-                  y2="5"
+                  x1='0'
+                  y1='5'
+                  x2='8'
+                  y2='5'
                   stroke={dataset.borderColor || '#000'}
-                  strokeWidth="2"
+                  strokeWidth='2'
                   strokeDasharray={strokeDasharray}
                 />
                 {/* Bolinha no meio */}
-                <circle cx="12" cy="5" r="3" fill={dataset.borderColor || '#000'} />
+                <circle
+                  cx='12'
+                  cy='5'
+                  r='3'
+                  fill={dataset.borderColor || '#000'}
+                />
                 {/* Linha direita */}
                 <line
-                  x1="16"
-                  y1="5"
-                  x2="24"
-                  y2="5"
+                  x1='16'
+                  y1='5'
+                  x2='24'
+                  y2='5'
                   stroke={dataset.borderColor || '#000'}
-                  strokeWidth="2"
+                  strokeWidth='2'
                   strokeDasharray={strokeDasharray}
                 />
               </svg>
-              <span style={{ fontSize: '12px', color: '#000', fontWeight: 500 }}>
+              <span
+                style={{ fontSize: '12px', color: '#000', fontWeight: 500 }}
+              >
                 {dataset.label}
               </span>
             </div>

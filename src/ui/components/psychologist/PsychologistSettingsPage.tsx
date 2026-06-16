@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { AppShell } from "@templates";
-import { Flex } from "@atoms";
-import { useI18n } from "@i18n";
+import { AppShell } from '@templates';
+import { Flex } from '@atoms';
+import { useI18n } from '@i18n';
 
-import { PsychologistChatShortcutsSettingsPanel } from "./PsychologistChatShortcutsSettingsPanel";
-import { PsychologistKnowledgeDocumentsSettingsPanel } from "./PsychologistKnowledgeDocumentsSettingsPanel";
-import { usePsychologistGuard } from "./usePsychologistGuard";
+import { PsychologistChatShortcutsSettingsPanel } from './PsychologistChatShortcutsSettingsPanel';
+import { PsychologistKnowledgeDocumentsSettingsPanel } from './PsychologistKnowledgeDocumentsSettingsPanel';
+import { usePsychologistGuard } from './usePsychologistGuard';
 
 export const PsychologistSettingsPage = () => {
   const { t } = useI18n();
@@ -18,9 +18,9 @@ export const PsychologistSettingsPage = () => {
 
   return (
     <AppShell
-      title={t("PSYCHOLOGIST_SETTINGS_TITLE")}
-      subtitle={t("PSYCHOLOGIST_SETTINGS_SUBTITLE")}
-      variant="dashboard"
+      title={t('PSYCHOLOGIST_SETTINGS_TITLE')}
+      subtitle={t('PSYCHOLOGIST_SETTINGS_SUBTITLE')}
+      variant='dashboard'
     >
       <Flex col wFull gap4>
         <PsychologistKnowledgeDocumentsSettingsPanel />

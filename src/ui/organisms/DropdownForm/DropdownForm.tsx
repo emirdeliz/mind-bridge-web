@@ -3,8 +3,10 @@ import { Dropdown, DropdownProps, FormGroup } from '@molecules';
 import { GenericObject } from '@types';
 import { filterDOMProps } from '@helpers';
 
-export interface DropdownFormProps<T extends GenericObject>
-  extends Omit<DropdownProps<T>, "onChange"> {
+export interface DropdownFormProps<T extends GenericObject> extends Omit<
+  DropdownProps<T>,
+  'onChange'
+> {
   children?: string;
   fw3?: boolean;
   required?: boolean;
@@ -38,7 +40,11 @@ export const DropdownForm = <T extends GenericObject>({
 }: DropdownFormProps<T>) => {
   const id = children ? children.replace(/\s/g, '_') : 'dropdown';
   const domProps = filterDOMProps(props);
-  const { required, error: _dropdownError, ...dropdownProps } = domProps as DropdownFormProps<T> & {
+  const {
+    required,
+    error: _dropdownError,
+    ...dropdownProps
+  } = domProps as DropdownFormProps<T> & {
     error?: boolean;
   };
 

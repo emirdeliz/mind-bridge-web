@@ -5,12 +5,10 @@ import { TableHeaderProps } from '..';
 import { TableProps, TableSortProps, type TableVariant } from '../../Table';
 
 export interface TableBodyProps<T>
-  extends Omit<
-      TableHeaderProps<T>,
-      'setSorterColumnStatus' | 'setSorterColumnIndex'
-    >,
+  extends
+    Omit<TableHeaderProps<T>, 'setSorterColumnStatus' | 'setSorterColumnIndex'>,
     TableProps<T>,
-  TableSortProps {
+    TableSortProps {
   isSortableInApi: boolean;
 }
 
@@ -29,7 +27,7 @@ export const TableBody = <T extends { actions: ReactNode }>({
     [columns, dataSource]
   );
   const dataSourceSortable = useMemo(() => {
-    if (isSortableInApi) { 
+    if (isSortableInApi) {
       return dataSourceBase;
     }
     const result = sortTableValues<T>({
@@ -39,7 +37,13 @@ export const TableBody = <T extends { actions: ReactNode }>({
       sorterColumnIndex,
     });
     return result;
-  }, [dataSourceBase, columns, sorterColumnStatus, sorterColumnIndex, isSortableInApi]);
+  }, [
+    dataSourceBase,
+    columns,
+    sorterColumnStatus,
+    sorterColumnIndex,
+    isSortableInApi,
+  ]);
 
   const buildBody = useCallback(() => {
     const result = dataSourceSortable?.map((row: T, index: number) => {
@@ -47,13 +51,15 @@ export const TableBody = <T extends { actions: ReactNode }>({
         const { key: keyLabel, customCellRender, width } = column;
         const valueFormatted = row[`${String(keyLabel)}Formatted` as keyof T];
         const isColumnActions = keyLabel === 'actions';
-        const widthStyle = width ? { width, minWidth: width, maxWidth: width } : undefined;
+        const widthStyle = width
+          ? { width, minWidth: width, maxWidth: width }
+          : undefined;
 
         if (isColumnActions) {
           return (
             <td
               key={colIndex}
-              role="cell"
+              role='cell'
               data-testid={`table-row-${index}-cell-${colIndex}`}
               className={`px-6 py-4 text-center border-b ${isDark ? 'border-mb-border/40' : 'border-gray-100'}`}
               style={widthStyle}
@@ -66,7 +72,7 @@ export const TableBody = <T extends { actions: ReactNode }>({
         return (
           <td
             key={colIndex}
-            role="cell"
+            role='cell'
             data-testid={`table-row-${index}-cell-${colIndex}`}
             className={`px-6 py-4 border-b ${isDark ? 'border-mb-border/40' : 'border-gray-100'}`}
             style={widthStyle}
@@ -83,7 +89,7 @@ export const TableBody = <T extends { actions: ReactNode }>({
       });
       return (
         <tr
-          role="row"
+          role='row'
           key={index}
           className={[
             'border-b transition-all duration-200',
@@ -110,7 +116,7 @@ export const TableBody = <T extends { actions: ReactNode }>({
         </tr>
       );
     });
-    return <tbody data-testid="table-body">{result}</tbody>;
+    return <tbody data-testid='table-body'>{result}</tbody>;
   }, [columns, dataSourceSortable, onRowClick, isDark]);
 
   return buildBody();

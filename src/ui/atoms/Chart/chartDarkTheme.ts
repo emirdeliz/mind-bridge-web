@@ -1,15 +1,17 @@
-export const MB_CHART_TEXT = "#e8edf7";
-export const MB_CHART_MUTED = "#8b9ab8";
-export const MB_CHART_BORDER = "#2a3650";
+export const MB_CHART_TEXT = '#e8edf7';
+export const MB_CHART_MUTED = '#8b9ab8';
+export const MB_CHART_BORDER = '#2a3650';
 
 export const mbChartTitleStyle = (text: string) => ({
   text,
-  left: "center" as const,
+  left: 'center' as const,
   top: 8,
   textStyle: { fontSize: 14, color: MB_CHART_TEXT },
 });
 
-export const mbCategoryAxis = <T extends Record<string, unknown>>(config: T = {} as T) => ({
+export const mbCategoryAxis = <T extends Record<string, unknown>>(
+  config: T = {} as T
+) => ({
   ...config,
   axisLabel: {
     color: MB_CHART_MUTED,
@@ -21,8 +23,10 @@ export const mbCategoryAxis = <T extends Record<string, unknown>>(config: T = {}
   },
 });
 
-export const mbValueAxis = <T extends Record<string, unknown>>(config: T = {} as T) => ({
-  type: "value" as const,
+export const mbValueAxis = <T extends Record<string, unknown>>(
+  config: T = {} as T
+) => ({
+  type: 'value' as const,
   ...config,
   axisLabel: {
     color: MB_CHART_MUTED,

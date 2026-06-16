@@ -3,7 +3,7 @@ import type {
   PatientAnamnesisDto,
   PatientClinicalContentDto,
   SessionNoteEntryDto,
-} from "@api";
+} from '@api';
 
 const emptyPatientAnamnesis = (): PatientAnamnesisDto => ({
   chiefComplaint: '',
@@ -33,15 +33,15 @@ const emptyDashboardSnapshot = (): DashboardSnapshotDto => ({
 });
 
 const formatSessionDateBr = (date: Date): string => {
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
 };
 
 const formatSessionTimeBr = (date: Date): string => {
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
   return `${hours}:${minutes}`;
 };
 
@@ -51,16 +51,16 @@ export const buildCurrentSessionNote = (): SessionNoteEntryDto => {
   const sessionTime = formatSessionTimeBr(now);
 
   return {
-    id: `session-${now.toISOString().replace(/[:.]/g, "-")}`,
+    id: `session-${now.toISOString().replace(/[:.]/g, '-')}`,
     label: `Sessão ${sessionDate} ${sessionTime} (atual)`,
     sessionDate,
-    content: "",
+    content: '',
     isCurrent: true,
   };
 };
 
 export const emptyClinicalContentForPatient = (
-  patientId: string,
+  patientId: string
 ): PatientClinicalContentDto => ({
   patientId,
   dashboardSnapshot: emptyDashboardSnapshot(),

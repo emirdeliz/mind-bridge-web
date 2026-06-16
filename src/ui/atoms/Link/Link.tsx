@@ -16,14 +16,21 @@ export interface LinkProps extends Omit<TitleProps, 'id'> {
 
 export interface LinkIconProps extends LinkProps, IconProps {}
 
-export const Link = ({ children, dataTestId, noUnderline, ...props }: LinkProps) => {
+export const Link = ({
+  children,
+  dataTestId,
+  noUnderline,
+  ...props
+}: LinkProps) => {
   const linkClasses = [
     'text-primary-theme',
     'hover:text-primary-theme-dark',
     'cursor-pointer',
     'transition-colors duration-200',
     noUnderline ? '' : 'underline',
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <a className={linkClasses} data-testid={dataTestId} {...props}>
@@ -51,20 +58,17 @@ Link.Upload = ({ children, accept, onChange, ...props }: LinkUploadProps) => {
     'transition-colors duration-200',
   ].join(' ');
 
-  const linkInputUploadClasses = [
-    'hidden',
-  ].join(' ');
+  const linkInputUploadClasses = ['hidden'].join(' ');
 
   return (
     <label className={linkUploadClasses}>
-      <input 
-        type="file"
+      <input
+        type='file'
         className={linkInputUploadClasses}
-        onChange={e => onChange(e.target.files?.[0])} 
-        accept={accept} 
-      /> 
+        onChange={(e) => onChange(e.target.files?.[0])}
+        accept={accept}
+      />
       {children}
     </label>
   );
 };
-

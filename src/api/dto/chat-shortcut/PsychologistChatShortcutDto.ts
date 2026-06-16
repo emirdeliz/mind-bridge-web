@@ -5,7 +5,10 @@ export type ChatShortcutTranslationDto = {
   message: string;
 };
 
-export type ChatShortcutTranslationsDto = Record<AppLanguage, ChatShortcutTranslationDto>;
+export type ChatShortcutTranslationsDto = Record<
+  AppLanguage,
+  ChatShortcutTranslationDto
+>;
 
 export type PsychologistChatShortcutDto = {
   id: string;

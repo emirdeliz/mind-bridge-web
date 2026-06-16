@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useRef } from "react";
+import { ReactNode, useCallback, useRef } from 'react';
 
 interface InfiniteScrollProps {
   loading?: boolean;
@@ -6,7 +6,11 @@ interface InfiniteScrollProps {
   onLoadNewPage: VoidFunction;
 }
 
-export const InfiniteScroll = ({ children, loading, onLoadNewPage }: InfiniteScrollProps) => {
+export const InfiniteScroll = ({
+  children,
+  loading,
+  onLoadNewPage,
+}: InfiniteScrollProps) => {
   const observer = useRef<IntersectionObserver | undefined>(undefined);
   const lastPostElementRef = useCallback(
     (node: HTMLDivElement) => {
@@ -31,13 +35,14 @@ export const InfiniteScroll = ({ children, loading, onLoadNewPage }: InfiniteScr
     [loading, onLoadNewPage]
   );
 
-  return (
-    children.map((child, i) => {
-      return (
-        <div key={i} ref={i === children.length - 1 ? lastPostElementRef : undefined}>
-          {child}
-        </div>
-      );
-    })
-  );
+  return children.map((child, i) => {
+    return (
+      <div
+        key={i}
+        ref={i === children.length - 1 ? lastPostElementRef : undefined}
+      >
+        {child}
+      </div>
+    );
+  });
 };

@@ -1,5 +1,5 @@
-export { PsychologistPage as default } from "@components";
+export { PsychologistPage as default } from '@components';
 
-import { withAuthSSR } from "@lib/auth/withAuthSSR";
+import { withAuthSSR } from '@lib/auth/withAuthSSR';
 
-export const getServerSideProps = withAuthSSR({ role: "psychologist" });
+export const getServerSideProps = withAuthSSR({ role: 'psychologist' });

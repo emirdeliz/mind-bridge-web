@@ -13,7 +13,10 @@ import { createBypassSession } from '../../../services/auth/authBypass';
 
 type BypassBody = { role?: UserRole };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== 'POST') {
     return methodNotAllowed(res);
   }

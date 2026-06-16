@@ -47,67 +47,69 @@ export const Modal = ({
     return null;
   }
 
-  const content = globalThis.document?.body ? createPortal(
-    <div 
-      className="modal-scroll"
-      style={{
-        position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        backgroundColor: '#fafafa',
-        padding: '20px',
-        border: '1px solid #e5e7eb',
-        borderRadius: '8px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        zIndex: zIndex,
-        maxWidth: maxWidth || '500px',
-        width: '90%',
-        maxHeight: '90vh', // Altura máxima de 90% da viewport
-        overflowY: 'auto', // Scroll vertical automático
-        overflowX: 'hidden', // Sem scroll horizontal
-      }}
-      {...props}
-    >
-      <div style={{ marginBottom: '20px' }}>
-        {children}
-      </div>
-      <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-        <button 
-          onClick={onClose}
+  const content = globalThis.document?.body
+    ? createPortal(
+        <div
+          className='modal-scroll'
           style={{
-            padding: '8px 16px',
-            backgroundColor: '#f0f0f0',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-            cursor: 'pointer'
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: '#fafafa',
+            padding: '20px',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            zIndex: zIndex,
+            maxWidth: maxWidth || '500px',
+            width: '90%',
+            maxHeight: '90vh', // Altura máxima de 90% da viewport
+            overflowY: 'auto', // Scroll vertical automático
+            overflowX: 'hidden', // Sem scroll horizontal
           }}
+          {...props}
         >
-          {closeButtonLabel}
-        </button>
-        {onConfirm && (
-          <button 
-            onClick={onConfirm}
-            disabled={!enableButton}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: 'var(--primary, #007bff)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: enableButton ? 'pointer' : 'not-allowed'
-            }}
+          <div style={{ marginBottom: '20px' }}>{children}</div>
+          <div
+            style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}
           >
-            {confirmButtonLabel}
-          </button>
-        )}
-      </div>
-    </div>,
-    globalThis.document?.body
-  ) : null;
+            <button
+              onClick={onClose}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#f0f0f0',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                cursor: 'pointer',
+              }}
+            >
+              {closeButtonLabel}
+            </button>
+            {onConfirm && (
+              <button
+                onClick={onConfirm}
+                disabled={!enableButton}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: 'var(--primary, #007bff)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: enableButton ? 'pointer' : 'not-allowed',
+                }}
+              >
+                {confirmButtonLabel}
+              </button>
+            )}
+          </div>
+        </div>,
+        globalThis.document?.body
+      )
+    : null;
 
   return overlay ? (
-    <div 
+    <div
       style={{
         position: 'fixed',
         inset: '0',
@@ -115,12 +117,14 @@ export const Modal = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: zIndex - 1
+        zIndex: zIndex - 1,
       }}
     >
       {content}
     </div>
-  ) : content;
+  ) : (
+    content
+  );
 };
 
 Modal.Overlay = (props: ModalProps) => <Modal {...props} overlay />;

@@ -1,14 +1,16 @@
-import { Flex, Title } from "@atoms";
+import { Flex, Title } from '@atoms';
 
-import { parseInteractionSummary } from "@utils";
+import { parseInteractionSummary } from '@utils';
 
-import { EnumeratedTextList } from "../EnumeratedTextList/EnumeratedTextList";
+import { EnumeratedTextList } from '../EnumeratedTextList/EnumeratedTextList';
 
 type InteractionSummaryBodyProps = {
   text: string;
 };
 
-export const InteractionSummaryBody = ({ text }: InteractionSummaryBodyProps) => {
+export const InteractionSummaryBody = ({
+  text,
+}: InteractionSummaryBodyProps) => {
   const { header, items } = parseInteractionSummary(text);
 
   if (!header && !items.length) {

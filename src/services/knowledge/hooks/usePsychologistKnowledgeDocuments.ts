@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState, type ChangeEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+} from 'react';
 
 import type { KnowledgeDocumentDto } from '@api';
 import {
@@ -13,10 +19,14 @@ import {
 
 const KNOWLEDGE_INDEX_POLL_INTERVAL_MS = 4000;
 
-export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean }) => {
+export const usePsychologistKnowledgeDocuments = (options?: {
+  enabled?: boolean;
+}) => {
   const enabled = options?.enabled ?? true;
   const [documents, setDocuments] = useState<KnowledgeDocumentDto[]>([]);
-  const [maxFileBytes, setMaxFileBytes] = useState(DEFAULT_KNOWLEDGE_MAX_FILE_BYTES);
+  const [maxFileBytes, setMaxFileBytes] = useState(
+    DEFAULT_KNOWLEDGE_MAX_FILE_BYTES
+  );
   const [loading, setLoading] = useState(enabled);
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -28,35 +38,40 @@ export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean 
     documentsRef.current = documents;
   }, [documents]);
 
-  const reload = useCallback(async (options?: { silent?: boolean }) => {
-    if (!enabled) {
-      return;
-    }
+  const reload = useCallback(
+    async (options?: { silent?: boolean }) => {
+      if (!enabled) {
+        return;
+      }
 
-    const silent = options?.silent ?? false;
-    if (!silent) {
-      setLoading(true);
-    }
-    setError('');
-    try {
-      const data = await getKnowledgeDocumentsApi();
-      setDocuments(data.documents);
-      if (data.maxFileBytes > 0) {
-        setMaxFileBytes(data.maxFileBytes);
-      }
-    } catch (loadError) {
+      const silent = options?.silent ?? false;
       if (!silent) {
-        setError(
-          loadError instanceof Error ? loadError.message : 'Failed to load knowledge documents',
-        );
-        setDocuments([]);
+        setLoading(true);
       }
-    } finally {
-      if (!silent) {
-        setLoading(false);
+      setError('');
+      try {
+        const data = await getKnowledgeDocumentsApi();
+        setDocuments(data.documents);
+        if (data.maxFileBytes > 0) {
+          setMaxFileBytes(data.maxFileBytes);
+        }
+      } catch (loadError) {
+        if (!silent) {
+          setError(
+            loadError instanceof Error
+              ? loadError.message
+              : 'Failed to load knowledge documents'
+          );
+          setDocuments([]);
+        }
+      } finally {
+        if (!silent) {
+          setLoading(false);
+        }
       }
-    }
-  }, [enabled]);
+    },
+    [enabled]
+  );
 
   useEffect(() => {
     void reload();
@@ -96,16 +111,21 @@ export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean 
       const result = await uploadKnowledgeDocumentApi(file);
       setDocuments((current) => {
         const withoutSameName = current.filter(
-          (entry) => entry.fileName.toLowerCase() !== result.document.fileName.toLowerCase(),
+          (entry) =>
+            entry.fileName.toLowerCase() !==
+            result.document.fileName.toLowerCase()
         );
         return [result.document, ...withoutSameName].sort(
-          (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+          (a, b) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
         );
       });
       return result;
     } catch (uploadError) {
       const message =
-        uploadError instanceof Error ? uploadError.message : 'Failed to upload knowledge document';
+        uploadError instanceof Error
+          ? uploadError.message
+          : 'Failed to upload knowledge document';
       setError(message);
       throw uploadError;
     } finally {
@@ -118,10 +138,14 @@ export const usePsychologistKnowledgeDocuments = (options?: { enabled?: boolean 
     setError('');
     try {
       await deleteKnowledgeDocumentApi(documentId);
-      setDocuments((current) => current.filter((entry) => entry.id !== documentId));
+      setDocuments((current) =>
+        current.filter((entry) => entry.id !== documentId)
+      );
     } catch (deleteError) {
       const message =
-        deleteError instanceof Error ? deleteError.message : 'Failed to delete knowledge document';
+        deleteError instanceof Error
+          ? deleteError.message
+          : 'Failed to delete knowledge document';
       setError(message);
       throw deleteError;
     } finally {

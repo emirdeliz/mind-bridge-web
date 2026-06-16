@@ -4,7 +4,11 @@ import { memo, useMemo } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { useI18n } from '@i18n';
 import { Flex } from '@atoms';
-import { mbCategoryAxis, mbChartTitleStyle, mbValueAxis } from '../chartDarkTheme';
+import {
+  mbCategoryAxis,
+  mbChartTitleStyle,
+  mbValueAxis,
+} from '../chartDarkTheme';
 
 export interface ChartBarHorizontalSeries {
   name: string;
@@ -41,102 +45,127 @@ export interface ChartBarHorizontalProps {
   legendItemGap?: number;
 }
 
-export const ChartBarHorizontal = memo(({
-  categories,
-  categoryAxisKeys,
-  formatCategoryLabel,
-  series,
-  title,
-  unit = '',
-  showLabel = true,
-  hideWhenEmpty = true,
-  height = 320,
-  barCategoryGap,
-  barGap,
-  legendItemGap,
-}: ChartBarHorizontalProps) => {
-  const { t } = useI18n();
+export const ChartBarHorizontal = memo(
+  ({
+    categories,
+    categoryAxisKeys,
+    formatCategoryLabel,
+    series,
+    title,
+    unit = '',
+    showLabel = true,
+    hideWhenEmpty = true,
+    height = 320,
+    barCategoryGap,
+    barGap,
+    legendItemGap,
+  }: ChartBarHorizontalProps) => {
+    const { t } = useI18n();
 
-  const axisKeys = categoryAxisKeys?.length ? categoryAxisKeys : categories;
+    const axisKeys = categoryAxisKeys?.length ? categoryAxisKeys : categories;
 
-  const hasData = useMemo(
-    () =>
-      !hideWhenEmpty ||
-      (axisKeys.length > 0 && series.some((s) => s.data.some((v) => v > 0))),
-    [axisKeys, series, hideWhenEmpty],
-  );
+    const hasData = useMemo(
+      () =>
+        !hideWhenEmpty ||
+        (axisKeys.length > 0 && series.some((s) => s.data.some((v) => v > 0))),
+      [axisKeys, series, hideWhenEmpty]
+    );
 
-  const option = useMemo(() => ({
-    backgroundColor: 'transparent',
-    title: title ? mbChartTitleStyle(title) : undefined,
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: { type: 'shadow' },
-      formatter: unit
-        ? (params: { seriesName: string; value: number }[]) =>
-            params.map((p) => `${p.seriesName}: ${p.value}${unit}`).join('<br/>')
-        : undefined,
-    },
-    grid: {
-      top: 0,
-      left: '3%',
-      right: showLabel ? '12%' : '6%',
-      bottom: series.length > 1 ? '14%' : '4%',
-      containLabel: true,
-    },
-    legend:
-      series.length > 1
-        ? { bottom: 0, ...(legendItemGap != null ? { itemGap: legendItemGap } : {}) }
-        : { show: false },
-    xAxis: mbValueAxis({ boundaryGap: [0, 0.05] }),
-    yAxis: mbCategoryAxis({
-      type: 'category',
-      data: axisKeys,
-      axisLabel: {
-        overflow: 'truncate',
-        width: 130,
-        fontSize: 12,
-        ...(formatCategoryLabel
-          ? { formatter: (value: string) => formatCategoryLabel(String(value)) }
-          : {}),
-      },
-    }),
-    series: series.map((s) => ({
-      name: s.name,
-      type: 'bar',
-      data: s.data,
-      stack: s.stack,
-      itemStyle: s.color ? { color: s.color } : undefined,
-      ...(barCategoryGap != null ? { barCategoryGap } : {}),
-      ...(barGap != null ? { barGap } : {}),
-      label: showLabel
-        ? { show: true, position: 'right', formatter: unit ? `{c}${unit}` : '{c}' }
-        : { show: false },
-    })),
-  }), [axisKeys, categories, formatCategoryLabel, series, title, unit, showLabel, barCategoryGap, barGap, legendItemGap]);
+    const option = useMemo(
+      () => ({
+        backgroundColor: 'transparent',
+        title: title ? mbChartTitleStyle(title) : undefined,
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+          formatter: unit
+            ? (params: { seriesName: string; value: number }[]) =>
+                params
+                  .map((p) => `${p.seriesName}: ${p.value}${unit}`)
+                  .join('<br/>')
+            : undefined,
+        },
+        grid: {
+          top: 0,
+          left: '3%',
+          right: showLabel ? '12%' : '6%',
+          bottom: series.length > 1 ? '14%' : '4%',
+          containLabel: true,
+        },
+        legend:
+          series.length > 1
+            ? {
+                bottom: 0,
+                ...(legendItemGap != null ? { itemGap: legendItemGap } : {}),
+              }
+            : { show: false },
+        xAxis: mbValueAxis({ boundaryGap: [0, 0.05] }),
+        yAxis: mbCategoryAxis({
+          type: 'category',
+          data: axisKeys,
+          axisLabel: {
+            overflow: 'truncate',
+            width: 130,
+            fontSize: 12,
+            ...(formatCategoryLabel
+              ? {
+                  formatter: (value: string) =>
+                    formatCategoryLabel(String(value)),
+                }
+              : {}),
+          },
+        }),
+        series: series.map((s) => ({
+          name: s.name,
+          type: 'bar',
+          data: s.data,
+          stack: s.stack,
+          itemStyle: s.color ? { color: s.color } : undefined,
+          ...(barCategoryGap != null ? { barCategoryGap } : {}),
+          ...(barGap != null ? { barGap } : {}),
+          label: showLabel
+            ? {
+                show: true,
+                position: 'right',
+                formatter: unit ? `{c}${unit}` : '{c}',
+              }
+            : { show: false },
+        })),
+      }),
+      [
+        axisKeys,
+        categories,
+        formatCategoryLabel,
+        series,
+        title,
+        unit,
+        showLabel,
+        barCategoryGap,
+        barGap,
+        legendItemGap,
+      ]
+    );
 
-  if (!hasData) {
+    if (!hasData) {
+      return (
+        <div className='mb-chart-empty' style={{ height }}>
+          <Flex.Center wFull hFull>
+            <div className='mb-chart-empty-text'>{t('NO_DATA_AVAILABLE')}</div>
+          </Flex.Center>
+        </div>
+      );
+    }
+
     return (
-      <div
-        className="mb-chart-empty"
-        style={{ height }}
-      >
-        <Flex.Center wFull hFull>
-          <div className="mb-chart-empty-text">{t('NO_DATA_AVAILABLE')}</div>
-        </Flex.Center>
+      <div style={{ width: '100%', height }}>
+        <ReactECharts
+          option={option}
+          style={{ height: '100%', width: '100%' }}
+          opts={{ renderer: 'svg' }}
+        />
       </div>
     );
   }
-
-  return (
-    <div style={{ width: '100%', height }}>
-      <ReactECharts
-        option={option}
-        style={{ height: '100%', width: '100%' }}
-        opts={{ renderer: 'svg' }}
-      />
-    </div>
-  );
-});
+);
 
 ChartBarHorizontal.displayName = 'ChartBarHorizontal';

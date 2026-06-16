@@ -4,7 +4,7 @@ export type ReloadOptions = {
 
 export const shouldSilentReload = (
   options: ReloadOptions | undefined,
-  hasCachedData: boolean,
+  hasCachedData: boolean
 ): boolean => {
   if (options?.silent === true) {
     return true;

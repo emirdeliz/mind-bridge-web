@@ -9,9 +9,7 @@ describe('Alert component test', () => {
 
   it('Have Alert with text', async () => {
     const { getByText } = render(
-      <Alert>
-        Todos os dias os arquivos de retorno
-      </Alert>
+      <Alert>Todos os dias os arquivos de retorno</Alert>
     );
 
     const alertText = getByText(/todos os dias os arquivos de retorno/i);
@@ -19,11 +17,7 @@ describe('Alert component test', () => {
   });
 
   it('Have Alert with custom props', async () => {
-    const { getByText } = render(
-      <Alert>
-        Custom alert message
-      </Alert>
-    );
+    const { getByText } = render(<Alert>Custom alert message</Alert>);
 
     const alertText = getByText('Custom alert message');
     expect(alertText).toBeInTheDocument();

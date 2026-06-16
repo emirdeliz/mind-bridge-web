@@ -1,2 +1,2 @@
-export * from "./hooks/usePatientClinicalContent";
-export * from "./hooks/usePsychologistClinicalContent";
+export * from './hooks/usePatientClinicalContent';
+export * from './hooks/usePsychologistClinicalContent';

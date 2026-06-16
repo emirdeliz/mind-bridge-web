@@ -21,7 +21,11 @@ const hasJsonRequestBody = (req: NextApiRequest): boolean => {
     return false;
   }
 
-  if (typeof raw === 'object' && !Array.isArray(raw) && Object.keys(raw).length === 0) {
+  if (
+    typeof raw === 'object' &&
+    !Array.isArray(raw) &&
+    Object.keys(raw).length === 0
+  ) {
     return false;
   }
 
@@ -40,7 +44,10 @@ const isConnectionError = (error: unknown): boolean => {
   );
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const sessionResult = await getServerSession(req, res);
 
   if (!sessionResult?.accessToken) {
@@ -83,8 +90,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   let body: string | undefined;
   if (hasJsonRequestBody(req)) {
     headers['Content-Type'] = 'application/json';
-    body =
-      typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+    body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
   }
 
   let upstream: Response;

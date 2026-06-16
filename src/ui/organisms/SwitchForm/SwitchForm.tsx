@@ -26,7 +26,6 @@ export const SwitchForm = ({
 };
 
 export interface SwitchFormInputProps
-  extends SwitchFormProps,
-    Omit<InputProps, 'onChange' | 'id'> {
+  extends SwitchFormProps, Omit<InputProps, 'onChange' | 'id'> {
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }

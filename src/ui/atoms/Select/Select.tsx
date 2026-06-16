@@ -1,6 +1,6 @@
 import { FocusEvent, ReactNode } from 'react';
 
-interface SelectOption { 
+interface SelectOption {
   label: string;
   value: string | number;
 }
@@ -28,14 +28,19 @@ export const Select = ({
   disabled,
   ...props
 }: SelectProps) => {
-  const selectClasses = ['mb-field', 'h-12', 'cursor-pointer', 'input-focus-primary'].join(' ');
+  const selectClasses = [
+    'mb-field',
+    'h-12',
+    'cursor-pointer',
+    'input-focus-primary',
+  ].join(' ');
 
   const optionClasses = ['bg-mb-surface text-mb-text'].join(' ');
 
   return (
     <select
       className={`${selectClasses} block w-full`}
-      role="select"
+      role='select'
       data-testid={dataTestId}
       value={value}
       disabled={disabled}
@@ -51,7 +56,7 @@ export const Select = ({
         <option
           key={opt.value}
           value={opt.value}
-          role="option"
+          role='option'
           className={optionClasses}
         >
           {opt.label}

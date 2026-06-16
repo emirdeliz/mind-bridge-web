@@ -22,10 +22,13 @@ export const TablePagination = ({
   const [currentIndex, setCurrentIndex] = useState<number | null>(page || 1);
   const [pages, setPages] = useState<PageProps[]>([]);
 
-  const isInTheLastFiveCharacters = useCallback((pageIndex: number): boolean => {
-    const startLastFiveIndexes = numOfPages - 5;
-    return pageIndex > startLastFiveIndexes;
-  }, [numOfPages]);
+  const isInTheLastFiveCharacters = useCallback(
+    (pageIndex: number): boolean => {
+      const startLastFiveIndexes = numOfPages - 5;
+      return pageIndex > startLastFiveIndexes;
+    },
+    [numOfPages]
+  );
 
   const mapStructurePages = useCallback((): PageProps[] => {
     const pages = [] as Array<PageProps>;
@@ -159,9 +162,9 @@ export const TablePagination = ({
     'py-4',
   ].join(' ');
 
-  const paginationItemsContainerClasses = [
-    'flex items-center space-x-1',
-  ].join(' ');
+  const paginationItemsContainerClasses = ['flex items-center space-x-1'].join(
+    ' '
+  );
 
   const paginationArrowDisabledClasses = [
     'flex items-center justify-center',
@@ -186,39 +189,47 @@ export const TablePagination = ({
 
   const getPaginationItemClasses = (page: PageProps) => {
     const baseClasses = paginationItemClasses;
-    const activeClasses = page.isActive ? 'bg-primary-theme text-white border-primary-theme shadow-md hover:bg-primary-theme-dark' : '';
-    const clickableClasses = page.index ? '' : 'cursor-default hover:bg-transparent hover:border-gray-200';
+    const activeClasses = page.isActive
+      ? 'bg-primary-theme text-white border-primary-theme shadow-md hover:bg-primary-theme-dark'
+      : '';
+    const clickableClasses = page.index
+      ? ''
+      : 'cursor-default hover:bg-transparent hover:border-gray-200';
 
-    return [baseClasses, activeClasses, clickableClasses].filter(Boolean).join(' ');
+    return [baseClasses, activeClasses, clickableClasses]
+      .filter(Boolean)
+      .join(' ');
   };
 
-  return numOfPages > 1 && (
-    <div className={paginationContainerClasses}>
-      <div className={paginationItemsContainerClasses}>
-        <button 
-          className={paginationArrowDisabledClasses}
-          disabled={page === 1} 
-          onClick={previousPage}
-        >
-          <Icon.LeftOpen xs />
-        </button>
-        {pages.map((page, index) => (
-          <div
-            key={index}
-            className={getPaginationItemClasses(page)}
-            onClick={() => selectPage(page)}
+  return (
+    numOfPages > 1 && (
+      <div className={paginationContainerClasses}>
+        <div className={paginationItemsContainerClasses}>
+          <button
+            className={paginationArrowDisabledClasses}
+            disabled={page === 1}
+            onClick={previousPage}
           >
-            {page.index ? page.index : '...'}
-          </div>
-        ))}
-        <button 
-          className={paginationArrowDisabledClasses}
-          disabled={page === numOfPages} 
-          onClick={nextPage}
-        >
-          <Icon.RightOpen xs />
-        </button>
+            <Icon.LeftOpen xs />
+          </button>
+          {pages.map((page, index) => (
+            <div
+              key={index}
+              className={getPaginationItemClasses(page)}
+              onClick={() => selectPage(page)}
+            >
+              {page.index ? page.index : '...'}
+            </div>
+          ))}
+          <button
+            className={paginationArrowDisabledClasses}
+            disabled={page === numOfPages}
+            onClick={nextPage}
+          >
+            <Icon.RightOpen xs />
+          </button>
+        </div>
       </div>
-    </div>
+    )
   );
 };

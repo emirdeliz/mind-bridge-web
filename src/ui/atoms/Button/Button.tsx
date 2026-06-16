@@ -72,31 +72,51 @@ export const Button = ({
   const isDisabled = disabled || !clickable;
 
   // Construir classes Tailwind dinamicamente
-  const sizeClasses = xs ? 'px-2 py-1 text-xs' : 
-                     sm ? 'px-3 py-1.5 text-sm' : 
-                     nm ? 'px-4 py-2 text-sm' :
-                     lg ? 'px-6 py-3 text-base' : 
-                     xl ? 'px-8 py-4 text-lg' : 'px-4 py-2 text-sm';
-  
+  const sizeClasses = xs
+    ? 'px-2 py-1 text-xs'
+    : sm
+      ? 'px-3 py-1.5 text-sm'
+      : nm
+        ? 'px-4 py-2 text-sm'
+        : lg
+          ? 'px-6 py-3 text-base'
+          : xl
+            ? 'px-8 py-4 text-lg'
+            : 'px-4 py-2 text-sm';
+
   const widthClasses = wFull ? 'w-full' : 'w-auto';
-  const radiusClasses = circle ? 'rounded-full' : rounded ? 'rounded-lg' : 'rounded-md';
-  
+  const radiusClasses = circle
+    ? 'rounded-full'
+    : rounded
+      ? 'rounded-lg'
+      : 'rounded-md';
+
   // Variantes de cor - primary usa classes de tema CSS para permitir customização
   const variantClasses = {
-    primary: outlined ? 'btn-primary-theme-outlined border-2' : 'btn-primary-theme',
+    primary: outlined
+      ? 'btn-primary-theme-outlined border-2'
+      : 'btn-primary-theme',
     secondary: outlined
       ? 'border-mb-border text-mb-muted hover:border-mb-accent/50 hover:bg-mb-surface-elevated hover:text-mb-text'
       : 'bg-mb-surface-elevated text-mb-text hover:bg-mb-border border-mb-border',
-    success: outlined ? 'border-green-600 text-green-600 hover:bg-green-50' : 'bg-green-600 text-white hover:bg-green-700',
-    danger: outlined ? 'border-red-600 text-red-600 hover:bg-red-50' : 'bg-red-600 text-white hover:bg-red-700',
-    warning: outlined ? 'border-yellow-600 text-yellow-600 hover:bg-yellow-50' : 'bg-yellow-600 text-white hover:bg-yellow-700',
-    info: outlined ? 'border-cyan-600 text-cyan-600 hover:bg-cyan-50' : 'bg-cyan-600 text-white hover:bg-cyan-700',
+    success: outlined
+      ? 'border-emerald-500/60 text-emerald-300 hover:border-emerald-400 hover:bg-emerald-500/10'
+      : 'bg-emerald-600 text-white hover:bg-emerald-500 border-emerald-600',
+    danger: outlined
+      ? 'border-mb-danger/60 text-red-300 hover:border-mb-danger hover:bg-red-500/10'
+      : 'bg-red-600 text-white hover:bg-red-500 border-red-600',
+    warning: outlined
+      ? 'border-mb-warning/60 text-amber-200 hover:border-mb-warning hover:bg-amber-500/10'
+      : 'bg-amber-600 text-white hover:bg-amber-500 border-amber-600',
+    info: outlined
+      ? 'border-mb-primary/50 text-mb-primary hover:border-mb-primary hover:bg-mb-primary/10'
+      : 'bg-mb-primary text-white hover:bg-mb-primary-hover border-mb-primary',
   };
 
   const borderClasses = outlined ? 'border-2' : 'border-2 border-transparent';
   const opacityClasses = isDisabled ? 'opacity-50' : 'opacity-100';
   const cursorClasses = isDisabled ? 'cursor-not-allowed' : 'cursor-pointer';
-  
+
   // Construir margens
   const marginClasses = [
     m && `m-${m}`,
@@ -106,7 +126,9 @@ export const Button = ({
     ml && `ml-${ml}`,
     mx && `mx-${mx}`,
     my && 'my-2',
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const chipClasses = chip
     ? 'rounded-lg px-2.5 py-1 text-xs font-semibold uppercase tracking-wide'
@@ -120,7 +142,7 @@ export const Button = ({
 
   const buttonClasses = [
     'flex items-center justify-center',
-    'font-medium font-poppins',
+    'font-medium font-sans',
     sizeClasses,
     widthClasses,
     radiusClasses,
@@ -133,9 +155,11 @@ export const Button = ({
     'transition-all duration-200 ease-in-out',
     'focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-mb-accent/30',
     'disabled:opacity-50 disabled:cursor-not-allowed',
-    'transform hover:scale-105 active:scale-95',
+    'hover:brightness-110 active:brightness-95',
     outlined ? 'bg-transparent' : '',
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const domProps = filterButtonDomProps(props);
 
@@ -160,4 +184,6 @@ export const Button = ({
 
 Button.Outlined = (props: ButtonProps) => <Button {...props} outlined />;
 Button.Rounded = (props: ButtonProps) => <Button {...props} rounded />;
-Button.Default = (props: ButtonProps) => <Button {...props} variant="secondary" />;
+Button.Default = (props: ButtonProps) => (
+  <Button {...props} variant='secondary' />
+);

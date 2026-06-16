@@ -14,19 +14,19 @@ export interface DotProps {
   gray?: boolean;
 }
 
-export const Dot = ({ 
-  xss, 
-  xs, 
-  sm, 
-  nm, 
-  outlined, 
-  white, 
-  p3, 
+export const Dot = ({
+  xss,
+  xs,
+  sm,
+  nm,
+  outlined,
+  white,
+  p3,
   red,
   green,
   blue,
   gray,
-  ...props 
+  ...props
 }: DotProps) => {
   const dotClasses = [
     'inline-block rounded-full',
@@ -47,11 +47,11 @@ export const Dot = ({
     p3 && 'p-3',
     // Fallback para cor padrão se nenhuma cor específica for definida
     !white && !red && !green && !blue && !gray && 'text-gray-400',
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
-  return (
-    <span className={dotClasses} {...props} />
-  );
+  return <span className={dotClasses} {...props} />;
 };
 
 Dot.Xss = (props: DotProps) => <Dot {...props} xss />;

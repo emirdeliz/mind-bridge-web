@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import type { ChatMessage } from "@services";
-import { Button, Flex, Input, Title } from "@atoms";
-import { DashboardSectionTitle } from "../dashboard/DashboardSectionTitle";
-import { useI18n } from "@i18n";
+import type { ChatMessage } from '@services';
+import { Button, Flex, Input, Title } from '@atoms';
+import { DashboardSectionTitle } from '../dashboard/DashboardSectionTitle';
+import { useI18n } from '@i18n';
 import {
   Card,
   ChatInteractionDivider,
@@ -12,11 +12,11 @@ import {
   ChatTypingIndicator,
   Form,
   Tooltip,
-} from "@molecules";
+} from '@molecules';
 
 const shouldShowInteractionDividerBefore = (
   messages: ChatMessage[],
-  index: number,
+  index: number
 ): boolean => {
   if (index === 0) {
     return false;
@@ -35,8 +35,8 @@ const shouldShowInteractionDividerBefore = (
 
   return Boolean(
     message.interactionId &&
-      previous.interactionId &&
-      message.interactionId !== previous.interactionId,
+    previous.interactionId &&
+    message.interactionId !== previous.interactionId
   );
 };
 
@@ -70,25 +70,33 @@ export const ChatPanel = ({
   shortcuts,
 }: ChatPanelProps) => {
   const { t } = useI18n();
-  const [text, setText] = useState("");
+  const [text, setText] = useState('');
   const lastMessage = messages.at(-1);
   const lastMessageId = lastMessage?.id;
   const showTypingIndicator =
     sending &&
-    !(lastMessage?.sender === "agent" && lastMessage.text.trim().length > 0);
+    !(lastMessage?.sender === 'agent' && lastMessage.text.trim().length > 0);
 
   const startAudioInput = () => {
     const SpeechRecognition =
-      typeof window !== "undefined"
-        ? ((window as Window & { webkitSpeechRecognition?: new () => SpeechRecognition }).webkitSpeechRecognition ??
-            (window as Window & { SpeechRecognition?: new () => SpeechRecognition }).SpeechRecognition)
+      typeof window !== 'undefined'
+        ? ((
+            window as Window & {
+              webkitSpeechRecognition?: new () => SpeechRecognition;
+            }
+          ).webkitSpeechRecognition ??
+          (
+            window as Window & {
+              SpeechRecognition?: new () => SpeechRecognition;
+            }
+          ).SpeechRecognition)
         : undefined;
 
     if (!SpeechRecognition) return;
     const recognition = new SpeechRecognition();
-    recognition.lang = "en-US";
+    recognition.lang = 'en-US';
     recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript ?? "";
+      const transcript = event.results[0][0].transcript ?? '';
       setText(transcript);
       onSpeechToText?.(transcript);
     };
@@ -96,12 +104,15 @@ export const ChatPanel = ({
   };
 
   return (
-    <Card padding="lg" shadow="lg">
+    <Card padding='lg' shadow='lg'>
       {sectionTooltip ? (
-        <DashboardSectionTitle title={t("AI_AGENT_CHAT")} tooltip={sectionTooltip} />
+        <DashboardSectionTitle
+          title={t('AI_AGENT_CHAT')}
+          tooltip={sectionTooltip}
+        />
       ) : (
         <Title fs3 fw3 mb2>
-          {t("AI_AGENT_CHAT")}
+          {t('AI_AGENT_CHAT')}
         </Title>
       )}
       <ChatScrollArea
@@ -111,7 +122,7 @@ export const ChatPanel = ({
         lastMessageId={lastMessageId}
       >
         {messages.map((message, index) => {
-          if (message.sender === "agent" && !message.text.trim()) {
+          if (message.sender === 'agent' && !message.text.trim()) {
             return null;
           }
 
@@ -119,28 +130,32 @@ export const ChatPanel = ({
             <div key={message.id}>
               {showInteractionDividers &&
               shouldShowInteractionDividerBefore(messages, index) ? (
-                <ChatInteractionDivider label={t("CHAT_NEW_INTERACTION")} />
+                <ChatInteractionDivider label={t('CHAT_NEW_INTERACTION')} />
               ) : null}
               <ChatMessageBubble
                 sender={message.sender}
-                label={message.sender === "agent" ? t("CHAT_AGENT_LABEL") : t("CHAT_USER_LABEL")}
+                label={
+                  message.sender === 'agent'
+                    ? t('CHAT_AGENT_LABEL')
+                    : t('CHAT_USER_LABEL')
+                }
                 text={message.text}
               />
               {showInteractionDividers && message.isInteractionEnd ? (
-                <ChatInteractionDivider label={t("CHAT_INTERACTION_END")} />
+                <ChatInteractionDivider label={t('CHAT_INTERACTION_END')} />
               ) : null}
             </div>
           );
         })}
         {showTypingIndicator ? (
           <ChatTypingIndicator
-            label={t("CHAT_AGENT_LABEL")}
-            ariaLabel={t("CHAT_AGENT_TYPING")}
+            label={t('CHAT_AGENT_LABEL')}
+            ariaLabel={t('CHAT_AGENT_TYPING')}
           />
         ) : null}
         {!messages.length && !sending ? (
           <Title s1 gray center py8>
-            {t("CHAT_NO_MESSAGES")}
+            {t('CHAT_NO_MESSAGES')}
           </Title>
         ) : null}
       </ChatScrollArea>
@@ -149,8 +164,8 @@ export const ChatPanel = ({
           {shortcuts.map((shortcut) => (
             <Button
               key={shortcut.id}
-              type="button"
-              variant="secondary"
+              type='button'
+              variant='secondary'
               outlined
               clickable={!sending}
               onClick={() => {
@@ -172,36 +187,36 @@ export const ChatPanel = ({
             return;
           }
           onSend(text);
-          setText("");
+          setText('');
         }}
       >
         <Flex row wFull gap4 alignCenter>
           <Flex flex1 wFull alignStretch>
             <Input
-              placeholder={t("CHAT_MESSAGE_PLACEHOLDER")}
+              placeholder={t('CHAT_MESSAGE_PLACEHOLDER')}
               value={text}
               disabled={sending}
               onChange={(event) => setText(event.target.value)}
             />
           </Flex>
           {showAudio ? (
-            <span className="mb-chat-form-action">
-              <Tooltip title={t("TOOLTIP_PATIENT_CHAT_AUDIO")} top width={260}>
+            <span className='mb-chat-form-action'>
+              <Tooltip title={t('TOOLTIP_PATIENT_CHAT_AUDIO')} top width={260}>
                 <Button
-                  type="button"
-                  variant="secondary"
+                  type='button'
+                  variant='secondary'
                   outlined
                   clickable={!sending}
                   onClick={startAudioInput}
                 >
-                  {t("AUDIO")}
+                  {t('AUDIO')}
                 </Button>
               </Tooltip>
             </span>
           ) : null}
-          <span className="mb-chat-form-action">
-            <Button type="submit" clickable={!sending}>
-              {t("SEND")}
+          <span className='mb-chat-form-action'>
+            <Button type='submit' clickable={!sending}>
+              {t('SEND')}
             </Button>
           </span>
         </Flex>

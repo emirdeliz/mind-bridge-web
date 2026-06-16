@@ -5,13 +5,16 @@ export type KnowledgeDocumentIndexStatus =
   | 'failed';
 
 export const isKnowledgeDocumentIndexed = (
-  indexStatus: KnowledgeDocumentIndexStatus,
+  indexStatus: KnowledgeDocumentIndexStatus
 ): boolean => indexStatus === 'indexed';
 
 export const isKnowledgeDocumentIndexing = (
-  indexStatus: KnowledgeDocumentIndexStatus,
+  indexStatus: KnowledgeDocumentIndexStatus
 ): boolean => indexStatus === 'pending' || indexStatus === 'indexing';
 
 export const hasKnowledgeDocumentsAwaitingIndex = (
-  documents: Array<{ indexStatus: KnowledgeDocumentIndexStatus }>,
-): boolean => documents.some((document) => isKnowledgeDocumentIndexing(document.indexStatus));
+  documents: Array<{ indexStatus: KnowledgeDocumentIndexStatus }>
+): boolean =>
+  documents.some((document) =>
+    isKnowledgeDocumentIndexing(document.indexStatus)
+  );

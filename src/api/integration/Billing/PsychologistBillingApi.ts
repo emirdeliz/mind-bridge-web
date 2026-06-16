@@ -6,13 +6,13 @@ type BillingResponse = {
 };
 
 export const getPsychologistBillingApi = async (
-  billingMonth?: string,
+  billingMonth?: string
 ): Promise<PsychologistBillingSummaryDto> => {
   const query = billingMonth
     ? `?month=${encodeURIComponent(billingMonth)}`
     : '';
   const response = await apiRequest<BillingResponse>(
-    `/psychologist/billing${query}`,
+    `/psychologist/billing${query}`
   );
   return keysToCamel<BillingResponse>(response).billing;
 };

@@ -33,14 +33,8 @@ export const ModalTemplate = ({
 
   return (
     <form className={bodyClasses} onSubmit={(e) => e.preventDefault()}>
-      <Title center>
-        {title}
-      </Title>
-      {subTitle && (
-        <Title center>
-          {subTitle}
-        </Title>
-      )}
+      <Title center>{title}</Title>
+      {subTitle && <Title center>{subTitle}</Title>}
       {children}
       <Flex>
         <Button wFull clickable={allowButton} onClick={handleSubmit}>

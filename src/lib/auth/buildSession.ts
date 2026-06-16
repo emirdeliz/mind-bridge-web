@@ -39,7 +39,9 @@ export const buildUserAuthViewFromSupabase = async (
 
   const { data: row, error: profileError } = await supabase
     .from('profiles')
-    .select('id, email, role, full_name, age, address, phone, language, is_admin')
+    .select(
+      'id, email, role, full_name, age, address, phone, language, is_admin'
+    )
     .eq('id', userData.user.id)
     .maybeSingle();
 

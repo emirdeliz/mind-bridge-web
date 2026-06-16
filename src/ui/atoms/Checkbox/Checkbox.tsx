@@ -37,7 +37,7 @@ export const Checkbox = <T extends GenericObject>({
       <input
         className={checkboxClasses}
         id={id}
-        type="checkbox"
+        type='checkbox'
         checked={checked}
         disabled={disabled}
         onChange={(event) => onChange?.(event.target.checked)}

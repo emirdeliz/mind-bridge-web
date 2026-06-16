@@ -1,6 +1,18 @@
 import React, { ReactNode } from 'react';
 
+export type TitleElement =
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'h4'
+  | 'h5'
+  | 'h6'
+  | 'p'
+  | 'div'
+  | 'span';
+
 export interface TitleProps {
+  as?: TitleElement;
   children?: string | number | ReactNode;
   capitalize?: boolean;
   fw3?: boolean;
@@ -55,113 +67,102 @@ export interface TitleProps {
 }
 
 export const Title = (props: TitleProps) => {
-  const getTitleClasses = () => {
-    const baseClasses = [
-      'font-poppins',
-      'leading-tight',
-      'm-0',
-      'p-0'
-    ];
+  const { as: Component = 'div', ...rest } = props;
 
-    // Cores - white deve sobrescrever a cor base
-    if (props.white) {
+  const getTitleClasses = () => {
+    const baseClasses = ['font-sans', 'leading-tight', 'm-0', 'p-0'];
+
+    if (rest.white) {
       baseClasses.push('text-white');
-    } else if (props.blue) {
+    } else if (rest.blue) {
       baseClasses.push('text-primary-theme');
-    } else if (props.gray) {
+    } else if (rest.gray) {
       baseClasses.push('text-mb-muted');
-    } else if (props.lightBlue) {
+    } else if (rest.lightBlue) {
       baseClasses.push('text-primary-theme-light');
-    } else if (props.error) {
+    } else if (rest.error) {
       baseClasses.push('text-red-500');
     } else {
-      // Cor padrão apenas se nenhuma cor específica for definida
       baseClasses.push('text-mb-text');
     }
 
-    // Pesos da fonte
-    if (props.fw3) baseClasses.push('font-bold');
+    if (rest.fw3) baseClasses.push('font-bold');
     else baseClasses.push('font-medium');
 
-    // Transformações de texto
-    if (props.gradient) {
+    if (rest.gradient) {
       baseClasses.push('mb-gradient-title');
     }
-    if (props.uppercase) {
+    if (rest.uppercase) {
       baseClasses.push('uppercase tracking-wide');
     }
-    if (props.trackingWide) baseClasses.push('tracking-wide');
-    if (props.textXs) baseClasses.push('text-xs');
-    if (props.textAccent) baseClasses.push('text-mb-accent');
-    if (props.inline) baseClasses.push('inline');
-    else if (props.block) baseClasses.push('block');
-    if (props.maxW2xl) baseClasses.push('max-w-2xl');
-    if (props.leadingRelaxed) baseClasses.push('leading-relaxed');
-    if (props.preLine) baseClasses.push('whitespace-pre-line');
-    if (props.py8) baseClasses.push('py-8');
-    if (props.lowercase) baseClasses.push('lowercase');
-    if (props.capitalize) baseClasses.push('capitalize');
+    if (rest.trackingWide) baseClasses.push('tracking-wide');
+    if (rest.textXs) baseClasses.push('text-xs');
+    if (rest.textAccent) baseClasses.push('text-mb-accent');
+    if (rest.inline) baseClasses.push('inline');
+    else if (rest.block) baseClasses.push('block');
+    if (rest.maxW2xl) baseClasses.push('max-w-2xl');
+    if (rest.leadingRelaxed) baseClasses.push('leading-relaxed');
+    if (rest.preLine) baseClasses.push('whitespace-pre-line');
+    if (rest.py8) baseClasses.push('py-8');
+    if (rest.lowercase) baseClasses.push('lowercase');
+    if (rest.capitalize) baseClasses.push('capitalize');
 
-    // Tamanhos de fonte
-    if (props.fsHero) {
+    if (rest.fsHero) {
       baseClasses.push('text-2xl sm:text-3xl');
-    } else if (props.n2) {
+    } else if (rest.n2) {
       baseClasses.push('text-2xl');
-    } else if (props.fs3) {
+    } else if (rest.fs3) {
       baseClasses.push('text-lg');
-    } else if (props.fs4) {
+    } else if (rest.fs4) {
       baseClasses.push('text-xl');
-    } else if (props.fs5) {
+    } else if (rest.fs5) {
       baseClasses.push('text-2xl');
-    } else if (props.s1) {
+    } else if (rest.s1) {
       baseClasses.push('text-sm');
-    } else if (props.s2) {
+    } else if (rest.s2) {
       baseClasses.push('text-base');
-    } else if (props.s3) {
+    } else if (rest.s3) {
       baseClasses.push('text-lg');
     }
 
-    // Alinhamento
-    if (props.center) baseClasses.push('text-center');
-    if (props.justify) baseClasses.push('text-justify');
+    if (rest.center) baseClasses.push('text-center');
+    if (rest.justify) baseClasses.push('text-justify');
 
-    // Espaçamento
-    if (props.mb1) baseClasses.push('mb-1');
-    if (props.mb2) baseClasses.push('mb-2');
-    if (props.mb3) baseClasses.push('mb-3');
-    if (props.mb4) baseClasses.push('mb-4');
-    if (props.mt2) baseClasses.push('mt-2');
-    if (props.mt4) baseClasses.push('mt-4');
-    if (props.ml5) baseClasses.push('ml-5');
-    if (props.p2) baseClasses.push('p-2');
-    if (props.p5) baseClasses.push('p-5');
-    if (props.pl3) baseClasses.push('pl-3');
-    if (props.pl4) baseClasses.push('pl-4');
-    if (props.pl5) baseClasses.push('pl-5');
-    if (props.pl1) baseClasses.push('pl-1');
-    if (props.pl2) baseClasses.push('pl-2');
-    if (props.pr3) baseClasses.push('pr-3');
+    if (rest.mb1) baseClasses.push('mb-1');
+    if (rest.mb2) baseClasses.push('mb-2');
+    if (rest.mb3) baseClasses.push('mb-3');
+    if (rest.mb4) baseClasses.push('mb-4');
+    if (rest.mt2) baseClasses.push('mt-2');
+    if (rest.mt4) baseClasses.push('mt-4');
+    if (rest.ml5) baseClasses.push('ml-5');
+    if (rest.p2) baseClasses.push('p-2');
+    if (rest.p5) baseClasses.push('p-5');
+    if (rest.pl3) baseClasses.push('pl-3');
+    if (rest.pl4) baseClasses.push('pl-4');
+    if (rest.pl5) baseClasses.push('pl-5');
+    if (rest.pl1) baseClasses.push('pl-1');
+    if (rest.pl2) baseClasses.push('pl-2');
+    if (rest.pr3) baseClasses.push('pr-3');
 
-    // Outros estilos
-    if (props.noWrap) baseClasses.push('whitespace-nowrap');
-    if (props.ellipsis) {
+    if (rest.noWrap) baseClasses.push('whitespace-nowrap');
+    if (rest.ellipsis) {
       baseClasses.push('overflow-hidden text-ellipsis whitespace-nowrap');
     }
-    if (props.cursorPointer) {
+    if (rest.cursorPointer) {
       baseClasses.push('cursor-pointer transition-colors duration-200');
     }
-    if (props.maxWidth) baseClasses.push(`max-w-[${props.maxWidth}px]`);
+    if (rest.maxWidth) baseClasses.push(`max-w-[${rest.maxWidth}px]`);
 
     return baseClasses.join(' ');
   };
 
   return (
-    <div
+    <Component
       className={getTitleClasses()}
-      id={props.id !== undefined ? String(props.id) : undefined}
-      role={props.role}
+      id={rest.id !== undefined ? String(rest.id) : undefined}
+      role={rest.role}
     >
-      {props.children}
-    </div>
+      {rest.children}
+    </Component>
   );
 };

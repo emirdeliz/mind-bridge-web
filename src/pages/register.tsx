@@ -1,5 +1,5 @@
-export { RegisterPage as default } from "@components";
+export { RegisterPage as default } from '@components';
 
-import { withPublicSSR } from "@lib/auth/withAuthSSR";
+import { withPublicSSR } from '@lib/auth/withAuthSSR';
 
 export const getServerSideProps = withPublicSSR();

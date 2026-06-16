@@ -1,17 +1,23 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { PatientClinicalContentDto, ApiError, getPatientClinicalContentApi } from "@api";
-import { useI18n } from "@i18n";
-import { shouldSilentReload, type ReloadOptions } from "@helpers";
-import { useAuth } from "@services";
-import { emptyClinicalContentForPatient } from "../clinicalContentDefaults";
+import {
+  PatientClinicalContentDto,
+  ApiError,
+  getPatientClinicalContentApi,
+} from '@api';
+import { useI18n } from '@i18n';
+import { shouldSilentReload, type ReloadOptions } from '@helpers';
+import { useAuth } from '@services';
+import { emptyClinicalContentForPatient } from '../clinicalContentDefaults';
 
 export const usePatientClinicalContent = () => {
   const { language } = useI18n();
   const { session } = useAuth();
-  const [content, setContent] = useState<PatientClinicalContentDto | null>(null);
+  const [content, setContent] = useState<PatientClinicalContentDto | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const contentRef = useRef(content);
   contentRef.current = content;
 
@@ -27,18 +33,24 @@ export const usePatientClinicalContent = () => {
       if (!silent) {
         setLoading(true);
       }
-      setError("");
+      setError('');
 
       try {
         const data = await getPatientClinicalContentApi(language);
         setContent(data);
       } catch (loadError) {
-        if (loadError instanceof ApiError && loadError.status === 404 && session.id) {
+        if (
+          loadError instanceof ApiError &&
+          loadError.status === 404 &&
+          session.id
+        ) {
           setContent(emptyClinicalContentForPatient(session.id));
-          setError("");
+          setError('');
         } else {
           setError(
-            loadError instanceof Error ? loadError.message : "Failed to load clinical content",
+            loadError instanceof Error
+              ? loadError.message
+              : 'Failed to load clinical content'
           );
           setContent(null);
         }
@@ -46,7 +58,7 @@ export const usePatientClinicalContent = () => {
         setLoading(false);
       }
     },
-    [session, language],
+    [session, language]
   );
 
   useEffect(() => {

@@ -1,9 +1,5 @@
 import * as helpers from '@helpers';
-import React, {
-  ChangeEvent,
-  useEffect,
-  useState,
-} from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { filterInputDomProps } from '@helpers';
 import { InputProps } from '../Input';
 
@@ -31,13 +27,16 @@ export const InputDate = ({
     'outline-none rounded-lg',
     'px-4 py-3', // Padding padronizado (16px horizontal, 12px vertical)
     'text-base',
-    'font-poppins',
+    'font-sans',
     'transition-all duration-200 ease-in-out',
     'placeholder:text-gray-400 placeholder:font-normal',
     'disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed',
     'input-focus-primary',
-    hasError && 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200',
-  ].filter(Boolean).join(' ');
+    hasError &&
+      'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const domProps = filterInputDomProps(props);
 

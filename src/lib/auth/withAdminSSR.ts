@@ -1,4 +1,8 @@
-import type { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import type {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  GetServerSidePropsResult,
+} from 'next';
 
 import { getRoleRoute } from '../../services/auth/roleRoute';
 
@@ -7,7 +11,9 @@ import { getPublicSessionProps, getServerSession } from './session.server';
 export const withAdminSSR = (): GetServerSideProps => {
   return async (
     ctx: GetServerSidePropsContext
-  ): Promise<GetServerSidePropsResult<{ auth: { session: unknown; loading: boolean } }>> => {
+  ): Promise<
+    GetServerSidePropsResult<{ auth: { session: unknown; loading: boolean } }>
+  > => {
     const sessionResult = await getServerSession(ctx.req, ctx.res);
 
     if (!sessionResult) {

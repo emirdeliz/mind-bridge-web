@@ -3,8 +3,12 @@ import { FormGroup, FormGroupProps } from '@molecules';
 import { GenericObject } from '@types';
 
 export interface CheckboxFormProps<T>
-  extends Omit<CheckboxProps<T>, 'onChange' | 'label'>,
-    Pick<FormGroupProps, 'optional' | 'helpText' | 'error' | 'required' | 'fw3' | 'row'> {
+  extends
+    Omit<CheckboxProps<T>, 'onChange' | 'label'>,
+    Pick<
+      FormGroupProps,
+      'optional' | 'helpText' | 'error' | 'required' | 'fw3' | 'row'
+    > {
   children: string;
   checked?: boolean;
   onChange?: (checked: boolean) => void;
