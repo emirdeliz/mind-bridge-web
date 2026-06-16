@@ -67,9 +67,7 @@ export const AppShell = ({
     return (
       <div className='mb-dashboard-layout'>
         <PsychologistSidebar />
-        <Flex col wFull flex1 minHScreen px4 py8 smPx6 lgPx8>
-          {mainContent}
-        </Flex>
+        <div className='mb-dashboard-main'>{mainContent}</div>
       </div>
     );
   }
@@ -78,9 +76,7 @@ export const AppShell = ({
     return (
       <div className='mb-dashboard-layout'>
         <PatientSidebar />
-        <Flex col wFull flex1 minHScreen px4 py8 smPx6 lgPx8>
-          {mainContent}
-        </Flex>
+        <div className='mb-dashboard-main'>{mainContent}</div>
       </div>
     );
   }
