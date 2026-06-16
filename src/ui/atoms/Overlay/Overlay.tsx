@@ -27,7 +27,7 @@ export const Overlay = ({
     (event: React.MouseEvent<HTMLDivElement>) => {
       backdropPressRef.current = event.target === event.currentTarget;
     },
-    [],
+    []
   );
 
   const handlePointerUp = useCallback(
@@ -41,7 +41,7 @@ export const Overlay = ({
       }
       backdropPressRef.current = false;
     },
-    [onClick],
+    [onClick]
   );
 
   const overlayClasses = [
@@ -62,7 +62,7 @@ export const Overlay = ({
         >
           {children}
         </div>,
-        globalThis.document?.body,
+        globalThis.document?.body
       )
     : null;
 };

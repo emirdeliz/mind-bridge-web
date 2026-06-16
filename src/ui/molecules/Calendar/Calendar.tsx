@@ -19,13 +19,15 @@ export const Calendar = ({
   maxDate,
   onChange,
 }: CalendarProps) => {
-  const [currentDate, setCurrentDate] = useState<Date>(value ? new Date(value) : new Date());
+  const [currentDate, setCurrentDate] = useState<Date>(
+    value ? new Date(value) : new Date()
+  );
   const calendarDays = useMemo(() => {
     const days = buildCalendarWeek(currentDate);
 
     return days.map((week, index) => {
       return (
-        <div key={index} className="grid grid-cols-7 gap-0">
+        <div key={index} className='grid grid-cols-7 gap-0'>
           <CalendarWeekDay
             values={week}
             selectedDate={value ? new Date(value) : new Date()}
@@ -36,8 +38,11 @@ export const Calendar = ({
               const newDate = new Date(
                 currentDate.getFullYear(),
                 currentDate.getMonth(),
-                Number(v), 23, 59, 59
-              ); 
+                Number(v),
+                23,
+                59,
+                59
+              );
               onChange && onChange(newDate);
             }}
           />
@@ -52,13 +57,13 @@ export const Calendar = ({
 
   const renderWeekDays = () => {
     return (
-      <div className="grid grid-cols-7 gap-0 pb-2 mb-2">
+      <div className='grid grid-cols-7 gap-0 pb-2 mb-2'>
         {weekLabel.map((day, index) => (
           <div
             key={index}
-            className="calendar-weekday-header text-center py-2 px-1"
+            className='calendar-weekday-header text-center py-2 px-1'
           >
-            <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+            <span className='text-xs font-medium text-gray-600 uppercase tracking-wide'>
               {day}
             </span>
           </div>
@@ -89,7 +94,10 @@ export const Calendar = ({
 
   return (
     <div className={calendarClasses}>
-      <CalendarHeader onChangeMonth={(m) => changeMonth(m)} onChangeYear={(y) => changeYear(y)}>
+      <CalendarHeader
+        onChangeMonth={(m) => changeMonth(m)}
+        onChangeYear={(y) => changeYear(y)}
+      >
         {`${currentDate.getMonth()} ${currentDate.getFullYear()}`}
       </CalendarHeader>
       {renderWeekDays()}

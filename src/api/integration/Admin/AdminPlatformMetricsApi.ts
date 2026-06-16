@@ -7,10 +7,10 @@ type AdminPlatformMetricsResponse = {
 };
 
 export const getAdminPlatformMetricsApi = async (
-  period: AdminMetricsPeriod,
+  period: AdminMetricsPeriod
 ): Promise<AdminPlatformMetricsDto> => {
   const response = await apiRequest<AdminPlatformMetricsResponse>(
-    `/admin/platform-metrics?period=${encodeURIComponent(period)}`,
+    `/admin/platform-metrics?period=${encodeURIComponent(period)}`
   );
   return keysToCamel<AdminPlatformMetricsResponse>(response).metrics;
 };

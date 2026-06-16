@@ -1,27 +1,40 @@
-"use client";
+'use client';
 
-import { type MouseEvent, type ReactNode, useCallback, useMemo, useState } from "react";
-import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
+import {
+  type MouseEvent,
+  type ReactNode,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 
-import type { AppLanguage, PatientPaymentRowDto } from "@api";
-import { Button, Checkbox, Flex, Icon, Title } from "@atoms";
+import type { AppLanguage, PatientPaymentRowDto } from '@api';
+import { Button, Checkbox, Flex, Icon, Title } from '@atoms';
 import {
   formatCentsAsCurrencyForAppLanguage,
   formatDateAsDDMMYYYYAndTime,
   localeForAppLanguage,
-} from "@helpers";
-import { translateTemplate, useI18n } from "@i18n";
-import { Card, ChartCard, ConfirmModal, PageLoader, Table, Tooltip } from "@molecules";
-import { AppShell, DashboardSectionTitle } from "@templates";
+} from '@helpers';
+import { translateTemplate, useI18n } from '@i18n';
+import {
+  Card,
+  ChartCard,
+  ConfirmModal,
+  PageLoader,
+  Table,
+  Tooltip,
+} from '@molecules';
+import { AppShell, DashboardSectionTitle } from '@templates';
 import {
   canNavigateToPreviousBillingMonth,
   previousBillingMonth,
   usePsychologistPatientPayments,
-} from "@services";
+} from '@services';
 
-import { PatientPaymentRegisterModal } from "./PatientPaymentRegisterModal";
-import { usePsychologistGuard } from "./usePsychologistGuard";
+import { PatientPaymentRegisterModal } from './PatientPaymentRegisterModal';
+import { usePsychologistGuard } from './usePsychologistGuard';
 
 const stopRowClick = (event: MouseEvent) => {
   event.stopPropagation();
@@ -32,25 +45,32 @@ type PatientPaymentTableRow = PatientPaymentRowDto & {
 };
 
 const ChartDonut = dynamic(
-  () => import("../../atoms/Chart/Donut/ChartDonut").then((mod) => mod.ChartDonut),
-  { ssr: false },
+  () =>
+    import('../../atoms/Chart/Donut/ChartDonut').then((mod) => mod.ChartDonut),
+  { ssr: false }
 );
 
-const formatBillingMonth = (billingMonth: string, language: AppLanguage): string => {
+const formatBillingMonth = (
+  billingMonth: string,
+  language: AppLanguage
+): string => {
   const date = new Date(`${billingMonth}T12:00:00.000Z`);
   return new Intl.DateTimeFormat(localeForAppLanguage(language), {
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
   }).format(date);
 };
 
-const formatBillingMonthShort = (billingMonth: string, language: AppLanguage): string => {
+const formatBillingMonthShort = (
+  billingMonth: string,
+  language: AppLanguage
+): string => {
   const date = new Date(`${billingMonth}T12:00:00.000Z`);
   return new Intl.DateTimeFormat(localeForAppLanguage(language), {
-    month: "short",
-    year: "numeric",
-    timeZone: "UTC",
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
   }).format(date);
 };
 
@@ -61,8 +81,11 @@ export const PsychologistPatientPaymentsPage = () => {
   const router = useRouter();
   const { t, language } = useI18n();
   const { loading: guardLoading, isPsychologist } = usePsychologistGuard();
-  const [selectedBillingMonth, setSelectedBillingMonth] = useState<string | null>(null);
-  const [registerPatient, setRegisterPatient] = useState<PatientPaymentRowDto | null>(null);
+  const [selectedBillingMonth, setSelectedBillingMonth] = useState<
+    string | null
+  >(null);
+  const [registerPatient, setRegisterPatient] =
+    useState<PatientPaymentRowDto | null>(null);
   const [deletePaymentId, setDeletePaymentId] = useState<string | null>(null);
   const [showOnlyNonCompliant, setShowOnlyNonCompliant] = useState(false);
   const { summary, loading, saving, error, savePayment, removePayment } =
@@ -70,50 +93,53 @@ export const PsychologistPatientPaymentsPage = () => {
 
   const oldestBillingMonth = summary?.availableMonths[0];
   const canGoToPreviousMonth = summary?.billingMonth
-    ? canNavigateToPreviousBillingMonth(summary.billingMonth, oldestBillingMonth)
+    ? canNavigateToPreviousBillingMonth(
+        summary.billingMonth,
+        oldestBillingMonth
+      )
     : false;
 
-  const currency = summary?.currency ?? "BRL";
+  const currency = summary?.currency ?? 'BRL';
   const monthLabel = summary?.billingMonth
     ? formatBillingMonth(summary.billingMonth, language)
-    : "";
+    : '';
 
   const totalCollected = summary
     ? formatCentsAsCurrencyForAppLanguage(
         summary.totalCollectedCents,
         language,
-        currency,
+        currency
       )
-    : "—";
+    : '—';
 
   const complianceChartData = useMemo(
     () => [
       {
-        name: t("PSYCHOLOGIST_PATIENT_PAYMENTS_COMPLIANT"),
+        name: t('PSYCHOLOGIST_PATIENT_PAYMENTS_COMPLIANT'),
         value: summary?.compliantCount ?? 0,
-        color: "#5eead4",
+        color: '#5eead4',
       },
       {
-        name: t("PSYCHOLOGIST_PATIENT_PAYMENTS_NON_COMPLIANT"),
+        name: t('PSYCHOLOGIST_PATIENT_PAYMENTS_NON_COMPLIANT'),
         value: summary?.nonCompliantCount ?? 0,
-        color: "#f87171",
+        color: '#f87171',
       },
     ],
-    [summary?.compliantCount, summary?.nonCompliantCount, t],
+    [summary?.compliantCount, summary?.nonCompliantCount, t]
   );
 
   const formatPaidAt = useCallback(
     (value: string | null | undefined) =>
-      value ? formatDateAsDDMMYYYYAndTime(value) : "—",
-    [],
+      value ? formatDateAsDDMMYYYYAndTime(value) : '—',
+    []
   );
 
   const formatUnpaidMonths = useCallback(
     (months: string[]) =>
       months
         .map((month) => formatBillingMonthShort(month, language))
-        .join(", "),
-    [language],
+        .join(', '),
+    [language]
   );
 
   const buildRowActions = useCallback(
@@ -123,57 +149,65 @@ export const PsychologistPatientPaymentsPage = () => {
       }
 
       return (
-      <div
-        className="flex flex-row items-center justify-center gap-1.5"
-        onClick={stopRowClick}
-        role="presentation"
-      >
-        <Tooltip
-          title={
-            row.isCompliant
-              ? t("PSYCHOLOGIST_PATIENT_PAYMENTS_ACTION_EDIT")
-              : t("PSYCHOLOGIST_PATIENT_PAYMENTS_ACTION_REGISTER")
-          }
-          top
-          minWidth={10}
+        <div
+          className='flex flex-row items-center justify-center gap-1.5'
+          onClick={stopRowClick}
+          role='presentation'
         >
-          <span className="inline-flex h-8 w-8 items-center justify-center">
-            <Button
-              type="button"
-              xs
-              sm
-              circle
-              variant={row.isCompliant ? "secondary" : "primary"}
-              outlined={row.isCompliant}
-              clickable={!saving}
-              onClick={() => setRegisterPatient(row)}
-            >
-              {row.isCompliant ? <Icon.Pencil sm white /> : <Icon.Edit sm white />}
-            </Button>
-          </span>
-        </Tooltip>
-        {row.payment ? (
-          <Tooltip title={t("PSYCHOLOGIST_PATIENT_PAYMENTS_ACTION_REMOVE")} top minWidth={10}>
-            <span className="inline-flex h-8 w-8 items-center justify-center">
+          <Tooltip
+            title={
+              row.isCompliant
+                ? t('PSYCHOLOGIST_PATIENT_PAYMENTS_ACTION_EDIT')
+                : t('PSYCHOLOGIST_PATIENT_PAYMENTS_ACTION_REGISTER')
+            }
+            top
+            minWidth={10}
+          >
+            <span className='inline-flex h-8 w-8 items-center justify-center'>
               <Button
-                type="button"
+                type='button'
                 xs
                 sm
                 circle
-                variant="danger"
-                outlined
+                variant={row.isCompliant ? 'secondary' : 'primary'}
+                outlined={row.isCompliant}
                 clickable={!saving}
-                onClick={() => setDeletePaymentId(row.payment!.id)}
+                onClick={() => setRegisterPatient(row)}
               >
-                <Icon.TrashEmpty sm white />
+                {row.isCompliant ? (
+                  <Icon.Pencil sm white />
+                ) : (
+                  <Icon.Edit sm white />
+                )}
               </Button>
             </span>
           </Tooltip>
-        ) : null}
-      </div>
+          {row.payment ? (
+            <Tooltip
+              title={t('PSYCHOLOGIST_PATIENT_PAYMENTS_ACTION_REMOVE')}
+              top
+              minWidth={10}
+            >
+              <span className='inline-flex h-8 w-8 items-center justify-center'>
+                <Button
+                  type='button'
+                  xs
+                  sm
+                  circle
+                  variant='danger'
+                  outlined
+                  clickable={!saving}
+                  onClick={() => setDeletePaymentId(row.payment!.id)}
+                >
+                  <Icon.TrashEmpty sm white />
+                </Button>
+              </span>
+            </Tooltip>
+          ) : null}
+        </div>
       );
     },
-    [saving, t],
+    [saving, t]
   );
 
   const filteredPatients = useMemo(() => {
@@ -194,12 +228,12 @@ export const PsychologistPatientPaymentsPage = () => {
   const columns = useMemo(
     () => [
       {
-        key: "fullName" as const,
-        label: t("PSYCHOLOGIST_PATIENT_PAYMENTS_COL_PATIENT"),
+        key: 'fullName' as const,
+        label: t('PSYCHOLOGIST_PATIENT_PAYMENTS_COL_PATIENT'),
       },
       {
-        key: "isCompliant" as const,
-        label: t("PSYCHOLOGIST_PATIENT_PAYMENTS_COL_STATUS"),
+        key: 'isCompliant' as const,
+        label: t('PSYCHOLOGIST_PATIENT_PAYMENTS_COL_STATUS'),
         disableSort: true,
         customCellRender: (row: PatientPaymentTableRow) => (
           <Flex col wFull gap1>
@@ -212,24 +246,27 @@ export const PsychologistPatientPaymentsPage = () => {
               }
             >
               {!row.isBillableInSelectedMonth
-                ? t("PSYCHOLOGIST_PATIENT_PAYMENTS_NOT_BILLABLE_IN_MONTH")
+                ? t('PSYCHOLOGIST_PATIENT_PAYMENTS_NOT_BILLABLE_IN_MONTH')
                 : row.isCompliant
-                  ? t("PSYCHOLOGIST_PATIENT_PAYMENTS_STATUS_PAID")
-                  : t("PSYCHOLOGIST_PATIENT_PAYMENTS_STATUS_PENDING")}
+                  ? t('PSYCHOLOGIST_PATIENT_PAYMENTS_STATUS_PAID')
+                  : t('PSYCHOLOGIST_PATIENT_PAYMENTS_STATUS_PENDING')}
             </Title>
             {row.unpaidBillingMonths.length > 0 ? (
               <Title s1 gray block leadingRelaxed>
-                {translateTemplate(t("PSYCHOLOGIST_PATIENT_PAYMENTS_UNPAID_MONTHS"), {
-                  months: formatUnpaidMonths(row.unpaidBillingMonths),
-                })}
+                {translateTemplate(
+                  t('PSYCHOLOGIST_PATIENT_PAYMENTS_UNPAID_MONTHS'),
+                  {
+                    months: formatUnpaidMonths(row.unpaidBillingMonths),
+                  }
+                )}
               </Title>
             ) : null}
           </Flex>
         ),
       },
       {
-        key: "patientId" as const,
-        label: t("PSYCHOLOGIST_PATIENT_PAYMENTS_COL_AMOUNT"),
+        key: 'patientId' as const,
+        label: t('PSYCHOLOGIST_PATIENT_PAYMENTS_COL_AMOUNT'),
         disableSort: true,
         customCellRender: (row: PatientPaymentTableRow) => (
           <Title s2 white>
@@ -237,27 +274,29 @@ export const PsychologistPatientPaymentsPage = () => {
               ? formatCentsAsCurrencyForAppLanguage(
                   row.payment.amountCents,
                   language,
-                  currency,
+                  currency
                 )
-              : "—"}
+              : '—'}
           </Title>
         ),
       },
       {
-        key: "payment" as const,
-        label: t("PSYCHOLOGIST_PATIENT_PAYMENTS_COL_PAID_AT"),
+        key: 'payment' as const,
+        label: t('PSYCHOLOGIST_PATIENT_PAYMENTS_COL_PAID_AT'),
         disableSort: true,
         customCellRender: (row: PatientPaymentTableRow) => (
-          <Title s2 white>{formatPaidAt(row.payment?.paidAt)}</Title>
+          <Title s2 white>
+            {formatPaidAt(row.payment?.paidAt)}
+          </Title>
         ),
       },
       {
-        key: "actions" as const,
-        label: t("PSYCHOLOGIST_PATIENTS_COL_ACTIONS"),
+        key: 'actions' as const,
+        label: t('PSYCHOLOGIST_PATIENTS_COL_ACTIONS'),
         disableSort: true,
       },
     ],
-    [currency, formatPaidAt, formatUnpaidMonths, language, t],
+    [currency, formatPaidAt, formatUnpaidMonths, language, t]
   );
 
   const goToPreviousMonth = () => {
@@ -300,46 +339,51 @@ export const PsychologistPatientPaymentsPage = () => {
   const showContentLoader = !showFullPageLoader && loading && summary !== null;
 
   const periodTitle = summary?.isCurrentMonth
-    ? t("PSYCHOLOGIST_PATIENT_PAYMENTS_CURRENT_MONTH")
-    : translateTemplate(t("PSYCHOLOGIST_PATIENT_PAYMENTS_SELECTED_MONTH"), {
+    ? t('PSYCHOLOGIST_PATIENT_PAYMENTS_CURRENT_MONTH')
+    : translateTemplate(t('PSYCHOLOGIST_PATIENT_PAYMENTS_SELECTED_MONTH'), {
         month: monthLabel,
       });
 
   return (
     <AppShell
-      title={t("PSYCHOLOGIST_PATIENT_PAYMENTS_TITLE")}
-      subtitle={t("PSYCHOLOGIST_PATIENT_PAYMENTS_SUBTITLE")}
-      variant="dashboard"
+      title={t('PSYCHOLOGIST_PATIENT_PAYMENTS_TITLE')}
+      subtitle={t('PSYCHOLOGIST_PATIENT_PAYMENTS_SUBTITLE')}
+      variant='dashboard'
     >
       <Flex row wFull alignCenter wrap justifySpaceBetween gap4>
         <Flex row alignCenter wrap gap4>
           <Button
-            type="button"
-            variant="secondary"
-            onClick={() => void router.push("/psychologist/patients")}
+            type='button'
+            variant='secondary'
+            onClick={() => void router.push('/psychologist/patients')}
           >
-            {t("BACK_TO_PSYCHOLOGIST_PATIENTS")}
+            {t('BACK_TO_PSYCHOLOGIST_PATIENTS')}
           </Button>
           <Button
-            type="button"
-            variant="secondary"
-            onClick={() => void router.push("/psychologist/billing")}
+            type='button'
+            variant='secondary'
+            onClick={() => void router.push('/psychologist/billing')}
           >
-            {t("PSYCHOLOGIST_PATIENT_PAYMENTS_GO_TO_BILLING")}
+            {t('PSYCHOLOGIST_PATIENT_PAYMENTS_GO_TO_BILLING')}
           </Button>
         </Flex>
         <Flex row alignCenter wrap gap4>
           <Button
-            type="button"
-            variant="secondary"
+            type='button'
+            variant='secondary'
             disabled={!canGoToPreviousMonth || loading}
             onClick={goToPreviousMonth}
           >
-            {t("PSYCHOLOGIST_BILLING_PREVIOUS_MONTH")}
+            {t('PSYCHOLOGIST_BILLING_PREVIOUS_MONTH')}
           </Button>
           {!summary?.isCurrentMonth ? (
-            <Button type="button" variant="primary" disabled={loading} onClick={goToCurrentMonth}>
-              {t("PSYCHOLOGIST_BILLING_BACK_TO_CURRENT_MONTH")}
+            <Button
+              type='button'
+              variant='primary'
+              disabled={loading}
+              onClick={goToCurrentMonth}
+            >
+              {t('PSYCHOLOGIST_BILLING_BACK_TO_CURRENT_MONTH')}
             </Button>
           ) : null}
         </Flex>
@@ -349,97 +393,114 @@ export const PsychologistPatientPaymentsPage = () => {
         <PageLoader />
       ) : (
         <>
-      {error ? (
-        <Title s1 gray>
-          {error}
-        </Title>
-      ) : null}
-
-      {showContentLoader ? (
-        <PageLoader />
-      ) : (
-        <>
-      <div className="mb-chart-card-row">
-        <Card padding="lg" shadow="md">
-          <DashboardSectionTitle
-            title={periodTitle}
-            tooltip={t("TOOLTIP_PSYCHOLOGIST_PATIENT_PAYMENTS_SUMMARY")}
-          />
-          <Flex col wFull gap2>
-            <Title fs3 fw3>
-              {translateTemplate(t("PSYCHOLOGIST_PATIENT_PAYMENTS_TOTAL_COLLECTED"), {
-                amount: totalCollected,
-              })}
-            </Title>
+          {error ? (
             <Title s1 gray>
-              {translateTemplate(t("PSYCHOLOGIST_PATIENT_PAYMENTS_EXPECTED_PATIENTS"), {
-                count: String(summary?.expectedPatientCount ?? 0),
-              })}
+              {error}
             </Title>
-            <Title s1 gray>
-              {translateTemplate(t("PSYCHOLOGIST_PATIENT_PAYMENTS_COMPLIANT_COUNT"), {
-                count: String(summary?.compliantCount ?? 0),
-              })}
-            </Title>
-            <Title s1 gray>
-              {translateTemplate(t("PSYCHOLOGIST_PATIENT_PAYMENTS_NON_COMPLIANT_COUNT"), {
-                count: String(summary?.nonCompliantCount ?? 0),
-              })}
-            </Title>
-          </Flex>
-        </Card>
+          ) : null}
 
-        <ChartCard
-          title={t("PSYCHOLOGIST_PATIENT_PAYMENTS_COMPLIANCE_CHART")}
-          tooltip={t("TOOLTIP_PSYCHOLOGIST_PATIENT_PAYMENTS_CHART")}
-        >
-          <ChartDonut
-            data={complianceChartData}
-            centerText={String(summary?.expectedPatientCount ?? 0)}
-            hideWhenEmpty={false}
-            height={280}
-          />
-        </ChartCard>
-      </div>
+          {showContentLoader ? (
+            <PageLoader />
+          ) : (
+            <>
+              <div className='mb-chart-card-row'>
+                <Card padding='lg' shadow='md'>
+                  <DashboardSectionTitle
+                    title={periodTitle}
+                    tooltip={t('TOOLTIP_PSYCHOLOGIST_PATIENT_PAYMENTS_SUMMARY')}
+                  />
+                  <Flex col wFull gap2>
+                    <Title fs3 fw3>
+                      {translateTemplate(
+                        t('PSYCHOLOGIST_PATIENT_PAYMENTS_TOTAL_COLLECTED'),
+                        {
+                          amount: totalCollected,
+                        }
+                      )}
+                    </Title>
+                    <Title s1 gray>
+                      {translateTemplate(
+                        t('PSYCHOLOGIST_PATIENT_PAYMENTS_EXPECTED_PATIENTS'),
+                        {
+                          count: String(summary?.expectedPatientCount ?? 0),
+                        }
+                      )}
+                    </Title>
+                    <Title s1 gray>
+                      {translateTemplate(
+                        t('PSYCHOLOGIST_PATIENT_PAYMENTS_COMPLIANT_COUNT'),
+                        {
+                          count: String(summary?.compliantCount ?? 0),
+                        }
+                      )}
+                    </Title>
+                    <Title s1 gray>
+                      {translateTemplate(
+                        t('PSYCHOLOGIST_PATIENT_PAYMENTS_NON_COMPLIANT_COUNT'),
+                        {
+                          count: String(summary?.nonCompliantCount ?? 0),
+                        }
+                      )}
+                    </Title>
+                  </Flex>
+                </Card>
 
-      <Card padding="lg" shadow="md">
-        <DashboardSectionTitle
-          title={translateTemplate(t("PSYCHOLOGIST_PATIENT_PAYMENTS_TABLE_TITLE"), {
-            month: monthLabel,
-          })}
-          tooltip={t("TOOLTIP_PSYCHOLOGIST_PATIENT_PAYMENTS_TABLE")}
-          trailing={
-            <Checkbox
-              checked={showOnlyNonCompliant}
-              label={t("PSYCHOLOGIST_PATIENT_PAYMENTS_SHOW_NON_COMPLIANT_ONLY")}
-              onChange={setShowOnlyNonCompliant}
-            />
-          }
-        />
-        {tableData.length === 0 ? (
-          <Title s1 gray>
-            {showOnlyNonCompliant
-              ? t("PSYCHOLOGIST_PATIENT_PAYMENTS_EMPTY_FILTERED")
-              : t("PSYCHOLOGIST_PATIENT_PAYMENTS_EMPTY")}
-          </Title>
-        ) : (
-          <Table<PatientPaymentTableRow>
-            variant="dark"
-            columns={columns}
-            dataSource={tableData}
-            sortable
-          />
-        )}
-      </Card>
-        </>
-      )}
+                <ChartCard
+                  title={t('PSYCHOLOGIST_PATIENT_PAYMENTS_COMPLIANCE_CHART')}
+                  tooltip={t('TOOLTIP_PSYCHOLOGIST_PATIENT_PAYMENTS_CHART')}
+                >
+                  <ChartDonut
+                    data={complianceChartData}
+                    centerText={String(summary?.expectedPatientCount ?? 0)}
+                    hideWhenEmpty={false}
+                    height={280}
+                  />
+                </ChartCard>
+              </div>
+
+              <Card padding='lg' shadow='md'>
+                <DashboardSectionTitle
+                  title={translateTemplate(
+                    t('PSYCHOLOGIST_PATIENT_PAYMENTS_TABLE_TITLE'),
+                    {
+                      month: monthLabel,
+                    }
+                  )}
+                  tooltip={t('TOOLTIP_PSYCHOLOGIST_PATIENT_PAYMENTS_TABLE')}
+                  trailing={
+                    <Checkbox
+                      checked={showOnlyNonCompliant}
+                      label={t(
+                        'PSYCHOLOGIST_PATIENT_PAYMENTS_SHOW_NON_COMPLIANT_ONLY'
+                      )}
+                      onChange={setShowOnlyNonCompliant}
+                    />
+                  }
+                />
+                {tableData.length === 0 ? (
+                  <Title s1 gray>
+                    {showOnlyNonCompliant
+                      ? t('PSYCHOLOGIST_PATIENT_PAYMENTS_EMPTY_FILTERED')
+                      : t('PSYCHOLOGIST_PATIENT_PAYMENTS_EMPTY')}
+                  </Title>
+                ) : (
+                  <Table<PatientPaymentTableRow>
+                    variant='dark'
+                    columns={columns}
+                    dataSource={tableData}
+                    sortable
+                  />
+                )}
+              </Card>
+            </>
+          )}
         </>
       )}
 
       <PatientPaymentRegisterModal
         visible={Boolean(registerPatient)}
         patient={registerPatient}
-        billingMonth={summary?.billingMonth ?? ""}
+        billingMonth={summary?.billingMonth ?? ''}
         saving={saving}
         onClose={() => setRegisterPatient(null)}
         onConfirm={handleSavePayment}
@@ -447,11 +508,11 @@ export const PsychologistPatientPaymentsPage = () => {
 
       <ConfirmModal
         visible={Boolean(deletePaymentId)}
-        title={t("PSYCHOLOGIST_PATIENT_PAYMENTS_DELETE_CONFIRM_TITLE")}
-        message={t("PSYCHOLOGIST_PATIENT_PAYMENTS_DELETE_CONFIRM_MESSAGE")}
-        confirmLabel={t("PSYCHOLOGIST_PATIENT_PAYMENTS_ACTION_REMOVE")}
-        cancelLabel={t("PSYCHOLOGIST_PATIENTS_MODAL_CANCEL")}
-        confirmVariant="danger"
+        title={t('PSYCHOLOGIST_PATIENT_PAYMENTS_DELETE_CONFIRM_TITLE')}
+        message={t('PSYCHOLOGIST_PATIENT_PAYMENTS_DELETE_CONFIRM_MESSAGE')}
+        confirmLabel={t('PSYCHOLOGIST_PATIENT_PAYMENTS_ACTION_REMOVE')}
+        cancelLabel={t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
+        confirmVariant='danger'
         onClose={() => {
           if (!saving) {
             setDeletePaymentId(null);

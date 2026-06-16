@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import NextLink from "next/link";
-import { useRouter } from "next/router";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 
-import { getProfileInitials } from "@helpers";
-import { useOnClickOutside } from "@hooks";
-import { getProfileRoute, useAuth } from "@services";
-import { useI18n } from "@i18n";
+import { getProfileInitials } from '@helpers';
+import { useOnClickOutside } from '@hooks';
+import { getProfileRoute, useAuth } from '@services';
+import { useI18n } from '@i18n';
 
 export const UserAccountMenu = () => {
   const { t } = useI18n();
@@ -25,44 +25,54 @@ export const UserAccountMenu = () => {
   if (!session) return null;
 
   const initials = getProfileInitials(
-    session.profile?.fullName ?? "",
-    session.email.slice(0, 2).toUpperCase(),
+    session.profile?.fullName ?? '',
+    session.email.slice(0, 2).toUpperCase()
   );
   const profileHref = getProfileRoute(session.role);
 
   return (
-    <div ref={anchorRef} className="mb-user-menu-anchor">
+    <div ref={anchorRef} className='mb-user-menu-anchor'>
       <button
-        type="button"
-        className="mb-user-avatar"
+        type='button'
+        className='mb-user-avatar'
         aria-expanded={open}
-        aria-haspopup="menu"
-        aria-label={t("USER_MENU_ARIA_LABEL")}
+        aria-haspopup='menu'
+        aria-label={t('USER_MENU_ARIA_LABEL')}
         onClick={() => setOpen((value) => !value)}
       >
         {initials}
       </button>
       {open ? (
-        <div className="mb-user-menu" role="menu">
-          <NextLink href={profileHref} className="mb-user-menu-item" role="menuitem" onClick={closeMenu}>
-            {t("USER_MENU_EDIT_PROFILE")}
+        <div className='mb-user-menu' role='menu'>
+          <NextLink
+            href={profileHref}
+            className='mb-user-menu-item'
+            role='menuitem'
+            onClick={closeMenu}
+          >
+            {t('USER_MENU_EDIT_PROFILE')}
           </NextLink>
           {session.isAdmin ? (
-            <NextLink href="/admin" className="mb-user-menu-item" role="menuitem" onClick={closeMenu}>
-              {t("USER_MENU_ADMIN")}
+            <NextLink
+              href='/admin'
+              className='mb-user-menu-item'
+              role='menuitem'
+              onClick={closeMenu}
+            >
+              {t('USER_MENU_ADMIN')}
             </NextLink>
           ) : null}
           <button
-            type="button"
-            className="mb-user-menu-item-danger"
-            role="menuitem"
+            type='button'
+            className='mb-user-menu-item-danger'
+            role='menuitem'
             onClick={async () => {
               closeMenu();
               await logout();
-              void router.push("/");
+              void router.push('/');
             }}
           >
-            {t("LOGOUT")}
+            {t('LOGOUT')}
           </button>
         </div>
       ) : null}

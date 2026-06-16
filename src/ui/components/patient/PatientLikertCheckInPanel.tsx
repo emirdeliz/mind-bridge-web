@@ -1,18 +1,20 @@
+import { useEffect } from 'react';
+
 import {
   LIKERT_DIMENSION_IDS,
   type LikertCheckInDto,
   type LikertDimensionId,
-} from "@api";
+} from '@api';
 import {
   likertAnchorHighKey,
   likertAnchorLowKey,
   likertQuestionKey,
-} from "@helpers";
-import { Flex, Title } from "@atoms";
-import { translateTemplate, useI18n } from "@i18n";
-import { Card } from "@molecules";
-import { usePatientLikertCheckIn } from "@services";
-import { DashboardSectionTitle } from "@templates";
+} from '@helpers';
+import { Flex, Title } from '@atoms';
+import { translateTemplate, useI18n } from '@i18n';
+import { Card, useToast } from '@molecules';
+import { usePatientLikertCheckIn } from '@services';
+import { DashboardSectionTitle } from '@templates';
 
 const LIKERT_SCALE = [1, 2, 3, 4, 5] as const;
 
@@ -28,18 +30,31 @@ export const PatientLikertCheckInPanel = ({
   onSaved,
 }: PatientLikertCheckInPanelProps) => {
   const { t } = useI18n();
+  const { showToastSuccess, showToastError } = useToast();
   const { scores, error, saveStatus, answeredCount, totalCount, selectScore } =
     usePatientLikertCheckIn({ initialCheckIn, onSaved });
 
+  useEffect(() => {
+    if (saveStatus === 'saved') {
+      showToastSuccess({ message: t('LIKERT_SAVED') });
+    }
+  }, [saveStatus, showToastSuccess, t]);
+
+  useEffect(() => {
+    if (error) {
+      showToastError({ message: error });
+    }
+  }, [error, showToastError]);
+
   const buildOptionAriaLabel = (
     dimension: LikertDimensionId,
-    value: number,
+    value: number
   ): string => {
     const question = t(likertQuestionKey(dimension));
     const valueLabel = t(likertValueLabelKey(value));
     const low = t(likertAnchorLowKey(dimension));
     const high = t(likertAnchorHighKey(dimension));
-    return translateTemplate(t("LIKERT_OPTION_ARIA"), {
+    return translateTemplate(t('LIKERT_OPTION_ARIA'), {
       question,
       value: String(value),
       valueLabel,
@@ -49,37 +64,33 @@ export const PatientLikertCheckInPanel = ({
   };
 
   return (
-    <Card padding="lg" shadow="md">
+    <Card padding='lg' shadow='md'>
       <DashboardSectionTitle
-        title={t("LIKERT_CHECKIN_TITLE")}
-        tooltip={t("TOOLTIP_LIKERT_CHECKIN")}
+        title={t('LIKERT_CHECKIN_TITLE')}
+        tooltip={t('TOOLTIP_LIKERT_CHECKIN')}
       />
       <Flex col wFull gap2 mb4>
         <Title s2 gray block leadingRelaxed>
-          {t("LIKERT_CHECKIN_HINT")}
+          {t('LIKERT_CHECKIN_HINT')}
         </Title>
         <Flex row wFull alignCenter justifySpaceBetween wrap gap2>
           <Title s1 gray block>
-            {translateTemplate(t("LIKERT_PROGRESS"), {
+            {translateTemplate(t('LIKERT_PROGRESS'), {
               answered: answeredCount,
               total: totalCount,
             })}
           </Title>
-          {saveStatus === "saving" ? (
-            <Title s1 gray block aria-live="polite">
-              {t("LIKERT_SAVING")}
-            </Title>
-          ) : saveStatus === "saved" ? (
-            <Title s1 gray block aria-live="polite">
-              {t("LIKERT_SAVED")}
+          {saveStatus === 'saving' ? (
+            <Title s1 gray block aria-live='polite'>
+              {t('LIKERT_SAVING')}
             </Title>
           ) : null}
         </Flex>
       </Flex>
 
-      <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className='grid w-full grid-cols-1 gap-4 sm:grid-cols-2'>
         {LIKERT_DIMENSION_IDS.map((dimension) => {
-          const isAnswered = typeof scores[dimension] === "number";
+          const isAnswered = typeof scores[dimension] === 'number';
           const lowLabel = t(likertAnchorLowKey(dimension));
           const highLabel = t(likertAnchorHighKey(dimension));
 
@@ -87,11 +98,11 @@ export const PatientLikertCheckInPanel = ({
             <div
               key={dimension}
               className={[
-                "min-w-0 rounded-xl border p-4 transition-colors",
+                'min-w-0 rounded-xl border p-4 transition-colors',
                 isAnswered
-                  ? "border-mb-accent/30 bg-mb-accent/5"
-                  : "border-mb-border/60 bg-mb-surface/40",
-              ].join(" ")}
+                  ? 'border-mb-accent/30 bg-mb-accent/5'
+                  : 'border-mb-border/60 bg-mb-surface/40',
+              ].join(' ')}
             >
               <Flex col wFull gap2 alignStretch>
                 <Title s2 fw3 block leadingRelaxed>
@@ -107,23 +118,30 @@ export const PatientLikertCheckInPanel = ({
                   </Title>
                 </Flex>
 
-                <Flex row wFull alignCenter justifyCenter gap1 role="radiogroup">
+                <Flex
+                  row
+                  wFull
+                  alignCenter
+                  justifyCenter
+                  gap1
+                  role='radiogroup'
+                >
                   {LIKERT_SCALE.map((value) => {
                     const selected = scores[dimension] === value;
                     return (
                       <button
                         key={value}
-                        type="button"
-                        role="radio"
+                        type='button'
+                        role='radio'
                         aria-checked={selected}
                         aria-label={buildOptionAriaLabel(dimension, value)}
                         title={t(likertValueLabelKey(value))}
                         className={[
-                          "flex h-10 w-10 flex-1 max-w-[2.75rem] items-center justify-center rounded-xl border text-sm font-semibold transition-colors sm:h-11 sm:w-11 sm:max-w-[3.25rem]",
+                          'flex h-10 w-10 flex-1 max-w-[2.75rem] items-center justify-center rounded-xl border text-sm font-semibold transition-colors sm:h-11 sm:w-11 sm:max-w-[3.25rem]',
                           selected
-                            ? "border-mb-accent bg-mb-accent/20 text-mb-accent shadow-glow"
-                            : "border-mb-border/80 bg-mb-surface/60 text-mb-text hover:border-mb-accent/40",
-                        ].join(" ")}
+                            ? 'border-mb-accent bg-mb-accent/20 text-mb-accent shadow-glow'
+                            : 'border-mb-border/80 bg-mb-surface/60 text-mb-text hover:border-mb-accent/40',
+                        ].join(' ')}
                         onClick={() => selectScore(dimension, value)}
                       >
                         {value}
@@ -138,7 +156,7 @@ export const PatientLikertCheckInPanel = ({
       </div>
 
       {error ? (
-        <Title s2 error block mt4>
+        <Title as='p' s2 error block mt4>
           {error}
         </Title>
       ) : null}

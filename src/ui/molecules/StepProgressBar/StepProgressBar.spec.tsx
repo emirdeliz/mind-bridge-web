@@ -15,13 +15,13 @@ describe('StepProgressBar component test', () => {
     const steps = [
       { label: 'Step 1', completed: false },
       { label: 'Step 2', completed: true },
-      { label: 'Step 3', completed: false }
+      { label: 'Step 3', completed: false },
     ];
-    
+
     const { container: stepProgressBarNode } = render(
       <StepProgressBar steps={steps} />
     );
-    
+
     const spans = stepProgressBarNode.querySelectorAll('span');
     expect(spans.length).toBeGreaterThan(0);
   });
@@ -29,13 +29,13 @@ describe('StepProgressBar component test', () => {
   it('Have StepProgressBar with outlined prop', async () => {
     const steps = [
       { label: 'Step 1', completed: false },
-      { label: 'Step 2', completed: true }
+      { label: 'Step 2', completed: true },
     ];
-    
+
     const { container: stepProgressBarNode } = render(
       <StepProgressBar steps={steps} outlined />
     );
-    
+
     expect(stepProgressBarNode).toBeInTheDocument();
   });
 });

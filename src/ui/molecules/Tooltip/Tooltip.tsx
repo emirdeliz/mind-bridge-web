@@ -63,7 +63,9 @@ const TooltipPopup = withFloat((props: GenericObject) => {
   /** Tooltip acima do anchor — seta na borda inferior apontando para baixo. */
   const arrowOnBottomEdge = Boolean(top);
   /** Tooltip abaixo do anchor (ou padrão) — seta na borda superior apontando para cima. */
-  const arrowOnTopEdge = Boolean(bottom || (!top && !bottom && !left && !right));
+  const arrowOnTopEdge = Boolean(
+    bottom || (!top && !bottom && !left && !right)
+  );
 
   const updateArrowPosition = useCallback(() => {
     if (!popupRef.current || !_floatingElementAnchor) return;
@@ -76,12 +78,22 @@ const TooltipPopup = withFloat((props: GenericObject) => {
         anchorRect.left + anchorRect.width / 2 - popupRect.left;
       const clampedLeft = Math.max(
         ARROW_HALF,
-        Math.min(popupRect.width - ARROW_HALF, anchorCenterX),
+        Math.min(popupRect.width - ARROW_HALF, anchorCenterX)
       );
       setArrowStyle(
         arrowOnBottomEdge
-          ? { left: clampedLeft, bottom: -ARROW_HALF, top: 'auto', transform: 'translateX(-50%)' }
-          : { left: clampedLeft, top: -ARROW_HALF, bottom: 'auto', transform: 'translateX(-50%)' },
+          ? {
+              left: clampedLeft,
+              bottom: -ARROW_HALF,
+              top: 'auto',
+              transform: 'translateX(-50%)',
+            }
+          : {
+              left: clampedLeft,
+              top: -ARROW_HALF,
+              bottom: 'auto',
+              transform: 'translateX(-50%)',
+            }
       );
       return;
     }
@@ -90,12 +102,12 @@ const TooltipPopup = withFloat((props: GenericObject) => {
       anchorRect.top + anchorRect.height / 2 - popupRect.top;
     const clampedTop = Math.max(
       ARROW_HALF,
-      Math.min(popupRect.height - ARROW_HALF, anchorCenterY),
+      Math.min(popupRect.height - ARROW_HALF, anchorCenterY)
     );
     setArrowStyle(
       right
         ? { top: clampedTop, left: -ARROW_HALF, transform: 'translateY(-50%)' }
-        : { top: clampedTop, right: -ARROW_HALF, transform: 'translateY(-50%)' },
+        : { top: clampedTop, right: -ARROW_HALF, transform: 'translateY(-50%)' }
     );
   }, [
     _floatingElementAnchor,
@@ -144,18 +156,22 @@ const TooltipPopup = withFloat((props: GenericObject) => {
   const domProps = filterDOMProps(props);
 
   return (
-    <div ref={popupRef} className="mb-tooltip-shell">
+    <div ref={popupRef} className='mb-tooltip-shell'>
       <div
         onMouseOver={onMouseOver}
         onMouseLeave={onMouseLeave}
-        className="mb-tooltip"
+        className='mb-tooltip'
         style={contentStyle}
         {...domProps}
       >
         {title}
       </div>
       {!hideArrow ? (
-        <div className={arrowClass} style={arrowStyle} data-testid="tooltip-arrow" />
+        <div
+          className={arrowClass}
+          style={arrowStyle}
+          data-testid='tooltip-arrow'
+        />
       ) : null}
     </div>
   );
@@ -173,12 +189,12 @@ interface TooltipRefObject {
   isOpen: () => boolean;
 }
 
-export const Tooltip = forwardRef<TooltipRefObject, TooltipProps>((props, ref) => {
+export const Tooltip = forwardRef<TooltipRefObject, TooltipProps>(
+  (props, ref) => {
     const refTooltip = useRef<TooltipRefObject | undefined>(undefined);
     const refDivContents = useRef<HTMLDivElement>(null);
     const [timeOutId, setTimeOutId] = useState<NodeJS.Timeout | null>();
-    const { top, bottom, left, right, title, invisible, children } =
-      props;
+    const { top, bottom, left, right, title, invisible, children } = props;
 
     const open = () => {
       if (refTooltip.current && !refTooltip.current?.isOpen()) {
@@ -233,7 +249,7 @@ export const Tooltip = forwardRef<TooltipRefObject, TooltipProps>((props, ref) =
           onMouseLeave={() => !isMobile && close()}
           onTouchEnd={() => open()}
           ref={refDivContents}
-          className="inline-block"
+          className='inline-block'
         >
           {children}
         </div>

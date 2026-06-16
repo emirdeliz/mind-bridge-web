@@ -11,7 +11,16 @@ export interface LabelProps {
   disabled?: boolean;
 }
 
-export const Label = ({ children, target, fw3, n2, fs3, error, disabled, ...props }: LabelProps) => {
+export const Label = ({
+  children,
+  target,
+  fw3,
+  n2,
+  fs3,
+  error,
+  disabled,
+  ...props
+}: LabelProps) => {
   const labelClasses = [
     'block font-medium',
     'text-mb-muted',
@@ -28,7 +37,9 @@ export const Label = ({ children, target, fw3, n2, fs3, error, disabled, ...prop
     disabled && 'text-gray-400 cursor-not-allowed',
     // Hover
     !disabled && !error && 'hover:text-gray-800',
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const domProps = filterLabelDomProps(props);
 

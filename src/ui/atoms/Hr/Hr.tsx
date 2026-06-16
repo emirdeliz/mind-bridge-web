@@ -1,13 +1,12 @@
-
 export interface HrProps {
-	vertical?: boolean;
+  vertical?: boolean;
 }
 
 export const Hr = ({ vertical = false, ...props }: HrProps) => {
-	const hrClasses = [
-		'border-gray-300',
-		vertical ? 'border-l h-full' : 'border-t w-full',
-	].join(' ');
+  const hrClasses = [
+    'border-gray-300',
+    vertical ? 'border-l h-full' : 'border-t w-full',
+  ].join(' ');
 
-	return <hr className={hrClasses} {...props} />;
+  return <hr className={hrClasses} {...props} />;
 };

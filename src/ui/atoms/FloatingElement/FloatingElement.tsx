@@ -58,7 +58,7 @@ const FloatingElement = (props: FloatingElementProps) => {
       bottom,
       left,
       right,
-      clampToViewport,
+      clampToViewport
     );
     if (matchAnchorMinWidth) {
       tempStyle.minWidth = anchor.offsetWidth - 20;
@@ -122,7 +122,7 @@ const FloatingElement = (props: FloatingElementProps) => {
                 } as GenericObject)
               : props.children}
           </div>,
-          document.body,
+          document.body
         )}
     </>
   );
@@ -135,7 +135,7 @@ const getIdealPosition = (
   bottom?: boolean,
   left?: boolean,
   right?: boolean,
-  clampToViewport = true,
+  clampToViewport = true
 ) => {
   const { width, height } = containerBounds;
   const style = {} as CSSProperties;
@@ -160,14 +160,22 @@ const getIdealPosition = (
     style.top = anchorBounds.top + anchorBounds.height + offset;
   }
 
-  if (width > 0 && style.left != null && style.left + width > viewportWidth - offset) {
+  if (
+    width > 0 &&
+    style.left != null &&
+    style.left + width > viewportWidth - offset
+  ) {
     style.left = viewportWidth - width - offset;
   }
   if (style.left != null && style.left < offset) {
     style.left = offset;
   }
 
-  if (height > 0 && style.top != null && style.top + height > viewportHeight - offset) {
+  if (
+    height > 0 &&
+    style.top != null &&
+    style.top + height > viewportHeight - offset
+  ) {
     if (anchorBounds.top - height - offset >= 0) {
       style.top = anchorBounds.top - height - offset;
     } else {
@@ -190,7 +198,7 @@ const getIdealPosition = (
 };
 
 const withFloat = <T extends GenericObject>(
-  Component: (args: GenericObject) => React.JSX.Element,
+  Component: (args: GenericObject) => React.JSX.Element
 ) => {
   const ReffedComponent = (props: T, ref: Ref<GenericObject>) => {
     const [anchor, setAnchor] = useState<HTMLElement>();

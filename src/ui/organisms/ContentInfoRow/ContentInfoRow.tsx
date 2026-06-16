@@ -12,17 +12,14 @@ export const ContentInfoRow = ({
   title,
   info,
 }: ContentInfoRowProps) => {
-  const contentInfoClasses = [
-    'flex flex-col gap-2',
-    'p-3',
-  ].join(' ');
+  const contentInfoClasses = ['flex flex-col gap-2', 'p-3'].join(' ');
 
   return (
     <div className={contentInfoClasses}>
       <Title s1 n2>
         {title}
       </Title>
-      <ShowSkeleton when={loading} width="200px" height="14px">
+      <ShowSkeleton when={loading} width='200px' height='14px'>
         <Label fs3 fw3>
           {info}
         </Label>

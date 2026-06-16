@@ -8,8 +8,8 @@ export interface OverflowProps {
 export const Overflow = ({ children }: OverflowProps) => {
   return (
     <Flex wFull hFull>
-      <div className="w-full h-full overflow-hidden">
-        <div className="w-full h-full overflow-auto">{children}</div>
+      <div className='w-full h-full overflow-hidden'>
+        <div className='w-full h-full overflow-auto'>{children}</div>
       </div>
     </Flex>
   );

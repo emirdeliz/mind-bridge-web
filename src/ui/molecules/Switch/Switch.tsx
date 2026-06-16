@@ -5,11 +5,17 @@ export interface SwitchProps {
   id?: string | number;
   disabled?: boolean;
   sm?: boolean;
-	onChange?: (selected: boolean) => void;
+  onChange?: (selected: boolean) => void;
 }
 
-export const Switch = ({ selected, onChange, disabled, sm, ...props }: SwitchProps) => {
-	const id = useMemo(() => String(props.id), [props.id]);
+export const Switch = ({
+  selected,
+  onChange,
+  disabled,
+  sm,
+  ...props
+}: SwitchProps) => {
+  const id = useMemo(() => String(props.id), [props.id]);
 
   const switchClasses = [
     'relative shrink-0',
@@ -38,10 +44,10 @@ export const Switch = ({ selected, onChange, disabled, sm, ...props }: SwitchPro
   return (
     <div
       role='switch'
-			id={id}
+      id={id}
       aria-checked={selected ? 'true' : 'false'}
       aria-disabled={disabled ? 'true' : 'false'}
-			onClick={() => !disabled && onChange && onChange(!selected)}
+      onClick={() => !disabled && onChange && onChange(!selected)}
       className={switchClasses}
     >
       <div className={sliderClasses}>

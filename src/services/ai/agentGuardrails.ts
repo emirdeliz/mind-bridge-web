@@ -1,4 +1,4 @@
-import { translateTemplate } from "@i18n";
+import { translateTemplate } from '@i18n';
 
 export type TranslateFn = (key: string) => string;
 
@@ -17,15 +17,15 @@ export const hasUnsafeContent = (input: string): boolean =>
 export const safeAgentResponse = (
   userInput: string,
   psychologistContext: string,
-  t: TranslateFn,
+  t: TranslateFn
 ): string => {
   if (hasUnsafeContent(userInput)) {
-    return t("AI_AGENT_UNSAFE_RESPONSE");
+    return t('AI_AGENT_UNSAFE_RESPONSE');
   }
 
   const prefix = psychologistContext.trim()
-    ? `${translateTemplate(t("AI_AGENT_CARE_PLAN_PREFIX"), { context: psychologistContext.trim() })} `
-    : "";
+    ? `${translateTemplate(t('AI_AGENT_CARE_PLAN_PREFIX'), { context: psychologistContext.trim() })} `
+    : '';
 
-  return `${prefix}${t("AI_AGENT_DEFAULT_RESPONSE")}`;
+  return `${prefix}${t('AI_AGENT_DEFAULT_RESPONSE')}`;
 };

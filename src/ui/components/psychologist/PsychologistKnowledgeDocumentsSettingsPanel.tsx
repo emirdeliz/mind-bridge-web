@@ -1,28 +1,34 @@
-"use client";
+'use client';
 
-import { useMemo, useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from 'react';
 
-import type { KnowledgeDocumentDto } from "@api";
-import { Button, Flex, Icon, Loading, Title } from "@atoms";
-import { formatDateAsDDMMYYYYAndTime, formatKnowledgeMaxFileSizeMb, isKnowledgeDocumentIndexed, isKnowledgeDocumentIndexing, isKnowledgeFileWithinSizeLimit } from "@helpers";
-import { useI18n, translateTemplate } from "@i18n";
-import { Card, ConfirmModal, Table, Tooltip } from "@molecules";
-import { DashboardSectionTitle } from "@templates";
+import type { KnowledgeDocumentDto } from '@api';
+import { Button, Flex, Icon, Loading, Title } from '@atoms';
+import {
+  formatDateAsDDMMYYYYAndTime,
+  formatKnowledgeMaxFileSizeMb,
+  isKnowledgeDocumentIndexed,
+  isKnowledgeDocumentIndexing,
+  isKnowledgeFileWithinSizeLimit,
+} from '@helpers';
+import { useI18n, translateTemplate } from '@i18n';
+import { Card, ConfirmModal, Table, Tooltip } from '@molecules';
+import { DashboardSectionTitle } from '@templates';
 import {
   useKnowledgeFilePicker,
   usePsychologistKnowledgeDocuments,
-} from "@services";
+} from '@services';
 
 type KnowledgeDocumentTableRow = {
   id: string;
   fileName: string;
-  indexStatus: KnowledgeDocumentDto["indexStatus"];
+  indexStatus: KnowledgeDocumentDto['indexStatus'];
   updatedAt: string;
   actions: ReactNode;
 };
 
 const isPdfFile = (file: File): boolean =>
-  file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+  file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
 
 export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
   const { t } = useI18n();
@@ -39,8 +45,10 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
     removeDocument,
   } = usePsychologistKnowledgeDocuments();
   const { inputRef, pickFile, handleChange } = useKnowledgeFilePicker();
-  const [deleteTarget, setDeleteTarget] = useState<KnowledgeDocumentDto | null>(null);
-  const [actionError, setActionError] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<KnowledgeDocumentDto | null>(
+    null
+  );
+  const [actionError, setActionError] = useState('');
 
   const isBusy = uploading || deleting;
 
@@ -48,13 +56,16 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
 
   const validateSelectedFile = (file: File): string | null => {
     if (!isPdfFile(file)) {
-      return t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_PDF_ONLY");
+      return t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_PDF_ONLY');
     }
 
     if (!isKnowledgeFileWithinSizeLimit(file.size, maxFileBytes)) {
-      return translateTemplate(t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_FILE_TOO_LARGE"), {
-        maxSizeMb,
-      });
+      return translateTemplate(
+        t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_FILE_TOO_LARGE'),
+        {
+          maxSizeMb,
+        }
+      );
     }
 
     return null;
@@ -72,7 +83,7 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
       return;
     }
 
-    setActionError("");
+    setActionError('');
     try {
       await uploadDocument(file);
     } catch {
@@ -94,14 +105,17 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
 
     if (file.name.toLowerCase() !== document.fileName.toLowerCase()) {
       setActionError(
-        translateTemplate(t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPDATE_SAME_NAME"), {
-          fileName: document.fileName,
-        }),
+        translateTemplate(
+          t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPDATE_SAME_NAME'),
+          {
+            fileName: document.fileName,
+          }
+        )
       );
       return;
     }
 
-    setActionError("");
+    setActionError('');
     try {
       await uploadDocument(file);
     } catch {
@@ -131,51 +145,54 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
         updatedAt: formatDateAsDDMMYYYYAndTime(document.updatedAt),
         actions: (
           <Flex row gap2 alignCenter justifyCenter>
-            <Tooltip title={t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_REFRESH_STATUS")} top>
-              <span className="inline-flex h-8 w-8 items-center justify-center">
+            <Tooltip
+              title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_REFRESH_STATUS')}
+              top
+            >
+              <span className='inline-flex h-8 w-8 items-center justify-center'>
                 <Button
-                  type="button"
+                  type='button'
                   xs
                   sm
                   circle
-                  variant="secondary"
+                  variant='secondary'
                   outlined
                   clickable={!refreshing && !loading && !isBusy}
-                  title={t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_REFRESH_STATUS")}
+                  title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_REFRESH_STATUS')}
                   onClick={() => void refreshStatus()}
                 >
                   <Icon.History sm spinning={refreshing} white />
                 </Button>
               </span>
             </Tooltip>
-            <Tooltip title={t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPDATE")} top>
-              <span className="inline-flex h-8 w-8 items-center justify-center">
+            <Tooltip title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPDATE')} top>
+              <span className='inline-flex h-8 w-8 items-center justify-center'>
                 <Button
-                  type="button"
+                  type='button'
                   xs
                   sm
                   circle
-                  variant="secondary"
+                  variant='secondary'
                   outlined
                   clickable={!isBusy}
-                  title={t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPDATE")}
+                  title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPDATE')}
                   onClick={() => void handleUpdate(document)}
                 >
                   <Icon.Edit sm white />
                 </Button>
               </span>
             </Tooltip>
-            <Tooltip title={t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETE")} top>
-              <span className="inline-flex h-8 w-8 items-center justify-center">
+            <Tooltip title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETE')} top>
+              <span className='inline-flex h-8 w-8 items-center justify-center'>
                 <Button
-                  type="button"
+                  type='button'
                   xs
                   sm
                   circle
-                  variant="secondary"
+                  variant='secondary'
                   outlined
                   clickable={!isBusy}
-                  title={t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETE")}
+                  title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETE')}
                   onClick={() => setDeleteTarget(document)}
                 >
                   <Icon.TrashEmpty sm white />
@@ -185,14 +202,14 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
           </Flex>
         ),
       })),
-    [documents, isBusy, loading, refreshStatus, refreshing, t],
+    [documents, isBusy, loading, refreshStatus, refreshing, t]
   );
 
   const columns = useMemo(
     () => [
       {
-        key: "fileName" as const,
-        label: t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_COL_FILE"),
+        key: 'fileName' as const,
+        label: t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_COL_FILE'),
         customCellRender: (row: KnowledgeDocumentTableRow) => (
           <Title s2 fw3 block>
             {row.fileName}
@@ -200,12 +217,16 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
         ),
       },
       {
-        key: "indexStatus" as const,
+        key: 'indexStatus' as const,
         label: (
           <Flex row alignCenter gap1>
-            <span>{t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_COL_INDEXED")}</span>
-            <Tooltip title={t("TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE_COL_INDEXED")} top width={300}>
-              <span className="mb-tooltip-trigger inline-flex">
+            <span>{t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_COL_INDEXED')}</span>
+            <Tooltip
+              title={t('TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE_COL_INDEXED')}
+              top
+              width={300}
+            >
+              <span className='mb-tooltip-trigger inline-flex'>
                 <Icon.InfoCircle xs />
               </span>
             </Tooltip>
@@ -216,15 +237,15 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
           const indexed = isKnowledgeDocumentIndexed(row.indexStatus);
           const indexing = isKnowledgeDocumentIndexing(row.indexStatus);
           const label = indexed
-            ? t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_YES")
+            ? t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_YES')
             : indexing
-              ? t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_PENDING")
-              : t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_FAILED");
+              ? t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_PENDING')
+              : t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_FAILED');
           const statusTooltip = indexed
-            ? t("TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_YES")
+            ? t('TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_YES')
             : indexing
-              ? t("TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_PENDING")
-              : t("TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_FAILED");
+              ? t('TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_PENDING')
+              : t('TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE_INDEXED_FAILED');
 
           return (
             <Tooltip title={statusTooltip} top width={300}>
@@ -245,10 +266,10 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
         },
       },
       {
-        key: "updatedAt" as const,
-        label: t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_COL_UPDATED_AT"),
+        key: 'updatedAt' as const,
+        label: t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_COL_UPDATED_AT'),
         disableSort: true,
-        width: "180px",
+        width: '180px',
         customCellRender: (row: KnowledgeDocumentTableRow) => (
           <Title s1 gray noWrap leadingRelaxed>
             {row.updatedAt}
@@ -256,24 +277,24 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
         ),
       },
       {
-        key: "actions" as const,
-        label: t("PSYCHOLOGIST_PATIENTS_COL_ACTIONS"),
+        key: 'actions' as const,
+        label: t('PSYCHOLOGIST_PATIENTS_COL_ACTIONS'),
         disableSort: true,
-        width: "148px",
+        width: '148px',
       },
     ],
-    [t],
+    [t]
   );
 
   const displayError = actionError || error;
 
   return (
-    <Card padding="lg" shadow="md">
+    <Card padding='lg' shadow='md'>
       <input
         ref={inputRef}
-        type="file"
-        accept="application/pdf,.pdf"
-        className="hidden"
+        type='file'
+        accept='application/pdf,.pdf'
+        className='hidden'
         onChange={handleChange}
       />
 
@@ -281,22 +302,22 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
         <Flex row wFull wrap alignStart justifySpaceBetween gap4>
           <Flex col wFull gap2 flex1>
             <DashboardSectionTitle
-              title={t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_TITLE")}
-              tooltip={t("TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE")}
+              title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_TITLE')}
+              tooltip={t('TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE')}
             />
             <Title s2 gray block leadingRelaxed>
-              {translateTemplate(t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_HINT"), {
+              {translateTemplate(t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_HINT'), {
                 maxSizeMb,
               })}
             </Title>
           </Flex>
           <Button
-            type="button"
-            variant="primary"
+            type='button'
+            variant='primary'
             clickable={!isBusy}
             onClick={() => void handleUpload()}
           >
-            {t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_ADD")}
+            {t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_ADD')}
           </Button>
         </Flex>
 
@@ -304,14 +325,14 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
           <Flex row wFull alignCenter gap2>
             <Loading />
             <Title s2 gray block>
-              {t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPLOADING")}
+              {t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPLOADING')}
             </Title>
           </Flex>
         ) : deleting ? (
           <Flex row wFull alignCenter gap2>
             <Loading />
             <Title s2 gray block>
-              {t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETING")}
+              {t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETING')}
             </Title>
           </Flex>
         ) : null}
@@ -326,11 +347,11 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
           </Title>
         ) : documents.length === 0 ? (
           <Title s1 gray block>
-            {t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_EMPTY")}
+            {t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_EMPTY')}
           </Title>
         ) : (
           <Table<KnowledgeDocumentTableRow>
-            variant="dark"
+            variant='dark'
             columns={columns}
             dataSource={tableData}
           />
@@ -345,11 +366,11 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
 
       <ConfirmModal
         visible={Boolean(deleteTarget)}
-        title={t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETE")}
-        message={t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETE_CONFIRM")}
-        confirmLabel={t("PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETE")}
-        cancelLabel={t("PSYCHOLOGIST_PATIENTS_MODAL_CANCEL")}
-        confirmVariant="danger"
+        title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETE')}
+        message={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETE_CONFIRM')}
+        confirmLabel={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETE')}
+        cancelLabel={t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
+        confirmVariant='danger'
         onClose={() => {
           if (!isBusy) {
             setDeleteTarget(null);

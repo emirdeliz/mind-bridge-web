@@ -52,7 +52,15 @@ export const InputText = ({
 }: InputProps & { type?: string }) => {
   const id = String(props.id || '');
   const maxLength = useMemo(
-    () => getMaxLength({ cpf, cnpj, rg, phone, barcode, maxLength: props.maxLength }),
+    () =>
+      getMaxLength({
+        cpf,
+        cnpj,
+        rg,
+        phone,
+        barcode,
+        maxLength: props.maxLength,
+      }),
     [cpf, cnpj, rg, phone, barcode, props.maxLength]
   );
   const value = useMemo(
@@ -60,13 +68,21 @@ export const InputText = ({
     [cpf, cnpj, rg, phone, barcode, props.value]
   );
 
-  const inputClasses = ['mb-field block w-full min-w-0', 'input-focus-primary', hasError && 'mb-field-error']
+  const inputClasses = [
+    'mb-field block w-full min-w-0',
+    'input-focus-primary',
+    hasError && 'mb-field-error',
+  ]
     .filter(Boolean)
     .join(' ');
 
   const domProps = filterInputDomProps(props);
 
-  const inputType = digitsOnly ? 'text' : password ? 'password' : type || 'text';
+  const inputType = digitsOnly
+    ? 'text'
+    : password
+      ? 'password'
+      : type || 'text';
 
   return (
     <input
@@ -81,7 +97,10 @@ export const InputText = ({
       className={inputClasses}
       onChange={(e) => {
         const eventMask = { ...e };
-        if (eventMask.target && (cpf || cnpj || phone || barcode || digitsOnly)) {
+        if (
+          eventMask.target &&
+          (cpf || cnpj || phone || barcode || digitsOnly)
+        ) {
           let valueMask = helpers.getNumbersOfString(e.target.value);
           if (digitsOnly && maxLength) {
             valueMask = valueMask.slice(0, maxLength);

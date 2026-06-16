@@ -1,6 +1,6 @@
-import { type ReactNode } from "react";
+import { type ReactNode } from 'react';
 
-import { useChatAutoScroll } from "./useChatAutoScroll";
+import { useChatAutoScroll } from './useChatAutoScroll';
 
 type ChatScrollAreaProps = {
   children: ReactNode;
@@ -20,18 +20,24 @@ export const ChatScrollArea = ({
   const scrollRef = useChatAutoScroll([messageCount, isTyping, lastMessageId]);
 
   const className = [
-    "mb-chat-scroll",
-    "flex",
-    "w-full",
-    "flex-col",
-    "gap-4",
-    "overflow-y-auto",
-    "mb-4",
-    tallScroll ? "max-h-[480px]" : "max-h-[320px]",
-  ].join(" ");
+    'mb-chat-scroll',
+    'flex',
+    'w-full',
+    'flex-col',
+    'gap-4',
+    'overflow-y-auto',
+    'mb-4',
+    tallScroll ? 'max-h-[480px]' : 'max-h-[320px]',
+  ].join(' ');
 
   return (
-    <div ref={scrollRef} className={className} role="log" aria-live="polite" aria-relevant="additions">
+    <div
+      ref={scrollRef}
+      className={className}
+      role='log'
+      aria-live='polite'
+      aria-relevant='additions'
+    >
       {children}
     </div>
   );

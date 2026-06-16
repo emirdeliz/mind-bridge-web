@@ -1,7 +1,7 @@
-import { type ReactNode } from "react";
+import { type ReactNode } from 'react';
 
-import { Button, Flex, Icon, Title } from "@atoms";
-import { Tooltip } from "@molecules";
+import { Button, Flex, Icon, Title } from '@atoms';
+import { Tooltip } from '@molecules';
 
 interface DashboardSectionTitleProps {
   title: string;
@@ -26,7 +26,7 @@ export const DashboardSectionTitle = ({
         {title}
       </Title>
       <Tooltip title={tooltip} top width={300}>
-        <span className="mb-tooltip-trigger">
+        <span className='mb-tooltip-trigger'>
           <Icon.InfoCircle sm />
         </span>
       </Tooltip>
@@ -36,11 +36,11 @@ export const DashboardSectionTitle = ({
         {trailing}
         {onSave ? (
           <Button
-            type="button"
+            type='button'
             xs
             sm
             circle
-            variant="secondary"
+            variant='secondary'
             outlined
             clickable={!saveDisabled}
             title={saveLabel}

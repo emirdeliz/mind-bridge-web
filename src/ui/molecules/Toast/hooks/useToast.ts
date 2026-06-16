@@ -2,8 +2,10 @@ import { useCallback, useContext, useEffect } from 'react';
 import { ToastContext } from '@molecules';
 import { ToastItemProps, TOAST_DEFAULT_DISMISS_SECONDS } from '../Toast';
 
-interface ToastSimpleMessageProps
-  extends Omit<ToastItemProps, 'error' | 'info' | 'warn' | 'success'> {}
+interface ToastSimpleMessageProps extends Omit<
+  ToastItemProps,
+  'error' | 'info' | 'warn' | 'success'
+> {}
 
 export const useToast = () => {
   const { toastList, setToastList } = useContext(ToastContext);

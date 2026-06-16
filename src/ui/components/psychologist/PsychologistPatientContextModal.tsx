@@ -1,6 +1,12 @@
 'use client';
 
-import { useEffect, useMemo, useState, type FormEvent, type MouseEvent } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useState,
+  type FormEvent,
+  type MouseEvent,
+} from 'react';
 
 import { Button, Flex, Icon, Input, Overlay, Select, Title } from '@atoms';
 import { translateTemplate, useI18n } from '@i18n';
@@ -54,7 +60,7 @@ export const PsychologistPatientContextModal = ({
         label: t(psychologistPatientContextExampleI18nKey(id, 'LABEL')),
       })),
     ],
-    [t],
+    [t]
   );
 
   const handleExampleSelect = (rawValue: string | number) => {
@@ -67,9 +73,9 @@ export const PsychologistPatientContextModal = ({
       t(
         psychologistPatientContextExampleI18nKey(
           exampleId as (typeof PSYCHOLOGIST_PATIENT_CONTEXT_EXAMPLE_IDS)[number],
-          'TEXT',
-        ),
-      ),
+          'TEXT'
+        )
+      )
     );
   };
 
@@ -87,25 +93,25 @@ export const PsychologistPatientContextModal = ({
   return (
     <Overlay visible={visible} zIndex={40} onClick={onClose}>
       <div
-        className="w-full max-w-lg"
+        className='w-full max-w-lg'
         onClick={stopPropagation}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="patient-context-modal-title"
+        role='dialog'
+        aria-modal='true'
+        aria-labelledby='patient-context-modal-title'
       >
-        <Card padding="lg" shadow="xl">
+        <Card padding='lg' shadow='xl'>
           <Flex col wFull gap5>
             <Flex row wFull alignCenter justifySpaceBetween gap4>
               <Flex row alignCenter gap4 flex1>
                 <div
-                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-mb-primary/30 bg-mb-primary/15 shadow-glow"
+                  className='flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-mb-primary/30 bg-mb-primary/15 shadow-glow'
                   aria-hidden
                 >
                   <Icon.Cog nm white />
                 </div>
-                <div className="min-w-0 flex-1">
+                <div className='min-w-0 flex-1'>
                   <Flex col wFull gap1>
-                    <span id="patient-context-modal-title" className="sr-only">
+                    <span id='patient-context-modal-title' className='sr-only'>
                       {t('PSYCHOLOGIST_PATIENTS_CONTEXT_MODAL_TITLE')}
                     </span>
                     <Title fs3 fw3 block noWrap ellipsis>
@@ -114,8 +120,10 @@ export const PsychologistPatientContextModal = ({
                     <Title s2 gray block leadingRelaxed>
                       {patientName
                         ? translateTemplate(
-                            t('PSYCHOLOGIST_PATIENTS_CONTEXT_MODAL_SUBTITLE_NAMED'),
-                            { name: patientName },
+                            t(
+                              'PSYCHOLOGIST_PATIENTS_CONTEXT_MODAL_SUBTITLE_NAMED'
+                            ),
+                            { name: patientName }
                           )
                         : t('PSYCHOLOGIST_PATIENTS_CONTEXT_MODAL_SUBTITLE')}
                     </Title>
@@ -123,8 +131,8 @@ export const PsychologistPatientContextModal = ({
                 </div>
               </Flex>
               <Button
-                type="button"
-                variant="secondary"
+                type='button'
+                variant='secondary'
                 outlined
                 circle
                 title={t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
@@ -134,13 +142,13 @@ export const PsychologistPatientContextModal = ({
               </Button>
             </Flex>
 
-            <div className="h-px w-full bg-mb-border/70" aria-hidden />
+            <div className='h-px w-full bg-mb-border/70' aria-hidden />
 
-            <form className="w-full" onSubmit={handleSubmit} noValidate>
+            <form className='w-full' onSubmit={handleSubmit} noValidate>
               {error ? (
                 <div
-                  className="mb-4 rounded-lg border border-red-500/30 bg-red-950/40 px-3 py-2 text-sm font-medium text-mb-danger"
-                  role="alert"
+                  className='mb-4 rounded-lg border border-red-500/30 bg-red-950/40 px-3 py-2 text-sm font-medium text-mb-danger'
+                  role='alert'
                 >
                   {error}
                 </div>
@@ -148,7 +156,9 @@ export const PsychologistPatientContextModal = ({
 
               <FormGroup
                 label={t('PSYCHOLOGIST_PATIENTS_CONTEXT_EXAMPLE_SELECT_LABEL')}
-                helpText={t('PSYCHOLOGIST_PATIENTS_CONTEXT_EXAMPLE_SELECT_HELP')}
+                helpText={t(
+                  'PSYCHOLOGIST_PATIENTS_CONTEXT_EXAMPLE_SELECT_HELP'
+                )}
               >
                 <Select
                   value={selectedExampleId}
@@ -177,8 +187,8 @@ export const PsychologistPatientContextModal = ({
               <Flex row wFull gap5 mt6>
                 <Flex flex1 wFull>
                   <Button
-                    type="button"
-                    variant="secondary"
+                    type='button'
+                    variant='secondary'
                     outlined
                     wFull
                     onClick={onClose}
@@ -188,8 +198,8 @@ export const PsychologistPatientContextModal = ({
                 </Flex>
                 <Flex flex1 wFull>
                   <Button
-                    type="submit"
-                    variant="primary"
+                    type='submit'
+                    variant='primary'
                     wFull
                     clickable={!saving && !loading}
                   >

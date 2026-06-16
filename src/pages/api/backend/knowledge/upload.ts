@@ -12,7 +12,9 @@ export const config = {
   },
 };
 
-const maxFileBytes = resolveKnowledgeMaxFileBytes(process.env.KNOWLEDGE_MAX_FILE_BYTES);
+const maxFileBytes = resolveKnowledgeMaxFileBytes(
+  process.env.KNOWLEDGE_MAX_FILE_BYTES
+);
 
 const readRequestBody = async (req: NextApiRequest): Promise<Buffer> => {
   const chunks: Buffer[] = [];
@@ -22,7 +24,10 @@ const readRequestBody = async (req: NextApiRequest): Promise<Buffer> => {
   return Buffer.concat(chunks);
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     res.status(405).json({ error: 'Method not allowed' });

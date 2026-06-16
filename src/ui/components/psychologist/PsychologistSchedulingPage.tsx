@@ -1,28 +1,31 @@
-"use client";
+'use client';
 
-import { useCallback, useMemo, useState } from "react";
-import { useRouter } from "next/router";
+import { useCallback, useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
 
-import type { PsychologistAppointmentDto, SchedulingConflictPreviewDto } from "@api";
-import { Button, Flex, Icon, Title } from "@atoms";
-import { formatDateAsDDMMYYYYAndTime, localeForAppLanguage } from "@helpers";
-import { translateTemplate, useI18n } from "@i18n";
-import { Card, ConfirmModal, PageLoader } from "@molecules";
-import { AppShell, DashboardSectionTitle } from "@templates";
+import type {
+  PsychologistAppointmentDto,
+  SchedulingConflictPreviewDto,
+} from '@api';
+import { Button, Flex, Icon, Title } from '@atoms';
+import { formatDateAsDDMMYYYYAndTime, localeForAppLanguage } from '@helpers';
+import { translateTemplate, useI18n } from '@i18n';
+import { Card, ConfirmModal, PageLoader } from '@molecules';
+import { AppShell, DashboardSectionTitle } from '@templates';
 import {
   getWeekDateKeys,
   getWeekStartIso,
   shiftWeekStartIso,
   usePsychologistScheduling,
-} from "@services";
+} from '@services';
 
-import { SchedulingAppointmentModal } from "./scheduling/SchedulingAppointmentModal";
-import { SchedulingCreateAppointmentModal } from "./scheduling/SchedulingCreateAppointmentModal";
-import { SchedulingGoToDateModal } from "./scheduling/SchedulingGoToDateModal";
-import { SchedulingPatientContactModal } from "./scheduling/SchedulingPatientContactModal";
-import { SchedulingSettingsModal } from "./scheduling/SchedulingSettingsModal";
-import { SchedulingWeekGrid } from "./scheduling/SchedulingWeekGrid";
-import { usePsychologistGuard } from "./usePsychologistGuard";
+import { SchedulingAppointmentModal } from './scheduling/SchedulingAppointmentModal';
+import { SchedulingCreateAppointmentModal } from './scheduling/SchedulingCreateAppointmentModal';
+import { SchedulingGoToDateModal } from './scheduling/SchedulingGoToDateModal';
+import { SchedulingPatientContactModal } from './scheduling/SchedulingPatientContactModal';
+import { SchedulingSettingsModal } from './scheduling/SchedulingSettingsModal';
+import { SchedulingWeekGrid } from './scheduling/SchedulingWeekGrid';
+import { usePsychologistGuard } from './usePsychologistGuard';
 
 export const PsychologistSchedulingPage = () => {
   const router = useRouter();
@@ -47,12 +50,12 @@ export const PsychologistSchedulingPage = () => {
   const [goToDateOpen, setGoToDateOpen] = useState(false);
   const [contactAppointment, setContactAppointment] =
     useState<PsychologistAppointmentDto | null>(null);
-  const [editAppointment, setEditAppointment] = useState<PsychologistAppointmentDto | null>(
-    null,
-  );
-  const [createSlot, setCreateSlot] = useState<{ dateKey: string; time: string } | null>(
-    null,
-  );
+  const [editAppointment, setEditAppointment] =
+    useState<PsychologistAppointmentDto | null>(null);
+  const [createSlot, setCreateSlot] = useState<{
+    dateKey: string;
+    time: string;
+  } | null>(null);
   const [pendingSettings, setPendingSettings] = useState<{
     sessionDurationMinutes: number;
     dayStartTime: string;
@@ -65,19 +68,19 @@ export const PsychologistSchedulingPage = () => {
 
   const weekLabel = useMemo(() => {
     if (!week) {
-      return "";
+      return '';
     }
     const dateKeys = getWeekDateKeys(week.weekStart, tzOffset);
     const first = dateKeys[0];
     const last = dateKeys[dateKeys.length - 1];
     const formatter = new Intl.DateTimeFormat(localeForAppLanguage(language), {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      timeZone: "UTC",
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      timeZone: 'UTC',
     });
-    const [fy, fm, fd] = first.split("-").map((part) => Number(part));
-    const [ly, lm, ld] = last.split("-").map((part) => Number(part));
+    const [fy, fm, fd] = first.split('-').map((part) => Number(part));
+    const [ly, lm, ld] = last.split('-').map((part) => Number(part));
     return `${formatter.format(new Date(Date.UTC(fy, fm - 1, fd)))} – ${formatter.format(new Date(Date.UTC(ly, lm - 1, ld)))}`;
   }, [language, tzOffset, week]);
 
@@ -89,7 +92,7 @@ export const PsychologistSchedulingPage = () => {
       breakIntervals: { startTime: string; endTime: string }[];
     }) => {
       const result = await saveSettings(payload);
-      if (result.status === "confirmation_required") {
+      if (result.status === 'confirmation_required') {
         setPendingSettings(payload);
         setSettingsConflicts(result.conflicts);
         return;
@@ -98,7 +101,7 @@ export const PsychologistSchedulingPage = () => {
       setPendingSettings(null);
       setSettingsConflicts([]);
     },
-    [saveSettings],
+    [saveSettings]
   );
 
   const handleConfirmSettingsConflicts = useCallback(async () => {
@@ -106,7 +109,7 @@ export const PsychologistSchedulingPage = () => {
       return;
     }
     const result = await saveSettings(pendingSettings, true);
-    if (result.status === "saved") {
+    if (result.status === 'saved') {
       setSettingsOpen(false);
       setPendingSettings(null);
       setSettingsConflicts([]);
@@ -120,23 +123,24 @@ export const PsychologistSchedulingPage = () => {
         setWeekStart(newWeekStart);
       }
     },
-    [moveAppointment, weekStart],
+    [moveAppointment, weekStart]
   );
 
   const conflictMessage = useMemo(() => {
     if (!settingsConflicts.length) {
-      return "";
+      return '';
     }
     const lines = settingsConflicts.map((conflict) => {
       const name =
-        conflict.patientFullName?.trim() || t("PSYCHOLOGIST_SCHEDULING_UNKNOWN_PATIENT");
+        conflict.patientFullName?.trim() ||
+        t('PSYCHOLOGIST_SCHEDULING_UNKNOWN_PATIENT');
       const when = formatDateAsDDMMYYYYAndTime(conflict.startsAt);
-      return translateTemplate(t("PSYCHOLOGIST_SCHEDULING_CONFLICT_LINE"), {
+      return translateTemplate(t('PSYCHOLOGIST_SCHEDULING_CONFLICT_LINE'), {
         name,
         when,
       });
     });
-    return `${t("PSYCHOLOGIST_SCHEDULING_CONFLICT_MESSAGE")}\n\n${lines.join("\n")}`;
+    return `${t('PSYCHOLOGIST_SCHEDULING_CONFLICT_MESSAGE')}\n\n${lines.join('\n')}`;
   }, [settingsConflicts, t]);
 
   if (!isPsychologist && !guardLoading) {
@@ -148,27 +152,25 @@ export const PsychologistSchedulingPage = () => {
 
   return (
     <AppShell
-      title={t("PSYCHOLOGIST_SCHEDULING_TITLE")}
-      subtitle={t("PSYCHOLOGIST_SCHEDULING_SUBTITLE")}
-      variant="dashboard"
+      title={t('PSYCHOLOGIST_SCHEDULING_TITLE')}
+      subtitle={t('PSYCHOLOGIST_SCHEDULING_SUBTITLE')}
+      variant='dashboard'
     >
       <Flex row wFull alignCenter justifySpaceBetween gap4 wrap>
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={() => router.back()}
-        >
-          {t("BACK")}
+        <Button type='button' variant='secondary' onClick={() => router.back()}>
+          {t('BACK')}
         </Button>
         <Button
-          type="button"
-          variant="secondary"
+          type='button'
+          variant='secondary'
           outlined
           onClick={() => setSettingsOpen(true)}
           clickable={!saving}
         >
           <Icon.Cog sm white />
-          <span className="ml-2">{t("PSYCHOLOGIST_SCHEDULING_SETTINGS_BUTTON")}</span>
+          <span className='ml-2'>
+            {t('PSYCHOLOGIST_SCHEDULING_SETTINGS_BUTTON')}
+          </span>
         </Button>
       </Flex>
 
@@ -185,58 +187,67 @@ export const PsychologistSchedulingPage = () => {
           {showContentLoader ? (
             <PageLoader />
           ) : week ? (
-            <Card padding="lg" shadow="md">
+            <Card padding='lg' shadow='md'>
               <Flex col wFull gap5>
                 <DashboardSectionTitle
-                  title={translateTemplate(t("PSYCHOLOGIST_SCHEDULING_WEEK_TITLE"), {
-                    week: weekLabel,
-                  })}
-                  tooltip={t("PSYCHOLOGIST_SCHEDULING_WEEK_TOOLTIP")}
+                  title={translateTemplate(
+                    t('PSYCHOLOGIST_SCHEDULING_WEEK_TITLE'),
+                    {
+                      week: weekLabel,
+                    }
+                  )}
+                  tooltip={t('PSYCHOLOGIST_SCHEDULING_WEEK_TOOLTIP')}
                   trailing={
                     <Flex row gap2 alignCenter>
                       <Button
-                        type="button"
-                        variant="secondary"
+                        type='button'
+                        variant='secondary'
                         outlined
                         circle
                         clickable={!loading && !saving}
-                        title={t("PSYCHOLOGIST_SCHEDULING_PREV_WEEK")}
+                        title={t('PSYCHOLOGIST_SCHEDULING_PREV_WEEK')}
                         onClick={() =>
-                          setWeekStart((current) => shiftWeekStartIso(current, -1, tzOffset))
+                          setWeekStart((current) =>
+                            shiftWeekStartIso(current, -1, tzOffset)
+                          )
                         }
                       >
                         <Icon.LeftOpen sm white />
                       </Button>
                       <Button
-                        type="button"
-                        variant="secondary"
+                        type='button'
+                        variant='secondary'
                         outlined
                         clickable={!loading && !saving}
-                        onClick={() => setWeekStart(getWeekStartIso(new Date(), tzOffset))}
+                        onClick={() =>
+                          setWeekStart(getWeekStartIso(new Date(), tzOffset))
+                        }
                       >
-                        {t("PSYCHOLOGIST_SCHEDULING_CURRENT_WEEK")}
+                        {t('PSYCHOLOGIST_SCHEDULING_CURRENT_WEEK')}
                       </Button>
                       <Button
-                        type="button"
-                        variant="secondary"
+                        type='button'
+                        variant='secondary'
                         outlined
                         circle
                         clickable={!loading && !saving}
-                        title={t("PSYCHOLOGIST_SCHEDULING_NEXT_WEEK")}
+                        title={t('PSYCHOLOGIST_SCHEDULING_NEXT_WEEK')}
                         onClick={() =>
-                          setWeekStart((current) => shiftWeekStartIso(current, 1, tzOffset))
+                          setWeekStart((current) =>
+                            shiftWeekStartIso(current, 1, tzOffset)
+                          )
                         }
                       >
                         <Icon.RightOpen sm white />
                       </Button>
                       <Button
-                        type="button"
-                        variant="secondary"
+                        type='button'
+                        variant='secondary'
                         outlined
                         clickable={!loading && !saving}
                         onClick={() => setGoToDateOpen(true)}
                       >
-                        {t("PSYCHOLOGIST_SCHEDULING_GO_TO_BUTTON")}
+                        {t('PSYCHOLOGIST_SCHEDULING_GO_TO_BUTTON')}
                       </Button>
                     </Flex>
                   }
@@ -250,7 +261,9 @@ export const PsychologistSchedulingPage = () => {
                   sessionDurationMinutes={week.settings.sessionDurationMinutes}
                   saving={saving}
                   movingAppointmentId={movingAppointmentId}
-                  onSlotClick={(dateKey, time) => setCreateSlot({ dateKey, time })}
+                  onSlotClick={(dateKey, time) =>
+                    setCreateSlot({ dateKey, time })
+                  }
                   onMoveAppointment={handleMoveAppointment}
                   onOpenContact={setContactAppointment}
                   onOpenAppointment={setEditAppointment}
@@ -303,7 +316,7 @@ export const PsychologistSchedulingPage = () => {
           if (!editAppointment) {
             return;
           }
-          if (input.kind === "personal") {
+          if (input.kind === 'personal') {
             await updatePersonalCommitment(editAppointment.id, {
               startsAt: input.startsAt,
               durationMinutes: input.durationMinutes,
@@ -340,7 +353,7 @@ export const PsychologistSchedulingPage = () => {
           if (!createSlot) {
             return;
           }
-          if (input.kind === "personal") {
+          if (input.kind === 'personal') {
             await createAppointment({
               isPersonalCommitment: true,
               startsAt: input.startsAt,
@@ -359,11 +372,11 @@ export const PsychologistSchedulingPage = () => {
 
       <ConfirmModal
         visible={settingsConflicts.length > 0}
-        title={t("PSYCHOLOGIST_SCHEDULING_CONFLICT_TITLE")}
+        title={t('PSYCHOLOGIST_SCHEDULING_CONFLICT_TITLE')}
         message={conflictMessage}
-        confirmLabel={t("PSYCHOLOGIST_SCHEDULING_CONFLICT_CONFIRM")}
-        cancelLabel={t("PSYCHOLOGIST_PATIENTS_MODAL_CANCEL")}
-        confirmVariant="danger"
+        confirmLabel={t('PSYCHOLOGIST_SCHEDULING_CONFLICT_CONFIRM')}
+        cancelLabel={t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
+        confirmVariant='danger'
         onClose={() => {
           if (!saving) {
             setSettingsConflicts([]);

@@ -35,7 +35,7 @@ describe('LinkCalendar component test', () => {
     expect(currentDay).toBeInTheDocument();
 
     currentDate.setMonth(currentDate.getMonth() - 1);
-    
+
     // Aguardar o calendário estar visível e então procurar pelo botão
     await waitFor(() => {
       const prevButton = screen.getByTitle('Mês anterior');

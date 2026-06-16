@@ -12,34 +12,38 @@ type ContextModalPatient = Pick<PsychologistPatientViewDto, 'id' | 'fullName'>;
 export const usePsychologistPatientContext = () => {
   const { t } = useI18n();
   const [contextModalOpen, setContextModalOpen] = useState(false);
-  const [contextPatient, setContextPatient] = useState<ContextModalPatient | null>(
-    null
-  );
+  const [contextPatient, setContextPatient] =
+    useState<ContextModalPatient | null>(null);
   const [contextValue, setContextValue] = useState('');
   const [loadingContext, setLoadingContext] = useState(false);
   const [savingContext, setSavingContext] = useState(false);
   const [contextError, setContextError] = useState('');
 
-  const openContextModal = useCallback(async (patient: ContextModalPatient) => {
-    setContextPatient(patient);
-    setContextModalOpen(true);
-    setContextValue('');
-    setContextError('');
-    setLoadingContext(true);
+  const openContextModal = useCallback(
+    async (patient: ContextModalPatient) => {
+      setContextPatient(patient);
+      setContextModalOpen(true);
+      setContextValue('');
+      setContextError('');
+      setLoadingContext(true);
 
-    try {
-      const content = await getPsychologistPatientClinicalContentApi(patient.id);
-      setContextValue(content.sessionContext ?? '');
-    } catch (loadError) {
-      setContextError(
-        loadError instanceof Error
-          ? loadError.message
-          : t('PSYCHOLOGIST_PATIENTS_CONTEXT_LOAD_ERROR')
-      );
-    } finally {
-      setLoadingContext(false);
-    }
-  }, [t]);
+      try {
+        const content = await getPsychologistPatientClinicalContentApi(
+          patient.id
+        );
+        setContextValue(content.sessionContext ?? '');
+      } catch (loadError) {
+        setContextError(
+          loadError instanceof Error
+            ? loadError.message
+            : t('PSYCHOLOGIST_PATIENTS_CONTEXT_LOAD_ERROR')
+        );
+      } finally {
+        setLoadingContext(false);
+      }
+    },
+    [t]
+  );
 
   const closeContextModal = useCallback(() => {
     setContextModalOpen(false);

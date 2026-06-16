@@ -44,14 +44,21 @@ export const Dropdown = <T extends GenericObject>({
 }: DropdownProps<T>) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0, width: 0 });
+  const [menuPosition, setMenuPosition] = useState({
+    top: 0,
+    left: 0,
+    width: 0,
+  });
   const dropdownRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setTimeout(() => {
           setIsOpen(false);
         }, 300);
@@ -67,38 +74,40 @@ export const Dropdown = <T extends GenericObject>({
   useEffect(() => {
     if (isOpen && dropdownRef.current) {
       const rect = dropdownRef.current.getBoundingClientRect();
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-      
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+      const scrollLeft =
+        window.pageXOffset || document.documentElement.scrollLeft;
+
       // Calcular posição inicial
       let top = rect.bottom + scrollTop;
       let left = rect.left + scrollLeft;
       let width = rect.width;
-      
+
       // Verificar se o menu cabe na tela
       const menuHeight = 240; // max-height do menu
       const windowHeight = window.innerHeight;
       const windowWidth = window.innerWidth;
-      
+
       // Se o menu vai ficar fora da tela na parte inferior, posicionar acima
       if (rect.bottom + menuHeight > windowHeight) {
         top = rect.top + scrollTop - menuHeight;
       }
-      
+
       // Se o menu vai ficar fora da tela na parte direita, ajustar
       if (rect.left + width > windowWidth) {
         left = windowWidth - width - 10; // 10px de margem
       }
-      
+
       // Se o menu vai ficar fora da tela na parte esquerda, ajustar
       if (left < 10) {
         left = 10;
       }
-      
+
       setMenuPosition({
         top,
         left,
-        width
+        width,
       });
     }
   }, [isOpen]);
@@ -120,7 +129,7 @@ export const Dropdown = <T extends GenericObject>({
       {
         root: scrollContainerRef.current,
         rootMargin: '50px',
-        threshold: 0.1
+        threshold: 0.1,
       }
     );
 
@@ -159,22 +168,26 @@ export const Dropdown = <T extends GenericObject>({
     if (onCustomRenderValue && value) {
       return onCustomRenderValue(value);
     }
-    
+
     if (value) {
       if (keyOfLabelCompost) {
         // Processa propriedades aninhadas como "user.name"
         const keys = String(keyOfLabelCompost).split('.');
         let displayValue: any = value;
-        
+
         for (const key of keys) {
-          if (displayValue && typeof displayValue === 'object' && key in displayValue) {
+          if (
+            displayValue &&
+            typeof displayValue === 'object' &&
+            key in displayValue
+          ) {
             displayValue = displayValue[key];
           } else {
             displayValue = undefined;
             break;
           }
         }
-        
+
         return displayValue ? String(displayValue) : 'N/A';
       }
       if (keyOfLabel) {
@@ -182,7 +195,7 @@ export const Dropdown = <T extends GenericObject>({
       }
       return String(value);
     }
-    
+
     return placeholder;
   };
 
@@ -212,10 +225,9 @@ export const Dropdown = <T extends GenericObject>({
     return String(option);
   };
 
-  const dropdownClasses = [
-    'relative inline-block w-full',
-    'font-poppins',
-  ].join(' ');
+  const dropdownClasses = ['relative inline-block w-full', 'font-sans'].join(
+    ' '
+  );
 
   const buttonClasses = [
     'w-full',
@@ -225,10 +237,13 @@ export const Dropdown = <T extends GenericObject>({
     'input-focus-primary',
     'disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed',
     'transition-all duration-200',
-    hasError && 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200',
+    hasError &&
+      'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200',
     !hasError && 'bg-white',
     allowWrap && 'dropdown-button-wrap',
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const dropdownMenuClasses = [
     'dropdown-menu', // Classe CSS para estilos padronizados
@@ -256,21 +271,21 @@ export const Dropdown = <T extends GenericObject>({
       <div className={dropdownMenuClasses} style={menuStyle}>
         {/* Campo de busca */}
         {onSearch && (
-          <div className="p-3 border-b border-gray-200">
+          <div className='p-3 border-b border-gray-200'>
             <input
-              type="text"
-              placeholder="Buscar..."
+              type='text'
+              placeholder='Buscar...'
               value={searchTerm}
               onChange={handleSearch}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md input-focus-primary"
+              className='w-full px-3 py-2 border border-gray-300 rounded-md input-focus-primary'
               autoFocus
             />
           </div>
         )}
-        
-        <div 
+
+        <div
           ref={scrollContainerRef}
-          className="max-h-60 overflow-y-auto"
+          className='max-h-60 overflow-y-auto'
           onScroll={handleScroll}
         >
           {options.map((option, index) => (
@@ -282,19 +297,19 @@ export const Dropdown = <T extends GenericObject>({
               {getOptionLabel(option)}
             </div>
           ))}
-          
+
           {hasLoadMore && (
-            <div 
+            <div
               ref={sentinelRef}
-              id="scroll-sentinel"
-              className="h-1"
+              id='scroll-sentinel'
+              className='h-1'
               style={{ minHeight: '1px' }}
             />
           )}
-          
+
           {/* Indicador de carregamento */}
           {loading && hasLoadMore && (
-            <div className="px-4 py-2 text-center text-gray-500 text-sm">
+            <div className='px-4 py-2 text-center text-gray-500 text-sm'>
               Carregando...
             </div>
           )}
@@ -309,17 +324,29 @@ export const Dropdown = <T extends GenericObject>({
   return (
     <div className={dropdownClasses} ref={dropdownRef}>
       <button
-        type="button"
+        type='button'
         className={buttonClasses}
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
         aria-expanded={isOpen}
       >
-        <span className={`text-left ${allowWrap ? 'dropdown-text-wrap' : 'dropdown-text-truncate'}`}>
+        <span
+          className={`text-left ${allowWrap ? 'dropdown-text-wrap' : 'dropdown-text-truncate'}`}
+        >
           {getDisplayValue()}
         </span>
-        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        <svg
+          className='w-5 h-5 text-gray-400'
+          fill='none'
+          stroke='currentColor'
+          viewBox='0 0 24 24'
+        >
+          <path
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth={2}
+            d='M19 9l-7 7-7-7'
+          />
         </svg>
       </button>
       {renderDropdownMenu()}

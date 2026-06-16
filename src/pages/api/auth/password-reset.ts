@@ -1,16 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import {
-  badRequest,
-  methodNotAllowed,
-  readJsonBody,
-} from '@lib/auth/apiAuth';
+import { badRequest, methodNotAllowed, readJsonBody } from '@lib/auth/apiAuth';
 import { createSupabaseServerClient } from '@lib/supabase/cookieMethods';
 import { isServerAuthBypassEnabled } from '@lib/supabase/env';
 
 type ResetBody = { email?: string };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== 'POST') {
     return methodNotAllowed(res);
   }

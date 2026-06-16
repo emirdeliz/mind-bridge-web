@@ -5,7 +5,10 @@ import { clearBypassCookie } from '@lib/auth/bypassCookie';
 import { createSupabaseServerClient } from '@lib/supabase/cookieMethods';
 import { isServerAuthBypassEnabled } from '@lib/supabase/env';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== 'POST') {
     methodNotAllowed(res);
     return;

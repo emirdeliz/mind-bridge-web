@@ -1,19 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import { usePsychologistClinicalContent } from "@services";
+import { usePsychologistClinicalContent } from '@services';
 
 import {
   emptyDashboardSnapshot,
   getDashboardChannelTotal,
   type PsychologistDashboardSnapshot,
-} from "./psychologistDashboardSnapshot";
+} from './psychologistDashboardSnapshot';
 
 export const usePsychologistDashboardData = (
   patientId: string | undefined,
-  refreshKey?: string,
+  refreshKey?: string
 ) => {
-  const { content, loading, error, reload } = usePsychologistClinicalContent(patientId);
-  const [snapshot, setSnapshot] = useState<PsychologistDashboardSnapshot | null>(null);
+  const { content, loading, error, reload } =
+    usePsychologistClinicalContent(patientId);
+  const [snapshot, setSnapshot] =
+    useState<PsychologistDashboardSnapshot | null>(null);
 
   useEffect(() => {
     if (refreshKey) {

@@ -3,9 +3,9 @@ import type {
   PsychologistSchedulingWeekDto,
   SchedulingBreakIntervalDto,
   UpdateSchedulingSettingsResultDto,
-} from "../../dto/scheduling/SchedulingDto";
-import { apiRequest } from "../../http/apiClient";
-import { keysToCamel } from "@helpers";
+} from '../../dto/scheduling/SchedulingDto';
+import { apiRequest } from '../../http/apiClient';
+import { keysToCamel } from '@helpers';
 
 type SchedulingWeekResponse = {
   scheduling: PsychologistSchedulingWeekDto;
@@ -56,8 +56,8 @@ export type CreateAppointmentPayload =
   | CreatePersonalCommitmentPayload;
 
 export type CreateAppointmentInput =
-  | Omit<CreatePatientAppointmentPayload, "weekStart" | "tzOffset">
-  | Omit<CreatePersonalCommitmentPayload, "weekStart" | "tzOffset">;
+  | Omit<CreatePatientAppointmentPayload, 'weekStart' | 'tzOffset'>
+  | Omit<CreatePersonalCommitmentPayload, 'weekStart' | 'tzOffset'>;
 
 export type MoveAppointmentPayload = {
   startsAt: string;
@@ -73,72 +73,78 @@ export type UpdatePersonalCommitmentPayload = {
 
 export const getPsychologistSchedulingWeekApi = async (
   weekStart: string,
-  tzOffset: number,
+  tzOffset: number
 ): Promise<PsychologistSchedulingWeekDto> => {
-  const response = await apiRequest<SchedulingWeekResponse>("/psychologist/scheduling", {
-    query: { weekStart, tzOffset },
-  });
+  const response = await apiRequest<SchedulingWeekResponse>(
+    '/psychologist/scheduling',
+    {
+      query: { weekStart, tzOffset },
+    }
+  );
   return keysToCamel<SchedulingWeekResponse>(response).scheduling;
 };
 
 export const updatePsychologistSchedulingSettingsApi = async (
-  payload: UpdateSchedulingSettingsPayload,
+  payload: UpdateSchedulingSettingsPayload
 ): Promise<UpdateSchedulingSettingsResultDto> => {
   const response = await apiRequest<UpdateSettingsResponse>(
-    "/psychologist/scheduling/settings",
+    '/psychologist/scheduling/settings',
     {
-      method: "PUT",
+      method: 'PUT',
       body: payload,
-    },
+    }
   );
   return keysToCamel<UpdateSettingsResponse>(response).result;
 };
 
 export const createPsychologistAppointmentApi = async (
-  payload: CreateAppointmentPayload,
+  payload: CreateAppointmentPayload
 ): Promise<PsychologistAppointmentDto> => {
   const response = await apiRequest<CreateAppointmentResponse>(
-    "/psychologist/scheduling/appointments",
+    '/psychologist/scheduling/appointments',
     {
-      method: "POST",
+      method: 'POST',
       body: payload,
-    },
+    }
   );
   return keysToCamel<CreateAppointmentResponse>(response).appointment;
 };
 
 export const updatePsychologistPersonalCommitmentApi = async (
   appointmentId: string,
-  payload: UpdatePersonalCommitmentPayload,
+  payload: UpdatePersonalCommitmentPayload
 ): Promise<PsychologistAppointmentDto> => {
   const response = await apiRequest<CreateAppointmentResponse>(
     `/psychologist/scheduling/appointments/${appointmentId}`,
     {
-      method: "PATCH",
+      method: 'PATCH',
       body: payload,
-    },
+    }
   );
   return keysToCamel<CreateAppointmentResponse>(response).appointment;
 };
 
 export const movePsychologistAppointmentApi = async (
   appointmentId: string,
-  payload: MoveAppointmentPayload,
+  payload: MoveAppointmentPayload
 ): Promise<PsychologistAppointmentDto[]> => {
   const response = await apiRequest<MoveAppointmentsResponse>(
     `/psychologist/scheduling/appointments/${appointmentId}/move`,
     {
-      method: "PATCH",
+      method: 'PATCH',
       body: payload,
-    },
+    }
   );
   return keysToCamel<MoveAppointmentsResponse>(response).appointments;
 };
 
 export const deletePsychologistAppointmentApi = async (
-  appointmentId: string,
+  appointmentId: string
 ): Promise<void> => {
-  await apiRequest<void>(`/psychologist/scheduling/appointments/${appointmentId}`, {
-    method: "DELETE",
-  });
+  await apiRequest<void>(
+    `/psychologist/scheduling/appointments/${appointmentId}`,
+    {
+      method: 'DELETE',
+    }
+  );
 };

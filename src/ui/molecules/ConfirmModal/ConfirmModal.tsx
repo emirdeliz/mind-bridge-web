@@ -12,7 +12,13 @@ export type ConfirmModalProps = {
   message: string;
   confirmLabel: string;
   cancelLabel: string;
-  confirmVariant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
+  confirmVariant?:
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'danger'
+    | 'warning'
+    | 'info';
   onClose: () => void;
   onConfirm: () => void;
 };
@@ -34,31 +40,31 @@ export const ConfirmModal = ({
   return (
     <Overlay visible={visible} zIndex={40} onClick={onClose}>
       <div
-        className="w-full max-w-md"
+        className='w-full max-w-md'
         onClick={stopPropagation}
-        role="alertdialog"
-        aria-modal="true"
-        aria-labelledby="confirm-modal-title"
-        aria-describedby="confirm-modal-message"
+        role='alertdialog'
+        aria-modal='true'
+        aria-labelledby='confirm-modal-title'
+        aria-describedby='confirm-modal-message'
       >
-        <Card padding="lg" shadow="xl">
+        <Card padding='lg' shadow='xl'>
           <Flex col wFull gap5>
             <Flex row wFull alignStart justifySpaceBetween gap4>
               <Flex col wFull gap2 flex1>
-                <div id="confirm-modal-title">
+                <div id='confirm-modal-title'>
                   <Title fs3 fw3 block leadingRelaxed>
                     {title}
                   </Title>
                 </div>
-                <div id="confirm-modal-message">
+                <div id='confirm-modal-message'>
                   <Title s2 gray block leadingRelaxed>
                     {message}
                   </Title>
                 </div>
               </Flex>
               <Button
-                type="button"
-                variant="secondary"
+                type='button'
+                variant='secondary'
                 outlined
                 circle
                 title={cancelLabel}
@@ -68,13 +74,13 @@ export const ConfirmModal = ({
               </Button>
             </Flex>
 
-            <div className="h-px w-full bg-mb-border/70" aria-hidden />
+            <div className='h-px w-full bg-mb-border/70' aria-hidden />
 
             <Flex row wFull gap5>
               <Flex flex1 wFull>
                 <Button
-                  type="button"
-                  variant="secondary"
+                  type='button'
+                  variant='secondary'
                   outlined
                   wFull
                   onClick={onClose}
@@ -84,7 +90,7 @@ export const ConfirmModal = ({
               </Flex>
               <Flex flex1 wFull>
                 <Button
-                  type="button"
+                  type='button'
                   variant={confirmVariant}
                   wFull
                   onClick={onConfirm}

@@ -1,4 +1,4 @@
-export * from "./hooks/usePsychologistScheduling";
+export * from './hooks/usePsychologistScheduling';
 export {
   applyOptimisticMove,
   appointmentDragId,
@@ -23,4 +23,4 @@ export {
   toLocalTime,
   type AppointmentSlotCoverage,
   type SlotSettings,
-} from "@helpers";
+} from '@helpers';

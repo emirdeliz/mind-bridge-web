@@ -7,14 +7,14 @@ import {
   useRef,
   useState,
   type ReactNode,
-} from "react";
+} from 'react';
 
 import type {
   UserAuthSaveOrUpdateDto,
   UserAuthViewDto,
   UserProfile,
   UserRole,
-} from "@api";
+} from '@api';
 import {
   enterBypassApi,
   getSessionApi,
@@ -23,9 +23,9 @@ import {
   registerUserApi,
   requestPasswordResetApi,
   saveProfileApi,
-} from "@api";
-import { isAuthBypassEnabled } from "./authBypass";
-import { normalizeSession } from "@helpers";
+} from '@api';
+import { isAuthBypassEnabled } from './authBypass';
+import { normalizeSession } from '@helpers';
 
 export type AuthPageProps = {
   session: UserAuthViewDto | null;
@@ -35,12 +35,17 @@ export type AuthPageProps = {
 type AuthContextValue = {
   session: UserAuthViewDto | null;
   loading: boolean;
-  loginWithPassword: (email: string, password: string) => Promise<UserAuthViewDto | null>;
+  loginWithPassword: (
+    email: string,
+    password: string
+  ) => Promise<UserAuthViewDto | null>;
   /** Self-service signup at /register only — clears session; do not use for psychologist patient modal. */
   registerPublicAccount: (payload: UserAuthSaveOrUpdateDto) => Promise<void>;
   saveProfile: (profile: UserProfile) => Promise<UserAuthViewDto | null>;
   logout: () => Promise<void>;
-  requestPasswordReset: (email: string) => Promise<{ ok: boolean; message?: string }>;
+  requestPasswordReset: (
+    email: string
+  ) => Promise<{ ok: boolean; message?: string }>;
   refreshSession: () => Promise<void>;
   enterBypass: (role: UserRole) => Promise<UserAuthViewDto>;
   isAuthBypassEnabled: typeof isAuthBypassEnabled;
@@ -93,17 +98,25 @@ export const AuthProvider = ({ children, initialAuth }: AuthProviderProps) => {
     }
   }, [initialAuth, refreshSession]);
 
-  const loginWithPassword = useCallback(async (email: string, password: string) => {
-    const loggedUser = normalizeSession(await loginWithPasswordApi(email, password));
-    setSession(loggedUser);
-    return loggedUser;
-  }, []);
+  const loginWithPassword = useCallback(
+    async (email: string, password: string) => {
+      const loggedUser = normalizeSession(
+        await loginWithPasswordApi(email, password)
+      );
+      setSession(loggedUser);
+      return loggedUser;
+    },
+    []
+  );
 
-  const registerPublicAccount = useCallback(async (payload: UserAuthSaveOrUpdateDto) => {
-    await registerUserApi(payload);
-    await logoutApi();
-    setSession(null);
-  }, []);
+  const registerPublicAccount = useCallback(
+    async (payload: UserAuthSaveOrUpdateDto) => {
+      await registerUserApi(payload);
+      await logoutApi();
+      setSession(null);
+    },
+    []
+  );
 
   const saveProfile = useCallback(async (profile: UserProfile) => {
     const updated = normalizeSession(await saveProfileApi(profile));
@@ -125,7 +138,7 @@ export const AuthProvider = ({ children, initialAuth }: AuthProviderProps) => {
   const enterBypass = useCallback(async (role: UserRole) => {
     const user = normalizeSession(await enterBypassApi(role));
     if (!user) {
-      throw new Error("Bypass session is invalid");
+      throw new Error('Bypass session is invalid');
     }
     setSession(user);
     return user;
@@ -163,7 +176,7 @@ export const AuthProvider = ({ children, initialAuth }: AuthProviderProps) => {
 export const useAuthContext = (): AuthContextValue => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within AuthProvider");
+    throw new Error('useAuth must be used within AuthProvider');
   }
   return context;
 };

@@ -23,8 +23,9 @@ export interface TableSortProps {
   sorterColumnIndex?: number;
 }
 
-export interface TableColumnEditableProps<T> extends TableColumnProps<T & { actions?: ReactNode }> {
-}
+export interface TableColumnEditableProps<T> extends TableColumnProps<
+  T & { actions?: ReactNode }
+> {}
 
 export type TableVariant = 'light' | 'dark';
 
@@ -37,7 +38,7 @@ export interface TableProps<T> {
   disabled?: boolean;
   sortable?: boolean;
   columns?: Array<TableColumnEditableProps<T>>;
-  dataSource?: Array<T & { actions?: ReactNode}>;
+  dataSource?: Array<T & { actions?: ReactNode }>;
   onChangePage?: (pageNumber: number) => void;
   onSort?: (sorterColumnStatus: TableSort, sorterColumnIndex: number) => void;
   onRowClick?: (row: T, index: number) => void;
@@ -64,7 +65,9 @@ export const Table = <T extends { actions: ReactNode }>({
 }: TableProps<T>) => {
   const isDark = variant === 'dark';
   const [sorterColumnIndex, setSorterColumnIndex] = useState<number>(0);
-  const [sorterColumnStatus, setSorterColumnStatus] = useState<TableSort>(TableSort.ASC);
+  const [sorterColumnStatus, setSorterColumnStatus] = useState<TableSort>(
+    TableSort.ASC
+  );
 
   if (enablePagination && countItems === undefined) {
     throw new Error('countItems prop is required.');
@@ -89,7 +92,9 @@ export const Table = <T extends { actions: ReactNode }>({
       ? 'border border-mb-border/80 bg-mb-surface/90 backdrop-blur-xl'
       : 'bg-white',
     props.disabled && 'opacity-50 pointer-events-none',
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const tableClasses = [
     'w-full',
@@ -101,7 +106,7 @@ export const Table = <T extends { actions: ReactNode }>({
 
   return (
     <div className={containerClasses}>
-      <table className={tableClasses} role="table">
+      <table className={tableClasses} role='table'>
         <TableHeader<T>
           {...{
             variant,
@@ -126,13 +131,16 @@ export const Table = <T extends { actions: ReactNode }>({
           }}
         />
       </table>
-      {enablePagination && countItems !== undefined && countItems > 0 && countItems > numItemsPerPage && (
-        <TablePagination
-          page={page!}
-          numOfPages={Math.ceil(countItems / numItemsPerPage)}
-          onChangePage={onChangePage!}
-        />
-      )}
+      {enablePagination &&
+        countItems !== undefined &&
+        countItems > 0 &&
+        countItems > numItemsPerPage && (
+          <TablePagination
+            page={page!}
+            numOfPages={Math.ceil(countItems / numItemsPerPage)}
+            onChangePage={onChangePage!}
+          />
+        )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 export const billingMonthFromDate = (date: Date): string => {
-  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
   return `${date.getUTCFullYear()}-${month}-01`;
 };
 
@@ -11,7 +11,7 @@ export const previousBillingMonth = (billingMonth: string): string => {
 
 export const canNavigateToPreviousBillingMonth = (
   billingMonth: string,
-  oldestBillingMonth?: string,
+  oldestBillingMonth?: string
 ): boolean => {
   if (!oldestBillingMonth) {
     return false;

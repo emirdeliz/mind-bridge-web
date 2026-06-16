@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-export const readJsonBody = async <T>(req: NextApiRequest): Promise<T | null> => {
+export const readJsonBody = async <T>(
+  req: NextApiRequest
+): Promise<T | null> => {
   if (req.body && typeof req.body === 'object') {
     return req.body as T;
   }

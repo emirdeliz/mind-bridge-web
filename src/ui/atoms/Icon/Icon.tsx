@@ -297,10 +297,12 @@ export const Icon = ({ className, spinning, ...props }: IconProps) => {
     className,
     spinning && 'animate-spin',
     props.rotate90 && 'rotate-90',
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   // Don't pass {...props} to DOM to avoid invalid boolean attribute warnings
-  return <span data-testid="icon" className={`${iconClasses} icon-${icon}`} />;
+  return <span data-testid='icon' className={`${iconClasses} icon-${icon}`} />;
 };
 
 Icon.Alert = (props: IconProps) => <Icon {...props} alert />;

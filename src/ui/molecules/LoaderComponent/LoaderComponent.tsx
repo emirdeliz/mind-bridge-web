@@ -7,9 +7,9 @@ import {
   PropsWithRef,
   ReactNode,
   LazyExoticComponent,
-} from "react";
-import { GenericObject } from "@types";
-import { Loading } from "@atoms";
+} from 'react';
+import { GenericObject } from '@types';
+import { Loading } from '@atoms';
 
 type ComponentProps<T> = PropsWithRef<T & { children?: ReactNode }>;
 
@@ -24,12 +24,15 @@ export const LoaderComponent = <T extends GenericObject>({
 }: LoaderComponentProps<T>) => {
   const Component = useMemo(
     () => lazy(children) as LazyExoticComponent<ComponentType<T>>,
-    [children],
+    [children]
   );
 
   return (
     <Suspense fallback={<Loading.Global />}>
-      {createElement(Component as unknown as ComponentType<Record<string, unknown>>, (props ?? {}) as Record<string, unknown>)}
+      {createElement(
+        Component as unknown as ComponentType<Record<string, unknown>>,
+        (props ?? {}) as Record<string, unknown>
+      )}
     </Suspense>
   );
 };

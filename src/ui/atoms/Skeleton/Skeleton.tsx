@@ -6,17 +6,23 @@ export interface SkeletonProps {
   height: string;
 }
 
-export const Skeleton = ({ rounded, width, height, ...props }: SkeletonProps) => {
+export const Skeleton = ({
+  rounded,
+  width,
+  height,
+  ...props
+}: SkeletonProps) => {
   const skeletonClasses = [
-    'bg-gray-200 animate-pulse',
-    rounded ? 'rounded-full' : 'rounded',
+    'mb-skeleton',
+    rounded ? 'rounded-full' : 'rounded-xl',
   ].join(' ');
 
   return (
     <div
       className={skeletonClasses}
       style={{ width, height }}
-      data-testid="skeleton"
+      data-testid='skeleton'
+      aria-hidden
       {...props}
     />
   );

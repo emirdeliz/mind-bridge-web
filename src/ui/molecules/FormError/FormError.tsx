@@ -1,14 +1,21 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 
-import { Title } from "@atoms";
-import { buildMarginClasses, type MarginSpacingProps } from "../../atoms/shared/spacingClasses";
+import { Title } from '@atoms';
+import {
+  buildMarginClasses,
+  type MarginSpacingProps,
+} from '../../atoms/shared/spacingClasses';
 
 export interface FormErrorProps extends MarginSpacingProps {
   children: ReactNode;
   error?: string;
 }
 
-export const FormError = ({ children, error, ...marginProps }: FormErrorProps) => {
+export const FormError = ({
+  children,
+  error,
+  ...marginProps
+}: FormErrorProps) => {
   const marginClasses = buildMarginClasses(marginProps);
 
   if (!error) {

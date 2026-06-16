@@ -1,6 +1,6 @@
-import type { AppLanguage } from "@api";
-import { Button, Flex } from "@atoms";
-import { APP_LANGUAGES, LANGUAGE_LABELS } from "@i18n";
+import type { AppLanguage } from '@api';
+import { Button, Flex } from '@atoms';
+import { APP_LANGUAGES, LANGUAGE_LABELS } from '@i18n';
 
 interface LanguageSelectProps {
   value: AppLanguage;
@@ -12,7 +12,7 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => (
     {APP_LANGUAGES.map((lang) => (
       <Button
         key={lang}
-        type="button"
+        type='button'
         chip
         selected={value === lang}
         onClick={() => onChange(lang)}

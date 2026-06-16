@@ -12,7 +12,10 @@ import { createSupabaseServerClient } from '@lib/supabase/cookieMethods';
 import { isServerAuthBypassEnabled } from '@lib/supabase/env';
 import { getServerSession } from '@lib/auth/session.server';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== 'PATCH') {
     return methodNotAllowed(res);
   }

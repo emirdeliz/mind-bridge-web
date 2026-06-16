@@ -25,7 +25,9 @@ export const Tabs = ({ tabs, onClick }: TabsProps) => {
           }`}
           onClick={() => onClick(tab)}
         >
-          <div className={`font-medium ${tab.active ? 'text-primary-theme' : 'text-gray-600'}`}>
+          <div
+            className={`font-medium ${tab.active ? 'text-primary-theme' : 'text-gray-600'}`}
+          >
             {tab.title}
           </div>
         </div>

@@ -9,7 +9,9 @@ import { createBypassSession } from '../../services/auth/authBypass';
 export const BYPASS_COOKIE_NAME = 'mindbridge-bypass';
 
 export const readBypassRole = (
-  cookies: NextApiRequest['cookies'] | GetServerSidePropsContext['req']['cookies']
+  cookies:
+    | NextApiRequest['cookies']
+    | GetServerSidePropsContext['req']['cookies']
 ): UserRole | null => {
   const value = cookies[BYPASS_COOKIE_NAME];
   if (value === 'patient' || value === 'psychologist') {
@@ -56,7 +58,9 @@ export const clearBypassCookie = (
 };
 
 export const getBypassSession = (
-  cookies: NextApiRequest['cookies'] | GetServerSidePropsContext['req']['cookies']
+  cookies:
+    | NextApiRequest['cookies']
+    | GetServerSidePropsContext['req']['cookies']
 ): UserAuthViewDto | null => {
   const role = readBypassRole(cookies);
   if (!role) {

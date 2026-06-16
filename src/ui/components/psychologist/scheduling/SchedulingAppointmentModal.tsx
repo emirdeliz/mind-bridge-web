@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
 
-import type { PsychologistAppointmentDto } from "@api";
-import { Button, Flex, Icon, Input, Overlay, Select, Title } from "@atoms";
-import { useI18n } from "@i18n";
-import { Card, ConfirmModal, Form, FormGroup } from "@molecules";
+import type { PsychologistAppointmentDto } from '@api';
+import { Button, Flex, Icon, Input, Overlay, Select, Title } from '@atoms';
+import { useI18n } from '@i18n';
+import { Card, ConfirmModal, Form, FormGroup } from '@molecules';
 import {
   combineLocalDateAndTime,
   getWeekDateKeys,
@@ -13,15 +13,15 @@ import {
   personalEndSlotTimeFromDuration,
   toLocalDateKey,
   toLocalTime,
-} from "@services";
+} from '@services';
 
 export type SchedulingAppointmentSaveInput =
   | {
-      kind: "patient";
+      kind: 'patient';
       startsAt: string;
     }
   | {
-      kind: "personal";
+      kind: 'personal';
       startsAt: string;
       durationMinutes: number;
       personalDescription: string;
@@ -53,22 +53,22 @@ export const SchedulingAppointmentModal = ({
   onDelete,
 }: SchedulingAppointmentModalProps) => {
   const { t } = useI18n();
-  const [dateKey, setDateKey] = useState("");
-  const [time, setTime] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [personalDescription, setPersonalDescription] = useState("");
-  const [formError, setFormError] = useState("");
+  const [dateKey, setDateKey] = useState('');
+  const [time, setTime] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [personalDescription, setPersonalDescription] = useState('');
+  const [formError, setFormError] = useState('');
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   const weekDateKeys = useMemo(
     () => getWeekDateKeys(weekStart, tzOffset),
-    [weekStart, tzOffset],
+    [weekStart, tzOffset]
   );
 
   const slotOptions = useMemo(
     () => slotTimes.map((slot) => ({ value: slot, label: slot })),
-    [slotTimes],
+    [slotTimes]
   );
 
   const endSlotOptions = useMemo(() => {
@@ -76,15 +76,23 @@ export const SchedulingAppointmentModal = ({
     if (startIndex < 0) {
       return slotOptions;
     }
-    return slotTimes.slice(startIndex).map((slot) => ({ value: slot, label: slot }));
+    return slotTimes
+      .slice(startIndex)
+      .map((slot) => ({ value: slot, label: slot }));
   }, [slotOptions, slotTimes, startTime]);
 
   useEffect(() => {
     if (!visible || !appointment) {
       return;
     }
-    const appointmentDateKey = toLocalDateKey(new Date(appointment.startsAt), tzOffset);
-    const appointmentStartTime = toLocalTime(new Date(appointment.startsAt), tzOffset);
+    const appointmentDateKey = toLocalDateKey(
+      new Date(appointment.startsAt),
+      tzOffset
+    );
+    const appointmentStartTime = toLocalTime(
+      new Date(appointment.startsAt),
+      tzOffset
+    );
 
     setDateKey(appointmentDateKey);
     setTime(appointmentStartTime);
@@ -94,11 +102,11 @@ export const SchedulingAppointmentModal = ({
         appointmentStartTime,
         appointment.durationMinutes,
         slotTimes,
-        sessionDurationMinutes,
-      ),
+        sessionDurationMinutes
+      )
     );
-    setPersonalDescription(appointment.notes?.trim() ?? "");
-    setFormError("");
+    setPersonalDescription(appointment.notes?.trim() ?? '');
+    setFormError('');
     setDeleteConfirmOpen(false);
   }, [visible, appointment, sessionDurationMinutes, slotTimes, tzOffset]);
 
@@ -108,15 +116,16 @@ export const SchedulingAppointmentModal = ({
 
   const isPersonal = appointment.isPersonalCommitment;
   const appointmentLabel = isPersonal
-    ? appointment.notes?.trim() || t("PSYCHOLOGIST_SCHEDULING_PERSONAL_COMMITMENT")
+    ? appointment.notes?.trim() ||
+      t('PSYCHOLOGIST_SCHEDULING_PERSONAL_COMMITMENT')
     : appointment.patientFullName?.trim() ||
       appointment.patientEmail ||
       appointment.patientId ||
-      "";
+      '';
 
   const dateOptions = weekDateKeys.map((key) => ({
     value: key,
-    label: key.split("-").reverse().join("/"),
+    label: key.split('-').reverse().join('/'),
   }));
 
   const timeOptions = slotTimes.map((slot) => ({
@@ -126,21 +135,25 @@ export const SchedulingAppointmentModal = ({
 
   return (
     <>
-      <Overlay visible={visible && !deleteConfirmOpen} zIndex={40} onClick={saving ? undefined : onClose}>
+      <Overlay
+        visible={visible && !deleteConfirmOpen}
+        zIndex={40}
+        onClick={saving ? undefined : onClose}
+      >
         <div
-          className="w-full max-w-md"
+          className='w-full max-w-md'
           onClick={(event) => event.stopPropagation()}
-          role="dialog"
-          aria-modal="true"
+          role='dialog'
+          aria-modal='true'
         >
-          <Card padding="lg" shadow="xl">
+          <Card padding='lg' shadow='xl'>
             <Flex col wFull gap5>
               <Flex row wFull alignStart justifySpaceBetween gap4>
                 <Flex col wFull gap2 flex1>
                   <Title fs3 fw3 block leadingRelaxed>
                     {isPersonal
-                      ? t("PSYCHOLOGIST_SCHEDULING_PERSONAL_EDIT_TITLE")
-                      : t("PSYCHOLOGIST_SCHEDULING_APPOINTMENT_TITLE")}
+                      ? t('PSYCHOLOGIST_SCHEDULING_PERSONAL_EDIT_TITLE')
+                      : t('PSYCHOLOGIST_SCHEDULING_APPOINTMENT_TITLE')}
                   </Title>
                   {!isPersonal ? (
                     <Title s2 gray block leadingRelaxed>
@@ -149,12 +162,12 @@ export const SchedulingAppointmentModal = ({
                   ) : null}
                 </Flex>
                 <Button
-                  type="button"
-                  variant="secondary"
+                  type='button'
+                  variant='secondary'
                   outlined
                   circle
                   clickable={!saving}
-                  title={t("PSYCHOLOGIST_PATIENTS_MODAL_CANCEL")}
+                  title={t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
                   onClick={onClose}
                 >
                   <Icon.Close sm />
@@ -166,32 +179,45 @@ export const SchedulingAppointmentModal = ({
                   event.preventDefault();
 
                   if (!dateKey) {
-                    setFormError(t("PSYCHOLOGIST_SCHEDULING_APPOINTMENT_DATE_ERROR"));
+                    setFormError(
+                      t('PSYCHOLOGIST_SCHEDULING_APPOINTMENT_DATE_ERROR')
+                    );
                     return;
                   }
 
                   if (isPersonal) {
                     const description = personalDescription.trim();
-                    const durationMinutes = personalDurationMinutesFromSlotRange(
-                      startTime,
-                      endTime,
-                      slotTimes,
-                      sessionDurationMinutes,
-                    );
+                    const durationMinutes =
+                      personalDurationMinutesFromSlotRange(
+                        startTime,
+                        endTime,
+                        slotTimes,
+                        sessionDurationMinutes
+                      );
 
                     if (!startTime || !endTime || durationMinutes === null) {
-                      setFormError(t("PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_TIME_ERROR"));
+                      setFormError(
+                        t('PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_TIME_ERROR')
+                      );
                       return;
                     }
                     if (!description) {
-                      setFormError(t("PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_DESCRIPTION_ERROR"));
+                      setFormError(
+                        t(
+                          'PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_DESCRIPTION_ERROR'
+                        )
+                      );
                       return;
                     }
 
-                    setFormError("");
+                    setFormError('');
                     void onSave({
-                      kind: "personal",
-                      startsAt: combineLocalDateAndTime(dateKey, startTime, tzOffset).toISOString(),
+                      kind: 'personal',
+                      startsAt: combineLocalDateAndTime(
+                        dateKey,
+                        startTime,
+                        tzOffset
+                      ).toISOString(),
                       durationMinutes,
                       personalDescription: description,
                     });
@@ -199,24 +225,32 @@ export const SchedulingAppointmentModal = ({
                   }
 
                   if (!time) {
-                    setFormError(t("PSYCHOLOGIST_SCHEDULING_APPOINTMENT_DATE_ERROR"));
+                    setFormError(
+                      t('PSYCHOLOGIST_SCHEDULING_APPOINTMENT_DATE_ERROR')
+                    );
                     return;
                   }
                   if (!slotTimes.includes(time)) {
-                    setFormError(t("PSYCHOLOGIST_SCHEDULING_APPOINTMENT_TIME_ERROR"));
+                    setFormError(
+                      t('PSYCHOLOGIST_SCHEDULING_APPOINTMENT_TIME_ERROR')
+                    );
                     return;
                   }
-                  setFormError("");
+                  setFormError('');
                   void onSave({
-                    kind: "patient",
-                    startsAt: combineLocalDateAndTime(dateKey, time, tzOffset).toISOString(),
+                    kind: 'patient',
+                    startsAt: combineLocalDateAndTime(
+                      dateKey,
+                      time,
+                      tzOffset
+                    ).toISOString(),
                   });
                 }}
               >
                 <Flex col wFull gap4>
                   <Flex col wFull gap2>
                     <Title s2 fw3 block>
-                      {t("PSYCHOLOGIST_SCHEDULING_APPOINTMENT_DATE")}
+                      {t('PSYCHOLOGIST_SCHEDULING_APPOINTMENT_DATE')}
                     </Title>
                     <Select
                       value={dateKey}
@@ -231,12 +265,14 @@ export const SchedulingAppointmentModal = ({
                       <Flex row wFull gap5>
                         <Flex flex1 wFull>
                           <FormGroup
-                            label={t("PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_START")}
-                            target="scheduling-edit-personal-start"
+                            label={t(
+                              'PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_START'
+                            )}
+                            target='scheduling-edit-personal-start'
                             required
                           >
                             <Select
-                              id="scheduling-edit-personal-start"
+                              id='scheduling-edit-personal-start'
                               value={startTime}
                               disabled={saving}
                               options={slotOptions}
@@ -254,12 +290,14 @@ export const SchedulingAppointmentModal = ({
                         </Flex>
                         <Flex flex1 wFull>
                           <FormGroup
-                            label={t("PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_END")}
-                            target="scheduling-edit-personal-end"
+                            label={t(
+                              'PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_END'
+                            )}
+                            target='scheduling-edit-personal-end'
                             required
                           >
                             <Select
-                              id="scheduling-edit-personal-end"
+                              id='scheduling-edit-personal-end'
                               value={endTime}
                               disabled={saving}
                               options={endSlotOptions}
@@ -270,34 +308,40 @@ export const SchedulingAppointmentModal = ({
                       </Flex>
 
                       <FormGroup
-                        label={t("PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_DESCRIPTION")}
-                        target="scheduling-edit-personal-description"
+                        label={t(
+                          'PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_DESCRIPTION'
+                        )}
+                        target='scheduling-edit-personal-description'
                         required
                       >
                         <Input.TextArea
-                          id="scheduling-edit-personal-description"
+                          id='scheduling-edit-personal-description'
                           rows={3}
                           value={personalDescription}
                           disabled={saving}
                           placeholder={t(
-                            "PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_DESCRIPTION_PLACEHOLDER",
+                            'PSYCHOLOGIST_SCHEDULING_CREATE_PERSONAL_DESCRIPTION_PLACEHOLDER'
                           )}
-                          onChange={(event) => setPersonalDescription(event.target.value)}
+                          onChange={(event) =>
+                            setPersonalDescription(event.target.value)
+                          }
                         />
                       </FormGroup>
                     </>
                   ) : (
                     <Flex col wFull gap2>
                       <Title s2 fw3 block>
-                        {t("PSYCHOLOGIST_SCHEDULING_APPOINTMENT_TIME")}
+                        {t('PSYCHOLOGIST_SCHEDULING_APPOINTMENT_TIME')}
                       </Title>
                       <Select
                         value={time}
                         disabled={saving}
                         options={[
                           {
-                            label: t("PSYCHOLOGIST_SCHEDULING_APPOINTMENT_SELECT_TIME"),
-                            value: "",
+                            label: t(
+                              'PSYCHOLOGIST_SCHEDULING_APPOINTMENT_SELECT_TIME'
+                            ),
+                            value: '',
                           },
                           ...timeOptions,
                         ]}
@@ -315,19 +359,24 @@ export const SchedulingAppointmentModal = ({
                   <Flex row wFull gap4>
                     <Flex flex1 wFull>
                       <Button
-                        type="button"
-                        variant="danger"
+                        type='button'
+                        variant='danger'
                         outlined
                         wFull
                         clickable={!saving}
                         onClick={() => setDeleteConfirmOpen(true)}
                       >
-                        {t("PSYCHOLOGIST_SCHEDULING_APPOINTMENT_DELETE")}
+                        {t('PSYCHOLOGIST_SCHEDULING_APPOINTMENT_DELETE')}
                       </Button>
                     </Flex>
                     <Flex flex1 wFull>
-                      <Button type="submit" variant="primary" wFull clickable={!saving}>
-                        {t("SAVE")}
+                      <Button
+                        type='submit'
+                        variant='primary'
+                        wFull
+                        clickable={!saving}
+                      >
+                        {t('SAVE')}
                       </Button>
                     </Flex>
                   </Flex>
@@ -340,11 +389,11 @@ export const SchedulingAppointmentModal = ({
 
       <ConfirmModal
         visible={deleteConfirmOpen}
-        title={t("PSYCHOLOGIST_SCHEDULING_APPOINTMENT_DELETE_TITLE")}
-        message={t("PSYCHOLOGIST_SCHEDULING_APPOINTMENT_DELETE_MESSAGE")}
-        confirmLabel={t("PSYCHOLOGIST_SCHEDULING_APPOINTMENT_DELETE_CONFIRM")}
-        cancelLabel={t("PSYCHOLOGIST_PATIENTS_MODAL_CANCEL")}
-        confirmVariant="danger"
+        title={t('PSYCHOLOGIST_SCHEDULING_APPOINTMENT_DELETE_TITLE')}
+        message={t('PSYCHOLOGIST_SCHEDULING_APPOINTMENT_DELETE_MESSAGE')}
+        confirmLabel={t('PSYCHOLOGIST_SCHEDULING_APPOINTMENT_DELETE_CONFIRM')}
+        cancelLabel={t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
+        confirmVariant='danger'
         onClose={() => {
           if (!saving) {
             setDeleteConfirmOpen(false);

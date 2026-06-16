@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import type { PsychologistAppointmentDto } from "@api";
-import { getPsychologistPatientsApi } from "@api";
-import { Button, Flex, Icon, Loading, Overlay, Title } from "@atoms";
-import { maskPhone } from "@helpers";
-import { useI18n } from "@i18n";
-import { Card } from "@molecules";
+import type { PsychologistAppointmentDto } from '@api';
+import { getPsychologistPatientsApi } from '@api';
+import { Button, Flex, Icon, Loading, Overlay, Title } from '@atoms';
+import { maskPhone } from '@helpers';
+import { useI18n } from '@i18n';
+import { Card } from '@molecules';
 
 type SchedulingPatientContactModalProps = {
   visible: boolean;
@@ -31,9 +31,11 @@ export const SchedulingPatientContactModal = ({
 
     setLoading(true);
     setPhone(null);
-    void getPsychologistPatientsApi("", false)
+    void getPsychologistPatientsApi('', false)
       .then((patients) => {
-        const patient = patients.find((item) => item.id === appointment.patientId);
+        const patient = patients.find(
+          (item) => item.id === appointment.patientId
+        );
         setPhone(patient?.phone ?? null);
       })
       .catch(() => setPhone(null))
@@ -52,28 +54,28 @@ export const SchedulingPatientContactModal = ({
   return (
     <Overlay visible={visible} zIndex={40} onClick={onClose}>
       <div
-        className="w-full max-w-md"
+        className='w-full max-w-md'
         onClick={(event) => event.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
+        role='dialog'
+        aria-modal='true'
       >
-        <Card padding="lg" shadow="xl">
+        <Card padding='lg' shadow='xl'>
           <Flex col wFull gap5>
             <Flex row wFull alignStart justifySpaceBetween gap4>
               <Flex col wFull gap2 flex1>
                 <Title fs3 fw3 block leadingRelaxed>
-                  {t("PSYCHOLOGIST_SCHEDULING_CONTACT_TITLE")}
+                  {t('PSYCHOLOGIST_SCHEDULING_CONTACT_TITLE')}
                 </Title>
                 <Title s2 gray block leadingRelaxed>
                   {name}
                 </Title>
               </Flex>
               <Button
-                type="button"
-                variant="secondary"
+                type='button'
+                variant='secondary'
                 outlined
                 circle
-                title={t("PSYCHOLOGIST_PATIENTS_MODAL_CANCEL")}
+                title={t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
                 onClick={onClose}
               >
                 <Icon.Close sm />
@@ -83,15 +85,15 @@ export const SchedulingPatientContactModal = ({
             <Flex col wFull gap4>
               <Flex col wFull gap1>
                 <Title s2 gray block>
-                  {t("PSYCHOLOGIST_SCHEDULING_CONTACT_EMAIL")}
+                  {t('PSYCHOLOGIST_SCHEDULING_CONTACT_EMAIL')}
                 </Title>
                 <Title s2 block>
-                  {appointment.patientEmail?.trim() || "—"}
+                  {appointment.patientEmail?.trim() || '—'}
                 </Title>
               </Flex>
               <Flex col wFull gap1>
                 <Title s2 gray block>
-                  {t("PSYCHOLOGIST_SCHEDULING_CONTACT_PHONE")}
+                  {t('PSYCHOLOGIST_SCHEDULING_CONTACT_PHONE')}
                 </Title>
                 {loading ? (
                   <Flex row alignCenter py1>
@@ -99,14 +101,20 @@ export const SchedulingPatientContactModal = ({
                   </Flex>
                 ) : (
                   <Title s2 block>
-                    {phone?.trim() ? maskPhone(phone) : "—"}
+                    {phone?.trim() ? maskPhone(phone) : '—'}
                   </Title>
                 )}
               </Flex>
             </Flex>
 
-            <Button type="button" variant="secondary" outlined wFull onClick={onClose}>
-              {t("PSYCHOLOGIST_PATIENTS_MODAL_CANCEL")}
+            <Button
+              type='button'
+              variant='secondary'
+              outlined
+              wFull
+              onClick={onClose}
+            >
+              {t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
             </Button>
           </Flex>
         </Card>

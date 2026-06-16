@@ -68,7 +68,10 @@ const registerPatientViaBackend = async (
   return { ok: true };
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== 'POST') {
     return methodNotAllowed(res);
   }
@@ -112,7 +115,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   });
 
   if (error || !data.session?.access_token || !data.user?.id) {
-    return res.status(400).json({ error: error?.message ?? 'Registration failed' });
+    return res
+      .status(400)
+      .json({ error: error?.message ?? 'Registration failed' });
   }
 
   const { error: profileError } = await supabase

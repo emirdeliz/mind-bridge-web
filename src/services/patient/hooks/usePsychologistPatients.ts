@@ -13,10 +13,14 @@ import {
   saveOrEditPsychologistPatientApi,
   savePsychologistPatientAnamnesisApi,
 } from '@api';
-import { isValidPatientInitialPassword, isValidPhone, phoneDigits } from '@helpers';
+import {
+  isValidPatientInitialPassword,
+  isValidPhone,
+  phoneDigits,
+} from '@helpers';
 import { useI18n } from '@i18n';
 import { emptyPatientAnamnesis } from '../../clinical/clinicalContentDefaults';
-import { shouldSilentReload, type ReloadOptions } from "@helpers";
+import { shouldSilentReload, type ReloadOptions } from '@helpers';
 import { useAuth } from '@services';
 
 const emptyForm = (): PsychologistPatientSaveOrUpdateDto => ({
@@ -38,8 +42,11 @@ export const usePsychologistPatients = () => {
   const [error, setError] = useState('');
   const [formError, setFormError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
-  const [form, setForm] = useState<PsychologistPatientSaveOrUpdateDto>(emptyForm());
-  const [anamnesis, setAnamnesis] = useState<PatientAnamnesisDto>(emptyPatientAnamnesis());
+  const [form, setForm] =
+    useState<PsychologistPatientSaveOrUpdateDto>(emptyForm());
+  const [anamnesis, setAnamnesis] = useState<PatientAnamnesisDto>(
+    emptyPatientAnamnesis()
+  );
   const [loadingAnamnesis, setLoadingAnamnesis] = useState(false);
   const patientsRef = useRef(patients);
   patientsRef.current = patients;
@@ -57,25 +64,33 @@ export const usePsychologistPatients = () => {
         return;
       }
 
-      const silent = shouldSilentReload(options, patientsRef.current.length > 0);
+      const silent = shouldSilentReload(
+        options,
+        patientsRef.current.length > 0
+      );
       if (!silent) {
         setLoading(true);
       }
       setError('');
 
       try {
-        const list = await getPsychologistPatientsApi(debouncedSearch, includeDeleted);
+        const list = await getPsychologistPatientsApi(
+          debouncedSearch,
+          includeDeleted
+        );
         setPatients(list);
       } catch (loadError) {
         setError(
-          loadError instanceof Error ? loadError.message : 'Failed to load patients'
+          loadError instanceof Error
+            ? loadError.message
+            : 'Failed to load patients'
         );
         setPatients([]);
       } finally {
         setLoading(false);
       }
     },
-    [session, debouncedSearch, includeDeleted],
+    [session, debouncedSearch, includeDeleted]
   );
 
   useEffect(() => {
@@ -90,32 +105,37 @@ export const usePsychologistPatients = () => {
     setModalOpen(true);
   }, []);
 
-  const openEditModal = useCallback(async (patient: PsychologistPatientViewDto) => {
-    setForm({
-      id: patient.id,
-      fullName: patient.fullName ?? '',
-      email: patient.email ?? '',
-      phone: patient.phone ?? '',
-      password: '',
-    });
-    setAnamnesis(emptyPatientAnamnesis());
-    setFormError('');
-    setModalOpen(true);
-    setLoadingAnamnesis(true);
+  const openEditModal = useCallback(
+    async (patient: PsychologistPatientViewDto) => {
+      setForm({
+        id: patient.id,
+        fullName: patient.fullName ?? '',
+        email: patient.email ?? '',
+        phone: patient.phone ?? '',
+        password: '',
+      });
+      setAnamnesis(emptyPatientAnamnesis());
+      setFormError('');
+      setModalOpen(true);
+      setLoadingAnamnesis(true);
 
-    try {
-      const content = await getPsychologistPatientClinicalContentApi(patient.id);
-      setAnamnesis(content.anamnesis ?? emptyPatientAnamnesis());
-    } catch (loadError) {
-      setFormError(
-        loadError instanceof Error
-          ? loadError.message
-          : t('PSYCHOLOGIST_PATIENTS_ANAMNESIS_LOAD_ERROR')
-      );
-    } finally {
-      setLoadingAnamnesis(false);
-    }
-  }, [t]);
+      try {
+        const content = await getPsychologistPatientClinicalContentApi(
+          patient.id
+        );
+        setAnamnesis(content.anamnesis ?? emptyPatientAnamnesis());
+      } catch (loadError) {
+        setFormError(
+          loadError instanceof Error
+            ? loadError.message
+            : t('PSYCHOLOGIST_PATIENTS_ANAMNESIS_LOAD_ERROR')
+        );
+      } finally {
+        setLoadingAnamnesis(false);
+      }
+    },
+    [t]
+  );
 
   const closeModal = useCallback(() => {
     setModalOpen(false);
@@ -190,7 +210,9 @@ export const usePsychologistPatients = () => {
       await loadPatients({ silent: true });
     } catch (saveError) {
       setFormError(
-        saveError instanceof Error ? saveError.message : 'Failed to save patient'
+        saveError instanceof Error
+          ? saveError.message
+          : 'Failed to save patient'
       );
     } finally {
       setSaving(false);

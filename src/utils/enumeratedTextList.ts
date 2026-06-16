@@ -7,19 +7,19 @@ export const isEnumeratedInsightTitle = (title: string): boolean => {
   const normalized = title.trim().toLowerCase();
 
   return (
-    normalized.includes("padr") ||
-    normalized.includes("patron") ||
-    normalized.includes("pattern") ||
-    normalized.includes("ação") ||
-    normalized.includes("acao") ||
-    normalized.includes("accion") ||
-    normalized.includes("action") ||
-    normalized.includes("recomend")
+    normalized.includes('padr') ||
+    normalized.includes('patron') ||
+    normalized.includes('pattern') ||
+    normalized.includes('ação') ||
+    normalized.includes('acao') ||
+    normalized.includes('accion') ||
+    normalized.includes('action') ||
+    normalized.includes('recomend')
   );
 };
 
 export const normalizeListItem = (item: string): string =>
-  item.trim().replace(LIST_PREFIX_PATTERN, "").trim();
+  item.trim().replace(LIST_PREFIX_PATTERN, '').trim();
 
 export const parseInsightListItems = (body: string): string[] => {
   const trimmed = body.trim();
@@ -49,7 +49,7 @@ export const parseInsightListItems = (body: string): string[] => {
 };
 
 export const parseInteractionSummary = (
-  body: string,
+  body: string
 ): { header: string | null; items: string[] } => {
   const lines = body
     .trim()

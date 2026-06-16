@@ -1,14 +1,11 @@
 import React from 'react';
 
 export interface ProgressBarProps {
-  duration?: number 
+  duration?: number;
 }
 
 export const ProgressBar = ({ duration = 3, ...props }: ProgressBarProps) => {
-  const containerClasses = [
-    'w-full min-w-50',
-    'h-1 relative',
-  ].join(' ');
+  const containerClasses = ['w-full min-w-50', 'h-1 relative'].join(' ');
 
   const progressBarClasses = [
     'opacity-70 absolute bottom-0 left-0',

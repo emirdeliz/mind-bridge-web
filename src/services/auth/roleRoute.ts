@@ -1,50 +1,50 @@
-import type { UserRole } from "@api";
+import type { UserRole } from '@api';
 
 export const getRoleRoute = (role: UserRole | null | undefined): string => {
-  if (role === "psychologist") {
-    return "/psychologist/patients";
+  if (role === 'psychologist') {
+    return '/psychologist/patients';
   }
-  return "/patient";
+  return '/patient';
 };
 
 export const getProfileRoute = (role: UserRole): string => {
-  if (role === "psychologist") {
-    return "/psychologist/profile";
+  if (role === 'psychologist') {
+    return '/psychologist/profile';
   }
-  return "/patient/profile";
+  return '/patient/profile';
 };
 
 export const getPatientsRoute = (role: UserRole): string | null => {
-  if (role === "psychologist") {
-    return "/psychologist/patients";
+  if (role === 'psychologist') {
+    return '/psychologist/patients';
   }
   return null;
 };
 
 export const getBillingRoute = (role: UserRole): string | null => {
-  if (role === "psychologist") {
-    return "/psychologist/billing";
+  if (role === 'psychologist') {
+    return '/psychologist/billing';
   }
   return null;
 };
 
 export const getPatientPaymentsRoute = (role: UserRole): string | null => {
-  if (role === "psychologist") {
-    return "/psychologist/patient-payments";
+  if (role === 'psychologist') {
+    return '/psychologist/patient-payments';
   }
   return null;
 };
 
 export const getSchedulingRoute = (role: UserRole): string | null => {
-  if (role === "psychologist") {
-    return "/psychologist/scheduling";
+  if (role === 'psychologist') {
+    return '/psychologist/scheduling';
   }
   return null;
 };
 
 export const getSettingsRoute = (role: UserRole): string | null => {
-  if (role === "psychologist") {
-    return "/psychologist/settings";
+  if (role === 'psychologist') {
+    return '/psychologist/settings';
   }
   return null;
 };

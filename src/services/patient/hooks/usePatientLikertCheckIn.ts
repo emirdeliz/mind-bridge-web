@@ -27,9 +27,9 @@ export const usePatientLikertCheckIn = ({
   onSaved,
 }: UsePatientLikertCheckInOptions) => {
   const { t } = useI18n();
-  const [scores, setScores] = useState<Partial<Record<LikertDimensionId, number>>>(
-    () => initialCheckIn?.scores ?? {},
-  );
+  const [scores, setScores] = useState<
+    Partial<Record<LikertDimensionId, number>>
+  >(() => initialCheckIn?.scores ?? {});
   const [error, setError] = useState('');
   const [saveStatus, setSaveStatus] = useState<LikertSaveStatus>('idle');
 
@@ -89,7 +89,7 @@ export const usePatientLikertCheckIn = ({
     } catch (saveError) {
       setSaveStatusTransition('idle');
       setError(
-        saveError instanceof Error ? saveError.message : t('LIKERT_SAVE_ERROR'),
+        saveError instanceof Error ? saveError.message : t('LIKERT_SAVE_ERROR')
       );
     } finally {
       saveInFlightRef.current = false;
@@ -119,7 +119,7 @@ export const usePatientLikertCheckIn = ({
         window.clearTimeout(savedStatusTimeoutRef.current);
       }
     },
-    [],
+    []
   );
 
   const selectScore = useCallback(
@@ -131,7 +131,7 @@ export const usePatientLikertCheckIn = ({
       });
       scheduleSave();
     },
-    [scheduleSave],
+    [scheduleSave]
   );
 
   const answeredCount = countLikertAnswers(scores, LIKERT_DIMENSION_IDS);

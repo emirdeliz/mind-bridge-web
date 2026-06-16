@@ -142,7 +142,9 @@ export const Input = ({
     ml && `ml-${ml}`,
     mx && `mx-${mx}`,
     my && `my-${my}`,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const paddingClasses = [
     p && `p-${p}`,
@@ -152,14 +154,18 @@ export const Input = ({
     pl && `pl-${pl}`,
     px && `px-${px}`,
     py && `py-${py}`,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const containerClasses = [
     textarea ? 'flex w-full flex-col' : 'flex w-full flex-1 rounded-md',
     'bg-transparent',
     marginClasses,
     paddingClasses,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const inputElement = useMemo(() => {
     switch (true) {
@@ -168,7 +174,15 @@ export const Input = ({
       case readOnly:
         return <InputReadOnly {...props} />;
       case number:
-        return <InputNumber {...props} decimal={decimal} allowNegative={allowNegative} decimalPlaces={decimalPlaces} maxValue={maxValue} />;
+        return (
+          <InputNumber
+            {...props}
+            decimal={decimal}
+            allowNegative={allowNegative}
+            decimalPlaces={decimalPlaces}
+            maxValue={maxValue}
+          />
+        );
       case currency:
         return <InputCurrency {...props} currency />;
       case date:
@@ -176,7 +190,18 @@ export const Input = ({
       default:
         return <InputText {...props} readOnly={readOnly} />;
     }
-  }, [number, textarea, date, readOnly, props, currency, decimal, allowNegative, decimalPlaces, maxValue]);
+  }, [
+    number,
+    textarea,
+    date,
+    readOnly,
+    props,
+    currency,
+    decimal,
+    allowNegative,
+    decimalPlaces,
+    maxValue,
+  ]);
 
   return (
     <div className={containerClasses}>

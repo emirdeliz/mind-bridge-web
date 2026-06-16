@@ -16,19 +16,23 @@ The platform is intended to let psychologists:
 ## Architecture
 
 ### Frontend
+
 - **React + Next.js (Pages Router)**
 - Protected routes use **SSR** (`getServerSideProps`) for auth gates.
 - Supabase and `mind-bridge-be` credentials stay **server-only**; the browser calls same-origin `/api/auth/*` and `/api/backend/*` (BFF proxy).
 
 ### UI and Styling
+
 - **Tailwind CSS**
 - Utility-first styling approach for fast and consistent UI development.
 
 ### Data Layer
+
 - **Supabase Auth** (server-side via `@supabase/ssr` cookies — no `NEXT_PUBLIC_SUPABASE_*`).
 - **mind-bridge-be** via `API_BASE_URL` (proxied as `/api/backend/...` from the browser).
 
 ### Testing
+
 - **Jest**
 - Unit and integration test strategy based on Jest.
 
@@ -51,13 +55,13 @@ The script runs a local `npm run build` before upload. Skip it with `SKIP_BUILD=
 
 Set environment variables in the Vercel dashboard (see `.env.example`):
 
-| Variable | Scope | Example |
-|----------|--------|---------|
-| `SUPABASE_URL`, `SUPABASE_ANON_KEY` | Server only | Supabase Cloud project |
-| `API_BASE_URL` | Server only | `https://mind-bridge-be.onrender.com` |
-| `NEXT_PUBLIC_APP_URL` | Public | `https://your-app.vercel.app` |
-| `AUTH_BYPASS` | Server only | `false` in production |
-| `NEXT_PUBLIC_AUTH_BYPASS` | Client UI flag | `false` in production |
+| Variable                            | Scope          | Example                               |
+| ----------------------------------- | -------------- | ------------------------------------- |
+| `SUPABASE_URL`, `SUPABASE_ANON_KEY` | Server only    | Supabase Cloud project                |
+| `API_BASE_URL`                      | Server only    | `https://mind-bridge-be.onrender.com` |
+| `NEXT_PUBLIC_APP_URL`               | Public         | `https://your-app.vercel.app`         |
+| `AUTH_BYPASS`                       | Server only    | `false` in production                 |
+| `NEXT_PUBLIC_AUTH_BYPASS`           | Client UI flag | `false` in production                 |
 
 **Cloud stack (free tier):** Supabase Cloud + Vercel (this app) + backend on Render ([render.yaml](../mind-bridge-be/render.yaml)) with Gemini API on the backend.
 

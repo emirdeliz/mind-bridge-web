@@ -9,16 +9,13 @@ export interface LinkCalendarFormProps extends LinkCalendarProps {
   onChange?: (value: Date) => void;
 }
 
-export const LinkCalendarForm = memo(({
-  value,
-  children,
-  onChange,
-  ...props
-}: LinkCalendarFormProps) => {
-  const id = children ? children.replace(/\s/g, '_') : String(props.id);
-  return (
-    <FormGroup label={children} target={id} {...props}>
-      <LinkCalendar {...props} value={value} onChange={onChange} />
-    </FormGroup>
-  );
-});
+export const LinkCalendarForm = memo(
+  ({ value, children, onChange, ...props }: LinkCalendarFormProps) => {
+    const id = children ? children.replace(/\s/g, '_') : String(props.id);
+    return (
+      <FormGroup label={children} target={id} {...props}>
+        <LinkCalendar {...props} value={value} onChange={onChange} />
+      </FormGroup>
+    );
+  }
+);

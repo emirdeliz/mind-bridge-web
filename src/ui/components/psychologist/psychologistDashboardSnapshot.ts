@@ -1,4 +1,5 @@
-import type { DashboardSnapshotDto } from "@api";
+import type { DashboardSnapshotDto } from '@api';
+import { MB_COLORS } from '@constants';
 
 export type DashboardChartSeries = {
   name: string;
@@ -26,17 +27,22 @@ export const emptyDashboardSnapshot = (): PsychologistDashboardSnapshot => ({
   lastUpdatedAt: new Date().toISOString(),
 });
 
-export const getDashboardChannelTotal = (snapshot: PsychologistDashboardSnapshot): number =>
+export const getDashboardChannelTotal = (
+  snapshot: PsychologistDashboardSnapshot
+): number =>
   snapshot.interactionChannels.reduce((sum, item) => sum + item.value, 0);
 
 /** Ajuste leve dos indicadores após encerrar sessão (estado em memória). */
 export const bumpDashboardSnapshot = (
-  current: PsychologistDashboardSnapshot,
+  current: PsychologistDashboardSnapshot
 ): PsychologistDashboardSnapshot => {
   const moodData = [...(current.moodTrendSeries[0]?.data ?? [])];
   if (moodData.length > 0) {
     const lastIndex = moodData.length - 1;
-    moodData[lastIndex] = Math.min(10, Number((moodData[lastIndex] + 0.4).toFixed(1)));
+    moodData[lastIndex] = Math.min(
+      10,
+      Number((moodData[lastIndex] + 0.4).toFixed(1))
+    );
   }
 
   const weeklyData = [...(current.weeklyInteractionSeries[0]?.data ?? [])];
@@ -46,7 +52,9 @@ export const bumpDashboardSnapshot = (
   }
 
   const channels = current.interactionChannels.map((channel) =>
-    channel.name === "Texto" ? { ...channel, value: channel.value + 1 } : { ...channel },
+    channel.name === 'Texto'
+      ? { ...channel, value: channel.value + 1 }
+      : { ...channel }
   );
 
   const clinicalData = [...(current.clinicalThemeSeries[0]?.data ?? [])];
@@ -58,25 +66,28 @@ export const bumpDashboardSnapshot = (
     ...current,
     moodTrendSeries: [
       {
-        name: current.moodTrendSeries[0]?.name ?? "Humor médio",
+        name: current.moodTrendSeries[0]?.name ?? 'Humor médio',
         data: moodData,
-        color: current.moodTrendSeries[0]?.color ?? "#5eead4",
+        color: current.moodTrendSeries[0]?.color ?? MB_COLORS.accent,
       },
     ],
     weeklyInteractionSeries: [
       {
-        name: current.weeklyInteractionSeries[0]?.name ?? "Interações",
+        name: current.weeklyInteractionSeries[0]?.name ?? 'Interações',
         data: weeklyData,
-        color: current.weeklyInteractionSeries[0]?.color ?? "#818cf8",
+        color: current.weeklyInteractionSeries[0]?.color ?? MB_COLORS.primary,
       },
     ],
     interactionChannels: channels,
-    moodDiaryAdherencePercent: Math.min(100, current.moodDiaryAdherencePercent + 6),
+    moodDiaryAdherencePercent: Math.min(
+      100,
+      current.moodDiaryAdherencePercent + 6
+    ),
     clinicalThemeSeries: [
       {
-        name: current.clinicalThemeSeries[0]?.name ?? "Menções",
+        name: current.clinicalThemeSeries[0]?.name ?? 'Menções',
         data: clinicalData,
-        color: current.clinicalThemeSeries[0]?.color ?? "#a78bfa",
+        color: current.clinicalThemeSeries[0]?.color ?? MB_COLORS.violet,
       },
     ],
     lastUpdatedAt: new Date().toISOString(),

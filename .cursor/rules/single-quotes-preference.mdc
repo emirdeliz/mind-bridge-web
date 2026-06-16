@@ -1,0 +1,26 @@
+---
+description: Prefer single quotes in TypeScript, JavaScript, and JSX
+globs: **/*.{ts,tsx,js,jsx,mjs,cjs}
+alwaysApply: false
+---
+
+# Single Quotes Preference
+
+- Use **single quotes** (`'`) for strings in `.ts`, `.tsx`, `.js`, `.jsx`, `.mjs`, and `.cjs`.
+- In JSX attributes, also prefer single quotes: `className='mb-card'`, `title='Salvar'`.
+- Keep **double quotes** only when required:
+  - JSON files (`.json`) — JSON syntax requires double quotes.
+  - Strings that contain a single quote and would need excessive escaping — use a template literal or escape instead.
+- Run `npm run format` after bulk edits; Prettier enforces this via `.prettierrc` (`singleQuote: true`, `jsxSingleQuote: true`).
+
+```tsx
+// ✅
+import { useAuth } from '@services';
+const label = 'Salvar alterações';
+<Button type='button'>{label}</Button>
+
+// ❌
+import { useAuth } from "@services";
+const label = "Salvar alterações";
+<Button type="button">{label}</Button>
+```

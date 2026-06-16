@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from 'react';
 
 export const useChatAutoScroll = (deps: unknown[]) => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -12,7 +12,7 @@ export const useChatAutoScroll = (deps: unknown[]) => {
 
     node.scrollTo({
       top: node.scrollHeight,
-      behavior: isInitialMount.current ? "auto" : "smooth",
+      behavior: isInitialMount.current ? 'auto' : 'smooth',
     });
     isInitialMount.current = false;
   }, deps);

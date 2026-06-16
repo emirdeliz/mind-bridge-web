@@ -4,7 +4,15 @@ import { InputProps } from '../Input';
 
 const TEXT_AREA_MAX_LENGTH = 65_535;
 
-export const InputTextArea = ({ maxLength, rows, dataTestId, hasError, disabled, readOnly, ...props }: InputProps) => {
+export const InputTextArea = ({
+  maxLength,
+  rows,
+  dataTestId,
+  hasError,
+  disabled,
+  readOnly,
+  ...props
+}: InputProps) => {
   const id = String(props.id);
   const isReadonly = Boolean(disabled || readOnly);
 
@@ -15,7 +23,9 @@ export const InputTextArea = ({ maxLength, rows, dataTestId, hasError, disabled,
     'input-focus-primary',
     hasError && 'mb-field-error',
     isReadonly && 'mb-field-readonly',
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const domProps = filterInputDomProps(props);
 

@@ -40,14 +40,14 @@ export const InputCurrency = ({
   hasError,
   ...props
 }: InputProps) => {
-  const [valueAsString, setValueAsString] = useState<number | ''>(
-    () => toEditableAmount(props.value),
+  const [valueAsString, setValueAsString] = useState<number | ''>(() =>
+    toEditableAmount(props.value)
   );
   const lastExternalValue = useRef(props.value);
   const id = useMemo(() => String(props.id), [props.id]);
   const value = useMemo(
     () => applyMaskMaybe(valueAsString, { currency: true }),
-    [valueAsString],
+    [valueAsString]
   );
 
   useEffect(() => {
@@ -63,7 +63,9 @@ export const InputCurrency = ({
     'mb-field block w-full min-w-0',
     'input-focus-primary',
     hasError && 'mb-field-error',
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const domProps = filterInputDomProps(props);
 

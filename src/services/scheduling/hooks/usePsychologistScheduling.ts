@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type {
   PsychologistAppointmentDto,
   PsychologistSchedulingWeekDto,
   SchedulingConflictPreviewDto,
   UpdateSchedulingSettingsResultDto,
-} from "@api";
+} from '@api';
 import {
   ApiError,
   createPsychologistAppointmentApi,
@@ -16,7 +16,7 @@ import {
   updatePsychologistSchedulingSettingsApi,
   type CreateAppointmentInput,
   type UpdateSchedulingSettingsPayload,
-} from "@api";
+} from '@api';
 import {
   applyOptimisticMove,
   getBrowserTzOffsetMinutes,
@@ -24,8 +24,8 @@ import {
   shouldSilentReload,
   syncAppointmentsAfterMove,
   type ReloadOptions,
-} from "@helpers";
-import { useAuth } from "@services";
+} from '@helpers';
+import { useAuth } from '@services';
 
 export const usePsychologistScheduling = (weekStart: string | null) => {
   const { session } = useAuth();
@@ -33,14 +33,16 @@ export const usePsychologistScheduling = (weekStart: string | null) => {
   const [week, setWeek] = useState<PsychologistSchedulingWeekDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [movingAppointmentId, setMovingAppointmentId] = useState<string | null>(null);
-  const [error, setError] = useState("");
+  const [movingAppointmentId, setMovingAppointmentId] = useState<string | null>(
+    null
+  );
+  const [error, setError] = useState('');
   const weekRef = useRef(week);
   weekRef.current = week;
 
   const load = useCallback(
     async (options?: ReloadOptions) => {
-      if (!session || session.role !== "psychologist" || !weekStart) {
+      if (!session || session.role !== 'psychologist' || !weekStart) {
         setWeek(null);
         setLoading(false);
         return;
@@ -50,10 +52,13 @@ export const usePsychologistScheduling = (weekStart: string | null) => {
       if (!silent) {
         setLoading(true);
       }
-      setError("");
+      setError('');
 
       try {
-        const data = await getPsychologistSchedulingWeekApi(weekStart, tzOffset);
+        const data = await getPsychologistSchedulingWeekApi(
+          weekStart,
+          tzOffset
+        );
         setWeek(data);
       } catch (loadError) {
         setWeek(null);
@@ -62,13 +67,13 @@ export const usePsychologistScheduling = (weekStart: string | null) => {
             ? loadError.message
             : loadError instanceof Error
               ? loadError.message
-              : "Failed to load scheduling",
+              : 'Failed to load scheduling'
         );
       } finally {
         setLoading(false);
       }
     },
-    [session, tzOffset, weekStart],
+    [session, tzOffset, weekStart]
   );
 
   useEffect(() => {
@@ -77,18 +82,18 @@ export const usePsychologistScheduling = (weekStart: string | null) => {
 
   const saveSettings = useCallback(
     async (
-      payload: Omit<UpdateSchedulingSettingsPayload, "tzOffset">,
-      confirmRemoveConflicts = false,
+      payload: Omit<UpdateSchedulingSettingsPayload, 'tzOffset'>,
+      confirmRemoveConflicts = false
     ): Promise<UpdateSchedulingSettingsResultDto> => {
       setSaving(true);
-      setError("");
+      setError('');
       try {
         const result = await updatePsychologistSchedulingSettingsApi({
           ...payload,
           confirmRemoveConflicts,
           tzOffset,
         });
-        if (result.status === "saved") {
+        if (result.status === 'saved') {
           await load({ silent: true });
         }
         return result;
@@ -98,14 +103,14 @@ export const usePsychologistScheduling = (weekStart: string | null) => {
             ? saveError.message
             : saveError instanceof Error
               ? saveError.message
-              : "Failed to save scheduling settings",
+              : 'Failed to save scheduling settings'
         );
         throw saveError;
       } finally {
         setSaving(false);
       }
     },
-    [load, tzOffset],
+    [load, tzOffset]
   );
 
   const createAppointment = useCallback(
@@ -114,7 +119,7 @@ export const usePsychologistScheduling = (weekStart: string | null) => {
         return;
       }
       setSaving(true);
-      setError("");
+      setError('');
       try {
         await createPsychologistAppointmentApi({
           ...payload,
@@ -128,14 +133,14 @@ export const usePsychologistScheduling = (weekStart: string | null) => {
             ? createError.message
             : createError instanceof Error
               ? createError.message
-              : "Failed to create appointment",
+              : 'Failed to create appointment'
         );
         throw createError;
       } finally {
         setSaving(false);
       }
     },
-    [load, tzOffset, weekStart],
+    [load, tzOffset, weekStart]
   );
 
   const moveAppointment = useCallback(
@@ -145,16 +150,17 @@ export const usePsychologistScheduling = (weekStart: string | null) => {
         return;
       }
 
-      const snapshot: PsychologistAppointmentDto[] = currentWeek.appointments.map((item) => ({
-        ...item,
-      }));
+      const snapshot: PsychologistAppointmentDto[] =
+        currentWeek.appointments.map((item) => ({
+          ...item,
+        }));
       const targetWeekStart = getWeekStartIso(new Date(startsAt), tzOffset);
       const optimisticAppointments = applyOptimisticMove(
         currentWeek.appointments,
         appointmentId,
         startsAt,
         currentWeek.slotTimes,
-        tzOffset,
+        tzOffset
       );
 
       setWeek({
@@ -162,7 +168,7 @@ export const usePsychologistScheduling = (weekStart: string | null) => {
         appointments: optimisticAppointments,
       });
       setMovingAppointmentId(appointmentId);
-      setError("");
+      setError('');
 
       try {
         const updated = await movePsychologistAppointmentApi(appointmentId, {
@@ -182,7 +188,7 @@ export const usePsychologistScheduling = (weekStart: string | null) => {
                 previous.appointments,
                 updated,
                 previous.weekStart,
-                tzOffset,
+                tzOffset
               ),
             };
           });
@@ -204,14 +210,14 @@ export const usePsychologistScheduling = (weekStart: string | null) => {
             ? moveError.message
             : moveError instanceof Error
               ? moveError.message
-              : "Failed to move appointment",
+              : 'Failed to move appointment'
         );
         throw moveError;
       } finally {
         setMovingAppointmentId(null);
       }
     },
-    [tzOffset, weekStart],
+    [tzOffset, weekStart]
   );
 
   const updatePersonalCommitment = useCallback(
@@ -221,10 +227,10 @@ export const usePsychologistScheduling = (weekStart: string | null) => {
         startsAt: string;
         durationMinutes: number;
         personalDescription: string;
-      },
+      }
     ) => {
       setSaving(true);
-      setError("");
+      setError('');
       try {
         await updatePsychologistPersonalCommitmentApi(appointmentId, payload);
         await load({ silent: true });
@@ -234,20 +240,20 @@ export const usePsychologistScheduling = (weekStart: string | null) => {
             ? updateError.message
             : updateError instanceof Error
               ? updateError.message
-              : "Failed to update personal commitment",
+              : 'Failed to update personal commitment'
         );
         throw updateError;
       } finally {
         setSaving(false);
       }
     },
-    [load],
+    [load]
   );
 
   const removeAppointment = useCallback(
     async (appointmentId: string) => {
       setSaving(true);
-      setError("");
+      setError('');
       try {
         await deletePsychologistAppointmentApi(appointmentId);
         await load({ silent: true });
@@ -257,14 +263,14 @@ export const usePsychologistScheduling = (weekStart: string | null) => {
             ? deleteError.message
             : deleteError instanceof Error
               ? deleteError.message
-              : "Failed to delete appointment",
+              : 'Failed to delete appointment'
         );
         throw deleteError;
       } finally {
         setSaving(false);
       }
     },
-    [load],
+    [load]
   );
 
   return {

@@ -17,12 +17,15 @@ export const getPsychologistPatientsApi = async (
   search: string,
   includeDeleted: boolean
 ): Promise<PsychologistPatientViewDto[]> => {
-  const response = await apiRequest<PatientsListResponse>('/psychologist/patients', {
-    query: {
-      name: search.trim() || undefined,
-      includeDeleted,
-    },
-  });
+  const response = await apiRequest<PatientsListResponse>(
+    '/psychologist/patients',
+    {
+      query: {
+        name: search.trim() || undefined,
+        includeDeleted,
+      },
+    }
+  );
 
   const data = keysToCamel<PatientsListResponse>(response);
   return data.patients ?? [];

@@ -25,23 +25,30 @@ export interface LinkCalendarProps extends CalendarProps {
 }
 
 export const LinkCalendar = forwardRef<HTMLDivElement, LinkCalendarProps>(
-  ({
-    value,
-    minDate,
-    maxDate,
-    readOnly,
-    id,
-    hasError,
-    onChange,
-    clearable,
-    top: propTop,
-    bottom: propBottom,
-    left: propLeft,
-    right: propRight,
-    ...props
-  }, refLinkCalendar) => {
+  (
+    {
+      value,
+      minDate,
+      maxDate,
+      readOnly,
+      id,
+      hasError,
+      onChange,
+      clearable,
+      top: propTop,
+      bottom: propBottom,
+      left: propLeft,
+      right: propRight,
+      ...props
+    },
+    refLinkCalendar
+  ) => {
     // Check if position props were explicitly passed
-    const hasExplicitPosition = propTop !== undefined || propBottom !== undefined || propLeft !== undefined || propRight !== undefined;
+    const hasExplicitPosition =
+      propTop !== undefined ||
+      propBottom !== undefined ||
+      propLeft !== undefined ||
+      propRight !== undefined;
     const calendarRef = useRef<HTMLDivElement>(null);
     const [openCalendar, setOpenCalendar] = useState<boolean>(false);
     const [calendarPosition, setCalendarPosition] = useState<{
@@ -64,20 +71,20 @@ export const LinkCalendar = forwardRef<HTMLDivElement, LinkCalendarProps>(
       const anchorRect = calendarRef.current.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
-      
+
       // Dimensões estimadas do calendário (320px de largura, 400px de altura)
       const calendarWidth = 320;
       const calendarHeight = 400;
-      
+
       // Margem de segurança
       const margin = 20;
-      
+
       // Verificar espaço disponível em cada direção
       const spaceRight = viewportWidth - anchorRect.right;
       const spaceLeft = anchorRect.left;
       const spaceBottom = viewportHeight - anchorRect.bottom;
       const spaceTop = anchorRect.top;
-      
+
       // Determinar posição horizontal
       let horizontalPos: 'left' | 'right' | undefined;
       if (spaceRight >= calendarWidth + margin) {
@@ -85,14 +92,14 @@ export const LinkCalendar = forwardRef<HTMLDivElement, LinkCalendarProps>(
       } else if (spaceLeft >= calendarWidth + margin) {
         horizontalPos = 'left';
       }
-      
+
       // Determinar posição vertical - PRIORIZAR TOP quando não há espaço embaixo
       let verticalPos: 'top' | 'bottom' | undefined;
-      
+
       // Se há espaço suficiente embaixo, usar bottom
       if (spaceBottom >= calendarHeight + margin) {
         verticalPos = 'bottom';
-      } 
+      }
       // Se não há espaço embaixo, SEMPRE tentar usar top
       else if (spaceTop >= calendarHeight + margin) {
         verticalPos = 'top';
@@ -105,7 +112,7 @@ export const LinkCalendar = forwardRef<HTMLDivElement, LinkCalendarProps>(
           verticalPos = 'bottom';
         }
       }
-      
+
       // Se não há espaço suficiente horizontalmente, usar a que tem mais espaço
       if (!horizontalPos) {
         if (spaceRight > spaceLeft) {
@@ -114,7 +121,7 @@ export const LinkCalendar = forwardRef<HTMLDivElement, LinkCalendarProps>(
           horizontalPos = 'left';
         }
       }
-      
+
       return {
         top: verticalPos === 'top',
         bottom: verticalPos === 'bottom',
@@ -148,15 +155,19 @@ export const LinkCalendar = forwardRef<HTMLDivElement, LinkCalendarProps>(
         }
         setOpenCalendar(true);
       }
-    }, [readOnly, calculateOptimalPosition, hasExplicitPosition, propTop, propBottom, propLeft, propRight]);
+    }, [
+      readOnly,
+      calculateOptimalPosition,
+      hasExplicitPosition,
+      propTop,
+      propBottom,
+      propLeft,
+      propRight,
+    ]);
 
-    useImperativeHandle(
-      refLinkCalendar,
-      () => {
-        return calendarRef?.current as HTMLDivElement;
-      },
-      []
-    );
+    useImperativeHandle(refLinkCalendar, () => {
+      return calendarRef?.current as HTMLDivElement;
+    }, []);
 
     // When readOnly, must look exactly like a disabled input
     const linkCalendarClasses = readOnly
@@ -168,7 +179,7 @@ export const LinkCalendar = forwardRef<HTMLDivElement, LinkCalendarProps>(
           'outline-none rounded-lg',
           'px-4 py-3',
           'text-base',
-          'font-poppins',
+          'font-sans',
           'border border-gray-300',
           'bg-gray-50',
           'text-gray-500',
@@ -182,7 +193,9 @@ export const LinkCalendar = forwardRef<HTMLDivElement, LinkCalendarProps>(
           'cursor-pointer',
           'transition-colors duration-200',
           hasError && 'error',
-        ].filter(Boolean).join(' ');
+        ]
+          .filter(Boolean)
+          .join(' ');
 
     const iconContainerClasses = [
       'flex items-center justify-center',
@@ -203,29 +216,25 @@ export const LinkCalendar = forwardRef<HTMLDivElement, LinkCalendarProps>(
           }
         }}
         tabIndex={readOnly ? -1 : 0}
-        role="button"
+        role='button'
         aria-label={t('SELECT_DATE')}
       >
         {!readOnly && (
           <div className={iconContainerClasses} onClick={handleOpenCalendar}>
             <Icon.Calendar sm />
-          </div>)}
-        <Link
-          fs3={!readOnly}
-          noWrap
-          noUnderline
-          role="link"
-        >
+          </div>
+        )}
+        <Link fs3={!readOnly} noWrap noUnderline role='link'>
           {dateAsFormat || (readOnly ? '' : t('SELECT'))}
         </Link>
         {clearable && value && !readOnly && (
           <div
-            className="flex items-center justify-center text-gray-400 hover:text-red-500 cursor-pointer ml-1"
+            className='flex items-center justify-center text-gray-400 hover:text-red-500 cursor-pointer ml-1'
             onClick={(e) => {
               e.stopPropagation();
               onChange && onChange(undefined as unknown as Date);
             }}
-            role="button"
+            role='button'
             aria-label={t('CLEAR')}
           >
             <Icon.Close sm />

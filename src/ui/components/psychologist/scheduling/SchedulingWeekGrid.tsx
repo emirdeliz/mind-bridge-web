@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { type MouseEvent, useMemo } from "react";
+import { type MouseEvent, useMemo } from 'react';
 import {
   DndContext,
   type DragEndEvent,
@@ -9,13 +9,13 @@ import {
   useDroppable,
   useSensor,
   useSensors,
-} from "@dnd-kit/core";
-import { CSS } from "@dnd-kit/utilities";
+} from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 
-import type { PsychologistAppointmentDto } from "@api";
-import { Button, Icon } from "@atoms";
-import { useI18n } from "@i18n";
-import { Tooltip } from "@molecules";
+import type { PsychologistAppointmentDto } from '@api';
+import { Button, Icon } from '@atoms';
+import { useI18n } from '@i18n';
+import { Tooltip } from '@molecules';
 import {
   appointmentDragId,
   combineLocalDateAndTime,
@@ -25,11 +25,11 @@ import {
   parseSlotId,
   slotId,
   toLocalTime,
-} from "@services";
+} from '@services';
 
 type SlotAppointmentView = {
   appointment: PsychologistAppointmentDto;
-  variant: "start" | "continuation";
+  variant: 'start' | 'continuation';
 };
 
 type SchedulingWeekGridProps = {
@@ -41,7 +41,10 @@ type SchedulingWeekGridProps = {
   saving?: boolean;
   movingAppointmentId?: string | null;
   onSlotClick: (dateKey: string, time: string) => void;
-  onMoveAppointment: (appointmentId: string, startsAt: string) => void | Promise<void>;
+  onMoveAppointment: (
+    appointmentId: string,
+    startsAt: string
+  ) => void | Promise<void>;
   onOpenContact: (appointment: PsychologistAppointmentDto) => void;
   onOpenAppointment: (appointment: PsychologistAppointmentDto) => void;
 };
@@ -54,7 +57,7 @@ const stopBadgeAction = (event: MouseEvent) => {
 type AppointmentBadgeProps = {
   appointment: PsychologistAppointmentDto;
   tzOffset: number;
-  variant: "start" | "continuation";
+  variant: 'start' | 'continuation';
   disabled?: boolean;
   onOpenContact: (appointment: PsychologistAppointmentDto) => void;
   onOpenAppointment: (appointment: PsychologistAppointmentDto) => void;
@@ -70,17 +73,19 @@ const AppointmentBadge = ({
 }: AppointmentBadgeProps) => {
   const { t } = useI18n();
   const label = appointment.isPersonalCommitment
-    ? appointment.notes?.trim() || t("PSYCHOLOGIST_SCHEDULING_PERSONAL_COMMITMENT")
+    ? appointment.notes?.trim() ||
+      t('PSYCHOLOGIST_SCHEDULING_PERSONAL_COMMITMENT')
     : appointment.patientFullName?.trim() ||
       appointment.patientEmail ||
       appointment.patientId ||
-      "";
+      '';
   const startTime = toLocalTime(new Date(appointment.startsAt), tzOffset);
   const endTime = toLocalTime(
     new Date(
-      new Date(appointment.startsAt).getTime() + appointment.durationMinutes * 60_000,
+      new Date(appointment.startsAt).getTime() +
+        appointment.durationMinutes * 60_000
     ),
-    tzOffset,
+    tzOffset
   );
   const timeLabel = appointment.isPersonalCommitment
     ? `${startTime} – ${endTime}`
@@ -88,36 +93,39 @@ const AppointmentBadge = ({
 
   const personalBadgeContent = (
     <>
-      <span className="mb-scheduling-badge-name">{label}</span>
-      <span className="mb-scheduling-badge-time">{timeLabel}</span>
+      <span className='mb-scheduling-badge-name'>{label}</span>
+      <span className='mb-scheduling-badge-time'>{timeLabel}</span>
     </>
   );
 
-  if (variant === "continuation") {
+  if (variant === 'continuation') {
     if (!appointment.isPersonalCommitment) {
       return (
         <div
-          className="mb-scheduling-badge mb-scheduling-badge-continuation"
+          className='mb-scheduling-badge mb-scheduling-badge-continuation'
           title={label}
-          aria-hidden="true"
+          aria-hidden='true'
         />
       );
     }
 
     return (
       <div
-        className="mb-scheduling-badge mb-scheduling-badge-personal mb-scheduling-badge-continuation-personal"
+        className='mb-scheduling-badge mb-scheduling-badge-personal mb-scheduling-badge-continuation-personal'
         title={`${label} · ${timeLabel}`}
       >
-        <div className="mb-scheduling-badge-continuation-content">{personalBadgeContent}</div>
+        <div className='mb-scheduling-badge-continuation-content'>
+          {personalBadgeContent}
+        </div>
       </div>
     );
   }
 
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
-    id: appointmentDragId(appointment.id),
-    disabled,
-  });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id: appointmentDragId(appointment.id),
+      disabled,
+    });
 
   const style = {
     transform: CSS.Translate.toString(transform),
@@ -125,31 +133,43 @@ const AppointmentBadge = ({
   };
 
   const badgeClassName = appointment.isPersonalCommitment
-    ? "mb-scheduling-badge mb-scheduling-badge-personal"
-    : "mb-scheduling-badge";
+    ? 'mb-scheduling-badge mb-scheduling-badge-personal'
+    : 'mb-scheduling-badge';
 
   return (
-    <div ref={setNodeRef} className={badgeClassName} style={style} title={label}>
-      <div className="mb-scheduling-badge-drag" {...listeners} {...attributes}>
+    <div
+      ref={setNodeRef}
+      className={badgeClassName}
+      style={style}
+      title={label}
+    >
+      <div className='mb-scheduling-badge-drag' {...listeners} {...attributes}>
         {appointment.isPersonalCommitment ? (
           personalBadgeContent
         ) : (
           <>
-            <span className="mb-scheduling-badge-name">{label}</span>
-            <span className="mb-scheduling-badge-time">{timeLabel}</span>
+            <span className='mb-scheduling-badge-name'>{label}</span>
+            <span className='mb-scheduling-badge-time'>{timeLabel}</span>
           </>
         )}
       </div>
-      <div className="mb-scheduling-badge-actions" onPointerDown={stopBadgeAction}>
+      <div
+        className='mb-scheduling-badge-actions'
+        onPointerDown={stopBadgeAction}
+      >
         {!appointment.isPersonalCommitment ? (
-          <Tooltip title={t("PSYCHOLOGIST_SCHEDULING_BADGE_CONTACT")} top minWidth={10}>
-            <span className="mb-scheduling-badge-action">
+          <Tooltip
+            title={t('PSYCHOLOGIST_SCHEDULING_BADGE_CONTACT')}
+            top
+            minWidth={10}
+          >
+            <span className='mb-scheduling-badge-action'>
               <Button
-                type="button"
+                type='button'
                 xs
                 sm
                 circle
-                variant="secondary"
+                variant='secondary'
                 outlined
                 clickable={!disabled}
                 onClick={(event) => {
@@ -162,14 +182,18 @@ const AppointmentBadge = ({
             </span>
           </Tooltip>
         ) : null}
-        <Tooltip title={t("PSYCHOLOGIST_SCHEDULING_BADGE_APPOINTMENT")} top minWidth={10}>
-          <span className="mb-scheduling-badge-action">
+        <Tooltip
+          title={t('PSYCHOLOGIST_SCHEDULING_BADGE_APPOINTMENT')}
+          top
+          minWidth={10}
+        >
+          <span className='mb-scheduling-badge-action'>
             <Button
-              type="button"
+              type='button'
               xs
               sm
               circle
-              variant="secondary"
+              variant='secondary'
               outlined
               clickable={!disabled}
               onClick={(event) => {
@@ -217,18 +241,18 @@ const SlotCell = ({
   return (
     <div
       ref={setNodeRef}
-      className={`mb-scheduling-slot${isOver ? " mb-scheduling-slot-over" : ""}${occupied ? " mb-scheduling-slot-occupied" : ""}`}
+      className={`mb-scheduling-slot${isOver ? ' mb-scheduling-slot-over' : ''}${occupied ? ' mb-scheduling-slot-occupied' : ''}`}
       onClick={() => {
         if (!occupied && !disabled) {
           onSlotClick(dateKey, time);
         }
       }}
       onKeyDown={(event) => {
-        if (event.key === "Enter" && !occupied && !disabled) {
+        if (event.key === 'Enter' && !occupied && !disabled) {
           onSlotClick(dateKey, time);
         }
       }}
-      role="button"
+      role='button'
       tabIndex={occupied ? -1 : 0}
       aria-label={`${dateKey} ${time}`}
     >
@@ -247,13 +271,13 @@ const SlotCell = ({
 };
 
 const formatDayHeader = (dateKey: string, language: string): string => {
-  const [year, month, day] = dateKey.split("-").map((part) => Number(part));
+  const [year, month, day] = dateKey.split('-').map((part) => Number(part));
   const date = new Date(Date.UTC(year, month - 1, day, 12));
   return new Intl.DateTimeFormat(language, {
-    weekday: "short",
-    day: "2-digit",
-    month: "2-digit",
-    timeZone: "UTC",
+    weekday: 'short',
+    day: '2-digit',
+    month: '2-digit',
+    timeZone: 'UTC',
   }).format(date);
 };
 
@@ -271,11 +295,13 @@ export const SchedulingWeekGrid = ({
   onOpenAppointment,
 }: SchedulingWeekGridProps) => {
   const { language } = useI18n();
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } })
+  );
 
   const weekDateKeys = useMemo(
     () => getWeekDateKeys(weekStart, tzOffset),
-    [weekStart, tzOffset],
+    [weekStart, tzOffset]
   );
 
   const appointmentBySlot = useMemo(() => {
@@ -288,13 +314,13 @@ export const SchedulingWeekGrid = ({
           dateKey,
           slotTimes,
           sessionDurationMinutes,
-          tzOffset,
+          tzOffset
         );
 
         for (const { slotTime, isStart } of coverage) {
           map.set(slotId(dateKey, slotTime), {
             appointment,
-            variant: isStart ? "start" : "continuation",
+            variant: isStart ? 'start' : 'continuation',
           });
         }
       }
@@ -313,7 +339,7 @@ export const SchedulingWeekGrid = ({
     const startsAt = combineLocalDateAndTime(
       target.dateKey,
       target.time,
-      tzOffset,
+      tzOffset
     ).toISOString();
 
     void onMoveAppointment(appointmentId, startsAt);
@@ -321,23 +347,23 @@ export const SchedulingWeekGrid = ({
 
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-      <div className="mb-scheduling-grid-wrap">
-        <div className="mb-scheduling-grid-scroll">
+      <div className='mb-scheduling-grid-wrap'>
+        <div className='mb-scheduling-grid-scroll'>
           <div
-            className="mb-scheduling-grid"
+            className='mb-scheduling-grid'
             style={{
               gridTemplateColumns: `4.5rem repeat(${weekDateKeys.length}, minmax(8rem, 1fr))`,
             }}
           >
-            <div className="mb-scheduling-grid-corner" />
+            <div className='mb-scheduling-grid-corner' />
             {weekDateKeys.map((dateKey) => (
-              <div key={dateKey} className="mb-scheduling-day-header">
+              <div key={dateKey} className='mb-scheduling-day-header'>
                 {formatDayHeader(dateKey, language)}
               </div>
             ))}
 
             {slotTimes.flatMap((time) => [
-              <div key={`label-${time}`} className="mb-scheduling-time-label">
+              <div key={`label-${time}`} className='mb-scheduling-time-label'>
                 {time}
               </div>,
               ...weekDateKeys.map((dateKey) => {
@@ -352,7 +378,7 @@ export const SchedulingWeekGrid = ({
                     tzOffset={tzOffset}
                     disabled={
                       saving ||
-                      (slotView?.variant === "start" &&
+                      (slotView?.variant === 'start' &&
                         movingAppointmentId === slotView.appointment.id)
                     }
                     onSlotClick={onSlotClick}

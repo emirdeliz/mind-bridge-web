@@ -1,13 +1,30 @@
 'use client';
 
-import { useCallback, useMemo, useState, type MouseEvent, type ReactNode } from 'react';
+import {
+  useCallback,
+  useMemo,
+  useState,
+  type MouseEvent,
+  type ReactNode,
+} from 'react';
 import { useRouter } from 'next/router';
 
 import type { PsychologistPatientViewDto } from '@api';
-import { usePsychologistPatientContext, usePsychologistPatients } from '@services';
+import {
+  usePsychologistPatientContext,
+  usePsychologistPatients,
+} from '@services';
 import { Button, Checkbox, Flex, Icon, Title } from '@atoms';
 import { translateTemplate, useI18n } from '@i18n';
-import { Card, ConfirmModal, InputSearch, PageLoader, Switch, Table, Tooltip } from '@molecules';
+import {
+  Card,
+  ConfirmModal,
+  InputSearch,
+  PageLoader,
+  Switch,
+  Table,
+  Tooltip,
+} from '@molecules';
 import { AppShell } from '@templates';
 
 import { PsychologistInviteCodePanel } from './PsychologistInviteCodePanel';
@@ -127,18 +144,22 @@ export const PsychologistPatientsPage = () => {
   const buildRowActions = useCallback(
     (row: PsychologistPatientViewDto): ReactNode => (
       <div
-        className="flex flex-row items-center justify-center gap-1.5"
+        className='flex flex-row items-center justify-center gap-1.5'
         onClick={stopRowClick}
-        role="presentation"
+        role='presentation'
       >
-        <Tooltip title={t('PSYCHOLOGIST_PATIENTS_ACTION_SESSION')} top minWidth={10}>
-          <span className="inline-flex h-8 w-8 items-center justify-center">
+        <Tooltip
+          title={t('PSYCHOLOGIST_PATIENTS_ACTION_SESSION')}
+          top
+          minWidth={10}
+        >
+          <span className='inline-flex h-8 w-8 items-center justify-center'>
             <Button
-              type="button"
+              type='button'
               xs
               sm
               circle
-              variant="primary"
+              variant='primary'
               clickable={!row.isDeleted}
               onClick={() => {
                 void router.push({
@@ -154,14 +175,18 @@ export const PsychologistPatientsPage = () => {
             </Button>
           </span>
         </Tooltip>
-        <Tooltip title={t('PSYCHOLOGIST_PATIENTS_ACTION_CONTEXT')} top minWidth={10}>
-          <span className="inline-flex h-8 w-8 items-center justify-center">
+        <Tooltip
+          title={t('PSYCHOLOGIST_PATIENTS_ACTION_CONTEXT')}
+          top
+          minWidth={10}
+        >
+          <span className='inline-flex h-8 w-8 items-center justify-center'>
             <Button
-              type="button"
+              type='button'
               xs
               sm
               circle
-              variant="secondary"
+              variant='secondary'
               outlined
               clickable={!row.isDeleted}
               onClick={() => {
@@ -175,14 +200,18 @@ export const PsychologistPatientsPage = () => {
             </Button>
           </span>
         </Tooltip>
-        <Tooltip title={t('PSYCHOLOGIST_PATIENTS_ACTION_EDIT')} top minWidth={10}>
-          <span className="inline-flex h-8 w-8 items-center justify-center">
+        <Tooltip
+          title={t('PSYCHOLOGIST_PATIENTS_ACTION_EDIT')}
+          top
+          minWidth={10}
+        >
+          <span className='inline-flex h-8 w-8 items-center justify-center'>
             <Button
-              type="button"
+              type='button'
               xs
               sm
               circle
-              variant="secondary"
+              variant='secondary'
               outlined
               clickable={!row.isDeleted}
               onClick={() => openEditModal(row)}
@@ -200,7 +229,7 @@ export const PsychologistPatientsPage = () => {
           top
           minWidth={10}
         >
-          <span className="ml-1.5 inline-flex h-8 w-8 items-center justify-center">
+          <span className='ml-1.5 inline-flex h-8 w-8 items-center justify-center'>
             <Switch
               sm
               id={`patient-active-${row.id}`}
@@ -251,9 +280,7 @@ export const PsychologistPatientsPage = () => {
   }
 
   const toggleConfirmPatientName =
-    toggleConfirmPatient?.fullName?.trim() ||
-    toggleConfirmPatient?.email ||
-    '';
+    toggleConfirmPatient?.fullName?.trim() || toggleConfirmPatient?.email || '';
 
   const isEnableConfirm = toggleConfirmAction === 'enable';
 
@@ -261,119 +288,119 @@ export const PsychologistPatientsPage = () => {
     <AppShell
       title={t('PSYCHOLOGIST_PATIENTS_TITLE')}
       subtitle={t('PSYCHOLOGIST_PATIENTS_SUBTITLE')}
-      variant="dashboard"
+      variant='dashboard'
     >
       {guardLoading ? (
         <PageLoader />
       ) : (
         <>
-      <PsychologistInviteCodePanel />
-      <Flex row wFull wrap alignCenter justifySpaceBetween gap4 mt4>
-        <Flex row flex1 wFull gap4 alignCenter>
-          <div className="min-w-0 flex-1 w-full">
-            <InputSearch value={search} onChange={setSearch} />
-          </div>
-          <Button variant="primary" onClick={openCreateModal}>
-            {t('PSYCHOLOGIST_PATIENTS_ADD')}
-          </Button>
-        </Flex>
-        <Checkbox
-          checked={includeDeleted}
-          label={t('PSYCHOLOGIST_PATIENTS_SHOW_DELETED')}
-          onChange={setIncludeDeleted}
-        />
-      </Flex>
+          <PsychologistInviteCodePanel />
+          <Flex row wFull wrap alignCenter justifySpaceBetween gap4 mt4>
+            <Flex row flex1 wFull gap4 alignCenter>
+              <div className='min-w-0 flex-1 w-full'>
+                <InputSearch value={search} onChange={setSearch} />
+              </div>
+              <Button variant='primary' onClick={openCreateModal}>
+                {t('PSYCHOLOGIST_PATIENTS_ADD')}
+              </Button>
+            </Flex>
+            <Checkbox
+              checked={includeDeleted}
+              label={t('PSYCHOLOGIST_PATIENTS_SHOW_DELETED')}
+              onChange={setIncludeDeleted}
+            />
+          </Flex>
 
-      <Title s2 gray>
-        {t('PSYCHOLOGIST_PATIENTS_ROW_HINT')}
-      </Title>
-
-      {error ? (
-        <Title s1 gray>
-          {error}
-        </Title>
-      ) : null}
-
-      {loading && patients.length === 0 ? (
-        <PageLoader />
-      ) : tableData.length === 0 ? (
-        <Card padding="md" shadow="sm">
-          <Title s1 gray>
-            {t('PSYCHOLOGIST_PATIENTS_EMPTY')}
+          <Title s2 gray>
+            {t('PSYCHOLOGIST_PATIENTS_ROW_HINT')}
           </Title>
-        </Card>
-      ) : (
-        <Table<PatientTableRow>
-          variant="dark"
-          columns={columns}
-          dataSource={tableData}
-          sortable
-          onRowClick={(row) => {
-            if (!row.isDeleted) {
-              openPatientDashboard(row);
+
+          {error ? (
+            <Title s1 gray>
+              {error}
+            </Title>
+          ) : null}
+
+          {loading && patients.length === 0 ? (
+            <PageLoader />
+          ) : tableData.length === 0 ? (
+            <Card padding='md' shadow='sm'>
+              <Title s1 gray>
+                {t('PSYCHOLOGIST_PATIENTS_EMPTY')}
+              </Title>
+            </Card>
+          ) : (
+            <Table<PatientTableRow>
+              variant='dark'
+              columns={columns}
+              dataSource={tableData}
+              sortable
+              onRowClick={(row) => {
+                if (!row.isDeleted) {
+                  openPatientDashboard(row);
+                }
+              }}
+            />
+          )}
+
+          <ConfirmModal
+            visible={Boolean(toggleConfirmPatient && toggleConfirmAction)}
+            title={t(
+              isEnableConfirm
+                ? 'PSYCHOLOGIST_PATIENTS_ENABLE_CONFIRM_TITLE'
+                : 'PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_TITLE'
+            )}
+            message={
+              toggleConfirmPatientName
+                ? translateTemplate(
+                    t(
+                      isEnableConfirm
+                        ? 'PSYCHOLOGIST_PATIENTS_ENABLE_CONFIRM_MESSAGE_NAMED'
+                        : 'PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_MESSAGE_NAMED'
+                    ),
+                    { name: toggleConfirmPatientName }
+                  )
+                : t(
+                    isEnableConfirm
+                      ? 'PSYCHOLOGIST_PATIENTS_ENABLE_CONFIRM_MESSAGE'
+                      : 'PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_MESSAGE'
+                  )
             }
-          }}
-        />
-      )}
+            confirmLabel={t(
+              isEnableConfirm
+                ? 'PSYCHOLOGIST_PATIENTS_ENABLE_CONFIRM_ACTION'
+                : 'PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_ACTION'
+            )}
+            cancelLabel={t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
+            confirmVariant={isEnableConfirm ? 'primary' : 'danger'}
+            onClose={closeToggleConfirm}
+            onConfirm={() => void confirmPatientToggle()}
+          />
 
-      <ConfirmModal
-        visible={Boolean(toggleConfirmPatient && toggleConfirmAction)}
-        title={t(
-          isEnableConfirm
-            ? 'PSYCHOLOGIST_PATIENTS_ENABLE_CONFIRM_TITLE'
-            : 'PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_TITLE'
-        )}
-        message={
-          toggleConfirmPatientName
-            ? translateTemplate(
-                t(
-                  isEnableConfirm
-                    ? 'PSYCHOLOGIST_PATIENTS_ENABLE_CONFIRM_MESSAGE_NAMED'
-                    : 'PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_MESSAGE_NAMED'
-                ),
-                { name: toggleConfirmPatientName }
-              )
-            : t(
-                isEnableConfirm
-                  ? 'PSYCHOLOGIST_PATIENTS_ENABLE_CONFIRM_MESSAGE'
-                  : 'PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_MESSAGE'
-              )
-        }
-        confirmLabel={t(
-          isEnableConfirm
-            ? 'PSYCHOLOGIST_PATIENTS_ENABLE_CONFIRM_ACTION'
-            : 'PSYCHOLOGIST_PATIENTS_DISABLE_CONFIRM_ACTION'
-        )}
-        cancelLabel={t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
-        confirmVariant={isEnableConfirm ? 'primary' : 'danger'}
-        onClose={closeToggleConfirm}
-        onConfirm={() => void confirmPatientToggle()}
-      />
+          <PsychologistPatientFormModal
+            visible={modalOpen}
+            form={form}
+            anamnesis={anamnesis}
+            loadingAnamnesis={loadingAnamnesis}
+            saving={saving}
+            formError={formError}
+            onClose={closeModal}
+            onConfirm={() => void savePatient()}
+            onChange={updateForm}
+            onAnamnesisChange={updateAnamnesis}
+          />
 
-      <PsychologistPatientFormModal
-        visible={modalOpen}
-        form={form}
-        anamnesis={anamnesis}
-        loadingAnamnesis={loadingAnamnesis}
-        saving={saving}
-        formError={formError}
-        onClose={closeModal}
-        onConfirm={() => void savePatient()}
-        onChange={updateForm}
-        onAnamnesisChange={updateAnamnesis}
-      />
-
-      <PsychologistPatientContextModal
-        visible={contextModalOpen}
-        patientName={contextPatient?.fullName}
-        value={contextValue}
-        loading={loadingContext}
-        saving={savingContext}
-        error={contextError}
-        onClose={closeContextModal}
-        onConfirm={() => void saveContext()}
-        onChange={updateContext}
-      />
+          <PsychologistPatientContextModal
+            visible={contextModalOpen}
+            patientName={contextPatient?.fullName}
+            value={contextValue}
+            loading={loadingContext}
+            saving={savingContext}
+            error={contextError}
+            onClose={closeContextModal}
+            onConfirm={() => void saveContext()}
+            onChange={updateContext}
+          />
         </>
       )}
     </AppShell>
