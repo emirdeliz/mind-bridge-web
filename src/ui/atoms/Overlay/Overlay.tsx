@@ -1,4 +1,6 @@
-import React, { ReactNode } from 'react';
+'use client';
+
+import React, { ReactNode, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 export interface OverlayProps {
@@ -10,15 +12,38 @@ export interface OverlayProps {
   onClick?: VoidFunction;
 }
 
-export const Overlay = ({ 
-  children, 
-  visible, 
+export const Overlay = ({
+  children,
+  visible,
   zIndex = 10,
   onClick,
   maxWidth,
   maxHeight,
-  ...props 
+  ...props
 }: OverlayProps) => {
+  const backdropPressRef = useRef(false);
+
+  const handlePointerDown = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      backdropPressRef.current = event.target === event.currentTarget;
+    },
+    [],
+  );
+
+  const handlePointerUp = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      if (
+        onClick &&
+        backdropPressRef.current &&
+        event.target === event.currentTarget
+      ) {
+        onClick();
+      }
+      backdropPressRef.current = false;
+    },
+    [onClick],
+  );
+
   const overlayClasses = [
     'fixed inset-0',
     'bg-black bg-opacity-50',
@@ -29,14 +54,15 @@ export const Overlay = ({
 
   return visible && globalThis.document?.body
     ? createPortal(
-        <div 
-          {...props} 
-          className={overlayClasses} 
-          onClick={onClick}
+        <div
+          {...props}
+          className={overlayClasses}
+          onMouseDown={handlePointerDown}
+          onMouseUp={handlePointerUp}
         >
           {children}
-        </div>, 
-        globalThis.document?.body
+        </div>,
+        globalThis.document?.body,
       )
     : null;
 };
