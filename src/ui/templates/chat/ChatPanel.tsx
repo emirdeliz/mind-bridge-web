@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { ChatMessage } from '@services';
 import { Button, Flex, Input, Title } from '@atoms';
-import { DashboardSectionTitle } from '../dashboard/DashboardSectionTitle';
-import { useI18n } from '@i18n';
+import { SPEECH_RECOGNITION_LOCALE, useI18n } from '@i18n';
 import {
   Card,
   ChatInteractionDivider,
@@ -12,7 +11,10 @@ import {
   ChatTypingIndicator,
   Form,
   Tooltip,
+  useToast,
 } from '@molecules';
+
+import { DashboardSectionTitle } from '../dashboard/DashboardSectionTitle';
 
 const shouldShowInteractionDividerBefore = (
   messages: ChatMessage[],
@@ -58,6 +60,14 @@ interface ChatPanelProps {
   shortcuts?: ChatShortcut[];
 }
 
+const getSpeechRecognitionConstructor = (): SpeechRecognitionConstructor | null => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  return window.webkitSpeechRecognition ?? window.SpeechRecognition ?? null;
+};
+
 export const ChatPanel = ({
   messages,
   onSend,
@@ -69,39 +79,95 @@ export const ChatPanel = ({
   sectionTooltip,
   shortcuts,
 }: ChatPanelProps) => {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
+  const { showToastError } = useToast();
   const [text, setText] = useState('');
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
   const lastMessage = messages.at(-1);
   const lastMessageId = lastMessage?.id;
   const showTypingIndicator =
     sending &&
     !(lastMessage?.sender === 'agent' && lastMessage.text.trim().length > 0);
 
-  const startAudioInput = () => {
-    const SpeechRecognition =
-      typeof window !== 'undefined'
-        ? ((
-            window as Window & {
-              webkitSpeechRecognition?: new () => SpeechRecognition;
-            }
-          ).webkitSpeechRecognition ??
-          (
-            window as Window & {
-              SpeechRecognition?: new () => SpeechRecognition;
-            }
-          ).SpeechRecognition)
-        : undefined;
+  useEffect(
+    () => () => {
+      recognitionRef.current?.abort();
+      recognitionRef.current = null;
+    },
+    []
+  );
 
-    if (!SpeechRecognition) return;
+  const stopListening = useCallback(() => {
+    recognitionRef.current?.stop();
+    recognitionRef.current = null;
+    setIsListening(false);
+  }, []);
+
+  const startAudioInput = useCallback(() => {
+    if (sending) {
+      return;
+    }
+
+    if (isListening) {
+      stopListening();
+      return;
+    }
+
+    const SpeechRecognition = getSpeechRecognitionConstructor();
+    if (!SpeechRecognition) {
+      showToastError({ message: t('CHAT_AUDIO_NOT_SUPPORTED') });
+      return;
+    }
+
     const recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
+    recognition.lang = SPEECH_RECOGNITION_LOCALE[language];
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
     recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript ?? '';
-      setText(transcript);
-      onSpeechToText?.(transcript);
+      const transcript = event.results[0]?.[0]?.transcript?.trim() ?? '';
+      if (!transcript) {
+        return;
+      }
+
+      setText((current) => {
+        const next = current.trim() ? `${current.trim()} ${transcript}` : transcript;
+        onSpeechToText?.(next);
+        return next;
+      });
     };
-    recognition.start();
-  };
+
+    recognition.onerror = () => {
+      showToastError({ message: t('CHAT_AUDIO_ERROR') });
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+
+    try {
+      recognition.start();
+      recognitionRef.current = recognition;
+      setIsListening(true);
+    } catch {
+      showToastError({ message: t('CHAT_AUDIO_ERROR') });
+      setIsListening(false);
+      recognitionRef.current = null;
+    }
+  }, [
+    isListening,
+    language,
+    onSpeechToText,
+    sending,
+    showToastError,
+    stopListening,
+    t,
+  ]);
 
   return (
     <Card padding='lg' shadow='lg'>
@@ -204,12 +270,13 @@ export const ChatPanel = ({
               <Tooltip title={t('TOOLTIP_PATIENT_CHAT_AUDIO')} top width={260}>
                 <Button
                   type='button'
-                  variant='secondary'
-                  outlined
+                  variant={isListening ? 'primary' : 'secondary'}
+                  outlined={!isListening}
                   clickable={!sending}
+                  aria-pressed={isListening}
                   onClick={startAudioInput}
                 >
-                  {t('AUDIO')}
+                  {isListening ? t('CHAT_AUDIO_LISTENING') : t('AUDIO')}
                 </Button>
               </Tooltip>
             </span>

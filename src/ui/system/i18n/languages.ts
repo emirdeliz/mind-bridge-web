@@ -12,6 +12,13 @@ export const LANGUAGE_LABELS: Record<AppLanguage, string> = {
 
 export const DEFAULT_APP_LANGUAGE: AppLanguage = 'pt';
 
+/** BCP-47 tags for the browser Web Speech API (`SpeechRecognition.lang`). */
+export const SPEECH_RECOGNITION_LOCALE: Record<AppLanguage, string> = {
+  pt: 'pt-BR',
+  en: 'en-US',
+  es: 'es-ES',
+};
+
 export const isAppLanguage = (value: unknown): value is AppLanguage =>
   value === 'en' || value === 'es' || value === 'pt';
 

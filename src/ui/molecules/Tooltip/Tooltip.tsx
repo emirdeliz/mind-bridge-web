@@ -12,7 +12,6 @@ import React, {
 } from 'react';
 import { withFloat } from '@atoms';
 import type { GenericObject } from '@types';
-import { filterDOMProps } from '@helpers';
 
 export interface TooltipProps {
   invisible?: boolean;
@@ -153,7 +152,6 @@ const TooltipPopup = withFloat((props: GenericObject) => {
     ...(width ? { width, maxWidth: width } : {}),
     ...(styleProp ?? {}),
   };
-  const domProps = filterDOMProps(props);
 
   return (
     <div ref={popupRef} className='mb-tooltip-shell'>
@@ -162,7 +160,6 @@ const TooltipPopup = withFloat((props: GenericObject) => {
         onMouseLeave={onMouseLeave}
         className='mb-tooltip'
         style={contentStyle}
-        {...domProps}
       >
         {title}
       </div>

@@ -89,7 +89,6 @@ export const PatientPage = () => {
             messages={messages}
             onSend={(text) => void sendMessage(text)}
             sending={sending}
-            showAudio={false}
             showInteractionDividers
             sectionTooltip={t('TOOLTIP_PATIENT_CHAT')}
           />
