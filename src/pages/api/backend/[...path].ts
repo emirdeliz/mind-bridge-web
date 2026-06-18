@@ -83,9 +83,15 @@ export default async function handler(
   });
 
   const headers: Record<string, string> = {
-    Accept: 'application/json',
     Authorization: `Bearer ${sessionResult.accessToken}`,
   };
+
+  const acceptHeader = req.headers.accept;
+  if (typeof acceptHeader === 'string' && acceptHeader.trim()) {
+    headers.Accept = acceptHeader;
+  } else {
+    headers.Accept = 'application/json';
+  }
 
   let body: string | undefined;
   if (hasJsonRequestBody(req)) {

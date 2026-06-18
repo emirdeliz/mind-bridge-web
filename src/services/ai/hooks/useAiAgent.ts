@@ -28,6 +28,15 @@ const resolveRequestLanguage = (
   profileLanguage?: AppLanguage
 ): AppLanguage => uiLanguage ?? profileLanguage ?? 'pt';
 
+const resolveAgentReplyText = (
+  responseMessage: string,
+  streamedAgentText: string,
+  currentAgentText: string
+): string =>
+  responseMessage.trim() ||
+  streamedAgentText.trim() ||
+  currentAgentText.trim();
+
 export const useAiAgent = (options: UseAiAgentOptions) => {
   const { t, language } = useI18n();
   const { session } = useAuth();
@@ -104,32 +113,57 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
 
       try {
         if (options.mode === 'patient') {
+          let streamedAgentText = '';
           const response = await streamPatientChatApi(
             cleanText,
             requestLanguage,
-            (delta) => appendAgentDelta(agentMessageId, delta)
+            (delta) => {
+              streamedAgentText += delta;
+              appendAgentDelta(agentMessageId, delta);
+            }
           );
 
           setSending(false);
 
           if (response.messages?.length) {
-            setMessages((prev) => [
-              ...prev.slice(0, -2),
-              ...response.messages!.map((item) => ({
-                id: item.id,
-                sender: item.sender,
-                text: item.text,
-                createdAt: item.createdAt,
-                interactionId: item.interactionId,
-                isInteractionStart: item.isInteractionStart,
-                isInteractionEnd: item.isInteractionEnd,
-              })),
-            ]);
+            setMessages((prev) => {
+              const currentAgentText =
+                prev.find((message) => message.id === agentMessageId)?.text ??
+                '';
+              const agentReplyText = resolveAgentReplyText(
+                response.message,
+                streamedAgentText,
+                currentAgentText
+              );
+
+              return [
+                ...prev.slice(0, -2),
+                ...response.messages!.map((item) => ({
+                  id: item.id,
+                  sender: item.sender,
+                  text:
+                    item.sender === 'agent' && !item.text?.trim()
+                      ? agentReplyText
+                      : item.text,
+                  createdAt: item.createdAt,
+                  interactionId: item.interactionId,
+                  isInteractionStart: item.isInteractionStart,
+                  isInteractionEnd: item.isInteractionEnd,
+                })),
+              ];
+            });
           } else {
             setMessages((prev) =>
               prev.map((message) =>
                 message.id === agentMessageId
-                  ? { ...message, text: response.message }
+                  ? {
+                      ...message,
+                      text: resolveAgentReplyText(
+                        response.message,
+                        streamedAgentText,
+                        message.text
+                      ),
+                    }
                   : message
               )
             );
@@ -148,7 +182,10 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
           setMessages((prev) =>
             prev.map((message) =>
               message.id === agentMessageId
-                ? { ...message, text: reply }
+                ? {
+                    ...message,
+                    text: reply.trim() || message.text,
+                  }
                 : message
             )
           );

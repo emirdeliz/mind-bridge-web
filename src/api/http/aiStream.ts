@@ -132,6 +132,7 @@ export const streamPatientChatApi = async (
   onDelta: (delta: string) => void
 ): Promise<StreamPatientChatResult> => {
   let finalMessage = '';
+  let streamedMessage = '';
   let persistedMessages: ClinicalChatMessageDto[] | undefined;
 
   const lastEvent = await streamAiChatRequest(
@@ -139,6 +140,7 @@ export const streamPatientChatApi = async (
     { message, language },
     (event) => {
       if (event.type === 'delta') {
+        streamedMessage += event.delta;
         onDelta(event.delta);
       }
       if (event.type === 'done') {
@@ -148,14 +150,18 @@ export const streamPatientChatApi = async (
     }
   );
 
+  const resolvedMessage =
+    (lastEvent?.type === 'done' ? lastEvent.message : finalMessage).trim() ||
+    streamedMessage.trim();
+
   if (lastEvent?.type === 'done') {
     return {
-      message: lastEvent.message,
+      message: resolvedMessage,
       messages: lastEvent.messages,
     };
   }
 
-  return { message: finalMessage, messages: persistedMessages };
+  return { message: resolvedMessage, messages: persistedMessages };
 };
 
 export const streamPsychologistChatApi = async (
@@ -167,6 +173,7 @@ export const streamPsychologistChatApi = async (
   onDelta: (delta: string) => void
 ): Promise<string> => {
   let finalMessage = '';
+  let streamedMessage = '';
 
   const lastEvent = await streamAiChatRequest(
     '/ai/psychologist/chat',
@@ -179,6 +186,7 @@ export const streamPsychologistChatApi = async (
     },
     (event) => {
       if (event.type === 'delta') {
+        streamedMessage += event.delta;
         onDelta(event.delta);
       }
       if (event.type === 'done') {
@@ -187,9 +195,13 @@ export const streamPsychologistChatApi = async (
     }
   );
 
+  const resolvedMessage =
+    (lastEvent?.type === 'done' ? lastEvent.message : finalMessage).trim() ||
+    streamedMessage.trim();
+
   if (lastEvent?.type === 'done') {
-    return lastEvent.message;
+    return resolvedMessage;
   }
 
-  return finalMessage;
+  return resolvedMessage;
 };

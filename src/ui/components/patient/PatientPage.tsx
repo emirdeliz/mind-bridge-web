@@ -44,9 +44,22 @@ export const PatientPage = () => {
   }, [content?.likertCheckIn?.updatedAt]);
 
   useEffect(() => {
-    if (content?.patientChatSeed) {
-      setMessages(toChatMessages(content.patientChatSeed));
+    if (!content?.patientChatSeed) {
+      return;
     }
+
+    const seedMessages = toChatMessages(content.patientChatSeed);
+    setMessages((prev) => {
+      if (
+        !seedMessages.length ||
+        !prev.length ||
+        seedMessages.length >= prev.length
+      ) {
+        return seedMessages;
+      }
+
+      return prev;
+    });
   }, [content, setMessages]);
 
   useEffect(() => {
