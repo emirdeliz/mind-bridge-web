@@ -80,7 +80,7 @@ export const SchedulingSettingsModal = ({
                 <Title fs3 fw3 block leadingRelaxed>
                   {t('PSYCHOLOGIST_SCHEDULING_SETTINGS_TITLE')}
                 </Title>
-                <Title s2 gray block leadingRelaxed>
+                <Title hint gray block leadingRelaxed>
                   {t('PSYCHOLOGIST_SCHEDULING_SETTINGS_SUBTITLE')}
                 </Title>
               </Flex>

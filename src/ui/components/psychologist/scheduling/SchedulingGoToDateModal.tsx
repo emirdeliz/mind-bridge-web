@@ -136,7 +136,7 @@ export const SchedulingGoToDateModal = ({
                 >
                   {t('PSYCHOLOGIST_SCHEDULING_GO_TO_TITLE')}
                 </Title>
-                <Title s2 gray block leadingRelaxed>
+                <Title hint gray block leadingRelaxed>
                   {t('PSYCHOLOGIST_SCHEDULING_GO_TO_SUBTITLE')}
                 </Title>
               </Flex>

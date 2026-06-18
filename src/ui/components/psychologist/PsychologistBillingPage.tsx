@@ -309,7 +309,7 @@ export const PsychologistBillingPage = () => {
                     {billing?.isCurrentMonth &&
                     (billing?.currentlyEnabledPatientCount ?? 0) !==
                       (billing?.enabledPatientCount ?? 0) ? (
-                      <Title s2 gray>
+                      <Title hint gray>
                         {translateTemplate(
                           t('PSYCHOLOGIST_BILLING_CURRENTLY_ENABLED_PATIENTS'),
                           {
@@ -334,7 +334,7 @@ export const PsychologistBillingPage = () => {
                       )}
                     </Title>
                     {billing?.discount ? (
-                      <Title s2 gray>
+                      <Title hint gray>
                         {translateTemplate(
                           t('PSYCHOLOGIST_BILLING_DISCOUNT_APPLIED'),
                           {

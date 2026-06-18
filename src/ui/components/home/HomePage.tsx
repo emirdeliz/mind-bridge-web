@@ -94,7 +94,7 @@ export const HomePage = () => {
               await handleForgotPassword();
             }}
           >
-            <Title s2 gray mb2 block leadingRelaxed>
+            <Title hint gray mb2 block leadingRelaxed>
               {t('FORGOT_PASSWORD_HINT')}
             </Title>
             <Input
@@ -181,13 +181,13 @@ export const HomePage = () => {
               </FormError>
             </Form>
             <Flex row justifyCenter alignCenter wrap gap2 mt6 wFull>
-              <Title s1 gray center>
+              <Title hint gray center>
                 {t('AUTH_REGISTER_PROMPT_PREFIX')}
               </Title>
               <RouteLink href='/register' inline>
                 {t('AUTH_REGISTER_AS_PSYCHOLOGIST')}
               </RouteLink>
-              <Title s1 gray center>
+              <Title hint gray center>
                 {t('AUTH_OR')}
               </Title>
               <RouteLink href='/register?role=patient' inline>
@@ -199,7 +199,7 @@ export const HomePage = () => {
 
         {authBypass ? (
           <Flex col wFull mt6 gap4>
-            <Title s1 gray center>
+            <Title hint gray center>
               {t('AUTH_BYPASS_HINT')}
             </Title>
             <Button

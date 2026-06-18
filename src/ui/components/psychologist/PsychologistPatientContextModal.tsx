@@ -117,7 +117,7 @@ export const PsychologistPatientContextModal = ({
                     <Title fs3 fw3 block noWrap ellipsis>
                       {t('PSYCHOLOGIST_PATIENTS_CONTEXT_MODAL_TITLE')}
                     </Title>
-                    <Title s2 gray block leadingRelaxed>
+                    <Title hint gray block leadingRelaxed>
                       {patientName
                         ? translateTemplate(
                             t(
@@ -172,7 +172,7 @@ export const PsychologistPatientContextModal = ({
                 <Title s2 fw3 block>
                   {t('PSYCHOLOGIST_CONTEXT_FOR_AI')}
                 </Title>
-                <Title s2 gray block leadingRelaxed mb2>
+                <Title hint gray block leadingRelaxed mb2>
                   {t('TOOLTIP_PSYCHOLOGIST_CONTEXT')}
                 </Title>
                 <Input.TextArea

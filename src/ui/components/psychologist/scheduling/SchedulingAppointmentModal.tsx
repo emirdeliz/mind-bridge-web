@@ -156,7 +156,7 @@ export const SchedulingAppointmentModal = ({
                       : t('PSYCHOLOGIST_SCHEDULING_APPOINTMENT_TITLE')}
                   </Title>
                   {!isPersonal ? (
-                    <Title s2 gray block leadingRelaxed>
+                    <Title hint gray block leadingRelaxed>
                       {appointmentLabel}
                     </Title>
                   ) : null}

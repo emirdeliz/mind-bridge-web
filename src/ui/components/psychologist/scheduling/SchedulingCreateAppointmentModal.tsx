@@ -119,7 +119,7 @@ export const SchedulingCreateAppointmentModal = ({
                 <Title fs3 fw3 block leadingRelaxed>
                   {t('PSYCHOLOGIST_SCHEDULING_CREATE_TITLE')}
                 </Title>
-                <Title s2 gray block leadingRelaxed>
+                <Title hint gray block leadingRelaxed>
                   {personalSlotLabel}
                 </Title>
               </Flex>

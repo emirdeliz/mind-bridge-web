@@ -228,7 +228,7 @@ export const AdminPage = () => {
               <Title fs4 fw3 block>
                 {revenueLabel}
               </Title>
-              <Title s1 gray block mt2>
+              <Title hint gray block mt2>
                 {t(periodLabelKey(period))}
               </Title>
             </Card>

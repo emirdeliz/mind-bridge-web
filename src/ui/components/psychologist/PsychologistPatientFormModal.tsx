@@ -85,7 +85,7 @@ export const PsychologistPatientFormModal = ({
                         ? t('PSYCHOLOGIST_PATIENTS_MODAL_TITLE_EDIT')
                         : t('PSYCHOLOGIST_PATIENTS_MODAL_TITLE_ADD')}
                     </Title>
-                    <Title s2 gray block leadingRelaxed>
+                    <Title hint gray block leadingRelaxed>
                       {isEdit
                         ? t('PSYCHOLOGIST_PATIENTS_MODAL_SUBTITLE_EDIT')
                         : t('PSYCHOLOGIST_PATIENTS_MODAL_SUBTITLE_ADD')}
@@ -173,7 +173,7 @@ export const PsychologistPatientFormModal = ({
                       <Title s2 textAccent mb2 block>
                         {t('PSYCHOLOGIST_PATIENTS_MODAL_ACCOUNT_SECTION')}
                       </Title>
-                      <Title s2 gray block leadingRelaxed mb2>
+                      <Title hint gray block leadingRelaxed mb2>
                         {t('PSYCHOLOGIST_PATIENTS_MODAL_ACCOUNT_HELP')}
                       </Title>
                       <InputForm
@@ -192,7 +192,7 @@ export const PsychologistPatientFormModal = ({
                       >
                         {t('PSYCHOLOGIST_PATIENTS_MODAL_INITIAL_PASSWORD')}
                       </InputForm>
-                      <Title s2 gray block leadingRelaxed>
+                      <Title hint gray block leadingRelaxed>
                         {t('PSYCHOLOGIST_PATIENTS_MODAL_INITIAL_PASSWORD_HELP')}
                       </Title>
                     </>
@@ -238,12 +238,12 @@ export const PsychologistPatientFormModal = ({
                       <Title s2 textAccent mb1 block>
                         {t('PSYCHOLOGIST_PATIENTS_ANAMNESIS_SECTION')}
                       </Title>
-                      <Title s2 gray block leadingRelaxed mb3>
+                      <Title hint gray block leadingRelaxed mb3>
                         {t('PSYCHOLOGIST_PATIENTS_ANAMNESIS_SECTION_HELP')}
                       </Title>
 
                       {loadingAnamnesis ? (
-                        <Title s2 gray block leadingRelaxed>
+                        <Title hint gray block leadingRelaxed>
                           {t('PSYCHOLOGIST_PATIENTS_ANAMNESIS_LOADING')}
                         </Title>
                       ) : (

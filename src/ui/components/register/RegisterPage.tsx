@@ -75,7 +75,7 @@ export const RegisterPage = () => {
             ? t('REGISTER_PATIENT_TITLE')
             : t('REGISTER_PSYCHOLOGIST_TITLE')}
         </Title>
-        <Title s2 gray mb4 block leadingRelaxed>
+        <Title hint gray mb4 block leadingRelaxed>
           {isPatientRegister
             ? t('REGISTER_PATIENT_HINT')
             : t('REGISTER_PSYCHOLOGIST_HINT')}
@@ -146,7 +146,7 @@ export const RegisterPage = () => {
             value={phone}
             onChange={(event) => setPhone(event.target.value)}
           />
-          <Title s2 gray block>
+          <Title hint gray block>
             {t('REGISTER_PHONE_HELP')}
           </Title>
           <Input
@@ -165,7 +165,7 @@ export const RegisterPage = () => {
             />
           ) : null}
           {isPatientRegister ? (
-            <Title s2 gray block>
+            <Title hint gray block>
               {t('REGISTER_INVITE_CODE_HELP')}
             </Title>
           ) : null}
@@ -179,7 +179,7 @@ export const RegisterPage = () => {
         </Form>
         <Flex col wFull mt6 gap4 alignCenter>
           <Flex row justifyCenter alignCenter wrap gap2 wFull>
-            <Title s1 gray center>
+            <Title hint gray center>
               {t('AUTH_OR')}
             </Title>
             <RouteLink href='/' inline>
@@ -187,7 +187,7 @@ export const RegisterPage = () => {
             </RouteLink>
           </Flex>
           <Flex row justifyCenter alignCenter wrap gap2 wFull>
-            <Title s1 gray center>
+            <Title hint gray center>
               {isPatientRegister
                 ? t('REGISTER_SWITCH_PSYCHOLOGIST_PROMPT')
                 : t('REGISTER_SWITCH_PATIENT_PROMPT')}

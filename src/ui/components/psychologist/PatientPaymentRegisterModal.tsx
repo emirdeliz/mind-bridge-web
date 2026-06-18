@@ -66,7 +66,7 @@ export const PatientPaymentRegisterModal = ({
                     ? t('PSYCHOLOGIST_PATIENT_PAYMENTS_MODAL_EDIT_TITLE')
                     : t('PSYCHOLOGIST_PATIENT_PAYMENTS_MODAL_REGISTER_TITLE')}
                 </Title>
-                <Title s2 gray block leadingRelaxed>
+                <Title hint gray block leadingRelaxed>
                   {patientLabel}
                 </Title>
               </Flex>
@@ -120,7 +120,7 @@ export const PatientPaymentRegisterModal = ({
                     {formError}
                   </Title>
                 ) : null}
-                <Title s2 gray block>
+                <Title hint gray block>
                   {t('PSYCHOLOGIST_PATIENT_PAYMENTS_MODAL_MONTH_HINT')}{' '}
                   {billingMonth.slice(0, 7)}
                 </Title>

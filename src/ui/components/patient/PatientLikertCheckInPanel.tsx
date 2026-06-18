@@ -70,7 +70,7 @@ export const PatientLikertCheckInPanel = ({
         tooltip={t('TOOLTIP_LIKERT_CHECKIN')}
       />
       <Flex col wFull gap2 mb4>
-        <Title s1 gray block leadingRelaxed>
+        <Title hint gray block>
           {t('LIKERT_CHECKIN_HINT')}
         </Title>
         <Flex row wFull alignCenter justifySpaceBetween wrap gap2>

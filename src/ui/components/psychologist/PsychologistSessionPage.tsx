@@ -365,7 +365,7 @@ export const PsychologistSessionPage = () => {
                 />
               </Flex>
               {isViewingPreviousSession ? (
-                <Title s1 gray mb4>
+                <Title hint gray mb4>
                   {t('SESSION_NOTES_READONLY_HINT')}
                 </Title>
               ) : null}

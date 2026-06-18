@@ -57,7 +57,7 @@ export const ConfirmModal = ({
                   </Title>
                 </div>
                 <div id='confirm-modal-message'>
-                  <Title s2 gray block leadingRelaxed>
+                  <Title hint gray block leadingRelaxed>
                     {message}
                   </Title>
                 </div>

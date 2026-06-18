@@ -305,7 +305,7 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
               title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_TITLE')}
               tooltip={t('TOOLTIP_PSYCHOLOGIST_SETTINGS_KNOWLEDGE')}
             />
-            <Title s2 gray block leadingRelaxed>
+            <Title hint gray block leadingRelaxed>
               {translateTemplate(t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_HINT'), {
                 maxSizeMb,
               })}
@@ -324,14 +324,14 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
         {uploading ? (
           <Flex row wFull alignCenter gap2>
             <Loading />
-            <Title s2 gray block>
+            <Title hint gray block>
               {t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPLOADING')}
             </Title>
           </Flex>
         ) : deleting ? (
           <Flex row wFull alignCenter gap2>
             <Loading />
-            <Title s2 gray block>
+            <Title hint gray block>
               {t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETING')}
             </Title>
           </Flex>

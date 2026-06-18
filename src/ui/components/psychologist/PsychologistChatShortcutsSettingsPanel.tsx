@@ -289,7 +289,7 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
               title={t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_TITLE')}
               tooltip={t('TOOLTIP_PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS')}
             />
-            <Title s2 gray block leadingRelaxed>
+            <Title hint gray block leadingRelaxed>
               {t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_HINT')}
             </Title>
           </Flex>
@@ -337,7 +337,7 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
                   ? t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_EDIT')
                   : t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_ADD')}
               </Title>
-              <Title s2 gray block leadingRelaxed>
+              <Title hint gray block leadingRelaxed>
                 {editingShortcut
                   ? t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_FORM_HINT')
                   : t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_BATCH_HINT')}
@@ -447,7 +447,7 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
               {saving ? (
                 <Flex row wFull alignCenter gap2>
                   <Loading />
-                  <Title s2 gray block>
+                  <Title hint gray block>
                     {t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_TRANSLATING')}
                   </Title>
                 </Flex>

@@ -133,7 +133,7 @@ export const PsychologistDashboardPage = () => {
                 <Title as='h2' fs3 fw3>
                   {t('PSYCHOLOGIST_DASHBOARD_PATIENT')}
                 </Title>
-                <Title as='p' s1 gray>
+                <Title as='p' hint gray>
                   {displayName} · {t('PSYCHOLOGIST_DASHBOARD_PATIENT_HINT')}
                 </Title>
               </Flex>

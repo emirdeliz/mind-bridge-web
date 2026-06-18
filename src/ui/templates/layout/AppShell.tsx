@@ -74,7 +74,7 @@ export const AppShell = ({
           </Flex>
         )}
         {subtitle ? (
-          <Title as='p' s1 gray mt2 maxW2xl leadingRelaxed>
+          <Title as='p' hint gray mt2 maxW2xl>
             {subtitle}
           </Title>
         ) : null}

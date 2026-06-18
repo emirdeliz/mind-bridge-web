@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 
 import type { PsychologistPatientViewDto } from '@api';
 import {
+  usePsychologistPatientChatHistory,
   usePsychologistPatientContext,
   usePsychologistPatients,
 } from '@services';
@@ -28,6 +29,7 @@ import {
 import { AppShell } from '@templates';
 
 import { PsychologistInviteCodePanel } from './PsychologistInviteCodePanel';
+import { PsychologistPatientChatHistoryModal } from './PsychologistPatientChatHistoryModal';
 import { PsychologistPatientContextModal } from './PsychologistPatientContextModal';
 import { PsychologistPatientFormModal } from './PsychologistPatientFormModal';
 import { usePsychologistGuard } from './usePsychologistGuard';
@@ -86,6 +88,15 @@ export const PsychologistPatientsPage = () => {
     updateContext,
     saveContext,
   } = usePsychologistPatientContext();
+  const {
+    chatHistoryModalOpen,
+    chatHistoryPatient,
+    chatHistoryMessages,
+    loadingChatHistory,
+    chatHistoryError,
+    openChatHistoryModal,
+    closeChatHistoryModal,
+  } = usePsychologistPatientChatHistory();
 
   const openPatientDashboard = useCallback(
     (patient: PsychologistPatientViewDto) => {
@@ -176,6 +187,31 @@ export const PsychologistPatientsPage = () => {
           </span>
         </Tooltip>
         <Tooltip
+          title={t('PSYCHOLOGIST_PATIENTS_ACTION_CHAT_HISTORY')}
+          top
+          minWidth={10}
+        >
+          <span className='inline-flex h-8 w-8 items-center justify-center'>
+            <Button
+              type='button'
+              xs
+              sm
+              circle
+              variant='secondary'
+              outlined
+              clickable={!row.isDeleted}
+              onClick={() => {
+                void openChatHistoryModal({
+                  id: row.id,
+                  fullName: row.fullName,
+                });
+              }}
+            >
+              <Icon.History sm white />
+            </Button>
+          </span>
+        </Tooltip>
+        <Tooltip
           title={t('PSYCHOLOGIST_PATIENTS_ACTION_CONTEXT')}
           top
           minWidth={10}
@@ -240,7 +276,7 @@ export const PsychologistPatientsPage = () => {
         </Tooltip>
       </div>
     ),
-    [t, router, openContextModal, openEditModal, handlePatientActiveChange]
+    [t, router, openChatHistoryModal, openContextModal, openEditModal, handlePatientActiveChange]
   );
 
   const tableData = useMemo((): PatientTableRow[] => {
@@ -311,7 +347,7 @@ export const PsychologistPatientsPage = () => {
             />
           </Flex>
 
-          <Title s2 gray>
+          <Title hint gray>
             {t('PSYCHOLOGIST_PATIENTS_ROW_HINT')}
           </Title>
 
@@ -400,6 +436,15 @@ export const PsychologistPatientsPage = () => {
             onClose={closeContextModal}
             onConfirm={() => void saveContext()}
             onChange={updateContext}
+          />
+
+          <PsychologistPatientChatHistoryModal
+            visible={chatHistoryModalOpen}
+            patientName={chatHistoryPatient?.fullName}
+            messages={chatHistoryMessages}
+            loading={loadingChatHistory}
+            error={chatHistoryError}
+            onClose={closeChatHistoryModal}
           />
         </>
       )}

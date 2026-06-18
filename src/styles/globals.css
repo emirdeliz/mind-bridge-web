@@ -467,6 +467,18 @@
     @apply border-mb-danger/60 text-mb-danger;
   }
 
+  .mb-chat-history-modal-scroll {
+    @apply w-full max-h-[min(60vh,32rem)] overflow-y-auto overscroll-y-contain rounded-xl border border-mb-border/80 bg-mb-bg/50 p-4;
+  }
+
+  .mb-chat-history-modal-loading {
+    @apply flex w-full min-h-[min(60vh,32rem)] flex-1 items-center justify-center self-stretch rounded-xl border border-mb-border/80 bg-mb-bg/50;
+  }
+
+  .mb-chat-history-modal-loading > div {
+    @apply flex h-full w-full items-center justify-center;
+  }
+
   .mb-message-user {
     @apply ml-auto max-w-[90%] rounded-2xl rounded-br-md border border-mb-border bg-mb-surface-elevated px-4 py-2.5 text-sm text-mb-text;
   }

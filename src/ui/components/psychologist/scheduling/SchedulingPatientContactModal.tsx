@@ -66,7 +66,7 @@ export const SchedulingPatientContactModal = ({
                 <Title fs3 fw3 block leadingRelaxed>
                   {t('PSYCHOLOGIST_SCHEDULING_CONTACT_TITLE')}
                 </Title>
-                <Title s2 gray block leadingRelaxed>
+                <Title hint gray block leadingRelaxed>
                   {name}
                 </Title>
               </Flex>
@@ -84,7 +84,7 @@ export const SchedulingPatientContactModal = ({
 
             <Flex col wFull gap4>
               <Flex col wFull gap1>
-                <Title s2 gray block>
+                <Title hint gray block>
                   {t('PSYCHOLOGIST_SCHEDULING_CONTACT_EMAIL')}
                 </Title>
                 <Title s2 block>
@@ -92,7 +92,7 @@ export const SchedulingPatientContactModal = ({
                 </Title>
               </Flex>
               <Flex col wFull gap1>
-                <Title s2 gray block>
+                <Title hint gray block>
                   {t('PSYCHOLOGIST_SCHEDULING_CONTACT_PHONE')}
                 </Title>
                 {loading ? (

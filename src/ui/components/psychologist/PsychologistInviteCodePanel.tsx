@@ -78,7 +78,7 @@ export const PsychologistInviteCodePanel = () => {
           <Title fs4 fw3 block>
             {t('PSYCHOLOGIST_INVITE_CODE_TITLE')}
           </Title>
-          <Title s2 gray block leadingRelaxed>
+          <Title hint gray block leadingRelaxed>
             {t('PSYCHOLOGIST_INVITE_CODE_HINT')}
           </Title>
         </Flex>

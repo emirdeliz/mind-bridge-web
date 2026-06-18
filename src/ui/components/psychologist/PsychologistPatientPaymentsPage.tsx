@@ -252,7 +252,7 @@ export const PsychologistPatientPaymentsPage = () => {
                   : t('PSYCHOLOGIST_PATIENT_PAYMENTS_STATUS_PENDING')}
             </Title>
             {row.unpaidBillingMonths.length > 0 ? (
-              <Title s1 gray block leadingRelaxed>
+              <Title hint gray block>
                 {translateTemplate(
                   t('PSYCHOLOGIST_PATIENT_PAYMENTS_UNPAID_MONTHS'),
                   {

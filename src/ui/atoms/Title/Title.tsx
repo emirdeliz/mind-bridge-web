@@ -53,6 +53,7 @@ export interface TitleProps {
   s1?: boolean;
   s2?: boolean;
   s3?: boolean;
+  hint?: boolean;
   gradient?: boolean;
   fsHero?: boolean;
   textXs?: boolean;
@@ -117,6 +118,8 @@ export const Title = (props: TitleProps) => {
       baseClasses.push('text-xl');
     } else if (rest.fs5) {
       baseClasses.push('text-2xl');
+    } else if (rest.hint) {
+      baseClasses.push('text-sm', 'leading-relaxed', 'font-normal');
     } else if (rest.s1) {
       baseClasses.push('text-sm');
     } else if (rest.s2) {
