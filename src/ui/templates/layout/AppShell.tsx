@@ -1,9 +1,18 @@
+'use client';
+
 import type { ReactNode } from 'react';
 import { useRouter } from 'next/router';
 
 import { Flex, Title } from '@atoms';
+import { MOBILE_MAX_WIDTH_QUERY, useMatchMedia } from '@hooks';
 import { LanguageSwitcher } from '@molecules';
-import { PatientSidebar, PsychologistSidebar } from '@organisms';
+import {
+  MobileSidebarNavProvider,
+  MobileSidebarTrigger,
+  PatientSidebar,
+  PsychologistSidebar,
+} from '@organisms';
+
 import { UserAccountMenu } from '../user/UserAccountMenu';
 import { Breadcrumbs, type BreadcrumbItem } from './Breadcrumbs';
 
@@ -25,25 +34,45 @@ export const AppShell = ({
   children,
 }: AppShellProps) => {
   const { pathname } = useRouter();
+  const isMobile = useMatchMedia(MOBILE_MAX_WIDTH_QUERY);
   const showPsychologistSidebar =
     variant === 'dashboard' && pathname.startsWith('/psychologist');
   const showPatientSidebar =
     variant === 'dashboard' && pathname.startsWith('/patient');
   const showLanguageSwitcher = variant === 'auth' && pathname === '/';
+  const showMobileDashboardHeader =
+    (showPatientSidebar || showPsychologistSidebar) && isMobile;
+  const mobileSidebarExpandKey = showPsychologistSidebar
+    ? 'PSYCHOLOGIST_SIDEBAR_EXPAND'
+    : 'PATIENT_SIDEBAR_EXPAND';
 
   const mainContent = (
     <Flex col wFull maxWContainer mxAuto gap6 flex1>
-      <Flex col wFull>
+      <Flex col wFull alignStretch>
         {breadcrumbs?.length ? <Breadcrumbs items={breadcrumbs} /> : null}
-        <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
-          <Title as='h1' gradient fsHero fw3>
-            {title}
-          </Title>
-          <Flex row alignCenter gap4>
-            {showLanguageSwitcher ? <LanguageSwitcher /> : null}
-            {variant === 'dashboard' ? <UserAccountMenu /> : null}
+        {showMobileDashboardHeader ? (
+          <div className='mb-page-header-mobile'>
+            <div className='mb-page-header-mobile-row'>
+              <MobileSidebarTrigger expandLabelKey={mobileSidebarExpandKey} />
+              <div className='mb-page-header-mobile-title'>
+                <Title as='h1' gradient fsHero fw3 ellipsis>
+                  {title}
+                </Title>
+              </div>
+              <UserAccountMenu />
+            </div>
+          </div>
+        ) : (
+          <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
+            <Title as='h1' gradient fsHero fw3>
+              {title}
+            </Title>
+            <Flex row alignCenter gap4>
+              {showLanguageSwitcher ? <LanguageSwitcher /> : null}
+              {variant === 'dashboard' ? <UserAccountMenu /> : null}
+            </Flex>
           </Flex>
-        </Flex>
+        )}
         {subtitle ? (
           <Title as='p' s1 gray mt2 maxW2xl leadingRelaxed>
             {subtitle}
@@ -66,19 +95,23 @@ export const AppShell = ({
 
   if (showPsychologistSidebar) {
     return (
-      <div className='mb-dashboard-layout'>
-        <PsychologistSidebar />
-        <div className='mb-dashboard-main'>{mainContent}</div>
-      </div>
+      <MobileSidebarNavProvider>
+        <div className='mb-dashboard-layout mb-mobile-dashboard-layout'>
+          <PsychologistSidebar />
+          <div className='mb-dashboard-main mb-mobile-dashboard-main'>{mainContent}</div>
+        </div>
+      </MobileSidebarNavProvider>
     );
   }
 
   if (showPatientSidebar) {
     return (
-      <div className='mb-dashboard-layout'>
-        <PatientSidebar />
-        <div className='mb-dashboard-main'>{mainContent}</div>
-      </div>
+      <MobileSidebarNavProvider>
+        <div className='mb-dashboard-layout mb-mobile-dashboard-layout'>
+          <PatientSidebar />
+          <div className='mb-dashboard-main mb-mobile-dashboard-main'>{mainContent}</div>
+        </div>
+      </MobileSidebarNavProvider>
     );
   }
 

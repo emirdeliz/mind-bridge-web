@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 
 import { APP_VERSION } from '@constants';
 import { Icon, Title } from '@atoms';
+import { MOBILE_MAX_WIDTH_QUERY, useMatchMedia } from '@hooks';
 import {
   getBillingRoute,
   getPatientPaymentsRoute,
@@ -14,6 +15,7 @@ import {
 } from '@services';
 import { translateTemplate, useI18n } from '@i18n';
 import { SidebarNavItem, Tooltip } from '@molecules';
+import { useMobileSidebarNav } from '@organisms';
 
 const SIDEBAR_COLLAPSED_STORAGE_KEY = 'mb-psychologist-sidebar-collapsed';
 
@@ -24,6 +26,8 @@ export const PsychologistSidebar = () => {
   const router = useRouter();
   const { t } = useI18n();
   const { pathname } = router;
+  const isMobile = useMatchMedia(MOBILE_MAX_WIDTH_QUERY);
+  const { isOpen: mobileOpen, close: closeMobileNav } = useMobileSidebarNav();
   const [collapsed, setCollapsed] = useState(true);
 
   useEffect(() => {
@@ -32,6 +36,10 @@ export const PsychologistSidebar = () => {
       setCollapsed(stored === 'true');
     }
   }, []);
+
+  useEffect(() => {
+    closeMobileNav();
+  }, [closeMobileNav, pathname]);
 
   const toggleCollapsed = useCallback(() => {
     setCollapsed((current) => {
@@ -71,7 +79,7 @@ export const PsychologistSidebar = () => {
         icon: <Icon.Cog sm />,
       },
     ],
-    [t]
+    [t],
   );
 
   const toggleLabel = collapsed
@@ -82,15 +90,17 @@ export const PsychologistSidebar = () => {
     <button
       type='button'
       className='mb-sidebar-toggle'
-      aria-label={toggleLabel}
-      aria-expanded={!collapsed}
-      onClick={toggleCollapsed}
+      aria-label={isMobile ? t('PSYCHOLOGIST_SIDEBAR_COLLAPSE') : toggleLabel}
+      aria-expanded={isMobile ? mobileOpen : !collapsed}
+      onClick={isMobile ? closeMobileNav : toggleCollapsed}
     >
-      {collapsed ? <Icon.RightOpen sm /> : <Icon.LeftOpen sm />}
+      {isMobile ? <Icon.LeftOpen sm /> : collapsed ? <Icon.RightOpen sm /> : <Icon.LeftOpen sm />}
     </button>
   );
 
-  const footerContent = collapsed ? (
+  const showCollapsedNav = isMobile ? false : collapsed;
+
+  const footerContent = showCollapsedNav ? (
     <div className='mb-sidebar-footer-toggle-slot'>
       <Tooltip
         title={
@@ -126,51 +136,70 @@ export const PsychologistSidebar = () => {
     </>
   );
 
+  const sidebarClassName = [
+    'mb-sidebar',
+    !isMobile && collapsed ? 'mb-sidebar-collapsed' : '',
+    isMobile ? 'mb-sidebar-mobile-drawer' : '',
+    isMobile && mobileOpen ? 'mb-sidebar-mobile-drawer-open' : '',
+    isMobile && !mobileOpen ? 'mb-sidebar-mobile-drawer-closed' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <aside
-      className={collapsed ? 'mb-sidebar mb-sidebar-collapsed' : 'mb-sidebar'}
-      aria-label={t('PSYCHOLOGIST_SIDEBAR_ARIA_LABEL')}
-    >
-      <div
-        className={
-          collapsed
-            ? 'mb-sidebar-header mb-sidebar-header-collapsed'
-            : 'mb-sidebar-header mb-sidebar-header-expanded'
-        }
-      >
-        {collapsed ? (
-          <div className='mb-sidebar-header-toggle-slot'>
-            <Tooltip title={toggleLabel} right>
-              {toggleButton}
-            </Tooltip>
-          </div>
-        ) : (
-          toggleButton
-        )}
-      </div>
+    <>
+      {isMobile && mobileOpen ? (
+        <button
+          type='button'
+          className='mb-sidebar-mobile-backdrop'
+          aria-label={t('PSYCHOLOGIST_SIDEBAR_COLLAPSE')}
+          onClick={closeMobileNav}
+        />
+      ) : null}
 
-      <nav className='mb-sidebar-nav'>
-        {navItems.map((item) => (
-          <SidebarNavItem
-            key={item.href}
-            href={item.href}
-            label={item.label}
-            icon={item.icon}
-            active={isRouteActive(pathname, item.href)}
-            collapsed={collapsed}
-          />
-        ))}
-      </nav>
+      <aside className={sidebarClassName} aria-label={t('PSYCHOLOGIST_SIDEBAR_ARIA_LABEL')}>
+        <div
+          className={
+            showCollapsedNav
+              ? 'mb-sidebar-header mb-sidebar-header-collapsed'
+              : 'mb-sidebar-header mb-sidebar-header-expanded'
+          }
+        >
+          {showCollapsedNav ? (
+            <div className='mb-sidebar-header-toggle-slot'>
+              <Tooltip title={toggleLabel} right>
+                {toggleButton}
+              </Tooltip>
+            </div>
+          ) : (
+            toggleButton
+          )}
+        </div>
 
-      <div
-        className={
-          collapsed
-            ? 'mb-sidebar-footer mb-sidebar-footer-collapsed'
-            : 'mb-sidebar-footer'
-        }
-      >
-        {footerContent}
-      </div>
-    </aside>
+        <nav className='mb-sidebar-nav'>
+          {navItems.map((item) => (
+            <SidebarNavItem
+              key={item.href}
+              href={item.href}
+              label={item.label}
+              icon={item.icon}
+              active={isRouteActive(pathname, item.href)}
+              collapsed={showCollapsedNav}
+              onNavigate={isMobile ? closeMobileNav : undefined}
+            />
+          ))}
+        </nav>
+
+        <div
+          className={
+            showCollapsedNav
+              ? 'mb-sidebar-footer mb-sidebar-footer-collapsed'
+              : 'mb-sidebar-footer'
+          }
+        >
+          {footerContent}
+        </div>
+      </aside>
+    </>
   );
 };

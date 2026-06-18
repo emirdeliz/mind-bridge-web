@@ -10,6 +10,7 @@ export type SidebarNavItemProps = {
   icon: ReactNode;
   active?: boolean;
   collapsed?: boolean;
+  onNavigate?: () => void;
 };
 
 export const SidebarNavItem = ({
@@ -18,6 +19,7 @@ export const SidebarNavItem = ({
   icon,
   active = false,
   collapsed = false,
+  onNavigate,
 }: SidebarNavItemProps) => {
   const itemClassName = [
     'mb-sidebar-nav-item',
@@ -32,6 +34,7 @@ export const SidebarNavItem = ({
       href={href}
       aria-label={collapsed ? label : undefined}
       className={itemClassName}
+      onClick={onNavigate}
     >
       {collapsed ? (
         <span className='mb-sidebar-nav-icon' aria-hidden>
