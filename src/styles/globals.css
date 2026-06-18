@@ -438,6 +438,19 @@
     @apply min-h-[48px] px-5;
   }
 
+  .mb-chat-audio-button button {
+    @apply min-h-[48px] min-w-[48px] px-0;
+  }
+
+  .mb-chat-audio-button [class^='icon-']:before,
+  .mb-chat-audio-button [class*=' icon-']:before {
+    margin: 0;
+  }
+
+  .mb-chat-audio-button-recording button {
+    @apply border-mb-danger/60 text-mb-danger;
+  }
+
   .mb-message-user {
     @apply ml-auto max-w-[90%] rounded-2xl rounded-br-md border border-mb-border bg-mb-surface-elevated px-4 py-2.5 text-sm text-mb-text;
   }

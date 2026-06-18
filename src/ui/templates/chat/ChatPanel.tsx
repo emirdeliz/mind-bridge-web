@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { transcribePatientSpeechApi } from '@api';
 import type { ChatMessage } from '@services';
-import { Button, Flex, Input, Title } from '@atoms';
-import { DashboardSectionTitle } from '../dashboard/DashboardSectionTitle';
+import { Button, Flex, Icon, Input, Title } from '@atoms';
 import { useI18n } from '@i18n';
 import {
   Card,
@@ -12,7 +12,10 @@ import {
   ChatTypingIndicator,
   Form,
   Tooltip,
+  useToast,
 } from '@molecules';
+
+import { DashboardSectionTitle } from '../dashboard/DashboardSectionTitle';
 
 const shouldShowInteractionDividerBefore = (
   messages: ChatMessage[],
@@ -58,6 +61,19 @@ interface ChatPanelProps {
   shortcuts?: ChatShortcut[];
 }
 
+const pickRecorderMimeType = (): string => {
+  const candidates = [
+    'audio/webm;codecs=opus',
+    'audio/webm',
+    'audio/mp4',
+    'audio/ogg;codecs=opus',
+  ];
+
+  return (
+    candidates.find((type) => MediaRecorder.isTypeSupported(type)) ?? 'audio/webm'
+  );
+};
+
 export const ChatPanel = ({
   messages,
   onSend,
@@ -69,38 +85,184 @@ export const ChatPanel = ({
   sectionTooltip,
   shortcuts,
 }: ChatPanelProps) => {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
+  const { showToastError } = useToast();
   const [text, setText] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const recorderMimeTypeRef = useRef('audio/webm');
   const lastMessage = messages.at(-1);
   const lastMessageId = lastMessage?.id;
   const showTypingIndicator =
     sending &&
     !(lastMessage?.sender === 'agent' && lastMessage.text.trim().length > 0);
+  const audioBusy = isRecording || isTranscribing;
 
-  const startAudioInput = () => {
-    const SpeechRecognition =
-      typeof window !== 'undefined'
-        ? ((
-            window as Window & {
-              webkitSpeechRecognition?: new () => SpeechRecognition;
-            }
-          ).webkitSpeechRecognition ??
-          (
-            window as Window & {
-              SpeechRecognition?: new () => SpeechRecognition;
-            }
-          ).SpeechRecognition)
-        : undefined;
+  const releaseMediaStream = useCallback(() => {
+    mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
+    mediaStreamRef.current = null;
+  }, []);
 
-    if (!SpeechRecognition) return;
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript ?? '';
-      setText(transcript);
-      onSpeechToText?.(transcript);
-    };
-    recognition.start();
+  useEffect(
+    () => () => {
+      mediaRecorderRef.current?.stop();
+      mediaRecorderRef.current = null;
+      releaseMediaStream();
+    },
+    [releaseMediaStream]
+  );
+
+  const applyTranscript = useCallback(
+    (transcript: string) => {
+      const trimmed = transcript.trim();
+      if (!trimmed) {
+        return;
+      }
+
+      setText((current) => {
+        const next = current.trim() ? `${current.trim()} ${trimmed}` : trimmed;
+        onSpeechToText?.(next);
+        return next;
+      });
+    },
+    [onSpeechToText]
+  );
+
+  const transcribeRecording = useCallback(
+    async (audio: Blob) => {
+      setIsTranscribing(true);
+      try {
+        const transcript = await transcribePatientSpeechApi(audio, language);
+        if (!transcript) {
+          showToastError({ message: t('CHAT_AUDIO_EMPTY') });
+          return;
+        }
+        applyTranscript(transcript);
+      } catch {
+        showToastError({ message: t('CHAT_AUDIO_ERROR') });
+      } finally {
+        setIsTranscribing(false);
+      }
+    },
+    [applyTranscript, language, showToastError, t]
+  );
+
+  const stopRecording = useCallback(() => {
+    const recorder = mediaRecorderRef.current;
+    if (!recorder || recorder.state === 'inactive') {
+      return;
+    }
+    recorder.stop();
+  }, []);
+
+  const startRecording = useCallback(async () => {
+    if (sending || isTranscribing) {
+      return;
+    }
+
+    if (
+      typeof window === 'undefined' ||
+      !navigator.mediaDevices?.getUserMedia ||
+      typeof MediaRecorder === 'undefined'
+    ) {
+      showToastError({ message: t('CHAT_AUDIO_NOT_SUPPORTED') });
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mimeType = pickRecorderMimeType();
+      const recorder = new MediaRecorder(stream, { mimeType });
+
+      mediaStreamRef.current = stream;
+      mediaRecorderRef.current = recorder;
+      recorderMimeTypeRef.current = mimeType;
+      audioChunksRef.current = [];
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      recorder.onerror = () => {
+        showToastError({ message: t('CHAT_AUDIO_ERROR') });
+        setIsRecording(false);
+        releaseMediaStream();
+        mediaRecorderRef.current = null;
+      };
+
+      recorder.onstop = () => {
+        setIsRecording(false);
+        releaseMediaStream();
+        mediaRecorderRef.current = null;
+
+        const audio = new Blob(audioChunksRef.current, {
+          type: recorderMimeTypeRef.current,
+        });
+        audioChunksRef.current = [];
+
+        if (!audio.size) {
+          return;
+        }
+
+        void transcribeRecording(audio);
+      };
+
+      recorder.start();
+      setIsRecording(true);
+    } catch {
+      releaseMediaStream();
+      showToastError({ message: t('CHAT_AUDIO_ERROR') });
+      setIsRecording(false);
+    }
+  }, [
+    isTranscribing,
+    releaseMediaStream,
+    sending,
+    showToastError,
+    t,
+    transcribeRecording,
+  ]);
+
+  const handleAudioButtonClick = useCallback(() => {
+    if (isTranscribing) {
+      return;
+    }
+
+    if (isRecording) {
+      stopRecording();
+      return;
+    }
+
+    void startRecording();
+  }, [isRecording, isTranscribing, startRecording, stopRecording]);
+
+  const audioTooltip = isTranscribing
+    ? t('TOOLTIP_PATIENT_CHAT_AUDIO_TRANSCRIBING')
+    : isRecording
+      ? t('TOOLTIP_PATIENT_CHAT_AUDIO_STOP')
+      : t('TOOLTIP_PATIENT_CHAT_AUDIO_START');
+
+  const audioAriaLabel = isTranscribing
+    ? t('CHAT_AUDIO_TRANSCRIBING_ARIA')
+    : isRecording
+      ? t('CHAT_AUDIO_STOP_ARIA')
+      : t('CHAT_AUDIO_START_ARIA');
+
+  const renderAudioIcon = () => {
+    if (isTranscribing) {
+      return <Icon.Spin sm spinning />;
+    }
+
+    if (isRecording) {
+      return <Icon.Stop sm />;
+    }
+
+    return <Icon.Microphone sm />;
   };
 
   return (
@@ -167,9 +329,9 @@ export const ChatPanel = ({
               type='button'
               variant='secondary'
               outlined
-              clickable={!sending}
+              clickable={!sending && !audioBusy}
               onClick={() => {
-                if (sending) {
+                if (sending || audioBusy) {
                   return;
                 }
                 onSend(shortcut.message);
@@ -183,7 +345,7 @@ export const ChatPanel = ({
       <Form
         onSubmit={(event) => {
           event.preventDefault();
-          if (sending || !text.trim()) {
+          if (sending || audioBusy || !text.trim()) {
             return;
           }
           onSend(text);
@@ -195,27 +357,38 @@ export const ChatPanel = ({
             <Input
               placeholder={t('CHAT_MESSAGE_PLACEHOLDER')}
               value={text}
-              disabled={sending}
+              disabled={sending || audioBusy}
               onChange={(event) => setText(event.target.value)}
             />
           </Flex>
           {showAudio ? (
-            <span className='mb-chat-form-action'>
-              <Tooltip title={t('TOOLTIP_PATIENT_CHAT_AUDIO')} top width={260}>
+            <span
+              className={[
+                'mb-chat-form-action mb-chat-audio-button',
+                isRecording ? 'mb-chat-audio-button-recording' : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+            >
+              <Tooltip title={audioTooltip} top width={260}>
                 <Button
                   type='button'
-                  variant='secondary'
+                  circle
+                  nm
+                  variant={isRecording ? 'danger' : 'secondary'}
                   outlined
-                  clickable={!sending}
-                  onClick={startAudioInput}
+                  clickable={!sending && !isTranscribing}
+                  aria-label={audioAriaLabel}
+                  aria-pressed={isRecording}
+                  onClick={handleAudioButtonClick}
                 >
-                  {t('AUDIO')}
+                  {renderAudioIcon()}
                 </Button>
               </Tooltip>
             </span>
           ) : null}
           <span className='mb-chat-form-action'>
-            <Button type='submit' clickable={!sending}>
+            <Button type='submit' clickable={!sending && !audioBusy}>
               {t('SEND')}
             </Button>
           </span>
