@@ -21,6 +21,7 @@ export type UseAiAgentOptions = {
   clinicalContext?: string;
   /** Current psychotherapy session notes (psychologist mode). */
   sessionConsiderations?: string;
+  onChatComplete?: () => void;
 };
 
 const resolveRequestLanguage = (
@@ -168,6 +169,8 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
               )
             );
           }
+
+          options.onChatComplete?.();
         } else {
           const reply = await streamPsychologistChatApi(
             options.patientId!,

@@ -31,12 +31,15 @@ export const PatientPage = () => {
   const router = useRouter();
   const { t } = useI18n();
   const { session, loading } = useAuth();
-  const { content, loading: contentLoading } = usePatientClinicalContent();
+  const { content, loading: contentLoading, reload } = usePatientClinicalContent();
   const [likertCheckIn, setLikertCheckIn] = useState<LikertCheckInDto | null>(
     null
   );
   const { messages, sendMessage, setMessages, sending } = useAiAgent({
     mode: 'patient',
+    onChatComplete: () => {
+      void reload({ silent: true });
+    },
   });
 
   useEffect(() => {
@@ -50,11 +53,11 @@ export const PatientPage = () => {
 
     const seedMessages = toChatMessages(content.patientChatSeed);
     setMessages((prev) => {
-      if (
-        !seedMessages.length ||
-        !prev.length ||
-        seedMessages.length >= prev.length
-      ) {
+      if (!prev.length) {
+        return seedMessages;
+      }
+
+      if (seedMessages.length > prev.length) {
         return seedMessages;
       }
 
