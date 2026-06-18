@@ -21,18 +21,18 @@ const LIKERT_SCALE = [1, 2, 3, 4, 5] as const;
 const likertValueLabelKey = (value: number): string => `LIKERT_VALUE_${value}`;
 
 type PatientLikertCheckInPanelProps = {
-  initialCheckIn: LikertCheckInDto | null;
-  onSaved?: (checkIn: LikertCheckInDto | null) => void;
+  checkIn: LikertCheckInDto | null;
+  onCheckInChange?: (checkIn: LikertCheckInDto | null) => void;
 };
 
 export const PatientLikertCheckInPanel = ({
-  initialCheckIn,
-  onSaved,
+  checkIn,
+  onCheckInChange,
 }: PatientLikertCheckInPanelProps) => {
   const { t } = useI18n();
   const { showToastSuccess, showToastError } = useToast();
   const { scores, error, saveStatus, answeredCount, totalCount, selectScore } =
-    usePatientLikertCheckIn({ initialCheckIn, onSaved });
+    usePatientLikertCheckIn({ checkIn, onCheckInChange });
 
   useEffect(() => {
     if (saveStatus === 'saved') {

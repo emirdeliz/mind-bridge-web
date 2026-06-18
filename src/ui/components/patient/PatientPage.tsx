@@ -41,7 +41,7 @@ export const PatientPage = () => {
 
   useEffect(() => {
     setLikertCheckIn(content?.likertCheckIn ?? null);
-  }, [content?.likertCheckIn]);
+  }, [content?.likertCheckIn?.updatedAt]);
 
   useEffect(() => {
     if (content?.patientChatSeed) {
@@ -82,8 +82,8 @@ export const PatientPage = () => {
       ) : (
         <>
           <PatientLikertCheckInPanel
-            initialCheckIn={likertCheckIn}
-            onSaved={(saved) => setLikertCheckIn(saved)}
+            checkIn={likertCheckIn}
+            onCheckInChange={setLikertCheckIn}
           />
           <ChatPanel
             messages={messages}

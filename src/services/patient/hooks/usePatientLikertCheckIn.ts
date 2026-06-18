@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  startTransition,
-} from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { LikertCheckInDto, LikertDimensionId } from '@api';
 import { LIKERT_DIMENSION_IDS } from '@api';
@@ -18,45 +12,56 @@ const SAVED_STATUS_MS = 2500;
 export type LikertSaveStatus = 'idle' | 'saving' | 'saved';
 
 type UsePatientLikertCheckInOptions = {
-  initialCheckIn: LikertCheckInDto | null;
-  onSaved?: (checkIn: LikertCheckInDto | null) => void;
+  checkIn: LikertCheckInDto | null;
+  onCheckInChange?: (checkIn: LikertCheckInDto | null) => void;
 };
 
+const buildOptimisticCheckIn = (
+  scores: Partial<Record<LikertDimensionId, number>>,
+  previous: LikertCheckInDto | null,
+): LikertCheckInDto => ({
+  scores,
+  updatedAt: previous?.updatedAt ?? null,
+});
+
+const scoresMatch = (
+  left: Partial<Record<LikertDimensionId, number>>,
+  right: Partial<Record<LikertDimensionId, number>>,
+): boolean => JSON.stringify(left) === JSON.stringify(right);
+
 export const usePatientLikertCheckIn = ({
-  initialCheckIn,
-  onSaved,
+  checkIn,
+  onCheckInChange,
 }: UsePatientLikertCheckInOptions) => {
   const { t } = useI18n();
   const [scores, setScores] = useState<
     Partial<Record<LikertDimensionId, number>>
-  >(() => initialCheckIn?.scores ?? {});
+  >(() => checkIn?.scores ?? {});
   const [error, setError] = useState('');
   const [saveStatus, setSaveStatus] = useState<LikertSaveStatus>('idle');
 
   const scoresRef = useRef(scores);
+  const checkInRef = useRef(checkIn);
   const saveTimeoutRef = useRef<number | null>(null);
   const savedStatusTimeoutRef = useRef<number | null>(null);
   const saveInFlightRef = useRef(false);
   const pendingFlushRef = useRef(false);
-  const onSavedRef = useRef(onSaved);
+  const onCheckInChangeRef = useRef(onCheckInChange);
+  const lastPersistedCheckInRef = useRef<LikertCheckInDto | null>(checkIn);
+
+  scoresRef.current = scores;
+  checkInRef.current = checkIn;
 
   useEffect(() => {
-    scoresRef.current = scores;
-  }, [scores]);
+    onCheckInChangeRef.current = onCheckInChange;
+  }, [onCheckInChange]);
 
   useEffect(() => {
-    onSavedRef.current = onSaved;
-  }, [onSaved]);
-
-  useEffect(() => {
-    setScores(initialCheckIn?.scores ?? {});
-  }, [initialCheckIn?.updatedAt]);
-
-  const setSaveStatusTransition = useCallback((status: LikertSaveStatus) => {
-    startTransition(() => {
-      setSaveStatus(status);
-    });
-  }, []);
+    setScores(checkIn?.scores ?? {});
+    if (checkIn?.updatedAt) {
+      lastPersistedCheckInRef.current = checkIn;
+    }
+  }, [checkIn?.updatedAt]);
 
   const flushSave = useCallback(async () => {
     if (saveInFlightRef.current) {
@@ -71,26 +76,39 @@ export const usePatientLikertCheckIn = ({
 
     saveInFlightRef.current = true;
     setError('');
-    setSaveStatusTransition('saving');
+    setSaveStatus('saving');
 
     try {
       const saved = await savePatientLikertCheckInApi(payload);
       if (saved) {
-        onSavedRef.current?.(saved);
+        const persistedCheckIn: LikertCheckInDto = {
+          scores: payload,
+          updatedAt: saved.updatedAt,
+        };
+        lastPersistedCheckInRef.current = persistedCheckIn;
+
+        if (scoresMatch(payload, scoresRef.current)) {
+          onCheckInChangeRef.current?.(persistedCheckIn);
+        }
       }
-      setSaveStatusTransition('saved');
+      setSaveStatus('saved');
 
       if (savedStatusTimeoutRef.current !== null) {
         window.clearTimeout(savedStatusTimeoutRef.current);
       }
       savedStatusTimeoutRef.current = window.setTimeout(() => {
-        setSaveStatusTransition('idle');
+        setSaveStatus('idle');
       }, SAVED_STATUS_MS);
     } catch (saveError) {
-      setSaveStatusTransition('idle');
+      setSaveStatus('idle');
       setError(
         saveError instanceof Error ? saveError.message : t('LIKERT_SAVE_ERROR')
       );
+
+      const rollback = lastPersistedCheckInRef.current;
+      setScores(rollback?.scores ?? {});
+      scoresRef.current = rollback?.scores ?? {};
+      onCheckInChangeRef.current?.(rollback);
     } finally {
       saveInFlightRef.current = false;
       if (pendingFlushRef.current) {
@@ -98,7 +116,7 @@ export const usePatientLikertCheckIn = ({
         void flushSave();
       }
     }
-  }, [setSaveStatusTransition, t]);
+  }, [t]);
 
   const scheduleSave = useCallback(() => {
     if (saveTimeoutRef.current !== null) {
@@ -124,11 +142,13 @@ export const usePatientLikertCheckIn = ({
 
   const selectScore = useCallback(
     (dimension: LikertDimensionId, value: number) => {
-      setScores((current) => {
-        const next = { ...current, [dimension]: value };
-        scoresRef.current = next;
-        return next;
-      });
+      const nextScores = { ...scoresRef.current, [dimension]: value };
+      scoresRef.current = nextScores;
+      setScores(nextScores);
+
+      onCheckInChangeRef.current?.(
+        buildOptimisticCheckIn(nextScores, checkInRef.current)
+      );
       scheduleSave();
     },
     [scheduleSave]
