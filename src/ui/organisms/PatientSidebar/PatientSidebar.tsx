@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 
 import { APP_VERSION } from '@constants';
 import { Icon, Title } from '@atoms';
-import { getProfileRoute } from '@services';
 import { translateTemplate, useI18n } from '@i18n';
 import { SidebarNavItem, Tooltip } from '@molecules';
 
@@ -40,12 +39,7 @@ export const PatientSidebar = () => {
       {
         href: '/patient',
         label: t('PATIENT_CHAT_NAV'),
-        icon: <Icon.Chat sm />,
-      },
-      {
-        href: getProfileRoute('patient'),
-        label: t('PATIENT_PROFILE_NAV'),
-        icon: <Icon.User sm />,
+        icon: <Icon.AiAgent sm />,
       },
     ],
     [t]

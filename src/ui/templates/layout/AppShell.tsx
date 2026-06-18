@@ -29,6 +29,7 @@ export const AppShell = ({
     variant === 'dashboard' && pathname.startsWith('/psychologist');
   const showPatientSidebar =
     variant === 'dashboard' && pathname.startsWith('/patient');
+  const showLanguageSwitcher = variant === 'auth' && pathname === '/';
 
   const mainContent = (
     <Flex col wFull maxWContainer mxAuto gap6 flex1>
@@ -39,7 +40,7 @@ export const AppShell = ({
             {title}
           </Title>
           <Flex row alignCenter gap4>
-            <LanguageSwitcher />
+            {showLanguageSwitcher ? <LanguageSwitcher /> : null}
             {variant === 'dashboard' ? <UserAccountMenu /> : null}
           </Flex>
         </Flex>
