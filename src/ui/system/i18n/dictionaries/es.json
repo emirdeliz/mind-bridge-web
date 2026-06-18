@@ -444,7 +444,7 @@
   "PSYCHOLOGIST_INVITE_CODE_REGENERATE_CONFIRM": "¿Generar un nuevo código? El código actual dejará de funcionar.",
   "PSYCHOLOGIST_INVITE_CODE_REGENERATE_ERROR": "No se pudo generar un nuevo código.",
   "PSYCHOLOGIST_PATIENTS_ADD": "Agregar paciente",
-  "PSYCHOLOGIST_PATIENTS_SHOW_DELETED": "Mostrar eliminados",
+  "PSYCHOLOGIST_PATIENTS_SHOW_DELETED": "Mostrar deshabilitados",
   "PSYCHOLOGIST_PATIENTS_COL_NAME": "Nombre del paciente",
   "PSYCHOLOGIST_PATIENTS_COL_PHONE": "Celular",
   "PSYCHOLOGIST_PATIENTS_COL_LAST_CONSULTATION": "Última consulta",
