@@ -8,6 +8,8 @@ export const config = {
     bodyParser: {
       sizeLimit: '2mb',
     },
+    responseLimit: false,
+    externalResolver: true,
   },
 };
 
@@ -128,6 +130,8 @@ export default async function handler(
     res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
     res.setHeader('Cache-Control', 'no-cache, no-transform');
     res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+    res.flushHeaders();
 
     if (!upstream.body) {
       res.end();
@@ -135,14 +139,21 @@ export default async function handler(
     }
 
     const reader = upstream.body.getReader();
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) {
-        res.end();
-        return;
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          break;
+        }
+        if (!res.write(Buffer.from(value))) {
+          await new Promise<void>((resolve) => res.once('drain', resolve));
+        }
       }
-      res.write(Buffer.from(value));
+    } finally {
+      reader.releaseLock();
+      res.end();
     }
+    return;
   }
 
   if (contentType.includes('application/json')) {
