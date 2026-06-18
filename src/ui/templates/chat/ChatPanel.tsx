@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
 
 import { transcribePatientSpeechApi } from '@api';
 import type { ChatMessage } from '@services';
@@ -265,6 +265,27 @@ export const ChatPanel = ({
     return <Icon.Microphone sm />;
   };
 
+  const submitMessage = useCallback(() => {
+    if (sending || audioBusy || !text.trim()) {
+      return;
+    }
+
+    onSend(text);
+    setText('');
+  }, [audioBusy, onSend, sending, text]);
+
+  const handleComposerKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key !== 'Enter' || event.shiftKey) {
+        return;
+      }
+
+      event.preventDefault();
+      submitMessage();
+    },
+    [submitMessage]
+  );
+
   return (
     <Card padding='lg' shadow='lg'>
       {sectionTooltip ? (
@@ -345,54 +366,54 @@ export const ChatPanel = ({
       <Form
         onSubmit={(event) => {
           event.preventDefault();
-          if (sending || audioBusy || !text.trim()) {
-            return;
-          }
-          onSend(text);
-          setText('');
+          submitMessage();
         }}
       >
-        <Flex row wFull gap4 alignCenter>
-          <Flex flex1 wFull alignStretch>
-            <Input
+        <div className='mb-chat-composer'>
+          <div className='mb-chat-composer-field'>
+            <Input.TextArea
               placeholder={t('CHAT_MESSAGE_PLACEHOLDER')}
               value={text}
+              rows={4}
               disabled={sending || audioBusy}
               onChange={(event) => setText(event.target.value)}
+              onKeyDown={handleComposerKeyDown}
             />
-          </Flex>
-          {showAudio ? (
-            <span
-              className={[
-                'mb-chat-form-action mb-chat-audio-button',
-                isRecording ? 'mb-chat-audio-button-recording' : '',
-              ]
-                .filter(Boolean)
-                .join(' ')}
-            >
-              <Tooltip title={audioTooltip} top width={260}>
-                <Button
-                  type='button'
-                  circle
-                  nm
-                  variant={isRecording ? 'danger' : 'secondary'}
-                  outlined
-                  clickable={!sending && !isTranscribing}
-                  aria-label={audioAriaLabel}
-                  aria-pressed={isRecording}
-                  onClick={handleAudioButtonClick}
-                >
-                  {renderAudioIcon()}
-                </Button>
-              </Tooltip>
+          </div>
+          <div className='mb-chat-composer-actions'>
+            {showAudio ? (
+              <span
+                className={[
+                  'mb-chat-form-action mb-chat-audio-button',
+                  isRecording ? 'mb-chat-audio-button-recording' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+              >
+                <Tooltip title={audioTooltip} top width={260}>
+                  <Button
+                    type='button'
+                    circle
+                    nm
+                    variant={isRecording ? 'danger' : 'secondary'}
+                    outlined
+                    clickable={!sending && !isTranscribing}
+                    aria-label={audioAriaLabel}
+                    aria-pressed={isRecording}
+                    onClick={handleAudioButtonClick}
+                  >
+                    {renderAudioIcon()}
+                  </Button>
+                </Tooltip>
+              </span>
+            ) : null}
+            <span className='mb-chat-form-action'>
+              <Button type='submit' clickable={!sending && !audioBusy}>
+                {t('SEND')}
+              </Button>
             </span>
-          ) : null}
-          <span className='mb-chat-form-action'>
-            <Button type='submit' clickable={!sending && !audioBusy}>
-              {t('SEND')}
-            </Button>
-          </span>
-        </Flex>
+          </div>
+        </div>
       </Form>
     </Card>
   );

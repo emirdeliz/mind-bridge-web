@@ -430,8 +430,24 @@
     @apply h-px flex-1 bg-mb-border/80;
   }
 
+  .mb-chat-composer {
+    @apply flex w-full flex-col gap-4 md:flex-row md:items-end;
+  }
+
+  .mb-chat-composer-actions {
+    @apply flex w-full shrink-0 items-center justify-center gap-4 md:w-auto md:justify-end;
+  }
+
   .mb-chat-form-action {
-    @apply flex shrink-0 items-center self-stretch;
+    @apply flex shrink-0 items-center;
+  }
+
+  .mb-chat-composer-field {
+    @apply w-full min-w-0 flex-1;
+  }
+
+  .mb-chat-composer-field textarea.mb-field {
+    @apply min-h-[112px] resize-y py-3.5 text-base leading-relaxed max-md:min-h-[96px];
   }
 
   .mb-chat-form-action button {
