@@ -9,6 +9,7 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "fontello:config": "node scripts/generate-fontello-config.mjs",
     "test": "jest",
     "deploy:vercel": "bash scripts/deploy-vercel.sh",
     "deploy:vercel:prod": "bash scripts/deploy-vercel.sh --prod"

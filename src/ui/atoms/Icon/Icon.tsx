@@ -62,6 +62,8 @@ export interface IconOptions {
   dualScreen?: boolean;
   docAdd?: boolean;
   linkExt?: boolean;
+  microphone?: boolean;
+  stop?: boolean;
 }
 
 export interface IconProps extends IconOptions {
@@ -159,6 +161,8 @@ const getIcon = ({
   dualScreen,
   docAdd,
   linkExt,
+  microphone,
+  stop,
 }: IconOptions) => {
   switch (true) {
     case alert:
@@ -285,6 +289,10 @@ const getIcon = ({
       return 'doc-add';
     case linkExt:
       return 'link-ext';
+    case microphone:
+      return 'microphone';
+    case stop:
+      return 'stop';
   }
   return 'power';
 };
@@ -367,3 +375,5 @@ Icon.EyeOff = (props: IconProps) => <Icon {...props} eyeOff />;
 Icon.DualScreen = (props: IconProps) => <Icon {...props} dualScreen />;
 Icon.DocAdd = (props: IconProps) => <Icon {...props} docAdd />;
 Icon.LinkExt = (props: IconProps) => <Icon {...props} linkExt />;
+Icon.Microphone = (props: IconProps) => <Icon {...props} microphone />;
+Icon.Stop = (props: IconProps) => <Icon {...props} stop />;

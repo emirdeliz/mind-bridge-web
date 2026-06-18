@@ -844,6 +844,11 @@
   dependencies:
     "@types/yargs-parser" "*"
 
+"@xmldom/xmldom@^0.8.3":
+  version "0.8.13"
+  resolved "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.8.13.tgz"
+  integrity sha512-KRYzxepc14G/CEpEGc3Yn+JKaAeT63smlDr+vjB8jRfgTBBI9wRj/nkQEO+ucV8p8I9bfKLWp37uHgFrbntPvw==
+
 abab@^2.0.6:
   version "2.0.6"
   resolved "https://registry.npmjs.org/abab/-/abab-2.0.6.tgz"
@@ -1557,6 +1562,13 @@ find-up@^4.0.0, find-up@^4.1.0:
   dependencies:
     locate-path "^5.0.0"
     path-exists "^4.0.0"
+
+fonteditor-core@*:
+  version "2.6.3"
+  resolved "https://registry.npmjs.org/fonteditor-core/-/fonteditor-core-2.6.3.tgz"
+  integrity sha512-YUryIKjkenjZ41E7JvM3V+02Ak4mTHDDTwBWgs9KBzypzHqLZHuua1UDRevZNTKawmnq1dbBAa70Jddl2+F4FQ==
+  dependencies:
+    "@xmldom/xmldom" "^0.8.3"
 
 form-data@^4.0.0:
   version "4.0.5"

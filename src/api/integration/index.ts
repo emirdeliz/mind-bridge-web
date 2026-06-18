@@ -10,5 +10,6 @@ export * from './Knowledge/KnowledgeApi';
 export * from './Patient/PatientInteractionsApi';
 export * from './Patient/PatientInviteCodeApi';
 export * from './Patient/PatientLikertApi';
+export * from './Patient/PatientSpeechApi';
 export * from './Patient/PsychologistPatientApi';
 export * from './Scheduling/PsychologistSchedulingApi';
