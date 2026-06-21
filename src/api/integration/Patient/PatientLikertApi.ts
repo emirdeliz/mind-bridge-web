@@ -12,13 +12,14 @@ type LikertCheckInResponse = {
 };
 
 export const savePatientLikertCheckInApi = async (
-  scores: Partial<Record<LikertDimensionId, number>>
+  scores: Partial<Record<LikertDimensionId, number>>,
+  localDate: string
 ): Promise<LikertCheckInDto | null> => {
   const response = await apiRequest<LikertCheckInResponse>(
     '/patient/likert-check-in',
     {
       method: 'PATCH',
-      body: { scores },
+      body: { scores, localDate },
     }
   );
   return (

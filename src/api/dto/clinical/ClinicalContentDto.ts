@@ -58,6 +58,8 @@ export const LIKERT_DIMENSION_IDS: LikertDimensionId[] = [
 export type LikertCheckInDto = {
   scores: Partial<Record<LikertDimensionId, number>>;
   updatedAt: string | null;
+  /** Local calendar date (YYYY-MM-DD) when the patient filled the check-in. */
+  checkInDate?: string | null;
 };
 
 export type PatientAnamnesisDto = {

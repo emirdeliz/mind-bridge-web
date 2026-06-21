@@ -9,6 +9,7 @@ import {
   useAuth,
   usePatientClinicalContent,
 } from '@services';
+import { resolveLikertCheckInForToday } from '@helpers';
 import { Title } from '@atoms';
 import { useI18n } from '@i18n';
 import { Card, InteractionSummaryBody, PageLoader } from '@molecules';
@@ -43,8 +44,10 @@ export const PatientPage = () => {
   });
 
   useEffect(() => {
-    setLikertCheckIn(content?.likertCheckIn ?? null);
-  }, [content?.likertCheckIn?.updatedAt]);
+    setLikertCheckIn(
+      resolveLikertCheckInForToday(content?.likertCheckIn ?? null)
+    );
+  }, [content?.likertCheckIn?.updatedAt, content?.likertCheckIn?.checkInDate]);
 
   useEffect(() => {
     if (!content?.patientChatSeed) {

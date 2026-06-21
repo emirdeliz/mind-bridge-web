@@ -34,6 +34,12 @@ export {
   likertAnchorLowKey,
   likertQuestionKey,
 } from './likertCheckInLabels';
+export {
+  getLikertCheckInDateKey,
+  getLocalDateKey,
+  isLikertCheckInForToday,
+  resolveLikertCheckInForToday,
+} from './likertCheckInDay';
 export { actorChipVariant, type ActorChipVariant } from './actorChip';
 export {
   billingMonthFromDate,

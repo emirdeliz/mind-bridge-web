@@ -1,13 +1,26 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type MutableRefObject,
+  type SetStateAction,
+} from 'react';
 
 import type { LikertCheckInDto, LikertDimensionId } from '@api';
 import { LIKERT_DIMENSION_IDS } from '@api';
 import { savePatientLikertCheckInApi } from '@api';
-import { countLikertAnswers } from '@helpers';
+import {
+  countLikertAnswers,
+  getLocalDateKey,
+  resolveLikertCheckInForToday,
+} from '@helpers';
 import { useI18n } from '@i18n';
 
 const SAVE_DEBOUNCE_MS = 500;
 const SAVED_STATUS_MS = 2500;
+const DAY_ROLLOVER_CHECK_MS = 60_000;
 
 export type LikertSaveStatus = 'idle' | 'saving' | 'saved';
 
@@ -19,35 +32,62 @@ type UsePatientLikertCheckInOptions = {
 const buildOptimisticCheckIn = (
   scores: Partial<Record<LikertDimensionId, number>>,
   previous: LikertCheckInDto | null,
+  localDate: string
 ): LikertCheckInDto => ({
   scores,
   updatedAt: previous?.updatedAt ?? null,
+  checkInDate: localDate,
 });
 
 const scoresMatch = (
   left: Partial<Record<LikertDimensionId, number>>,
-  right: Partial<Record<LikertDimensionId, number>>,
+  right: Partial<Record<LikertDimensionId, number>>
 ): boolean => JSON.stringify(left) === JSON.stringify(right);
+
+const resetLikertForNewDay = (
+  localDateKeyRef: MutableRefObject<string>,
+  scoresRef: MutableRefObject<Partial<Record<LikertDimensionId, number>>>,
+  lastPersistedCheckInRef: MutableRefObject<LikertCheckInDto | null>,
+  setScores: Dispatch<SetStateAction<Partial<Record<LikertDimensionId, number>>>>,
+  setSaveStatus: Dispatch<SetStateAction<LikertSaveStatus>>,
+  setError: Dispatch<SetStateAction<string>>,
+  onCheckInChange?: (checkIn: LikertCheckInDto | null) => void
+): void => {
+  const today = getLocalDateKey();
+  if (today === localDateKeyRef.current) {
+    return;
+  }
+
+  localDateKeyRef.current = today;
+  scoresRef.current = {};
+  lastPersistedCheckInRef.current = null;
+  setScores({});
+  setSaveStatus('idle');
+  setError('');
+  onCheckInChange?.(null);
+};
 
 export const usePatientLikertCheckIn = ({
   checkIn,
   onCheckInChange,
 }: UsePatientLikertCheckInOptions) => {
   const { t } = useI18n();
+  const todayCheckIn = resolveLikertCheckInForToday(checkIn);
   const [scores, setScores] = useState<
     Partial<Record<LikertDimensionId, number>>
-  >(() => checkIn?.scores ?? {});
+  >(() => todayCheckIn?.scores ?? {});
   const [error, setError] = useState('');
   const [saveStatus, setSaveStatus] = useState<LikertSaveStatus>('idle');
 
   const scoresRef = useRef(scores);
   const checkInRef = useRef(checkIn);
+  const localDateKeyRef = useRef(getLocalDateKey());
   const saveTimeoutRef = useRef<number | null>(null);
   const savedStatusTimeoutRef = useRef<number | null>(null);
   const saveInFlightRef = useRef(false);
   const pendingFlushRef = useRef(false);
   const onCheckInChangeRef = useRef(onCheckInChange);
-  const lastPersistedCheckInRef = useRef<LikertCheckInDto | null>(checkIn);
+  const lastPersistedCheckInRef = useRef<LikertCheckInDto | null>(todayCheckIn);
 
   scoresRef.current = scores;
   checkInRef.current = checkIn;
@@ -57,11 +97,41 @@ export const usePatientLikertCheckIn = ({
   }, [onCheckInChange]);
 
   useEffect(() => {
-    setScores(checkIn?.scores ?? {});
-    if (checkIn?.updatedAt) {
-      lastPersistedCheckInRef.current = checkIn;
-    }
-  }, [checkIn?.updatedAt]);
+    const syncedCheckIn = resolveLikertCheckInForToday(checkIn);
+    setScores(syncedCheckIn?.scores ?? {});
+    scoresRef.current = syncedCheckIn?.scores ?? {};
+    lastPersistedCheckInRef.current = syncedCheckIn;
+  }, [checkIn?.updatedAt, checkIn?.checkInDate]);
+
+  useEffect(() => {
+    const checkDayRollover = () => {
+      resetLikertForNewDay(
+        localDateKeyRef,
+        scoresRef,
+        lastPersistedCheckInRef,
+        setScores,
+        setSaveStatus,
+        setError,
+        onCheckInChangeRef.current
+      );
+    };
+
+    checkDayRollover();
+
+    const intervalId = window.setInterval(checkDayRollover, DAY_ROLLOVER_CHECK_MS);
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        checkDayRollover();
+      }
+    };
+
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      window.clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, []);
 
   const flushSave = useCallback(async () => {
     if (saveInFlightRef.current) {
@@ -74,20 +144,25 @@ export const usePatientLikertCheckIn = ({
       return;
     }
 
+    const localDate = getLocalDateKey();
+    localDateKeyRef.current = localDate;
     saveInFlightRef.current = true;
     setError('');
     setSaveStatus('saving');
 
     try {
-      const saved = await savePatientLikertCheckInApi(payload);
+      const saved = await savePatientLikertCheckInApi(payload, localDate);
       if (saved) {
         const persistedCheckIn: LikertCheckInDto = {
-          scores: payload,
+          scores: saved.scores,
           updatedAt: saved.updatedAt,
+          checkInDate: saved.checkInDate ?? localDate,
         };
         lastPersistedCheckInRef.current = persistedCheckIn;
 
         if (scoresMatch(payload, scoresRef.current)) {
+          setScores(persistedCheckIn.scores);
+          scoresRef.current = persistedCheckIn.scores;
           onCheckInChangeRef.current?.(persistedCheckIn);
         }
       }
@@ -142,12 +217,19 @@ export const usePatientLikertCheckIn = ({
 
   const selectScore = useCallback(
     (dimension: LikertDimensionId, value: number) => {
+      const localDate = getLocalDateKey();
+      localDateKeyRef.current = localDate;
+
       const nextScores = { ...scoresRef.current, [dimension]: value };
       scoresRef.current = nextScores;
       setScores(nextScores);
 
       onCheckInChangeRef.current?.(
-        buildOptimisticCheckIn(nextScores, checkInRef.current)
+        buildOptimisticCheckIn(
+          nextScores,
+          lastPersistedCheckInRef.current ?? checkInRef.current,
+          localDate
+        )
       );
       scheduleSave();
     },
