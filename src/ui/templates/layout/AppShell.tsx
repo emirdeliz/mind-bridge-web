@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import { useRouter } from 'next/router';
 
-import { Flex, Title } from '@atoms';
+import { Flex, Logo, Title } from '@atoms';
 import { MOBILE_MAX_WIDTH_QUERY, useMatchMedia } from '@hooks';
 import { LanguageSwitcher } from '@molecules';
 import {
@@ -55,9 +55,12 @@ export const AppShell = ({
             <div className='mb-page-header-mobile-row'>
               <MobileSidebarTrigger expandLabelKey={mobileSidebarExpandKey} />
               <div className='mb-page-header-mobile-title'>
-                <Title as='h1' gradient fsHero fw3 ellipsis>
-                  {title}
-                </Title>
+                <Flex row alignCenter gap2 wFull>
+                  <Logo sm alt={title} />
+                  <Title as='h1' gradient fsHero fw3 ellipsis>
+                    {title}
+                  </Title>
+                </Flex>
               </div>
               <UserAccountMenu />
             </div>
@@ -82,6 +85,9 @@ export const AppShell = ({
       {variant === 'auth' ? (
         <Flex col alignCenter wFull mt10 pt2>
           <Flex col wFull maxWMd gap5>
+            <Flex col wFull alignCenter>
+              <Logo hero alt={title} />
+            </Flex>
             {children}
           </Flex>
         </Flex>

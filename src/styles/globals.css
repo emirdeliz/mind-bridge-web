@@ -321,7 +321,7 @@
   }
 
   .mb-sidebar-header-expanded {
-    @apply justify-end;
+    @apply justify-between gap-2;
   }
 
   .mb-sidebar-header-collapsed {

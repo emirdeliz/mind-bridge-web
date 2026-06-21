@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { APP_VERSION } from '@constants';
-import { Icon, Title } from '@atoms';
+import { Icon, Flex, Logo, Title } from '@atoms';
 import { MOBILE_MAX_WIDTH_QUERY, useMatchMedia } from '@hooks';
 import {
   getBillingRoute,
@@ -117,22 +117,26 @@ export const PsychologistSidebar = () => {
         }
         right
       >
-        <span
-          className='mb-sidebar-nav-icon mb-sidebar-footer-icon'
-          aria-label={t('APP_TITLE')}
-        >
-          <Icon.InfoCircle sm />
-        </span>
+        <Logo
+          lg
+          alt={t('APP_TITLE')}
+          className='mb-sidebar-footer-icon'
+        />
       </Tooltip>
     </div>
   ) : (
     <>
-      <Title fs4 fw3 block>
-        {t('APP_TITLE')}
-      </Title>
-      <Title s1 gray block mt2>
-        {translateTemplate(t('APP_VERSION_LABEL'), { version: APP_VERSION })}
-      </Title>
+      <Flex row alignCenter gap2>
+        <Logo lg alt={t('APP_TITLE')} />
+        <Flex col>
+          <Title fs4 fw3 block>
+            {t('APP_TITLE')}
+          </Title>
+          <Title s1 gray block mt2>
+            {translateTemplate(t('APP_VERSION_LABEL'), { version: APP_VERSION })}
+          </Title>
+        </Flex>
+      </Flex>
     </>
   );
 
@@ -172,7 +176,15 @@ export const PsychologistSidebar = () => {
               </Tooltip>
             </div>
           ) : (
-            toggleButton
+            <>
+              <Flex row alignCenter gap2 flex1>
+                <Logo md alt={t('APP_TITLE')} />
+                <Title fs4 fw3 block ellipsis noWrap>
+                  {t('APP_TITLE')}
+                </Title>
+              </Flex>
+              {toggleButton}
+            </>
           )}
         </div>
 

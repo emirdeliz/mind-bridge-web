@@ -16,6 +16,7 @@ export * from './InlineCode/InlineCode';
 export * from './Input/Input';
 export * from './Label/Label';
 export * from './Link/Link';
+export * from './Logo/Logo';
 export * from './Loading/Loading';
 export * from './Markdown/Markdown';
 export * from './Overflow/Overflow';
