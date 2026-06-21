@@ -5,7 +5,7 @@ import { isValidPhone, phoneDigits } from '@helpers';
 import { getRoleRoute, useAuth } from '@services';
 import { Button, Flex, Input, RouteLink, Title } from '@atoms';
 import { useI18n } from '@i18n';
-import { Card, Form, FormError, PageLoader } from '@molecules';
+import { AuthFormCard, Form, FormError, PageLoader } from '@molecules';
 import { AppShell } from '@templates';
 
 type RegisterRole = 'psychologist' | 'patient';
@@ -69,7 +69,7 @@ export const RegisterPage = () => {
       }
       variant='auth'
     >
-      <Card padding='lg' shadow='md'>
+      <AuthFormCard logoAlt={t('APP_TITLE')}>
         <Title fs3 fw3 mb2>
           {isPatientRegister
             ? t('REGISTER_PATIENT_TITLE')
@@ -202,7 +202,7 @@ export const RegisterPage = () => {
             </RouteLink>
           </Flex>
         </Flex>
-      </Card>
+      </AuthFormCard>
     </AppShell>
   );
 };

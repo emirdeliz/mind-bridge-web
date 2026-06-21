@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { APP_VERSION } from '@constants';
-import { Icon, Title } from '@atoms';
+import { Icon, Logo, SidebarToggleIcon, Title } from '@atoms';
 import { MOBILE_MAX_WIDTH_QUERY, useMatchMedia } from '@hooks';
 import {
   getBillingRoute,
@@ -94,7 +94,13 @@ export const PsychologistSidebar = () => {
       aria-expanded={isMobile ? mobileOpen : !collapsed}
       onClick={isMobile ? closeMobileNav : toggleCollapsed}
     >
-      {isMobile ? <Icon.LeftOpen sm /> : collapsed ? <Icon.RightOpen sm /> : <Icon.LeftOpen sm />}
+      {isMobile ? (
+        <SidebarToggleIcon direction='left' />
+      ) : collapsed ? (
+        <SidebarToggleIcon direction='right' />
+      ) : (
+        <SidebarToggleIcon direction='left' />
+      )}
     </button>
   );
 
@@ -104,36 +110,25 @@ export const PsychologistSidebar = () => {
     <div className='mb-sidebar-footer-toggle-slot'>
       <Tooltip
         title={
-          <>
-            <Title s2 block>
-              {t('APP_TITLE')}
-            </Title>
-            <Title s1 gray block mt2>
-              {translateTemplate(t('APP_VERSION_LABEL'), {
-                version: APP_VERSION,
-              })}
-            </Title>
-          </>
+          <Title s1 gray block>
+            {translateTemplate(t('APP_VERSION_LABEL'), {
+              version: APP_VERSION,
+            })}
+          </Title>
         }
         right
       >
-        <span
-          className='mb-sidebar-nav-icon mb-sidebar-footer-icon'
-          aria-label={t('APP_TITLE')}
-        >
-          <Icon.InfoCircle sm />
-        </span>
+        <Logo
+          lg
+          alt={t('APP_TITLE')}
+          className='mb-sidebar-footer-icon'
+        />
       </Tooltip>
     </div>
   ) : (
-    <>
-      <Title fs4 fw3 block>
-        {t('APP_TITLE')}
-      </Title>
-      <Title s1 gray block mt2>
-        {translateTemplate(t('APP_VERSION_LABEL'), { version: APP_VERSION })}
-      </Title>
-    </>
+    <Title s1 gray block center>
+      {translateTemplate(t('APP_VERSION_LABEL'), { version: APP_VERSION })}
+    </Title>
   );
 
   const sidebarClassName = [
@@ -172,7 +167,10 @@ export const PsychologistSidebar = () => {
               </Tooltip>
             </div>
           ) : (
-            toggleButton
+            <>
+              <Logo xl alt={t('APP_TITLE')} className='mb-sidebar-header-logo' />
+              {toggleButton}
+            </>
           )}
         </div>
 
@@ -194,7 +192,7 @@ export const PsychologistSidebar = () => {
           className={
             showCollapsedNav
               ? 'mb-sidebar-footer mb-sidebar-footer-collapsed'
-              : 'mb-sidebar-footer'
+              : 'mb-sidebar-footer mb-sidebar-footer-expanded'
           }
         >
           {footerContent}

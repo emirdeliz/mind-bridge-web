@@ -321,7 +321,13 @@
   }
 
   .mb-sidebar-header-expanded {
-    @apply justify-end;
+    @apply justify-between gap-2;
+  }
+
+  .mb-sidebar-header-logo {
+    @apply shrink-0;
+    width: 4.5rem !important;
+    height: 4.5rem !important;
   }
 
   .mb-sidebar-header-collapsed {
@@ -337,7 +343,17 @@
   }
 
   .mb-sidebar-toggle {
-    @apply inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-mb-border/70 bg-mb-surface/60 text-mb-muted transition-all duration-200 hover:bg-mb-surface-elevated hover:text-mb-text;
+    @apply inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-mb-border/70 bg-mb-surface/60 p-0 text-mb-muted transition-all duration-200 hover:bg-mb-surface-elevated hover:text-mb-text;
+  }
+
+  .mb-sidebar-toggle-icon {
+    @apply block shrink-0;
+  }
+
+  .mb-sidebar-toggle [class^='icon-']:before,
+  .mb-sidebar-toggle [class*=' icon-']:before {
+    margin: 0;
+    font-size: 1.125rem;
   }
 
   .mb-sidebar-nav {
@@ -358,6 +374,10 @@
 
   .mb-sidebar-footer {
     @apply border-t border-mb-border/80 p-3;
+  }
+
+  .mb-sidebar-footer-expanded {
+    @apply text-center;
   }
 
   .mb-sidebar-footer-collapsed {
@@ -412,6 +432,27 @@
 
   .mb-auth-text-link {
     @apply text-sm font-medium text-mb-accent underline-offset-2 transition hover:text-mb-text hover:underline;
+  }
+
+  .mb-auth-login-card {
+    --mb-auth-login-logo-size: 120px;
+    --mb-auth-login-logo-frame-padding: 0.5rem;
+    --mb-auth-login-logo-frame-size: calc(
+      var(--mb-auth-login-logo-size) + (2 * var(--mb-auth-login-logo-frame-padding))
+    );
+    @apply relative w-full;
+    padding-top: calc(var(--mb-auth-login-logo-frame-size) / 2);
+  }
+
+  .mb-auth-login-card-logo-frame {
+    @apply absolute left-1/2 z-10 flex items-center justify-center rounded-2xl border border-mb-border/80 bg-mb-surface/90 shadow-card backdrop-blur-xl;
+    top: calc(var(--mb-auth-login-logo-frame-size) / 2);
+    transform: translate(-50%, -50%);
+    padding: var(--mb-auth-login-logo-frame-padding);
+  }
+
+  .mb-auth-login-card-body {
+    padding-top: calc(var(--mb-auth-login-logo-frame-size) / 2 + 1rem);
   }
 
   .mb-gradient-title {

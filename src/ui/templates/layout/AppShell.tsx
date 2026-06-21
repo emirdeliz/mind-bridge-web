@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import { useRouter } from 'next/router';
 
-import { Flex, Title } from '@atoms';
+import { Flex, Logo, Title } from '@atoms';
 import { MOBILE_MAX_WIDTH_QUERY, useMatchMedia } from '@hooks';
 import { LanguageSwitcher } from '@molecules';
 import {
@@ -55,25 +55,48 @@ export const AppShell = ({
             <div className='mb-page-header-mobile-row'>
               <MobileSidebarTrigger expandLabelKey={mobileSidebarExpandKey} />
               <div className='mb-page-header-mobile-title'>
-                <Title as='h1' gradient fsHero fw3 ellipsis>
-                  {title}
-                </Title>
+                <Flex row alignCenter gap2 wFull>
+                  <Logo sm alt={title} />
+                  <Title as='h1' gradient fsHero fw3 ellipsis>
+                    {title}
+                  </Title>
+                </Flex>
               </div>
               <UserAccountMenu />
             </div>
           </div>
-        ) : (
+        ) : variant === 'auth' ? (
           <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
-            <Title as='h1' gradient fsHero fw3>
-              {title}
-            </Title>
-            <Flex row alignCenter gap4>
-              {showLanguageSwitcher ? <LanguageSwitcher /> : null}
-              {variant === 'dashboard' ? <UserAccountMenu /> : null}
+            <Flex col gap2>
+              <Title as='h1' gradient fsHero fw3>
+                {title}
+              </Title>
+              {subtitle ? (
+                <Title as='p' hint gray maxW2xl leadingRelaxed>
+                  {subtitle}
+                </Title>
+              ) : null}
             </Flex>
+            {showLanguageSwitcher ? <LanguageSwitcher /> : null}
           </Flex>
+        ) : (
+          <>
+            <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
+              <Title as='h1' gradient fsHero fw3>
+                {title}
+              </Title>
+              <Flex row alignCenter gap4>
+                <UserAccountMenu />
+              </Flex>
+            </Flex>
+            {subtitle ? (
+              <Title as='p' hint gray mt2 maxW2xl>
+                {subtitle}
+              </Title>
+            ) : null}
+          </>
         )}
-        {subtitle ? (
+        {showMobileDashboardHeader && subtitle ? (
           <Title as='p' hint gray mt2 maxW2xl>
             {subtitle}
           </Title>
