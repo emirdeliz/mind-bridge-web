@@ -25,6 +25,7 @@ export * from './ProgressBar/ProgressBar';
 export * from './RouteLink/RouteLink';
 export * from './Row/Row';
 export * from './Select/Select';
+export * from './SidebarToggleIcon/SidebarToggleIcon';
 export * from './Skeleton/Skeleton';
 export * from './Tabs/Tabs';
 export * from './Title/Title';

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { APP_VERSION } from '@constants';
-import { Icon, Flex, Logo, Title } from '@atoms';
+import { Icon, Logo, SidebarToggleIcon, Title } from '@atoms';
 import { MOBILE_MAX_WIDTH_QUERY, useMatchMedia } from '@hooks';
 import { translateTemplate, useI18n } from '@i18n';
 import { SidebarNavItem, Tooltip } from '@molecules';
@@ -66,7 +66,13 @@ export const PatientSidebar = () => {
       aria-expanded={isMobile ? mobileOpen : !collapsed}
       onClick={isMobile ? closeMobileNav : toggleCollapsed}
     >
-      {isMobile ? <Icon.LeftOpen sm /> : collapsed ? <Icon.RightOpen sm /> : <Icon.LeftOpen sm />}
+      {isMobile ? (
+        <SidebarToggleIcon direction='left' />
+      ) : collapsed ? (
+        <SidebarToggleIcon direction='right' />
+      ) : (
+        <SidebarToggleIcon direction='left' />
+      )}
     </button>
   );
 
@@ -76,16 +82,11 @@ export const PatientSidebar = () => {
     <div className='mb-sidebar-footer-toggle-slot'>
       <Tooltip
         title={
-          <>
-            <Title s2 block>
-              {t('APP_TITLE')}
-            </Title>
-            <Title s1 gray block mt2>
-              {translateTemplate(t('APP_VERSION_LABEL'), {
-                version: APP_VERSION,
-              })}
-            </Title>
-          </>
+          <Title s1 gray block>
+            {translateTemplate(t('APP_VERSION_LABEL'), {
+              version: APP_VERSION,
+            })}
+          </Title>
         }
         right
       >
@@ -97,19 +98,9 @@ export const PatientSidebar = () => {
       </Tooltip>
     </div>
   ) : (
-    <>
-      <Flex row alignCenter gap2>
-        <Logo lg alt={t('APP_TITLE')} />
-        <Flex col>
-          <Title fs4 fw3 block>
-            {t('APP_TITLE')}
-          </Title>
-          <Title s1 gray block mt2>
-            {translateTemplate(t('APP_VERSION_LABEL'), { version: APP_VERSION })}
-          </Title>
-        </Flex>
-      </Flex>
-    </>
+    <Title s1 gray block center>
+      {translateTemplate(t('APP_VERSION_LABEL'), { version: APP_VERSION })}
+    </Title>
   );
 
   const sidebarClassName = [
@@ -149,12 +140,7 @@ export const PatientSidebar = () => {
             </div>
           ) : (
             <>
-              <Flex row alignCenter gap2 flex1>
-                <Logo md alt={t('APP_TITLE')} />
-                <Title fs4 fw3 block ellipsis noWrap>
-                  {t('APP_TITLE')}
-                </Title>
-              </Flex>
+              <Logo xl alt={t('APP_TITLE')} className='mb-sidebar-header-logo' />
               {toggleButton}
             </>
           )}
@@ -178,7 +164,7 @@ export const PatientSidebar = () => {
           className={
             showCollapsedNav
               ? 'mb-sidebar-footer mb-sidebar-footer-collapsed'
-              : 'mb-sidebar-footer'
+              : 'mb-sidebar-footer mb-sidebar-footer-expanded'
           }
         >
           {footerContent}

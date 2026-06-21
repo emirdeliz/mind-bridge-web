@@ -65,18 +65,38 @@ export const AppShell = ({
               <UserAccountMenu />
             </div>
           </div>
-        ) : (
+        ) : variant === 'auth' ? (
           <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
-            <Title as='h1' gradient fsHero fw3>
-              {title}
-            </Title>
-            <Flex row alignCenter gap4>
-              {showLanguageSwitcher ? <LanguageSwitcher /> : null}
-              {variant === 'dashboard' ? <UserAccountMenu /> : null}
+            <Flex col gap2>
+              <Title as='h1' gradient fsHero fw3>
+                {title}
+              </Title>
+              {subtitle ? (
+                <Title as='p' hint gray maxW2xl leadingRelaxed>
+                  {subtitle}
+                </Title>
+              ) : null}
             </Flex>
+            {showLanguageSwitcher ? <LanguageSwitcher /> : null}
           </Flex>
+        ) : (
+          <>
+            <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
+              <Title as='h1' gradient fsHero fw3>
+                {title}
+              </Title>
+              <Flex row alignCenter gap4>
+                <UserAccountMenu />
+              </Flex>
+            </Flex>
+            {subtitle ? (
+              <Title as='p' hint gray mt2 maxW2xl>
+                {subtitle}
+              </Title>
+            ) : null}
+          </>
         )}
-        {subtitle ? (
+        {showMobileDashboardHeader && subtitle ? (
           <Title as='p' hint gray mt2 maxW2xl>
             {subtitle}
           </Title>
@@ -85,9 +105,6 @@ export const AppShell = ({
       {variant === 'auth' ? (
         <Flex col alignCenter wFull mt10 pt2>
           <Flex col wFull maxWMd gap5>
-            <Flex col wFull alignCenter>
-              <Logo hero alt={title} />
-            </Flex>
             {children}
           </Flex>
         </Flex>

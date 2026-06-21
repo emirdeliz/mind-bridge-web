@@ -1,5 +1,6 @@
 export * from './Accordion/Accordion';
 export * from './Alert/Alert';
+export * from './AuthFormCard/AuthFormCard';
 export * from './Calendar/Calendar';
 export * from './Card/Card';
 export * from './ChartCard/ChartCard';

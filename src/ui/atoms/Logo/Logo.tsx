@@ -1,4 +1,4 @@
-const LOGO_SRC = '/images/logo.svg';
+const LOGO_SRC = '/images/logo-dark.svg';
 
 const LOGO_SIZES = {
   sm: 28,
