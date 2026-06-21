@@ -1,10 +1,12 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useRef } from 'react';
+
+import { useIsomorphicLayoutEffect } from '@hooks';
 
 export const useChatAutoScroll = (deps: unknown[]) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const isInitialMount = useRef(true);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const node = scrollRef.current;
     if (!node) {
       return;

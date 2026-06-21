@@ -1,9 +1,10 @@
 'use client';
 
 import type { EChartsType } from 'echarts';
-import { memo, useLayoutEffect, useMemo, useRef } from 'react';
+import { memo, useMemo, useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { useI18n } from '@i18n';
+import { useIsomorphicLayoutEffect } from '@hooks';
 import { Flex } from '@atoms';
 import {
   mbCategoryAxis,
@@ -119,7 +120,7 @@ export const ChartLine = memo(
     const heightCss = typeof height === 'number' ? `${height}px` : height;
     const categoryKey = useMemo(() => categories.join('\0'), [categories]);
 
-    useLayoutEffect(() => {
+    useIsomorphicLayoutEffect(() => {
       if (!hasData) return;
       const inst = chartRef.current?.getEchartsInstance?.();
       if (!inst) return;

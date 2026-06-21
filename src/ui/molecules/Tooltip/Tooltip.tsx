@@ -1,7 +1,6 @@
 // @ts-nocheck
 import React, {
   useCallback,
-  useLayoutEffect,
   useState,
   useRef,
   useImperativeHandle,
@@ -11,6 +10,7 @@ import React, {
   RefObject,
 } from 'react';
 import { withFloat } from '@atoms';
+import { useIsomorphicLayoutEffect } from '@hooks';
 import type { GenericObject } from '@types';
 
 export interface TooltipProps {
@@ -119,7 +119,7 @@ const TooltipPopup = withFloat((props: GenericObject) => {
     top,
   ]);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     updateArrowPosition();
 
     const popup = popupRef.current;

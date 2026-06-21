@@ -2,7 +2,6 @@
 import { GenericObject } from '@types';
 import React, {
   useCallback,
-  useLayoutEffect,
   useEffect,
   useState,
   useRef,
@@ -14,6 +13,7 @@ import React, {
   JSXElementConstructor,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { useIsomorphicLayoutEffect } from '@hooks';
 
 interface FloatingElementProps {
   top?: boolean;
@@ -66,7 +66,7 @@ const FloatingElement = (props: FloatingElementProps) => {
     setStyle(tempStyle);
   }, [anchor, top, bottom, left, right, clampToViewport, matchAnchorMinWidth]);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!opened) {
       setStyle({});
       return;
