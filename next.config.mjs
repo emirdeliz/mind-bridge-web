@@ -19,7 +19,6 @@ const nextConfig = {
       '@templates': new URL('./src/ui/templates', import.meta.url).pathname,
       '@services': new URL('./src/services', import.meta.url).pathname,
       '@helpers': new URL('./src/helpers', import.meta.url).pathname,
-      '@utils': new URL('./src/utils', import.meta.url).pathname,
       '@api': new URL('./src/api', import.meta.url).pathname,
       '@constants': new URL('./src/constants', import.meta.url).pathname,
       '@lib': new URL('./src/lib', import.meta.url).pathname,

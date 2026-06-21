@@ -1,7 +1,7 @@
 import { Title } from '@atoms';
 
 import { EnumeratedTextList } from '@molecules';
-import { isEnumeratedInsightTitle, parseInsightListItems } from '@utils';
+import { isEnumeratedInsightTitle, parseInsightListItems } from '@helpers';
 
 type SessionInsightBodyProps = {
   title: string;

@@ -54,6 +54,12 @@ export {
   applyOptimisticMove,
   syncAppointmentsAfterMove,
 } from './schedulingOptimisticMove';
+export {
+  isEnumeratedInsightTitle,
+  normalizeListItem,
+  parseInsightListItems,
+  parseInteractionSummary,
+} from './enumeratedTextList';
 
 export const getProfileInitials = (
   fullName: string,

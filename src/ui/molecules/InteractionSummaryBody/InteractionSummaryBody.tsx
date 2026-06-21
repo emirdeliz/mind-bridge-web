@@ -1,6 +1,6 @@
 import { Flex, Title } from '@atoms';
 
-import { parseInteractionSummary } from '@utils';
+import { parseInteractionSummary } from '@helpers';
 
 import { EnumeratedTextList } from '../EnumeratedTextList/EnumeratedTextList';
 
