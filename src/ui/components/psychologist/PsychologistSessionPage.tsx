@@ -274,8 +274,11 @@ export const PsychologistSessionPage = () => {
     : t('PSYCHOLOGIST_SESSION_SUBTITLE');
 
   const insights = content?.sessionInsights ?? [];
-  const psychologistSummaryText = content?.psychologistSummary?.trim() ?? '';
-  const hasPsychologistSummary = Boolean(psychologistSummaryText);
+  const interactionSummaryText =
+    content?.patientSummary?.trim() ||
+    content?.psychologistSummary?.trim() ||
+    '';
+  const hasInteractionSummary = Boolean(interactionSummaryText);
 
   return (
     <AppShell
@@ -406,8 +409,8 @@ export const PsychologistSessionPage = () => {
               title={t('INTERACTION_SUMMARY')}
               tooltip={t('TOOLTIP_PSYCHOLOGIST_SUMMARY')}
             />
-            {hasPsychologistSummary ? (
-              <InteractionSummaryBody text={psychologistSummaryText} />
+            {hasInteractionSummary ? (
+              <InteractionSummaryBody text={interactionSummaryText} />
             ) : (
               <Title s1 gray>
                 {t('AI_SUMMARY_NO_INTERACTIONS')}
