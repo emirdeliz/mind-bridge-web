@@ -5,7 +5,7 @@ import { getRoleRoute, useAuth } from '@services';
 import { Button, Flex, Input, RouteLink, Title } from '@atoms';
 import { useI18n } from '@i18n';
 import { AuthFormCard, Form, FormError, LanguageSwitcher, PageLoader } from '@molecules';
-import { AppShell } from '@templates';
+import { AppShell, LoginSplitLayout } from '@templates';
 
 export const HomePage = () => {
   const router = useRouter();
@@ -58,33 +58,17 @@ export const HomePage = () => {
     setForgotMessage(t('FORGOT_PASSWORD_SUCCESS'));
   };
 
-  if (loading || session) {
-    return (
-      <AppShell
-        title={t('APP_TITLE')}
-        subtitle={t('HOME_SUBTITLE')}
-        variant='auth'
-      >
-        <PageLoader />
-      </AppShell>
-    );
-  }
+  const loginForm = loading || session ? (
+    <PageLoader />
+  ) : (
+    <AuthFormCard logoAlt={t('APP_TITLE')}>
+        {forgotMode ? (
+          <Title fs3 fw3 mb2>
+            {t('FORGOT_PASSWORD_TITLE')}
+          </Title>
+        ) : null}
 
-  return (
-    <AppShell
-      title={t('APP_TITLE')}
-      subtitle={t('HOME_SUBTITLE')}
-      variant='auth'
-    >
-      <Flex col alignCenter wFull gap6>
-        <AuthFormCard logoAlt={t('APP_TITLE')}>
-            {forgotMode ? (
-              <Title fs3 fw3 mb2>
-                {t('FORGOT_PASSWORD_TITLE')}
-              </Title>
-            ) : null}
-
-            {registeredSuccess && !forgotMode ? (
+        {registeredSuccess && !forgotMode ? (
           <Title s2 textAccent mb2 block leadingRelaxed>
             {t('REGISTER_SUCCESS_LOGIN')}
           </Title>
@@ -229,9 +213,21 @@ export const HomePage = () => {
             </Button>
           </Flex>
         ) : null}
-        </AuthFormCard>
-        <LanguageSwitcher />
-      </Flex>
+      </AuthFormCard>
+  );
+
+  return (
+    <AppShell
+      title={t('APP_TITLE')}
+      subtitle={t('HOME_SUBTITLE')}
+      variant='auth'
+    >
+      <LoginSplitLayout
+        formHeader={<LanguageSwitcher />}
+        imageAlt={t('APP_TITLE')}
+      >
+        {loginForm}
+      </LoginSplitLayout>
     </AppShell>
   );
 };

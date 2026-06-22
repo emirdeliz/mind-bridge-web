@@ -434,6 +434,42 @@
     @apply text-sm font-medium text-mb-accent underline-offset-2 transition hover:text-mb-text hover:underline;
   }
 
+  .mb-login-split {
+    @apply grid min-h-screen w-full grid-cols-1 lg:grid-cols-2;
+  }
+
+  .mb-login-split-form {
+    @apply flex min-h-[480px] flex-col bg-mb-bg px-6 py-6 sm:px-10 lg:order-2 lg:min-h-screen lg:px-12 lg:py-8;
+  }
+
+  .mb-login-split-form-header {
+    @apply flex w-full shrink-0 justify-end;
+  }
+
+  .mb-login-split-form-inner {
+    @apply flex w-full max-w-md flex-1 flex-col items-center justify-center gap-6 self-center;
+  }
+
+  .mb-login-split-media {
+    @apply relative flex min-h-[220px] overflow-hidden lg:order-1 lg:min-h-screen;
+    background:
+      radial-gradient(
+        ellipse 70% 60% at 20% 20%,
+        rgba(129, 140, 248, 0.28),
+        transparent
+      ),
+      radial-gradient(
+        ellipse 60% 50% at 80% 80%,
+        rgba(94, 234, 212, 0.2),
+        transparent
+      ),
+      linear-gradient(160deg, #151d2f 0%, #1a2540 45%, #121a2e 100%);
+  }
+
+  .mb-login-split-media-image {
+    @apply absolute inset-0 h-full w-full object-cover;
+  }
+
   .mb-auth-login-card {
     --mb-auth-login-logo-size: 120px;
     --mb-auth-login-logo-frame-padding: 0.5rem;
