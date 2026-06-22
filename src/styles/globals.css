@@ -439,19 +439,7 @@
   }
 
   .mb-login-split-form {
-    @apply flex min-h-[480px] flex-col bg-mb-bg px-6 py-6 sm:px-10 lg:order-2 lg:min-h-screen lg:px-12 lg:py-8;
-  }
-
-  .mb-login-split-form-header {
-    @apply flex w-full shrink-0 justify-end;
-  }
-
-  .mb-login-split-form-inner {
-    @apply flex w-full max-w-md flex-1 flex-col items-center justify-center gap-6 self-center;
-  }
-
-  .mb-login-split-media {
-    @apply relative flex min-h-[220px] overflow-hidden lg:order-1 lg:min-h-screen;
+    @apply flex min-h-[480px] flex-col px-6 py-6 sm:px-10 lg:order-2 lg:min-h-screen lg:px-12 lg:py-8;
     background:
       radial-gradient(
         ellipse 70% 60% at 20% 20%,
@@ -466,8 +454,29 @@
       linear-gradient(160deg, #151d2f 0%, #1a2540 45%, #121a2e 100%);
   }
 
+  .mb-login-split-form-header {
+    @apply flex w-full shrink-0 justify-end;
+  }
+
+  .mb-login-split-form-inner {
+    @apply flex w-full max-w-md flex-1 flex-col items-center justify-center gap-6 self-center;
+  }
+
+  .mb-login-split-media {
+    @apply flex min-h-[220px] flex-col px-6 py-6 sm:px-10 lg:order-1 lg:min-h-screen lg:px-12 lg:py-8;
+    background-color: #0a1020;
+  }
+
+  .mb-login-split-media-inner {
+    @apply flex w-full max-w-lg flex-1 flex-col items-center justify-center self-center;
+  }
+
+  .mb-login-split-media-frame {
+    @apply w-full overflow-hidden rounded-2xl;
+  }
+
   .mb-login-split-media-image {
-    @apply absolute inset-0 h-full w-full object-cover;
+    @apply block h-auto w-full object-contain;
   }
 
   .mb-auth-login-card {

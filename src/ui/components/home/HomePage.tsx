@@ -7,6 +7,8 @@ import { useI18n } from '@i18n';
 import { AuthFormCard, Form, FormError, LanguageSwitcher, PageLoader } from '@molecules';
 import { AppShell, LoginSplitLayout } from '@templates';
 
+import loginBgImage from './assets/bg.png';
+
 export const HomePage = () => {
   const router = useRouter();
   const { t } = useI18n();
@@ -224,6 +226,7 @@ export const HomePage = () => {
     >
       <LoginSplitLayout
         formHeader={<LanguageSwitcher />}
+        imageSrc={loginBgImage.src}
         imageAlt={t('APP_TITLE')}
       >
         {loginForm}

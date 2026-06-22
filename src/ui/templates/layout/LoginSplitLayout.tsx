@@ -29,14 +29,18 @@ export const LoginSplitLayout = ({
         <div className='mb-login-split-form-inner'>{children}</div>
       </div>
       <div className='mb-login-split-media'>
-        {showImage ? (
-          <img
-            src={imageSrc}
-            alt={imageAlt}
-            className='mb-login-split-media-image'
-            onError={() => setImageError(true)}
-          />
-        ) : null}
+        <div className='mb-login-split-media-inner'>
+          {showImage ? (
+            <div className='mb-login-split-media-frame'>
+              <img
+                src={imageSrc}
+                alt={imageAlt}
+                className='mb-login-split-media-image'
+                onError={() => setImageError(true)}
+              />
+            </div>
+          ) : null}
+        </div>
       </div>
     </div>
   );
