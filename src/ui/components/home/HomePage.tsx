@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { getRoleRoute, useAuth } from '@services';
 import { Button, Flex, Input, RouteLink, Title } from '@atoms';
 import { useI18n } from '@i18n';
-import { AuthFormCard, Form, FormError, PageLoader } from '@molecules';
+import { AuthFormCard, Form, FormError, LanguageSwitcher, PageLoader } from '@molecules';
 import { AppShell } from '@templates';
 
 export const HomePage = () => {
@@ -76,7 +76,8 @@ export const HomePage = () => {
       subtitle={t('HOME_SUBTITLE')}
       variant='auth'
     >
-      <AuthFormCard logoAlt={t('APP_TITLE')}>
+      <Flex col alignCenter wFull gap6>
+        <AuthFormCard logoAlt={t('APP_TITLE')}>
             {forgotMode ? (
               <Title fs3 fw3 mb2>
                 {t('FORGOT_PASSWORD_TITLE')}
@@ -228,7 +229,9 @@ export const HomePage = () => {
             </Button>
           </Flex>
         ) : null}
-      </AuthFormCard>
+        </AuthFormCard>
+        <LanguageSwitcher />
+      </Flex>
     </AppShell>
   );
 };

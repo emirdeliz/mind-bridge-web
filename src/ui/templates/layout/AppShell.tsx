@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 
 import { Flex, Logo, Title } from '@atoms';
 import { MOBILE_MAX_WIDTH_QUERY, useMatchMedia } from '@hooks';
-import { LanguageSwitcher } from '@molecules';
 import {
   MobileSidebarNavProvider,
   MobileSidebarTrigger,
@@ -39,7 +38,7 @@ export const AppShell = ({
     variant === 'dashboard' && pathname.startsWith('/psychologist');
   const showPatientSidebar =
     variant === 'dashboard' && pathname.startsWith('/patient');
-  const showLanguageSwitcher = variant === 'auth' && pathname === '/';
+  const isLoginPage = variant === 'auth' && pathname === '/';
   const showMobileDashboardHeader =
     (showPatientSidebar || showPsychologistSidebar) && isMobile;
   const mobileSidebarExpandKey = showPsychologistSidebar
@@ -65,21 +64,18 @@ export const AppShell = ({
               <UserAccountMenu />
             </div>
           </div>
-        ) : variant === 'auth' ? (
-          <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
-            <Flex col gap2>
-              <Title as='h1' gradient fsHero fw3>
-                {title}
+        ) : variant === 'auth' && !isLoginPage ? (
+          <Flex col gap2>
+            <Title as='h1' gradient fsHero fw3>
+              {title}
+            </Title>
+            {subtitle ? (
+              <Title as='p' hint gray maxW2xl leadingRelaxed>
+                {subtitle}
               </Title>
-              {subtitle ? (
-                <Title as='p' hint gray maxW2xl leadingRelaxed>
-                  {subtitle}
-                </Title>
-              ) : null}
-            </Flex>
-            {showLanguageSwitcher ? <LanguageSwitcher /> : null}
+            ) : null}
           </Flex>
-        ) : (
+        ) : variant === 'auth' ? null : (
           <>
             <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
               <Title as='h1' gradient fsHero fw3>
@@ -103,7 +99,15 @@ export const AppShell = ({
         ) : null}
       </Flex>
       {variant === 'auth' ? (
-        <Flex col alignCenter wFull mt10 pt2>
+        <Flex
+          col
+          alignCenter
+          wFull
+          flex1
+          {...(isLoginPage
+            ? { justifyCenter: true, py8: true }
+            : { mt10: true, pt2: true })}
+        >
           <Flex col wFull maxWMd gap5>
             {children}
           </Flex>
