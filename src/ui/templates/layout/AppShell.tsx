@@ -142,6 +142,10 @@ export const AppShell = ({
     );
   }
 
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
   return (
     <Flex col wFull minHScreen px4 py8 smPx6 lgPx8>
       {mainContent}

@@ -11,6 +11,8 @@ const LOGO_SIZES = {
 export type LogoProps = {
   alt?: string;
   className?: string;
+  /** When true, size is controlled by the parent container (e.g. login card frame). */
+  fitParent?: boolean;
   sm?: boolean;
   md?: boolean;
   lg?: boolean;
@@ -36,6 +38,7 @@ const resolveLogoSize = ({
 export const Logo = ({
   alt = 'Mind Bridge',
   className = '',
+  fitParent = false,
   sm,
   md,
   lg,
@@ -48,12 +51,16 @@ export const Logo = ({
     <img
       src={LOGO_SRC}
       alt={alt}
-      width={size}
-      height={size}
-      className={['block shrink-0 object-contain', className]
+      {...(fitParent
+        ? {}
+        : { width: size, height: size, style: { width: size, height: size } })}
+      className={[
+        'block shrink-0 object-contain',
+        fitParent && 'h-full w-full',
+        className,
+      ]
         .filter(Boolean)
         .join(' ')}
-      style={{ width: size, height: size }}
     />
   );
 };

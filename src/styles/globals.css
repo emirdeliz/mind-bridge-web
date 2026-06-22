@@ -434,21 +434,70 @@
     @apply text-sm font-medium text-mb-accent underline-offset-2 transition hover:text-mb-text hover:underline;
   }
 
+  .mb-login-split {
+    @apply grid min-h-screen w-full grid-cols-1 lg:grid-cols-2;
+  }
+
+  .mb-login-split-form {
+    @apply flex min-h-[480px] flex-col px-6 py-6 sm:px-10 lg:order-2 lg:min-h-screen lg:px-12 lg:py-8;
+    background:
+      radial-gradient(
+        ellipse 70% 60% at 20% 20%,
+        rgba(129, 140, 248, 0.28),
+        transparent
+      ),
+      radial-gradient(
+        ellipse 60% 50% at 80% 80%,
+        rgba(94, 234, 212, 0.2),
+        transparent
+      ),
+      linear-gradient(160deg, #151d2f 0%, #1a2540 45%, #121a2e 100%);
+  }
+
+  .mb-login-split-form-header {
+    @apply flex w-full shrink-0 justify-end;
+  }
+
+  .mb-login-split-form-inner {
+    @apply flex w-full max-w-md flex-1 flex-col items-center justify-center gap-6 self-center;
+  }
+
+  .mb-login-split-media {
+    @apply flex min-h-[220px] flex-col px-6 py-6 sm:px-10 lg:order-1 lg:min-h-screen lg:px-12 lg:py-8;
+    background-color: #0a1020;
+  }
+
+  .mb-login-split-media-inner {
+    @apply flex w-full max-w-lg flex-1 flex-col items-center justify-center self-center;
+  }
+
+  .mb-login-split-media-frame {
+    @apply w-full overflow-hidden rounded-2xl;
+  }
+
+  .mb-login-split-media-image {
+    @apply block h-auto w-full object-contain;
+  }
+
   .mb-auth-login-card {
     --mb-auth-login-logo-size: 120px;
-    --mb-auth-login-logo-frame-padding: 0.5rem;
-    --mb-auth-login-logo-frame-size: calc(
-      var(--mb-auth-login-logo-size) + (2 * var(--mb-auth-login-logo-frame-padding))
-    );
+    --mb-auth-login-logo-frame-padding: 0;
+    --mb-auth-login-logo-frame-size: var(--mb-auth-login-logo-size);
     @apply relative w-full;
     padding-top: calc(var(--mb-auth-login-logo-frame-size) / 2);
   }
 
   .mb-auth-login-card-logo-frame {
-    @apply absolute left-1/2 z-10 flex items-center justify-center rounded-2xl border border-mb-border/80 bg-mb-surface/90 shadow-card backdrop-blur-xl;
+    @apply absolute left-1/2 z-10 box-border flex items-center justify-center overflow-hidden rounded-2xl border border-mb-border/80 bg-mb-surface/90 shadow-card backdrop-blur-xl;
     top: calc(var(--mb-auth-login-logo-frame-size) / 2);
+    width: var(--mb-auth-login-logo-frame-size);
+    height: var(--mb-auth-login-logo-frame-size);
     transform: translate(-50%, -50%);
-    padding: var(--mb-auth-login-logo-frame-padding);
+    padding: 0;
+  }
+
+  .mb-auth-login-card-logo-frame img {
+    @apply block h-full w-full object-contain;
   }
 
   .mb-auth-login-card-body {
@@ -606,7 +655,7 @@
 
   .mb-tooltip {
     @apply relative z-10 rounded-xl border border-mb-border/80 bg-mb-surface-elevated px-3.5 py-2.5 font-sans text-sm leading-relaxed text-mb-text antialiased;
-    font-family: var(--font-inter), system-ui, sans-serif;
+    font-family: var(--font-jakarta), system-ui, sans-serif;
     box-shadow:
       0 12px 40px -10px rgba(0, 0, 0, 0.55),
       0 0 0 1px rgba(94, 234, 212, 0.12);
