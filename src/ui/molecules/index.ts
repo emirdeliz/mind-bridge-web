@@ -27,6 +27,7 @@ export * from './Modal/Modal';
 export * from './ModalTemplate/ModalTemplate';
 export * from './PageLoader/PageLoader';
 export * from './ProgressBar/ProgressBar';
+export * from './PromptTemplateEditor/PromptTemplateEditor';
 export * from './ShowSkeleton/ShowSkeleton';
 export * from './SidebarNavItem/SidebarNavItem';
 export * from './StepProgressBar/StepProgressBar';
