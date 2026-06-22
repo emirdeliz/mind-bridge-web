@@ -1,5 +1,5 @@
 import type { AppProps } from 'next/app';
-import { Inter } from 'next/font/google';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import { useEffect } from 'react';
 
 import { I18nProvider, ProfileLanguageSync } from '@i18n';
@@ -10,9 +10,9 @@ import {
 } from '../services/auth/AuthProvider';
 import '@styles/globals.css';
 
-const inter = Inter({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-jakarta',
 });
 
 type PagePropsWithAuth = {
@@ -21,11 +21,11 @@ type PagePropsWithAuth = {
 
 const App = ({ Component, pageProps }: AppProps<PagePropsWithAuth>) => {
   useEffect(() => {
-    document.documentElement.classList.add(inter.variable);
-    document.body.classList.add(inter.className);
+    document.documentElement.classList.add(jakarta.variable);
+    document.body.classList.add(jakarta.className);
     return () => {
-      document.documentElement.classList.remove(inter.variable);
-      document.body.classList.remove(inter.className);
+      document.documentElement.classList.remove(jakarta.variable);
+      document.body.classList.remove(jakarta.className);
     };
   }, []);
 
@@ -35,7 +35,7 @@ const App = ({ Component, pageProps }: AppProps<PagePropsWithAuth>) => {
         <ToastProvider>
           <ProfileLanguageSync />
           <div
-            className={`${inter.variable} ${inter.className} min-h-screen font-sans`}
+            className={`${jakarta.variable} ${jakarta.className} min-h-screen font-sans`}
           >
             <Component {...pageProps} />
           </div>
