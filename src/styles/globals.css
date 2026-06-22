@@ -481,19 +481,23 @@
 
   .mb-auth-login-card {
     --mb-auth-login-logo-size: 120px;
-    --mb-auth-login-logo-frame-padding: 0.5rem;
-    --mb-auth-login-logo-frame-size: calc(
-      var(--mb-auth-login-logo-size) + (2 * var(--mb-auth-login-logo-frame-padding))
-    );
+    --mb-auth-login-logo-frame-padding: 0;
+    --mb-auth-login-logo-frame-size: var(--mb-auth-login-logo-size);
     @apply relative w-full;
     padding-top: calc(var(--mb-auth-login-logo-frame-size) / 2);
   }
 
   .mb-auth-login-card-logo-frame {
-    @apply absolute left-1/2 z-10 flex items-center justify-center rounded-2xl border border-mb-border/80 bg-mb-surface/90 shadow-card backdrop-blur-xl;
+    @apply absolute left-1/2 z-10 box-border flex items-center justify-center overflow-hidden rounded-2xl border border-mb-border/80 bg-mb-surface/90 shadow-card backdrop-blur-xl;
     top: calc(var(--mb-auth-login-logo-frame-size) / 2);
+    width: var(--mb-auth-login-logo-frame-size);
+    height: var(--mb-auth-login-logo-frame-size);
     transform: translate(-50%, -50%);
-    padding: var(--mb-auth-login-logo-frame-padding);
+    padding: 0;
+  }
+
+  .mb-auth-login-card-logo-frame img {
+    @apply block h-full w-full object-contain;
   }
 
   .mb-auth-login-card-body {

@@ -12,7 +12,7 @@ type AuthFormCardProps = {
 export const AuthFormCard = ({ logoAlt, children }: AuthFormCardProps) => (
   <div className='mb-auth-login-card'>
     <div className='mb-auth-login-card-logo-frame'>
-      <Logo hero alt={logoAlt} />
+      <Logo hero fitParent alt={logoAlt} />
     </div>
     <Card padding='lg' shadow='md'>
       <div className='mb-auth-login-card-body'>{children}</div>
