@@ -815,4 +815,8 @@
   .mb-scheduling-break-delete {
     @apply flex h-12 shrink-0 items-center justify-center;
   }
+
+  .mb-admin-prompt-card {
+    @apply box-border w-full max-w-full;
+  }
 }
