@@ -480,28 +480,47 @@
   }
 
   .mb-auth-login-card {
-    --mb-auth-login-logo-size: 120px;
-    --mb-auth-login-logo-frame-padding: 0;
-    --mb-auth-login-logo-frame-size: var(--mb-auth-login-logo-size);
+    --mb-auth-login-logo-icon-size: 100px;
+    --mb-auth-login-logo-frame-padding: 12px;
+    --mb-auth-login-app-name-gap: 0.25rem;
+    --mb-auth-login-logo-frame-width: calc(
+      var(--mb-auth-login-logo-icon-size) + (2 * var(--mb-auth-login-logo-frame-padding)) + 1rem
+    );
+    --mb-auth-login-logo-frame-height: calc(
+      var(--mb-auth-login-logo-icon-size) +
+        (2 * var(--mb-auth-login-logo-frame-padding)) +
+        var(--mb-auth-login-app-name-gap) +
+        1rem
+    );
     @apply relative w-full;
-    padding-top: calc(var(--mb-auth-login-logo-frame-size) / 2);
+    padding-top: calc(var(--mb-auth-login-logo-frame-height) / 2);
   }
 
   .mb-auth-login-card-logo-frame {
-    @apply absolute left-1/2 z-10 box-border flex items-center justify-center overflow-hidden rounded-2xl border border-mb-border/80 bg-mb-surface/90 shadow-card backdrop-blur-xl;
-    top: calc(var(--mb-auth-login-logo-frame-size) / 2);
-    width: var(--mb-auth-login-logo-frame-size);
-    height: var(--mb-auth-login-logo-frame-size);
+    @apply absolute left-1/2 z-10 box-border flex flex-col items-center overflow-hidden rounded-2xl border border-mb-border/80 bg-mb-surface/90 shadow-card backdrop-blur-xl;
+    top: calc(var(--mb-auth-login-logo-frame-height) / 2);
+    width: var(--mb-auth-login-logo-frame-width);
     transform: translate(-50%, -50%);
-    padding: 0;
+    padding: var(--mb-auth-login-logo-frame-padding);
+    gap: var(--mb-auth-login-app-name-gap);
   }
 
-  .mb-auth-login-card-logo-frame img {
+  .mb-auth-login-card-logo-icon {
+    width: var(--mb-auth-login-logo-icon-size);
+    height: var(--mb-auth-login-logo-icon-size);
+    @apply flex shrink-0 items-center justify-center;
+  }
+
+  .mb-auth-login-card-logo-icon img {
     @apply block h-full w-full object-contain;
   }
 
+  .mb-auth-login-card-app-name {
+    @apply text-center text-xs font-semibold uppercase tracking-[0.2em] text-mb-text;
+  }
+
   .mb-auth-login-card-body {
-    padding-top: calc(var(--mb-auth-login-logo-frame-size) / 2 + 1rem);
+    padding-top: calc(var(--mb-auth-login-logo-frame-height) / 2 + 1rem);
   }
 
   .mb-gradient-title {

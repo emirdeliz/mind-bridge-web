@@ -1,5 +1,6 @@
 {
   "APP_TITLE": "Mind Bridge Web",
+  "APP_BRAND_NAME": "Mind Bridge",
   "APP_VERSION_LABEL": "Version {{version}}",
   "PATIENT_SIDEBAR_ARIA_LABEL": "Patient navigation",
   "PATIENT_SIDEBAR_EXPAND": "Expand menu",

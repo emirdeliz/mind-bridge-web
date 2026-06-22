@@ -69,7 +69,7 @@ export const RegisterPage = () => {
       }
       variant='auth'
     >
-      <AuthFormCard logoAlt={t('APP_TITLE')}>
+      <AuthFormCard logoAlt={t('APP_TITLE')} appName={t('APP_BRAND_NAME')}>
         <Title fs3 fw3 mb2>
           {isPatientRegister
             ? t('REGISTER_PATIENT_TITLE')

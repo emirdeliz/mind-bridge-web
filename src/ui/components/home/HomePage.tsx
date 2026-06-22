@@ -63,7 +63,7 @@ export const HomePage = () => {
   const loginForm = loading || session ? (
     <PageLoader />
   ) : (
-    <AuthFormCard logoAlt={t('APP_TITLE')}>
+    <AuthFormCard logoAlt={t('APP_TITLE')} appName={t('APP_BRAND_NAME')}>
         {forgotMode ? (
           <Title fs3 fw3 mb2>
             {t('FORGOT_PASSWORD_TITLE')}
