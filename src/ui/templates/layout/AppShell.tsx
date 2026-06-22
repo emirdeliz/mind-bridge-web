@@ -8,9 +8,10 @@ import { MOBILE_MAX_WIDTH_QUERY, useMatchMedia } from '@hooks';
 import {
   MobileSidebarNavProvider,
   MobileSidebarTrigger,
-  PatientSidebar,
-  PsychologistSidebar,
 } from '@organisms';
+
+import { PatientSidebar } from './PatientSidebar/PatientSidebar';
+import { PsychologistSidebar } from './PsychologistSidebar/PsychologistSidebar';
 
 import { UserAccountMenu } from '../user/UserAccountMenu';
 import { Breadcrumbs, type BreadcrumbItem } from './Breadcrumbs';

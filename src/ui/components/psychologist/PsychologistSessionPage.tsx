@@ -17,11 +17,10 @@ import { useI18n } from '@i18n';
 import {
   Card,
   ConfirmModal,
-  InteractionSummaryBody,
   PageLoader,
   TextAreaWithSave,
 } from '@molecules';
-import { AppShell, ChatPanel, DashboardSectionTitle } from '@templates';
+import { AppShell, ChatPanel, DashboardSectionTitle, InteractionSummaryBody } from '@templates';
 
 import {
   AGENTIC_SUMMARY_PAGE_SIZE,

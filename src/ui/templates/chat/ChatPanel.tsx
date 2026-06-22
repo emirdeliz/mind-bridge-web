@@ -6,14 +6,15 @@ import { Button, Flex, Icon, Input, Title } from '@atoms';
 import { useI18n } from '@i18n';
 import {
   Card,
-  ChatInteractionDivider,
-  ChatMessageBubble,
-  ChatScrollArea,
-  ChatTypingIndicator,
   Form,
   Tooltip,
   useToast,
 } from '@molecules';
+
+import { ChatInteractionDivider } from './ChatInteractionDivider/ChatInteractionDivider';
+import { ChatMessageBubble } from './ChatMessageBubble/ChatMessageBubble';
+import { ChatScrollArea } from './ChatScrollArea/ChatScrollArea';
+import { ChatTypingIndicator } from './ChatTypingIndicator/ChatTypingIndicator';
 
 import { DashboardSectionTitle } from '../dashboard/DashboardSectionTitle';
 

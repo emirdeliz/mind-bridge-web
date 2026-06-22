@@ -5,7 +5,8 @@ import { useEffect, useMemo, useState } from 'react';
 import type { AiPromptTemplateListItemDto, AppLanguage } from '@api';
 import { Button, Flex, Icon, Loading, Overlay, Title } from '@atoms';
 import { useI18n } from '@i18n';
-import { Card, ConfirmModal, FormGroup, PromptTemplateEditor } from '@molecules';
+import { Card, ConfirmModal, FormGroup } from '@molecules';
+import { PromptTemplateEditor } from '@templates';
 import {
   resolvePromptEditorContent,
   useAdminPromptTemplates,

@@ -4,7 +4,8 @@ import { useRouter } from 'next/router';
 import { getRoleRoute, useAuth } from '@services';
 import { Button, Flex, Input, RouteLink, Title } from '@atoms';
 import { useI18n } from '@i18n';
-import { AuthFormCard, Form, FormError, LanguageSwitcher, PageLoader } from '@molecules';
+import { Form, FormError, LanguageSwitcher, PageLoader } from '@molecules';
+import { AuthFormCard } from '@templates';
 import { AppShell, LoginSplitLayout } from '@templates';
 
 import loginBgImage from './assets/bg.png';

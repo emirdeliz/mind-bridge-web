@@ -7,10 +7,8 @@ import { Button, Flex, Icon, Loading, Overlay, Title } from '@atoms';
 import { localeForAppLanguage } from '@helpers';
 import { formatDateAsYYYYMMDD } from '@helpers';
 import { useI18n } from '@i18n';
-import {
-  Card,
-  ChatMessageBubble,
-} from '@molecules';
+import { Card } from '@molecules';
+import { ChatMessageBubble } from '@templates';
 
 type PsychologistPatientChatHistoryModalProps = {
   visible: boolean;

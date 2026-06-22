@@ -7,7 +7,8 @@ import { useRouter } from 'next/router';
 import { MB_COLORS } from '@constants';
 import { Button, Flex, Title } from '@atoms';
 import { useI18n } from '@i18n';
-import { Card, ChartCard, DashboardKpiCard, PageLoader } from '@molecules';
+import { Card, ChartCard, PageLoader } from '@molecules';
+import { DashboardKpiCard } from '@templates';
 import { AppShell } from '@templates';
 
 import { usePsychologistDashboardData } from './usePsychologistDashboardData';

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 import { Logo } from '@atoms';
 
-import { Card } from '../Card/Card';
+import { Card } from '@molecules';
 
 type AuthFormCardProps = {
   logoAlt: string;

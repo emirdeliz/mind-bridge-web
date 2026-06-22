@@ -12,7 +12,8 @@ import {
 import { resolveLikertCheckInForToday } from '@helpers';
 import { Title } from '@atoms';
 import { useI18n } from '@i18n';
-import { Card, InteractionSummaryBody, PageLoader } from '@molecules';
+import { Card, PageLoader } from '@molecules';
+import { InteractionSummaryBody } from '@templates';
 import { AppShell, ChatPanel, DashboardSectionTitle } from '@templates';
 
 import { PatientLikertCheckInPanel } from './PatientLikertCheckInPanel';

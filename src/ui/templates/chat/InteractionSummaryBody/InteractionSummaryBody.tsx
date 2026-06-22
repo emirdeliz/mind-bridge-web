@@ -2,7 +2,7 @@ import { Flex, Title } from '@atoms';
 
 import { parseInteractionSummary } from '@helpers';
 
-import { EnumeratedTextList } from '../EnumeratedTextList/EnumeratedTextList';
+import { EnumeratedTextList } from '@molecules';
 
 type InteractionSummaryBodyProps = {
   text: string;

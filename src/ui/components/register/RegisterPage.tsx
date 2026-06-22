@@ -5,7 +5,8 @@ import { isValidPhone, phoneDigits } from '@helpers';
 import { getRoleRoute, useAuth } from '@services';
 import { Button, Flex, Input, RouteLink, Title } from '@atoms';
 import { useI18n } from '@i18n';
-import { AuthFormCard, Form, FormError, PageLoader } from '@molecules';
+import { Form, FormError, PageLoader } from '@molecules';
+import { AuthFormCard } from '@templates';
 import { AppShell } from '@templates';
 
 type RegisterRole = 'psychologist' | 'patient';

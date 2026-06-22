@@ -1,5 +1,5 @@
 ---
-description: Generic atoms/molecules/organisms; project domain in templates
+description: Generic atoms/molecules/organisms; Mind Bridge domain UI in templates
 globs:
   - src/ui/atoms/**/*
   - src/ui/molecules/**/*
@@ -12,46 +12,44 @@ alwaysApply: false
 
 ## Principle
 
-- **`src/ui/atoms`**, **`src/ui/molecules`**, and **`src/ui/organisms`**: only **generic, reusable** components, with no direct coupling to the product/domain (registrations, Supabase, business routes, `cst_*` / `pl_*` / `kg_*` tables, Entelgy-specific brands, or flows).
-- **`src/ui/templates`**: layout/UI blocks **tied to the project domain** (e.g., assessment dashboards, Upcode, KG, per-resource CRUD forms, domain i18n keys). They may import `@services`, `@api`, `@constants`, and domain types.
+- **`src/ui/atoms`**, **`src/ui/molecules`**, and **`src/ui/organisms`**: only **generic, reusable** components that could ship in a design system or be copied to another React project without Mind Bridge types, routes, branding, or product copy.
+- **`src/ui/templates`**: layout and UI blocks **tied to Mind Bridge** (psychologist/patient flows, AI chat, admin prompts, branded auth, domain i18n keys, `@api` DTOs, `@services` hooks).
 
-## What counts as “generic” (atoms / molecules / organisms)
+## Quick checklist (before creating in atoms/molecules/organisms)
 
-- Visual controls, form patterns, tables, modals, cards, and lists that could exist in **any** React app using the same design system.
-- Domain-agnostic props: `label`, `options`, `onSubmit`, `columns`, `children`, and already-mapped data in a neutral format.
-- Do not expose `className`; use boolean spacing/layout props (see `atomic-no-classname-props.mdc`).
+Ask: *Could this component exist unchanged in a different SaaS app?*
 
-## What counts as “project/domain” (templates)
+| Signal | Layer |
+|--------|--------|
+| Props are `label`, `value`, `onChange`, `children`, neutral data | atoms / molecules / organisms |
+| Uses Mind Bridge DTOs (`AiPromptTokenDefinitionDto`, `ClinicalChatMessageDto`, …) | **templates** |
+| Hard-coded routes (`/psychologist/…`, `/patient/…`) or role sidebars | **templates** |
+| Product i18n keys (`ADMIN_PROMPTS_*`, `PSYCHOLOGIST_*`, `CHAT_*`) | **templates** |
+| Brand CSS (`mb-auth-login-card`, `mb-kpi-card`, `mb-chat-sender-icon`) | **templates** |
+| Domain helpers (`parseInteractionSummary`, psychologist route builders) | **templates** |
+| `@services` / Supabase hooks inside the component | **templates** |
 
-- Names or props that reference system entities: `workload`, `plAudit`, `KgCode`, `Sdlc`, `RhCoworker`, etc.
-- Calls to hooks/API (`useKgCode`, `useAuditLogs`, `supabase.from(...)`), table constants, or domain-specific copy tied to a module.
-- Feature folders (e.g., `templates/UpcodeAudit/`, `templates/DashboardAssessmentCharts/`).
+## Generic examples (atoms / molecules / organisms)
 
-## Examples
+- `Button`, `Card`, `FormGroup`, `Table`, `ConfirmModal`, `Calendar`, `Sidebar`, `SidebarNavItem`
+- Chat-agnostic patterns only if props stay neutral and styling is token-based without product classes
 
-```tsx
-// ❌ Avoid in @atoms — coupled to Upcode/auditing
-export const AuditResultPill = ({ result }: { result: string }) => { ... }
+## Domain examples (templates — current project)
 
-// ✅ Prefer in @atoms — generic
-export const StatusTonePill = ({ tone, label }: { tone: 'success' | 'danger'; label: string }) => { ... }
-
-// ✅ Domain in @templates
-export const AuditResultPill = ({ result, label }: { result: string; label: string }) => { ... } // usa auditResultTone de @services
-```
-
-```tsx
-// ❌ Avoid in @molecules — direct DTO/domain import
-import type { PlAuditLogRow } from '@services';
-
-// ✅ Use in @templates, or make a generic molecule with locally/generically typed props
-```
+- `templates/auth/AuthFormCard` — Mind Bridge login branding
+- `templates/admin/PromptTemplateEditor` — AI prompt tokens + admin copy
+- `templates/chat/*` — `ChatPanel`, `ChatMessageBubble`, `InteractionSummaryBody`
+- `templates/dashboard/DashboardKpiCard` — psychologist dashboard KPI styling
+- `templates/layout/PsychologistSidebar`, `PatientSidebar` — role navigation
 
 ## Organization
 
-- New UI that is **reusable in any screen**: create it in `atoms` / `molecules` / `organisms` and export it from the corresponding `index.ts`.
-- New UI that is **domain-specific / Supabase-integrated / business copy**: create a folder in `templates/` (or `ui/components/` for composed pages, following the existing pattern) and export it from `templates/index.ts` when global discoverability makes sense.
+- Reusable building blocks → `atoms` / `molecules` / `organisms` + export from layer `index.ts`
+- Product-specific blocks → `templates/[feature]/` + export from `templates/index.ts`
+- Full pages and route composition → `src/ui/components/` (may import from `@templates`)
 
-## `src/ui/components`
+## Imports
 
-- Keep it for **full pages and complete features** (final composition + route); it does not replace `templates`. If a block is presentation-only but already domain-specific, prefer `templates` before promoting it to `components` unnecessarily.
+- **templates** may import `@atoms`, `@molecules`, `@organisms`, `@api`, `@services`, `@i18n`
+- **molecules/organisms** must not import from `@templates`
+- Avoid domain DTOs in generic layers; pass already-mapped neutral props instead
