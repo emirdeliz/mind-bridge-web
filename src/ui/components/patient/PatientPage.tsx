@@ -111,6 +111,7 @@ export const PatientPage = () => {
             sending={sending}
             showInteractionDividers
             sectionTooltip={t('TOOLTIP_PATIENT_CHAT')}
+            disclaimer={t('PATIENT_CHAT_AI_DISCLAIMER')}
           />
           <Card padding='lg' shadow='md'>
             <DashboardSectionTitle

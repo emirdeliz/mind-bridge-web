@@ -40,13 +40,9 @@ export const AdminPromptTemplatesPanel = () => {
     return [...groups.entries()];
   }, [templates]);
 
-  if (loading) {
-    return <Loading />;
-  }
-
   return (
     <>
-      <Card padding='lg'>
+      <Card padding='lg' shadow='md'>
         <Title fs3 fw3 mb2 block>
           {t('ADMIN_PROMPTS_TITLE')}
         </Title>
@@ -60,49 +56,56 @@ export const AdminPromptTemplatesPanel = () => {
           </Title>
         ) : null}
 
-        <Flex col wFull gap4 alignStretch>
-          {groupedTemplates.map(([category, items]) => (
-            <Flex col wFull gap2 alignStretch key={category}>
-              <Title s2 fw3 gray>
-                {t(
-                  CATEGORY_LABEL_KEYS[category] ?? 'ADMIN_PROMPTS_CATEGORY_OTHER'
-                )}
-              </Title>
-              {items.map((template) => (
-                <div
-                  key={template.key}
-                  className='mb-admin-prompt-card flex w-full max-w-full items-center justify-between gap-2 rounded-xl border border-mb-border/70 bg-mb-surface/60 px-3 py-3'
-                >
-                  <Flex col gap1 flex1>
-                    <Title s2 fw3 block>
-                      {template.label[language] ?? template.label.pt}
-                    </Title>
-                    <Title hint gray block>
-                      {template.description[language] ??
-                        template.description.pt}
-                    </Title>
-                    {template.isCustomized ? (
-                      <Title s2 textAccent block>
-                        {t('ADMIN_PROMPTS_CUSTOMIZED_BADGE')}
-                      </Title>
-                    ) : null}
-                  </Flex>
-                  <Button
-                    type='button'
-                    variant='secondary'
-                    outlined
-                    onClick={() => setEditingTemplate(template)}
+        {loading ? (
+          <Flex row wFull alignCenter gap2>
+            <Loading />
+          </Flex>
+        ) : (
+          <Flex col wFull gap4 alignStretch>
+            {groupedTemplates.map(([category, items]) => (
+              <Flex col wFull gap2 alignStretch key={category}>
+                <Title s2 fw3 gray>
+                  {t(
+                    CATEGORY_LABEL_KEYS[category] ??
+                      'ADMIN_PROMPTS_CATEGORY_OTHER'
+                  )}
+                </Title>
+                {items.map((template) => (
+                  <div
+                    key={template.key}
+                    className='mb-admin-prompt-card flex w-full max-w-full items-center justify-between gap-2 rounded-xl border border-mb-border/70 bg-mb-surface/60 px-3 py-3'
                   >
-                    <Flex row alignCenter gap2>
-                      <Icon.Pencil sm />
-                      {t('ADMIN_PROMPTS_EDIT')}
+                    <Flex col gap1 flex1>
+                      <Title s2 fw3 block>
+                        {template.label[language] ?? template.label.pt}
+                      </Title>
+                      <Title hint gray block>
+                        {template.description[language] ??
+                          template.description.pt}
+                      </Title>
+                      {template.isCustomized ? (
+                        <Title s2 textAccent block>
+                          {t('ADMIN_PROMPTS_CUSTOMIZED_BADGE')}
+                        </Title>
+                      ) : null}
                     </Flex>
-                  </Button>
-                </div>
-              ))}
-            </Flex>
-          ))}
-        </Flex>
+                    <Button
+                      type='button'
+                      variant='secondary'
+                      outlined
+                      onClick={() => setEditingTemplate(template)}
+                    >
+                      <Flex row alignCenter gap2>
+                        <Icon.Pencil sm />
+                        {t('ADMIN_PROMPTS_EDIT')}
+                      </Flex>
+                    </Button>
+                  </div>
+                ))}
+              </Flex>
+            ))}
+          </Flex>
+        )}
       </Card>
 
       <AdminPromptTemplateEditModal

@@ -375,6 +375,7 @@
   "CHAT_MESSAGE_PLACEHOLDER": "Write your message or use audio...",
   "CHAT_NEW_INTERACTION": "New conversation",
   "CHAT_INTERACTION_END": "Conversation closed",
+  "PATIENT_CHAT_AI_DISCLAIMER": "This app does not replace care from a mental health professional. AI agent responses may contain errors.",
   "AUDIO": "Audio",
   "CHAT_AUDIO_LISTENING": "Recording…",
   "CHAT_AUDIO_TRANSCRIBING": "Transcribing…",
@@ -540,8 +541,6 @@
   "PSYCHOLOGIST_PATIENTS_API_UNAVAILABLE": "Sign in with Supabase (disable auth bypass) to manage patients via the API.",
   "PSYCHOLOGIST_PATIENTS_DEMO_HINT": "Demo list (5 patients). Click a row to open the clinical dashboard.",
   "PSYCHOLOGIST_PATIENTS_ROW_HINT": "Click a patient row to open the dashboard. Use the buttons on the right for session, edit, or delete.",
-  "ADMIN_PROMPTS_PAGE_TITLE": "AI prompts",
-  "ADMIN_PROMPTS_PAGE_SUBTITLE": "Edit system prompts used by platform agents.",
   "ADMIN_PROMPTS_TITLE": "Application prompts",
   "ADMIN_PROMPTS_SUBTITLE": "Customize instructions sent to models. Edit in your current language; on save, the agent auto-translates to the others.",
   "ADMIN_PROMPTS_CATEGORY_PATIENT_CHAT": "Patient chat",
@@ -564,6 +563,5 @@
   "ADMIN_PROMPTS_FORM_REQUIRED": "Enter prompt content before saving.",
   "ADMIN_PROMPTS_EDIT": "Edit",
   "ADMIN_PROMPTS_EDIT_MODAL_HINT": "You are editing only in the app language you selected. On save, the agent automatically translates to Portuguese, English, and Spanish while preserving reserved words (#).",
-  "ADMIN_PROMPTS_SAVING_TRANSLATING": "Saving and translating to other languages…",
-  "USER_MENU_ADMIN_PROMPTS": "AI prompts"
+  "ADMIN_PROMPTS_SAVING_TRANSLATING": "Saving and translating to other languages…"
 }

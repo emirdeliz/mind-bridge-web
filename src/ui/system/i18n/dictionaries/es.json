@@ -375,6 +375,7 @@
   "CHAT_MESSAGE_PLACEHOLDER": "Escribe tu mensaje o usa el audio...",
   "CHAT_NEW_INTERACTION": "Nueva conversación",
   "CHAT_INTERACTION_END": "Conversación cerrada",
+  "PATIENT_CHAT_AI_DISCLAIMER": "Esta aplicación no sustituye el acompañamiento de un profesional de salud mental. Las respuestas del agente de IA pueden contener errores.",
   "AUDIO": "Audio",
   "CHAT_AUDIO_LISTENING": "Grabando…",
   "CHAT_AUDIO_TRANSCRIBING": "Transcribiendo…",
@@ -540,8 +541,6 @@
   "PSYCHOLOGIST_PATIENTS_API_UNAVAILABLE": "Inicia sesión con Supabase (desactiva el bypass de auth) para gestionar pacientes en la API.",
   "PSYCHOLOGIST_PATIENTS_DEMO_HINT": "Lista de demostración (5 pacientes). Haz clic en una fila para abrir el panel clínico.",
   "PSYCHOLOGIST_PATIENTS_ROW_HINT": "Haz clic en la fila del paciente para abrir el panel. Usa los botones a la derecha para sesión, editar o eliminar.",
-  "ADMIN_PROMPTS_PAGE_TITLE": "Prompts de IA",
-  "ADMIN_PROMPTS_PAGE_SUBTITLE": "Edita los prompts del sistema usados por los agentes de la plataforma.",
   "ADMIN_PROMPTS_TITLE": "Prompts de la aplicación",
   "ADMIN_PROMPTS_SUBTITLE": "Personaliza instrucciones enviadas a los modelos. Edita en tu idioma actual; al guardar, el agente traduce automáticamente a los demás.",
   "ADMIN_PROMPTS_CATEGORY_PATIENT_CHAT": "Chat del paciente",
@@ -564,6 +563,5 @@
   "ADMIN_PROMPTS_FORM_REQUIRED": "Introduce el contenido del prompt antes de guardar.",
   "ADMIN_PROMPTS_EDIT": "Editar",
   "ADMIN_PROMPTS_EDIT_MODAL_HINT": "Estás editando solo en el idioma seleccionado en la aplicación. Al guardar, el agente traduce automáticamente a portugués, inglés y español, preservando las palabras reservadas (#).",
-  "ADMIN_PROMPTS_SAVING_TRANSLATING": "Guardando y traduciendo a los otros idiomas…",
-  "USER_MENU_ADMIN_PROMPTS": "Prompts de IA"
+  "ADMIN_PROMPTS_SAVING_TRANSLATING": "Guardando y traduciendo a los otros idiomas…"
 }

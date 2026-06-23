@@ -59,6 +59,7 @@ interface ChatPanelProps {
   showAudio?: boolean;
   showInteractionDividers?: boolean;
   sectionTooltip?: string;
+  disclaimer?: string;
   shortcuts?: ChatShortcut[];
 }
 
@@ -84,6 +85,7 @@ export const ChatPanel = ({
   showAudio = true,
   showInteractionDividers = false,
   sectionTooltip,
+  disclaimer,
   shortcuts,
 }: ChatPanelProps) => {
   const { t, language } = useI18n();
@@ -299,6 +301,11 @@ export const ChatPanel = ({
           {t('AI_AGENT_CHAT')}
         </Title>
       )}
+      {disclaimer ? (
+        <Title hint gray block leadingRelaxed mb3>
+          {disclaimer}
+        </Title>
+      ) : null}
       <ChatScrollArea
         tallScroll={tallScroll}
         messageCount={messages.length}
