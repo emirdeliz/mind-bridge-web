@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 
 import { transcribePatientSpeechApi } from '@api';
+import type { AppLanguage } from '@api';
 import type { ChatMessage } from '@services';
 import { Button, Flex, Icon, Input, Title } from '@atoms';
+import { localeForAppLanguage } from '@helpers';
 import { useI18n } from '@i18n';
 import {
   Card,
@@ -42,6 +44,52 @@ const shouldShowInteractionDividerBefore = (
     previous.interactionId &&
     message.interactionId !== previous.interactionId
   );
+};
+
+const formatInteractionDate = (
+  isoDate: string,
+  language: AppLanguage
+): string => {
+  const date = new Date(isoDate);
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+
+  return new Intl.DateTimeFormat(localeForAppLanguage(language), {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(date);
+};
+
+const buildInteractionStartDividerLabels = (
+  messages: ChatMessage[],
+  language: AppLanguage,
+  newInteractionLabel: string
+): Map<number, string> => {
+  const labels = new Map<number, string>();
+  const dividerIndices = messages.reduce<number[]>((indices, _, index) => {
+    if (shouldShowInteractionDividerBefore(messages, index)) {
+      indices.push(index);
+    }
+    return indices;
+  }, []);
+  const lastDividerIndex = dividerIndices.at(-1);
+
+  for (const index of dividerIndices) {
+    if (index === lastDividerIndex) {
+      labels.set(index, newInteractionLabel);
+      continue;
+    }
+
+    const formattedDate = formatInteractionDate(
+      messages[index]?.createdAt ?? '',
+      language
+    );
+    labels.set(index, formattedDate || newInteractionLabel);
+  }
+
+  return labels;
 };
 
 export type ChatShortcut = {
@@ -103,6 +151,17 @@ export const ChatPanel = ({
     sending &&
     !(lastMessage?.sender === 'agent' && lastMessage.text.trim().length > 0);
   const audioBusy = isRecording || isTranscribing;
+  const interactionStartDividerLabels = useMemo(
+    () =>
+      showInteractionDividers
+        ? buildInteractionStartDividerLabels(
+            messages,
+            language,
+            t('CHAT_NEW_INTERACTION')
+          )
+        : new Map<number, string>(),
+    [language, messages, showInteractionDividers, t]
+  );
 
   const releaseMediaStream = useCallback(() => {
     mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
@@ -321,7 +380,12 @@ export const ChatPanel = ({
             <div key={message.id}>
               {showInteractionDividers &&
               shouldShowInteractionDividerBefore(messages, index) ? (
-                <ChatInteractionDivider label={t('CHAT_NEW_INTERACTION')} />
+                <ChatInteractionDivider
+                  label={
+                    interactionStartDividerLabels.get(index) ??
+                    t('CHAT_NEW_INTERACTION')
+                  }
+                />
               ) : null}
               <ChatMessageBubble
                 sender={message.sender}
