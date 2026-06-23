@@ -108,16 +108,7 @@ const TooltipPopup = withFloat((props: GenericObject) => {
         ? { top: clampedTop, left: -ARROW_HALF, transform: 'translateY(-50%)' }
         : { top: clampedTop, right: -ARROW_HALF, transform: 'translateY(-50%)' }
     );
-  }, [
-    _floatingElementAnchor,
-    _floatingElementStyle,
-    isArrowVertical,
-    arrowOnBottomEdge,
-    bottom,
-    left,
-    right,
-    top,
-  ]);
+  }, [_floatingElementAnchor, isArrowVertical, arrowOnBottomEdge, right]);
 
   useIsomorphicLayoutEffect(() => {
     updateArrowPosition();

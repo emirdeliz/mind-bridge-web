@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useMemo, useState, type ReactNode } from 'react';
 
 import type { KnowledgeDocumentDto } from '@api';
 import { Button, Flex, Icon, Loading, Title } from '@atoms';
@@ -54,22 +54,25 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
 
   const maxSizeMb = formatKnowledgeMaxFileSizeMb(maxFileBytes);
 
-  const validateSelectedFile = (file: File): string | null => {
-    if (!isPdfFile(file)) {
-      return t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_PDF_ONLY');
-    }
+  const validateSelectedFile = useCallback(
+    (file: File): string | null => {
+      if (!isPdfFile(file)) {
+        return t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_PDF_ONLY');
+      }
 
-    if (!isKnowledgeFileWithinSizeLimit(file.size, maxFileBytes)) {
-      return translateTemplate(
-        t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_FILE_TOO_LARGE'),
-        {
-          maxSizeMb,
-        }
-      );
-    }
+      if (!isKnowledgeFileWithinSizeLimit(file.size, maxFileBytes)) {
+        return translateTemplate(
+          t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_FILE_TOO_LARGE'),
+          {
+            maxSizeMb,
+          }
+        );
+      }
 
-    return null;
-  };
+      return null;
+    },
+    [maxFileBytes, maxSizeMb, t]
+  );
 
   const handleUpload = async () => {
     const file = await pickFile();
@@ -91,37 +94,40 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
     }
   };
 
-  const handleUpdate = async (document: KnowledgeDocumentDto) => {
-    const file = await pickFile();
-    if (!file) {
-      return;
-    }
+  const handleUpdate = useCallback(
+    async (document: KnowledgeDocumentDto) => {
+      const file = await pickFile();
+      if (!file) {
+        return;
+      }
 
-    const validationError = validateSelectedFile(file);
-    if (validationError) {
-      setActionError(validationError);
-      return;
-    }
+      const validationError = validateSelectedFile(file);
+      if (validationError) {
+        setActionError(validationError);
+        return;
+      }
 
-    if (file.name.toLowerCase() !== document.fileName.toLowerCase()) {
-      setActionError(
-        translateTemplate(
-          t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPDATE_SAME_NAME'),
-          {
-            fileName: document.fileName,
-          }
-        )
-      );
-      return;
-    }
+      if (file.name.toLowerCase() !== document.fileName.toLowerCase()) {
+        setActionError(
+          translateTemplate(
+            t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPDATE_SAME_NAME'),
+            {
+              fileName: document.fileName,
+            }
+          )
+        );
+        return;
+      }
 
-    setActionError('');
-    try {
-      await uploadDocument(file);
-    } catch {
-      // error state handled by hook
-    }
-  };
+      setActionError('');
+      try {
+        await uploadDocument(file);
+      } catch {
+        // error state handled by hook
+      }
+    },
+    [pickFile, t, uploadDocument, validateSelectedFile]
+  );
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) {
@@ -202,7 +208,7 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
           </Flex>
         ),
       })),
-    [documents, isBusy, loading, refreshStatus, refreshing, t]
+    [documents, handleUpdate, isBusy, loading, refreshStatus, refreshing, t]
   );
 
   const columns = useMemo(

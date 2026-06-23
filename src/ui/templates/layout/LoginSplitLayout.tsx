@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, type ReactNode } from 'react';
 
 const LOGIN_SPLIT_IMAGE_SRC = '/images/login-hero.jpg';
@@ -31,11 +32,12 @@ export const LoginSplitLayout = ({
       <div className='mb-login-split-media'>
         <div className='mb-login-split-media-inner'>
           {showImage ? (
-            <div className='mb-login-split-media-frame'>
-              <img
+            <div className='mb-login-split-media-frame relative'>
+              <Image
                 src={imageSrc}
                 alt={imageAlt}
-                className='mb-login-split-media-image'
+                fill
+                className='mb-login-split-media-image object-cover'
                 onError={() => setImageError(true)}
               />
             </div>

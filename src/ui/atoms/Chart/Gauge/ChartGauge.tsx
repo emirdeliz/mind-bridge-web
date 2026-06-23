@@ -60,7 +60,12 @@ export const ChartGauge = memo(
             max: safeMax,
             center: ['50%', '65%'],
             radius: '90%',
-            progress: { show: true, width: 12, roundCap: true },
+            progress: {
+              show: true,
+              width: 12,
+              roundCap: true,
+              itemStyle: { color },
+            },
             axisLine: {
               roundCap: true,
               lineStyle: { width: 12 },

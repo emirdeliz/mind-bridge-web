@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 const LOGO_SRC = '/images/logo-dark.svg';
 
 const LOGO_SIZES = {
@@ -47,20 +49,33 @@ export const Logo = ({
 }: LogoProps) => {
   const size = resolveLogoSize({ sm, md, lg, xl, hero });
 
+  if (fitParent) {
+    return (
+      <span
+        className={['relative block h-full w-full', className]
+          .filter(Boolean)
+          .join(' ')}
+      >
+        <Image
+          src={LOGO_SRC}
+          alt={alt}
+          fill
+          className='object-contain'
+        />
+      </span>
+    );
+  }
+
   return (
-    <img
+    <Image
       src={LOGO_SRC}
       alt={alt}
-      {...(fitParent
-        ? {}
-        : { width: size, height: size, style: { width: size, height: size } })}
-      className={[
-        'block shrink-0 object-contain',
-        fitParent && 'h-full w-full',
-        className,
-      ]
+      width={size}
+      height={size}
+      className={['block shrink-0 object-contain', className]
         .filter(Boolean)
         .join(' ')}
+      style={{ width: size, height: size }}
     />
   );
 };

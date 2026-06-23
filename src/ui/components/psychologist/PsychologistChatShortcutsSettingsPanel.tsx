@@ -81,7 +81,7 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
     setFormOpen(true);
   };
 
-  const openEditForm = (shortcut: PsychologistChatShortcutDto) => {
+  const openEditForm = useCallback((shortcut: PsychologistChatShortcutDto) => {
     const translation = resolveChatShortcutTranslation(shortcut, language);
     setEditingShortcut(shortcut);
     setPendingDrafts([]);
@@ -91,9 +91,9 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
     });
     setFormError('');
     setFormOpen(true);
-  };
+  }, [language]);
 
-  const closeForm = () => {
+  const closeForm = useCallback(() => {
     if (saving) {
       return;
     }
@@ -102,7 +102,7 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
     setForm(emptyForm());
     setPendingDrafts([]);
     setFormError('');
-  };
+  }, [saving]);
 
   const handleAddToList = () => {
     const parsed = parseForm(form);
@@ -194,7 +194,7 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
     } catch {
       // error state handled by hook
     }
-  }, [deleteTarget, editingShortcut?.id, removeShortcut]);
+  }, [deleteTarget, editingShortcut?.id, removeShortcut, closeForm]);
 
   const buildRowActions = useCallback(
     (shortcut: PsychologistChatShortcutDto) => (

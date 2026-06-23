@@ -101,7 +101,7 @@ export const usePatientLikertCheckIn = ({
     setScores(syncedCheckIn?.scores ?? {});
     scoresRef.current = syncedCheckIn?.scores ?? {};
     lastPersistedCheckInRef.current = syncedCheckIn;
-  }, [checkIn?.updatedAt, checkIn?.checkInDate]);
+  }, [checkIn]);
 
   useEffect(() => {
     const checkDayRollover = () => {

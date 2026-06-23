@@ -134,7 +134,6 @@ export const ChartBarHorizontal = memo(
       }),
       [
         axisKeys,
-        categories,
         formatCategoryLabel,
         series,
         title,

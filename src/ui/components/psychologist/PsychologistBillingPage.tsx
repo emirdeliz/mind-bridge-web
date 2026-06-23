@@ -63,7 +63,10 @@ export const PsychologistBillingPage = () => {
     loading: billingLoading,
     error,
   } = usePsychologistBilling(selectedBillingMonth);
-  const history = billing?.history ?? [];
+  const history = useMemo(
+    () => billing?.history ?? [],
+    [billing?.history]
+  );
   const oldestBillingMonth = history[0]?.billingMonth;
   const canGoToPreviousMonth = billing?.billingMonth
     ? canNavigateToPreviousBillingMonth(

@@ -48,7 +48,7 @@ export const PatientPage = () => {
     setLikertCheckIn(
       resolveLikertCheckInForToday(content?.likertCheckIn ?? null)
     );
-  }, [content?.likertCheckIn?.updatedAt, content?.likertCheckIn?.checkInDate]);
+  }, [content?.likertCheckIn]);
 
   useEffect(() => {
     if (!content?.patientChatSeed) {
