@@ -399,7 +399,7 @@ export const PsychologistSessionPage = () => {
             onSend={sendMessage}
             sending={sending}
             tallScroll
-            showAudio={false}
+            speechAudience='psychologist'
             sectionTooltip={t('TOOLTIP_PSYCHOLOGIST_CHAT')}
             shortcuts={psychologistChatShortcuts}
           />

@@ -15,3 +15,4 @@ export * from './Patient/PatientLikertApi';
 export * from './Patient/PatientSpeechApi';
 export * from './Patient/PsychologistPatientApi';
 export * from './Scheduling/PsychologistSchedulingApi';
+export * from './Speech/PsychologistSpeechApi';

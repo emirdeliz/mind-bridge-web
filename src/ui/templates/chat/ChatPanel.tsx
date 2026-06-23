@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 
-import { transcribePatientSpeechApi } from '@api';
+import {
+  transcribePatientSpeechApi,
+  transcribePsychologistSpeechApi,
+} from '@api';
 import type { AppLanguage } from '@api';
 import type { ChatMessage } from '@services';
 import { Button, Flex, Icon, Input, Title } from '@atoms';
@@ -105,6 +108,7 @@ interface ChatPanelProps {
   sending?: boolean;
   tallScroll?: boolean;
   showAudio?: boolean;
+  speechAudience?: 'patient' | 'psychologist';
   showInteractionDividers?: boolean;
   sectionTooltip?: string;
   disclaimer?: string;
@@ -131,6 +135,7 @@ export const ChatPanel = ({
   sending = false,
   tallScroll,
   showAudio = true,
+  speechAudience = 'patient',
   showInteractionDividers = false,
   sectionTooltip,
   disclaimer,
@@ -193,11 +198,19 @@ export const ChatPanel = ({
     [onSpeechToText]
   );
 
+  const transcribeAudio = useMemo(
+    () =>
+      speechAudience === 'psychologist'
+        ? transcribePsychologistSpeechApi
+        : transcribePatientSpeechApi,
+    [speechAudience]
+  );
+
   const transcribeRecording = useCallback(
     async (audio: Blob) => {
       setIsTranscribing(true);
       try {
-        const transcript = await transcribePatientSpeechApi(audio, language);
+        const transcript = await transcribeAudio(audio, language);
         if (!transcript) {
           showToastError({ message: t('CHAT_AUDIO_EMPTY') });
           return;
@@ -209,7 +222,7 @@ export const ChatPanel = ({
         setIsTranscribing(false);
       }
     },
-    [applyTranscript, language, showToastError, t]
+    [applyTranscript, language, showToastError, t, transcribeAudio]
   );
 
   const stopRecording = useCallback(() => {
@@ -303,11 +316,25 @@ export const ChatPanel = ({
     void startRecording();
   }, [isRecording, isTranscribing, startRecording, stopRecording]);
 
+  const isPsychologistAudio = speechAudience === 'psychologist';
+
   const audioTooltip = isTranscribing
-    ? t('TOOLTIP_PATIENT_CHAT_AUDIO_TRANSCRIBING')
+    ? t(
+        isPsychologistAudio
+          ? 'TOOLTIP_PSYCHOLOGIST_CHAT_AUDIO_TRANSCRIBING'
+          : 'TOOLTIP_PATIENT_CHAT_AUDIO_TRANSCRIBING'
+      )
     : isRecording
-      ? t('TOOLTIP_PATIENT_CHAT_AUDIO_STOP')
-      : t('TOOLTIP_PATIENT_CHAT_AUDIO_START');
+      ? t(
+          isPsychologistAudio
+            ? 'TOOLTIP_PSYCHOLOGIST_CHAT_AUDIO_STOP'
+            : 'TOOLTIP_PATIENT_CHAT_AUDIO_STOP'
+        )
+      : t(
+          isPsychologistAudio
+            ? 'TOOLTIP_PSYCHOLOGIST_CHAT_AUDIO_START'
+            : 'TOOLTIP_PATIENT_CHAT_AUDIO_START'
+        );
 
   const audioAriaLabel = isTranscribing
     ? t('CHAT_AUDIO_TRANSCRIBING_ARIA')
