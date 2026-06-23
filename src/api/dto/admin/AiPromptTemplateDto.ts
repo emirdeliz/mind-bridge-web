@@ -23,7 +23,26 @@ export type AiPromptTemplateListItemDto = {
   updatedAt: string | null;
 };
 
+export type AiPromptTemplateDefaultListItemDto = {
+  key: string;
+  category: string;
+  label: Record<AppLanguage, string>;
+  description: Record<AppLanguage, string>;
+  allowedTokens: string[];
+  defaultContent: Record<AppLanguage, string>;
+  updatedAt: string | null;
+};
+
 export type SaveAiPromptTemplateBodyDto = {
   content: string;
   sourceLanguage: AppLanguage;
+};
+
+export type PromptTemplateModalItem = {
+  key: string;
+  label: Record<AppLanguage, string>;
+  description: Record<AppLanguage, string>;
+  allowedTokens: string[];
+  defaultContent: Record<AppLanguage, string>;
+  override?: AiPromptTemplateTranslationsDto | null;
 };

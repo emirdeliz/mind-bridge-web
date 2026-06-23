@@ -563,5 +563,14 @@
   "ADMIN_PROMPTS_FORM_REQUIRED": "Introduce el contenido del prompt antes de guardar.",
   "ADMIN_PROMPTS_EDIT": "Editar",
   "ADMIN_PROMPTS_EDIT_MODAL_HINT": "Estás editando solo en el idioma seleccionado en la aplicación. Al guardar, el agente traduce automáticamente a portugués, inglés y español, preservando las palabras reservadas (#).",
-  "ADMIN_PROMPTS_SAVING_TRANSLATING": "Guardando y traduciendo a los otros idiomas…"
+  "ADMIN_PROMPTS_SAVING_TRANSLATING": "Guardando y traduciendo a los otros idiomas…",
+  "ADMIN_PROMPT_DEFAULTS_PAGE_TITLE": "Prompts predeterminados del sistema",
+  "ADMIN_PROMPT_DEFAULTS_PAGE_SUBTITLE": "Edita el contenido base de los prompts usados por la plataforma cuando no hay personalización activa.",
+  "ADMIN_PROMPT_DEFAULTS_TITLE": "Prompts predeterminados",
+  "ADMIN_PROMPT_DEFAULTS_SUBTITLE": "Los cambios aquí afectan a todos los entornos sin override. Confirma antes de guardar.",
+  "ADMIN_PROMPT_DEFAULTS_EDIT_MODAL_HINT": "Estás editando el prompt predeterminado del sistema en el idioma seleccionado. Al guardar, el agente traduce automáticamente a los demás idiomas, preservando las palabras reservadas (#).",
+  "ADMIN_PROMPT_DEFAULTS_SAVE_CONFIRM_TITLE": "¿Guardar prompt predeterminado?",
+  "ADMIN_PROMPT_DEFAULTS_SAVE_CONFIRM_MESSAGE": "Este cambio actualiza el prompt predeterminado del sistema para todos los usuarios sin personalización activa. ¿Deseas continuar?",
+  "ADMIN_PROMPT_DEFAULTS_SAVE_CONFIRM": "Guardar predeterminado",
+  "USER_MENU_ADMIN_PROMPT_DEFAULTS": "Prompts predeterminados de IA"
 }

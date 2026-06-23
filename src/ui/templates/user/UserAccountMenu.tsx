@@ -53,14 +53,24 @@ export const UserAccountMenu = () => {
             {t('USER_MENU_EDIT_PROFILE')}
           </NextLink>
           {session.isAdmin ? (
-            <NextLink
-              href='/admin'
-              className='mb-user-menu-item'
-              role='menuitem'
-              onClick={closeMenu}
-            >
-              {t('USER_MENU_ADMIN')}
-            </NextLink>
+            <>
+              <NextLink
+                href='/admin'
+                className='mb-user-menu-item'
+                role='menuitem'
+                onClick={closeMenu}
+              >
+                {t('USER_MENU_ADMIN')}
+              </NextLink>
+              <NextLink
+                href='/admin/prompt-defaults'
+                className='mb-user-menu-item'
+                role='menuitem'
+                onClick={closeMenu}
+              >
+                {t('USER_MENU_ADMIN_PROMPT_DEFAULTS')}
+              </NextLink>
+            </>
           ) : null}
           <button
             type='button'

@@ -6,6 +6,7 @@ import type {
   AiPromptTemplateListItemDto,
   AiPromptTokenDefinitionDto,
   AppLanguage,
+  PromptTemplateModalItem,
 } from '@api';
 import {
   getAdminPromptTemplatesApi,
@@ -113,7 +114,7 @@ export const useAdminPromptTemplates = () => {
 };
 
 export const resolvePromptEditorContent = (
-  template: AiPromptTemplateListItemDto,
+  template: PromptTemplateModalItem,
   language: AppLanguage
 ): string =>
   template.override?.[language] ??

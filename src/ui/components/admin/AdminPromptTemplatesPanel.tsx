@@ -6,7 +6,7 @@ import type { AiPromptTemplateListItemDto } from '@api';
 import { Button, Flex, Icon, Loading, Title } from '@atoms';
 import { useI18n } from '@i18n';
 import { Card } from '@molecules';
-import { useAdminPromptTemplates } from '@services';
+import { useAdminPromptTemplates, resolvePromptEditorContent } from '@services';
 
 import { AdminPromptTemplateEditModal } from './AdminPromptTemplateEditModal';
 
@@ -113,6 +113,7 @@ export const AdminPromptTemplatesPanel = () => {
         template={editingTemplate}
         tokens={tokens}
         saving={saving}
+        resolveEditorContent={resolvePromptEditorContent}
         onClose={() => setEditingTemplate(null)}
         onSave={async (content, sourceLanguage) => {
           if (!editingTemplate) {

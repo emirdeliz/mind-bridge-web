@@ -2,24 +2,32 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-import type { AiPromptTemplateListItemDto, AppLanguage } from '@api';
+import type {
+  AiPromptTokenDefinitionDto,
+  AppLanguage,
+  PromptTemplateModalItem,
+} from '@api';
 import { Button, Flex, Icon, Loading, Overlay, Title } from '@atoms';
 import { useI18n } from '@i18n';
 import { Card, ConfirmModal, FormGroup } from '@molecules';
 import { PromptTemplateEditor } from '@templates';
-import {
-  resolvePromptEditorContent,
-  useAdminPromptTemplates,
-} from '@services';
 
 type AdminPromptTemplateEditModalProps = {
   visible: boolean;
-  template: AiPromptTemplateListItemDto | null;
-  tokens: ReturnType<typeof useAdminPromptTemplates>['tokens'];
+  template: PromptTemplateModalItem | null;
+  tokens: AiPromptTokenDefinitionDto[];
   saving: boolean;
   onClose: () => void;
   onSave: (content: string, sourceLanguage: AppLanguage) => Promise<void>;
-  onRestore: () => Promise<void>;
+  onRestore?: () => Promise<void>;
+  resolveEditorContent: (
+    template: PromptTemplateModalItem,
+    language: AppLanguage
+  ) => string;
+  editModalHintKey?: string;
+  requireSaveConfirmation?: boolean;
+  saveConfirmTitle?: string;
+  saveConfirmMessage?: string;
 };
 
 export const AdminPromptTemplateEditModal = ({
@@ -30,20 +38,27 @@ export const AdminPromptTemplateEditModal = ({
   onClose,
   onSave,
   onRestore,
+  resolveEditorContent,
+  editModalHintKey = 'ADMIN_PROMPTS_EDIT_MODAL_HINT',
+  requireSaveConfirmation = false,
+  saveConfirmTitle,
+  saveConfirmMessage,
 }: AdminPromptTemplateEditModalProps) => {
   const { t, language } = useI18n();
   const [draft, setDraft] = useState('');
   const [formError, setFormError] = useState('');
   const [restoreOpen, setRestoreOpen] = useState(false);
+  const [saveConfirmOpen, setSaveConfirmOpen] = useState(false);
 
   useEffect(() => {
     if (!visible || !template) {
       return;
     }
-    setDraft(resolvePromptEditorContent(template, language));
+    setDraft(resolveEditorContent(template, language));
     setFormError('');
     setRestoreOpen(false);
-  }, [language, template, visible]);
+    setSaveConfirmOpen(false);
+  }, [language, resolveEditorContent, template, visible]);
 
   const allowedTokensForEditor = useMemo(() => {
     if (!template?.allowedTokens.length) {
@@ -69,13 +84,34 @@ export const AdminPromptTemplateEditModal = ({
     setFormError('');
     try {
       await onSave(trimmed, language);
+      setSaveConfirmOpen(false);
       onClose();
     } catch {
       /* handled by parent hook */
     }
   };
 
+  const requestSave = () => {
+    const trimmed = draft.trim();
+    if (!trimmed) {
+      setFormError(t('ADMIN_PROMPTS_FORM_REQUIRED'));
+      return;
+    }
+
+    setFormError('');
+    if (requireSaveConfirmation) {
+      setSaveConfirmOpen(true);
+      return;
+    }
+
+    void handleSave();
+  };
+
   const handleRestore = async () => {
+    if (!onRestore) {
+      return;
+    }
+
     try {
       await onRestore();
       setRestoreOpen(false);
@@ -122,7 +158,7 @@ export const AdminPromptTemplateEditModal = ({
 
               <div className='min-h-0 flex-1 overflow-y-auto overscroll-y-contain pr-1'>
                 <Title hint gray mb3 mt4 block leadingRelaxed>
-                  {t('ADMIN_PROMPTS_EDIT_MODAL_HINT')}
+                  {t(editModalHintKey)}
                 </Title>
 
                 <Card padding='md' border>
@@ -173,18 +209,20 @@ export const AdminPromptTemplateEditModal = ({
 
               <div className='mt-4 shrink-0 border-t border-mb-border/50 pt-4'>
                 <Flex row wFull gap2 wrap>
-                  <Button type='button' clickable={!saving} onClick={() => void handleSave()}>
+                  <Button type='button' clickable={!saving} onClick={requestSave}>
                     {t('ADMIN_PROMPTS_SAVE')}
                   </Button>
-                  <Button
-                    type='button'
-                    variant='secondary'
-                    outlined
-                    clickable={!saving}
-                    onClick={() => setRestoreOpen(true)}
-                  >
-                    {t('ADMIN_PROMPTS_RESTORE')}
-                  </Button>
+                  {onRestore ? (
+                    <Button
+                      type='button'
+                      variant='secondary'
+                      outlined
+                      clickable={!saving}
+                      onClick={() => setRestoreOpen(true)}
+                    >
+                      {t('ADMIN_PROMPTS_RESTORE')}
+                    </Button>
+                  ) : null}
                   <Button
                     type='button'
                     variant='secondary'
@@ -201,20 +239,41 @@ export const AdminPromptTemplateEditModal = ({
         </div>
       </Overlay>
 
-      <ConfirmModal
-        visible={restoreOpen}
-        title={t('ADMIN_PROMPTS_RESTORE_TITLE')}
-        message={t('ADMIN_PROMPTS_RESTORE_MESSAGE')}
-        confirmLabel={t('ADMIN_PROMPTS_RESTORE_CONFIRM')}
-        cancelLabel={t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
-        confirmVariant='danger'
-        onClose={() => {
-          if (!saving) {
-            setRestoreOpen(false);
+      {requireSaveConfirmation ? (
+        <ConfirmModal
+          visible={saveConfirmOpen}
+          title={saveConfirmTitle ?? t('ADMIN_PROMPT_DEFAULTS_SAVE_CONFIRM_TITLE')}
+          message={
+            saveConfirmMessage ?? t('ADMIN_PROMPT_DEFAULTS_SAVE_CONFIRM_MESSAGE')
           }
-        }}
-        onConfirm={() => void handleRestore()}
-      />
+          confirmLabel={t('ADMIN_PROMPT_DEFAULTS_SAVE_CONFIRM')}
+          cancelLabel={t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
+          confirmVariant='danger'
+          onClose={() => {
+            if (!saving) {
+              setSaveConfirmOpen(false);
+            }
+          }}
+          onConfirm={() => void handleSave()}
+        />
+      ) : null}
+
+      {onRestore ? (
+        <ConfirmModal
+          visible={restoreOpen}
+          title={t('ADMIN_PROMPTS_RESTORE_TITLE')}
+          message={t('ADMIN_PROMPTS_RESTORE_MESSAGE')}
+          confirmLabel={t('ADMIN_PROMPTS_RESTORE_CONFIRM')}
+          cancelLabel={t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
+          confirmVariant='danger'
+          onClose={() => {
+            if (!saving) {
+              setRestoreOpen(false);
+            }
+          }}
+          onConfirm={() => void handleRestore()}
+        />
+      ) : null}
     </>
   );
 };

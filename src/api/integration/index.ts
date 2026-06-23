@@ -1,5 +1,6 @@
 export * from './Admin/AdminPlatformMetricsApi';
 export * from './Admin/AdminPromptTemplatesApi';
+export * from './Admin/AdminPromptTemplateDefaultsApi';
 export * from './Ai/AiChatApi';
 export * from './Auth/AuthApi';
 export * from './Billing/PsychologistBillingApi';

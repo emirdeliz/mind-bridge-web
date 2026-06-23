@@ -563,5 +563,14 @@
   "ADMIN_PROMPTS_FORM_REQUIRED": "Informe o conteúdo do prompt antes de salvar.",
   "ADMIN_PROMPTS_EDIT": "Editar",
   "ADMIN_PROMPTS_EDIT_MODAL_HINT": "Você está editando apenas no idioma selecionado no aplicativo. Ao salvar, o agente traduzirá automaticamente para português, inglês e espanhol, preservando as palavras reservadas (#).",
-  "ADMIN_PROMPTS_SAVING_TRANSLATING": "Salvando e traduzindo para os outros idiomas…"
+  "ADMIN_PROMPTS_SAVING_TRANSLATING": "Salvando e traduzindo para os outros idiomas…",
+  "ADMIN_PROMPT_DEFAULTS_PAGE_TITLE": "Prompts padrão do sistema",
+  "ADMIN_PROMPT_DEFAULTS_PAGE_SUBTITLE": "Edite o conteúdo base dos prompts usados pela plataforma quando não houver personalização ativa.",
+  "ADMIN_PROMPT_DEFAULTS_TITLE": "Prompts padrão",
+  "ADMIN_PROMPT_DEFAULTS_SUBTITLE": "Alterações aqui afetam todos os ambientes sem override. Confirme antes de salvar.",
+  "ADMIN_PROMPT_DEFAULTS_EDIT_MODAL_HINT": "Você está editando o prompt padrão do sistema no idioma selecionado. Ao salvar, o agente traduz automaticamente para os demais idiomas, preservando as palavras reservadas (#).",
+  "ADMIN_PROMPT_DEFAULTS_SAVE_CONFIRM_TITLE": "Salvar prompt padrão?",
+  "ADMIN_PROMPT_DEFAULTS_SAVE_CONFIRM_MESSAGE": "Esta alteração atualiza o prompt padrão do sistema para todos os usuários que não possuem personalização ativa. Deseja continuar?",
+  "ADMIN_PROMPT_DEFAULTS_SAVE_CONFIRM": "Salvar padrão",
+  "USER_MENU_ADMIN_PROMPT_DEFAULTS": "Prompts padrão da IA"
 }

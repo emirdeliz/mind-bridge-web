@@ -563,5 +563,14 @@
   "ADMIN_PROMPTS_FORM_REQUIRED": "Enter prompt content before saving.",
   "ADMIN_PROMPTS_EDIT": "Edit",
   "ADMIN_PROMPTS_EDIT_MODAL_HINT": "You are editing only in the app language you selected. On save, the agent automatically translates to Portuguese, English, and Spanish while preserving reserved words (#).",
-  "ADMIN_PROMPTS_SAVING_TRANSLATING": "Saving and translating to other languages…"
+  "ADMIN_PROMPTS_SAVING_TRANSLATING": "Saving and translating to other languages…",
+  "ADMIN_PROMPT_DEFAULTS_PAGE_TITLE": "System default prompts",
+  "ADMIN_PROMPT_DEFAULTS_PAGE_SUBTITLE": "Edit the baseline prompt content used by the platform when no active customization exists.",
+  "ADMIN_PROMPT_DEFAULTS_TITLE": "Default prompts",
+  "ADMIN_PROMPT_DEFAULTS_SUBTITLE": "Changes here affect every environment without an override. Confirm before saving.",
+  "ADMIN_PROMPT_DEFAULTS_EDIT_MODAL_HINT": "You are editing the system default prompt in the selected app language. On save, the agent auto-translates to the other languages while preserving reserved words (#).",
+  "ADMIN_PROMPT_DEFAULTS_SAVE_CONFIRM_TITLE": "Save default prompt?",
+  "ADMIN_PROMPT_DEFAULTS_SAVE_CONFIRM_MESSAGE": "This updates the system default prompt for all users without an active customization. Continue?",
+  "ADMIN_PROMPT_DEFAULTS_SAVE_CONFIRM": "Save default",
+  "USER_MENU_ADMIN_PROMPT_DEFAULTS": "AI default prompts"
 }
