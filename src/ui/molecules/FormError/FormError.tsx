@@ -4,7 +4,7 @@ import { Title } from '@atoms';
 import {
   buildMarginClasses,
   type MarginSpacingProps,
-} from '../../atoms/shared/spacingClasses';
+} from '@atoms';
 
 export interface FormErrorProps extends MarginSpacingProps {
   children: ReactNode;

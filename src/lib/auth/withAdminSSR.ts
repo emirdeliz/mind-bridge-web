@@ -4,7 +4,7 @@ import type {
   GetServerSidePropsResult,
 } from 'next';
 
-import { getRoleRoute } from '../../services/auth/roleRoute';
+import { getRoleRoute } from '@services';
 
 import { getPublicSessionProps, getServerSession } from './session.server';
 

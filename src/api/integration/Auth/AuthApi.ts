@@ -4,7 +4,7 @@ import {
   type UserProfile,
   type UserRole,
 } from '@api';
-import { isAuthBypassEnabled } from '../../../services/auth/authBypass';
+import { isAuthBypassEnabled } from '@services';
 
 type AuthSessionResponse = {
   session: UserAuthViewDto | null;

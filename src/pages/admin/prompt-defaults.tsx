@@ -1,4 +1,4 @@
-export { AdminPromptDefaultsPage as default } from '../../ui/components/admin/AdminPromptDefaultsPage';
+export { AdminPromptDefaultsPage as default } from '@components';
 
 import { withAdminSSR } from '@lib/auth/withAdminSSR';
 

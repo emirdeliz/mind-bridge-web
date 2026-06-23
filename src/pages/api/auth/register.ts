@@ -12,7 +12,7 @@ import { buildUserAuthView, toPublicSession } from '@lib/auth/buildSession';
 import { setBypassCookie } from '@lib/auth/bypassCookie';
 import { createSupabaseServerClient } from '@lib/supabase/cookieMethods';
 import { getApiBaseUrl, isServerAuthBypassEnabled } from '@lib/supabase/env';
-import { createBypassSession } from '../../../services/auth/authBypass';
+import { createBypassSession } from '@services';
 
 const registerPatientViaBackend = async (
   payload: UserAuthSaveOrUpdateDto

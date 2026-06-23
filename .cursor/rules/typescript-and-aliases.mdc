@@ -3,7 +3,7 @@ description: Enforce TypeScript and prefer path aliases
 globs:
   - src/**/*.ts
   - src/**/*.tsx
-alwaysApply: false
+alwaysApply: true
 ---
 
 # TypeScript And Aliases
@@ -11,19 +11,31 @@ alwaysApply: false
 - All application code must be written in TypeScript (`.ts` / `.tsx`).
 - Avoid creating new JavaScript source files (`.js` / `.jsx`) in `src`.
 - Use one path alias per module root in `tsconfig.json` (e.g. `@api`, `@services`). Do not add duplicate entries such as `@api` and `@api/*` for the same root.
-- Import from each layer's `index.ts` barrel (`@api`, `@services`, `@components`, `@templates`, `@i18n`, `@atoms`, etc.), not from deep file paths under those folders.
-- Avoid deep relative paths like `../../../` when a barrel alias exists.
-- Within the same package (e.g. `services/ai/hooks` importing `services/ai/agentGuardrails`), prefer relative imports to avoid circular dependencies through the barrel.
+- Import from each layer's `index.ts` barrel (`@api`, `@services`, `@components`, `@templates`, `@i18n`, `@atoms`, etc.) when crossing layers (e.g. `pages` → `@components`, `molecules` → `@atoms`, `lib` → `@services`).
+- Avoid deep relative paths like `../../../` when a barrel alias exists for that cross-layer import.
+- Within the same package root folder, prefer relative imports to avoid circular dependencies through the barrel. This includes:
+  - `services/*` importing sibling files under `services/`
+  - `api/*` importing sibling files under `api/`
+  - `ui/components/*` importing another folder under `ui/components/` (e.g. `../admin/...`)
+  - `ui/templates/*` importing another folder under `ui/templates/` (e.g. `../dashboard/...`)
+  - `ui/molecules/*` importing sibling molecules (e.g. `../Card/Card`)
+  - co-located files in the same component folder (e.g. `./useChatAutoScroll`, `../Input`)
 
 ## Example
 
 ```ts
-// ✅
-import { useAuth } from "@services";
+// ✅ cross-layer — use barrel alias
+import { useAuth, AuthProvider } from "@services";
 import type { UserRole } from "@api";
-import { AppShell } from "@templates";
+import { AdminPromptDefaultsPage } from "@components";
+import { Icon } from "@atoms";
 
-// ❌ deep path under an aliased root
-import { useAuth } from "@services/auth/hooks/useAuth";
-import type { UserRole } from "@api/dto/auth/AuthDto";
+// ✅ same package root — relative avoids barrel cycles
+import { AdminPromptTemplatesPanel } from "../admin/AdminPromptTemplatesPanel";
+import { DashboardSectionTitle } from "../dashboard/DashboardSectionTitle";
+import { apiRequest } from "../../http/apiClient";
+
+// ❌ cross-layer via relative path
+import { AuthProvider } from "../services/auth/AuthProvider";
+import { Icon } from "../../atoms";
 ```

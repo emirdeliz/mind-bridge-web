@@ -1,5 +1,5 @@
 import React, { memo, ReactNode } from 'react';
-import { Icon, IconProps } from '../../atoms';
+import { Icon, IconProps } from '@atoms';
 
 interface AlertBaseProps {
   children: ReactNode;

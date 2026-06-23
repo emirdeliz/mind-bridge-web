@@ -1,0 +1,76 @@
+{
+  "extends": "next/core-web-vitals",
+  "overrides": [
+    {
+      "files": ["src/pages/**/*.{ts,tsx}"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["../*", "../../*", "../../../*"],
+                "message": "Use path aliases (@components, @services, @templates, @api, etc.) instead of parent relative imports from pages."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/lib/**/*.{ts,tsx}"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["**/services/**"],
+                "message": "Use @services instead of relative imports into src/services."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/api/integration/**/*.{ts,tsx}"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["**/services/**"],
+                "message": "Use @services instead of relative imports into src/services."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "src/ui/molecules/**/*.{ts,tsx}",
+        "src/ui/organisms/**/*.{ts,tsx}"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["**/atoms/**", "../atoms/**", "../../atoms/**"],
+                "message": "Use @atoms instead of relative imports into src/ui/atoms."
+              },
+              {
+                "group": ["**/services/**", "**/api/**"],
+                "message": "Use @services or @api instead of relative cross-layer imports."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

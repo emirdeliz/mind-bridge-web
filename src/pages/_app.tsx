@@ -7,7 +7,7 @@ import { Toast, ToastProvider } from '@molecules';
 import {
   AuthProvider,
   type AuthPageProps,
-} from '../services/auth/AuthProvider';
+} from '@services';
 import '@styles/globals.css';
 
 const jakarta = Plus_Jakarta_Sans({

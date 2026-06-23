@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import type { GetServerSidePropsContext } from 'next';
 
 import type { UserAuthViewDto, UserRole } from '@api';
-import { createBypassSession } from '../../services/auth/authBypass';
+import { createBypassSession } from '@services';
 
 export const BYPASS_COOKIE_NAME = 'mindbridge-bypass';
 

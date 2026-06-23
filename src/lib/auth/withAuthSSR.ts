@@ -5,7 +5,7 @@ import type {
 } from 'next';
 
 import type { UserRole } from '@api';
-import { getRoleRoute } from '../../services/auth/roleRoute';
+import { getRoleRoute } from '@services';
 
 import { getPublicSessionProps, getServerSession } from './session.server';
 

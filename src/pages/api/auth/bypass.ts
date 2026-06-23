@@ -9,7 +9,7 @@ import {
 } from '@lib/auth/apiAuth';
 import { setBypassCookie } from '@lib/auth/bypassCookie';
 import { isServerAuthBypassEnabled } from '@lib/supabase/env';
-import { createBypassSession } from '../../../services/auth/authBypass';
+import { createBypassSession } from '@services';
 
 type BypassBody = { role?: UserRole };
 

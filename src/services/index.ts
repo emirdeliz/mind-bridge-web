@@ -1,4 +1,5 @@
 export * from './auth/hooks/useAuth';
+export { AuthProvider, type AuthPageProps } from './auth/AuthProvider';
 export * from './admin/hooks/useAdminPlatformMetrics';
 export * from './admin/hooks/useAdminPromptTemplates';
 export * from './admin/hooks/useAdminPromptTemplateDefaults';
