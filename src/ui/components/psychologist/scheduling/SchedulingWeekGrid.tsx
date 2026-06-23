@@ -98,6 +98,12 @@ const AppointmentBadge = ({
     </>
   );
 
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id: appointmentDragId(appointment.id),
+      disabled: disabled || variant === 'continuation',
+    });
+
   if (variant === 'continuation') {
     if (!appointment.isPersonalCommitment) {
       return (
@@ -120,12 +126,6 @@ const AppointmentBadge = ({
       </div>
     );
   }
-
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id: appointmentDragId(appointment.id),
-      disabled,
-    });
 
   const style = {
     transform: CSS.Translate.toString(transform),
