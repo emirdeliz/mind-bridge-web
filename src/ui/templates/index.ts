@@ -8,6 +8,7 @@ export * from './chat/ChatTypingIndicator/ChatTypingIndicator';
 export * from './chat/InteractionSummaryBody/InteractionSummaryBody';
 export * from './dashboard/DashboardKpiCard/DashboardKpiCard';
 export * from './dashboard/DashboardSectionTitle';
+export * from './layout/AdminSidebar/AdminSidebar';
 export * from './layout/AppShell';
 export * from './layout/Breadcrumbs';
 export * from './layout/LoginSplitLayout';

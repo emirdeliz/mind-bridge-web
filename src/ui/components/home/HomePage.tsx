@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { getRoleRoute, useAuth } from '@services';
+import { getHomeRoute, getRoleRoute, useAuth } from '@services';
 import { Button, Flex, Input, RouteLink, Title } from '@atoms';
 import { useI18n } from '@i18n';
 import { Form, FormError, LanguageSwitcher, PageLoader } from '@molecules';
@@ -32,11 +32,18 @@ export const HomePage = () => {
 
   useEffect(() => {
     if (loading || !session) return;
-    void router.replace(getRoleRoute(session.role));
+    void router.replace(
+      getHomeRoute({ role: session.role, isAdmin: session.isAdmin })
+    );
   }, [loading, session, router]);
 
-  const navigateByRole = (userRole: 'patient' | 'psychologist') => {
-    void router.replace(getRoleRoute(userRole));
+  const navigateAfterLogin = (user: {
+    role: 'patient' | 'psychologist';
+    isAdmin?: boolean;
+  }) => {
+    void router.replace(
+      getHomeRoute({ role: user.role, isAdmin: user.isAdmin })
+    );
   };
 
   const handleForgotPassword = async () => {
@@ -130,7 +137,7 @@ export const HomePage = () => {
                     setError(t('INVALID_CREDENTIALS'));
                     return;
                   }
-                  navigateByRole(user.role);
+                  navigateAfterLogin(user);
                 } catch (loginError) {
                   setError(
                     loginError instanceof Error

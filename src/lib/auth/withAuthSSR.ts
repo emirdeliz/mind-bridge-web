@@ -5,7 +5,7 @@ import type {
 } from 'next';
 
 import type { UserRole } from '@api';
-import { getRoleRoute } from '@services';
+import { getHomeRoute } from '@services';
 
 import { getPublicSessionProps, getServerSession } from './session.server';
 
@@ -35,7 +35,10 @@ export const withAuthSSR = (
     if (options.role && sessionResult.user.role !== options.role) {
       return {
         redirect: {
-          destination: getRoleRoute(sessionResult.user.role),
+          destination: getHomeRoute({
+            role: sessionResult.user.role,
+            isAdmin: sessionResult.user.isAdmin,
+          }),
           permanent: false,
         },
       };
@@ -54,7 +57,10 @@ export const withPublicSSR = (): GetServerSideProps => {
     if (sessionResult) {
       return {
         redirect: {
-          destination: getRoleRoute(sessionResult.user.role),
+          destination: getHomeRoute({
+            role: sessionResult.user.role,
+            isAdmin: sessionResult.user.isAdmin,
+          }),
           permanent: false,
         },
       };

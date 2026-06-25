@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-import { getRoleRoute, useAuth } from '@services';
+import { getHomeRoute, getRoleRoute, useAuth } from '@services';
 
 export const usePsychologistGuard = () => {
   const router = useRouter();
@@ -11,6 +11,10 @@ export const usePsychologistGuard = () => {
     if (loading) return;
     if (!session?.role) {
       void router.replace('/');
+      return;
+    }
+    if (session.isAdmin) {
+      void router.replace('/admin');
       return;
     }
     if (session.role !== 'psychologist') {

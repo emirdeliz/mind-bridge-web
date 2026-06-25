@@ -7,6 +7,16 @@ export const getRoleRoute = (role: UserRole | null | undefined): string => {
   return '/patient';
 };
 
+export const getHomeRoute = (options: {
+  role: UserRole | null | undefined;
+  isAdmin?: boolean;
+}): string => {
+  if (options.isAdmin) {
+    return '/admin';
+  }
+  return getRoleRoute(options.role);
+};
+
 export const getProfileRoute = (role: UserRole): string => {
   if (role === 'psychologist') {
     return '/psychologist/profile';

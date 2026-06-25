@@ -16,3 +16,29 @@ export type AdminPlatformMetricsDto = {
   platformRevenueCents: number;
   points: AdminPlatformMetricsPointDto[];
 };
+
+export type AdminPsychologistListItemDto = {
+  id: string;
+  fullName: string | null;
+  email: string | null;
+  phone: string | null;
+  activePatientCount: number;
+  totalPatientCount: number;
+};
+
+export type AdminPatientInteractionPeriod =
+  | 'week'
+  | 'month'
+  | '3m'
+  | '6m'
+  | '1y';
+
+export type AdminPsychologistPatientViewDto = {
+  id: string;
+  fullName: string | null;
+  email: string | null;
+  phone: string | null;
+  lastConsultationAt: string | null;
+  isDeleted: boolean;
+  aiInteractionCount: number;
+};

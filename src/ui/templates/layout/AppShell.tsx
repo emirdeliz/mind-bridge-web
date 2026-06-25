@@ -12,6 +12,7 @@ import {
 
 import { PatientSidebar } from './PatientSidebar/PatientSidebar';
 import { PsychologistSidebar } from './PsychologistSidebar/PsychologistSidebar';
+import { AdminSidebar } from './AdminSidebar/AdminSidebar';
 
 import { UserAccountMenu } from '../user/UserAccountMenu';
 import { Breadcrumbs, type BreadcrumbItem } from './Breadcrumbs';
@@ -39,12 +40,17 @@ export const AppShell = ({
     variant === 'dashboard' && pathname.startsWith('/psychologist');
   const showPatientSidebar =
     variant === 'dashboard' && pathname.startsWith('/patient');
+  const showAdminSidebar =
+    variant === 'dashboard' && pathname.startsWith('/admin');
   const isLoginPage = variant === 'auth' && pathname === '/';
   const showMobileDashboardHeader =
-    (showPatientSidebar || showPsychologistSidebar) && isMobile;
+    (showPatientSidebar || showPsychologistSidebar || showAdminSidebar) &&
+    isMobile;
   const mobileSidebarExpandKey = showPsychologistSidebar
     ? 'PSYCHOLOGIST_SIDEBAR_EXPAND'
-    : 'PATIENT_SIDEBAR_EXPAND';
+    : showAdminSidebar
+      ? 'ADMIN_SIDEBAR_EXPAND'
+      : 'PATIENT_SIDEBAR_EXPAND';
 
   const mainContent = (
     <Flex col wFull maxWContainer mxAuto gap6 flex1>
@@ -120,6 +126,17 @@ export const AppShell = ({
       )}
     </Flex>
   );
+
+  if (showAdminSidebar) {
+    return (
+      <MobileSidebarNavProvider>
+        <div className='mb-dashboard-layout mb-mobile-dashboard-layout'>
+          <AdminSidebar />
+          <div className='mb-dashboard-main mb-mobile-dashboard-main'>{mainContent}</div>
+        </div>
+      </MobileSidebarNavProvider>
+    );
+  }
 
   if (showPsychologistSidebar) {
     return (
