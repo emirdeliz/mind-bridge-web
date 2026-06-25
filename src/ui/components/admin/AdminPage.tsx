@@ -190,13 +190,15 @@ export const AdminPage = () => {
     >
       <Flex col wFull gap5>
         <Flex row wFull alignCenter justifySpaceBetween wrap gap4>
-          <Button
-            type='button'
-            variant='secondary'
-            onClick={() => router.back()}
-          >
-            {t('BACK')}
-          </Button>
+          <Flex row wrap gap4>
+            <Button
+              type='button'
+              variant='primary'
+              onClick={() => void router.push('/admin/psychologists')}
+            >
+              {t('USER_MENU_ADMIN_PSYCHOLOGISTS')}
+            </Button>
+          </Flex>
           <Flex row wrap gap4 justifyEnd>
             {PERIOD_OPTIONS.map((option) => (
               <Button
