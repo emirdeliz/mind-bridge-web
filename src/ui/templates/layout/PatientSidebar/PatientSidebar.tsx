@@ -1,11 +1,11 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 
 import { APP_VERSION } from '@constants';
 import { Icon, Logo, SidebarToggleIcon, Title } from '@atoms';
-import { MOBILE_MAX_WIDTH_QUERY, useMatchMedia } from '@hooks';
+import { usePersistedSidebarCollapsed } from '@hooks';
 import { translateTemplate, useI18n } from '@i18n';
 import { SidebarNavItem, Tooltip } from '@molecules';
 
@@ -20,28 +20,13 @@ export const PatientSidebar = () => {
   const router = useRouter();
   const { t } = useI18n();
   const { pathname } = router;
-  const isMobile = useMatchMedia(MOBILE_MAX_WIDTH_QUERY);
   const { isOpen: mobileOpen, close: closeMobileNav } = useMobileSidebarNav();
-  const [collapsed, setCollapsed] = useState(true);
-
-  useEffect(() => {
-    const stored = window.localStorage.getItem(SIDEBAR_COLLAPSED_STORAGE_KEY);
-    if (stored !== null) {
-      setCollapsed(stored === 'true');
-    }
-  }, []);
+  const { isMobile, showCollapsedNav, toggleCollapsed } =
+    usePersistedSidebarCollapsed(SIDEBAR_COLLAPSED_STORAGE_KEY);
 
   useEffect(() => {
     closeMobileNav();
   }, [closeMobileNav, pathname]);
-
-  const toggleCollapsed = useCallback(() => {
-    setCollapsed((current) => {
-      const next = !current;
-      window.localStorage.setItem(SIDEBAR_COLLAPSED_STORAGE_KEY, String(next));
-      return next;
-    });
-  }, []);
 
   const navItems = useMemo(
     () => [
@@ -54,7 +39,7 @@ export const PatientSidebar = () => {
     [t],
   );
 
-  const toggleLabel = collapsed
+  const toggleLabel = showCollapsedNav
     ? t('PATIENT_SIDEBAR_EXPAND')
     : t('PATIENT_SIDEBAR_COLLAPSE');
 
@@ -63,20 +48,18 @@ export const PatientSidebar = () => {
       type='button'
       className='mb-sidebar-toggle'
       aria-label={isMobile ? t('PATIENT_SIDEBAR_COLLAPSE') : toggleLabel}
-      aria-expanded={isMobile ? mobileOpen : !collapsed}
+      aria-expanded={isMobile ? mobileOpen : !showCollapsedNav}
       onClick={isMobile ? closeMobileNav : toggleCollapsed}
     >
       {isMobile ? (
         <SidebarToggleIcon direction='left' />
-      ) : collapsed ? (
+      ) : showCollapsedNav ? (
         <SidebarToggleIcon direction='right' />
       ) : (
         <SidebarToggleIcon direction='left' />
       )}
     </button>
   );
-
-  const showCollapsedNav = isMobile ? false : collapsed;
 
   const footerContent = showCollapsedNav ? (
     <div className='mb-sidebar-footer-toggle-slot'>
@@ -105,7 +88,7 @@ export const PatientSidebar = () => {
 
   const sidebarClassName = [
     'mb-sidebar',
-    !isMobile && collapsed ? 'mb-sidebar-collapsed' : '',
+    showCollapsedNav ? 'mb-sidebar-collapsed' : '',
     isMobile ? 'mb-sidebar-mobile-drawer' : '',
     isMobile && mobileOpen ? 'mb-sidebar-mobile-drawer-open' : '',
     isMobile && !mobileOpen ? 'mb-sidebar-mobile-drawer-closed' : '',
