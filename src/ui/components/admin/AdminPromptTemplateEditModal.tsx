@@ -25,6 +25,8 @@ type AdminPromptTemplateEditModalProps = {
     language: AppLanguage
   ) => string;
   editModalHintKey?: string;
+  restoreTitleKey?: string;
+  restoreMessageKey?: string;
   requireSaveConfirmation?: boolean;
   saveConfirmTitle?: string;
   saveConfirmMessage?: string;
@@ -40,6 +42,8 @@ export const AdminPromptTemplateEditModal = ({
   onRestore,
   resolveEditorContent,
   editModalHintKey = 'ADMIN_PROMPTS_EDIT_MODAL_HINT',
+  restoreTitleKey = 'ADMIN_PROMPTS_RESTORE_TITLE',
+  restoreMessageKey = 'ADMIN_PROMPTS_RESTORE_MESSAGE',
   requireSaveConfirmation = false,
   saveConfirmTitle,
   saveConfirmMessage,
@@ -261,8 +265,8 @@ export const AdminPromptTemplateEditModal = ({
       {onRestore ? (
         <ConfirmModal
           visible={restoreOpen}
-          title={t('ADMIN_PROMPTS_RESTORE_TITLE')}
-          message={t('ADMIN_PROMPTS_RESTORE_MESSAGE')}
+          title={t(restoreTitleKey)}
+          message={t(restoreMessageKey)}
           confirmLabel={t('ADMIN_PROMPTS_RESTORE_CONFIRM')}
           cancelLabel={t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
           confirmVariant='danger'

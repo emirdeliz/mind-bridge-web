@@ -6,6 +6,7 @@ export * from './admin/hooks/useAdminPsychologistPatients';
 export * from './admin/hooks/useAdminPsychologistBilling';
 export * from './admin/hooks/useAdminPromptTemplates';
 export * from './admin/hooks/useAdminPromptTemplateDefaults';
+export * from './psychologist/hooks/usePsychologistPromptTemplates';
 export * from './billing';
 export * from './chat-shortcut';
 export * from './knowledge';

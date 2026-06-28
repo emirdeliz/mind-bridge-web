@@ -2,6 +2,7 @@ export * from './Admin/AdminPlatformMetricsApi';
 export * from './Admin/AdminPsychologistsApi';
 export * from './Admin/AdminPromptTemplatesApi';
 export * from './Admin/AdminPromptTemplateDefaultsApi';
+export * from './Psychologist/PsychologistPromptTemplatesApi';
 export * from './Ai/AiChatApi';
 export * from './Auth/AuthApi';
 export * from './Billing/PsychologistBillingApi';
