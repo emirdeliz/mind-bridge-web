@@ -234,7 +234,7 @@
   "PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_TRANSLATING": "Generating translations…",
   "PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_SAVE": "Save",
   "TOOLTIP_PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS": "Quick prompts for the session AI copilot chat.",
-  "PSYCHOLOGIST_SETTINGS_KNOWLEDGE_TITLE": "Context documents (RAG)",
+  "PSYCHOLOGIST_SETTINGS_KNOWLEDGE_TITLE": "Context documents",
   "PSYCHOLOGIST_SETTINGS_KNOWLEDGE_HINT": "Upload PDFs with protocols and guidance (up to {{maxSizeMb}} MB). The agent uses them for more accurate replies.",
   "PSYCHOLOGIST_SETTINGS_KNOWLEDGE_ADD": "Add PDF",
   "PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPDATE": "Update",
