@@ -12,7 +12,9 @@ import {
   getPsychologistPromptTokensApi,
   restorePsychologistPromptTemplateApi,
   savePsychologistPromptTemplateApi,
+  testPsychologistPromptTemplateApi,
 } from '@api';
+import type { TestPsychologistPromptTemplateBodyDto } from '@api';
 
 export const usePsychologistPromptTemplates = () => {
   const [templates, setTemplates] = useState<AiPromptTemplateListItemDto[]>(
@@ -21,6 +23,7 @@ export const usePsychologistPromptTemplates = () => {
   const [tokens, setTokens] = useState<AiPromptTokenDefinitionDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [testing, setTesting] = useState(false);
   const [error, setError] = useState('');
 
   const load = useCallback(async () => {
@@ -100,14 +103,36 @@ export const usePsychologistPromptTemplates = () => {
     }
   }, []);
 
+  const testTemplate = useCallback(
+    async (key: string, body: TestPsychologistPromptTemplateBodyDto) => {
+      setTesting(true);
+      setError('');
+      try {
+        return await testPsychologistPromptTemplateApi(key, body);
+      } catch (testError) {
+        const message =
+          testError instanceof Error
+            ? testError.message
+            : 'Failed to test prompt template';
+        setError(message);
+        throw testError;
+      } finally {
+        setTesting(false);
+      }
+    },
+    []
+  );
+
   return {
     templates,
     tokens,
     loading,
     saving,
+    testing,
     error,
     reload: load,
     saveTemplate,
     restoreTemplate,
+    testTemplate,
   };
 };

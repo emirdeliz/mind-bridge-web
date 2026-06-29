@@ -2,6 +2,8 @@ import type {
   AiPromptTemplateListItemDto,
   AiPromptTokenDefinitionDto,
   SaveAiPromptTemplateBodyDto,
+  TestPsychologistPromptTemplateBodyDto,
+  TestPsychologistPromptTemplateResultDto,
 } from '@api';
 import { apiRequest } from '../../http/apiClient';
 import { keysToCamel } from '@helpers';
@@ -60,4 +62,18 @@ export const restorePsychologistPromptTemplateApi = async (
     }
   );
   return keysToCamel<AiPromptTemplateResponse>(response).template;
+};
+
+export const testPsychologistPromptTemplateApi = async (
+  key: string,
+  body: TestPsychologistPromptTemplateBodyDto
+): Promise<TestPsychologistPromptTemplateResultDto> => {
+  const response = await apiRequest<TestPsychologistPromptTemplateResultDto>(
+    `/psychologist/prompt-templates/${encodeURIComponent(key)}/test`,
+    {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }
+  );
+  return keysToCamel<TestPsychologistPromptTemplateResultDto>(response);
 };

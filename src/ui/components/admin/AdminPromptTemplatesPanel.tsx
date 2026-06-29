@@ -23,9 +23,11 @@ export const AdminPromptTemplatesPanel = () => {
     tokens,
     loading,
     saving,
+    testing,
     error,
     saveTemplate,
     restoreTemplate,
+    testTemplate,
   } = useAdminPromptTemplates();
   const [editingTemplate, setEditingTemplate] =
     useState<AiPromptTemplateListItemDto | null>(null);
@@ -113,8 +115,14 @@ export const AdminPromptTemplatesPanel = () => {
         template={editingTemplate}
         tokens={tokens}
         saving={saving}
+        testing={testing}
         resolveEditorContent={resolvePromptEditorContent}
         onClose={() => setEditingTemplate(null)}
+        onTestPrompt={
+          editingTemplate
+            ? (body) => testTemplate(editingTemplate.key, body)
+            : undefined
+        }
         onSave={async (content, sourceLanguage) => {
           if (!editingTemplate) {
             return;

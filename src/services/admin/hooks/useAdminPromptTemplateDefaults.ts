@@ -12,7 +12,9 @@ import {
   getAdminPromptTemplateDefaultsApi,
   getAdminPromptTokensApi,
   saveAdminPromptTemplateDefaultApi,
+  testAdminPromptTemplateDefaultApi,
 } from '@api';
+import type { TestPromptTemplateBodyDto } from '@api';
 
 export const useAdminPromptTemplateDefaults = () => {
   const [templates, setTemplates] = useState<
@@ -21,6 +23,7 @@ export const useAdminPromptTemplateDefaults = () => {
   const [tokens, setTokens] = useState<AiPromptTokenDefinitionDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [testing, setTesting] = useState(false);
   const [error, setError] = useState('');
 
   const load = useCallback(async () => {
@@ -77,14 +80,36 @@ export const useAdminPromptTemplateDefaults = () => {
     []
   );
 
+  const testDefault = useCallback(
+    async (key: string, body: TestPromptTemplateBodyDto) => {
+      setTesting(true);
+      setError('');
+      try {
+        return await testAdminPromptTemplateDefaultApi(key, body);
+      } catch (testError) {
+        const message =
+          testError instanceof Error
+            ? testError.message
+            : 'Failed to test prompt default';
+        setError(message);
+        throw testError;
+      } finally {
+        setTesting(false);
+      }
+    },
+    []
+  );
+
   return {
     templates,
     tokens,
     loading,
     saving,
+    testing,
     error,
     reload: load,
     saveDefault,
+    testDefault,
   };
 };
 

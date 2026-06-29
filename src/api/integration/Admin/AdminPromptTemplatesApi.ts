@@ -2,6 +2,8 @@ import type {
   AiPromptTemplateListItemDto,
   AiPromptTokenDefinitionDto,
   SaveAiPromptTemplateBodyDto,
+  TestPromptTemplateBodyDto,
+  TestPromptTemplateResultDto,
 } from '@api';
 import { apiRequest } from '../../http/apiClient';
 import { keysToCamel } from '@helpers';
@@ -34,6 +36,20 @@ export const getAdminPromptTokensApi = async (): Promise<
     '/admin/prompt-templates/tokens'
   );
   return keysToCamel<AiPromptTokensResponse>(response).tokens;
+};
+
+export const testAdminPromptTemplateApi = async (
+  key: string,
+  body: TestPromptTemplateBodyDto
+): Promise<TestPromptTemplateResultDto> => {
+  const response = await apiRequest<TestPromptTemplateResultDto>(
+    `/admin/prompt-templates/${encodeURIComponent(key)}/test`,
+    {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }
+  );
+  return keysToCamel<TestPromptTemplateResultDto>(response);
 };
 
 export const saveAdminPromptTemplateApi = async (

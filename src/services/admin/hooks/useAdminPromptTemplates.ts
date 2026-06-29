@@ -13,7 +13,9 @@ import {
   getAdminPromptTokensApi,
   restoreAdminPromptTemplateApi,
   saveAdminPromptTemplateApi,
+  testAdminPromptTemplateApi,
 } from '@api';
+import type { TestPromptTemplateBodyDto } from '@api';
 
 export const useAdminPromptTemplates = () => {
   const [templates, setTemplates] = useState<AiPromptTemplateListItemDto[]>(
@@ -22,6 +24,7 @@ export const useAdminPromptTemplates = () => {
   const [tokens, setTokens] = useState<AiPromptTokenDefinitionDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [testing, setTesting] = useState(false);
   const [error, setError] = useState('');
 
   const load = useCallback(async () => {
@@ -101,15 +104,37 @@ export const useAdminPromptTemplates = () => {
     }
   }, []);
 
+  const testTemplate = useCallback(
+    async (key: string, body: TestPromptTemplateBodyDto) => {
+      setTesting(true);
+      setError('');
+      try {
+        return await testAdminPromptTemplateApi(key, body);
+      } catch (testError) {
+        const message =
+          testError instanceof Error
+            ? testError.message
+            : 'Failed to test prompt template';
+        setError(message);
+        throw testError;
+      } finally {
+        setTesting(false);
+      }
+    },
+    []
+  );
+
   return {
     templates,
     tokens,
     loading,
     saving,
+    testing,
     error,
     reload: load,
     saveTemplate,
     restoreTemplate,
+    testTemplate,
   };
 };
 

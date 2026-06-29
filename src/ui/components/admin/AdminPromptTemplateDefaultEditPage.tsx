@@ -19,7 +19,7 @@ export const AdminPromptTemplateDefaultEditPage = () => {
   const templateKey =
     typeof router.query.key === 'string' ? router.query.key : '';
 
-  const { templates, tokens, loading, saving, error, saveDefault } =
+  const { templates, tokens, loading, saving, testing, error, saveDefault, testDefault } =
     useAdminPromptTemplateDefaults();
 
   const template = useMemo(
@@ -65,6 +65,11 @@ export const AdminPromptTemplateDefaultEditPage = () => {
         resolveEditorContent={resolvePromptDefaultEditorContent}
         editHintKey='ADMIN_PROMPT_DEFAULTS_EDIT_MODAL_HINT'
         requireSaveConfirmation
+        enablePromptTest
+        testingPrompt={testing}
+        onTestPrompt={
+          template ? (body) => testDefault(template.key, body) : undefined
+        }
         onSave={async (content, sourceLanguage) => {
           if (!template) {
             return;

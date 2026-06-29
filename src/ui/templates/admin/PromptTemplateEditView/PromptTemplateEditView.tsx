@@ -4,27 +4,35 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
+  AiPromptTemplateDefaultListItemDto,
+  AiPromptTemplateListItemDto,
   AiPromptTokenDefinitionDto,
   AppLanguage,
-  PromptTemplateModalItem,
+  TestPromptTemplateBodyDto,
+  TestPromptTemplateResultDto,
 } from '@api';
 import { Button, Flex, Icon, Loading, Title } from '@atoms';
 import { useI18n } from '@i18n';
 import { Card, ConfirmModal, FormGroup } from '@molecules';
+import { PromptTemplateTestPanel } from '../PromptTemplateTestPanel/PromptTemplateTestPanel';
 import {
   PromptTemplateEditor,
   PromptTemplateTokenReference,
 } from '@templates';
 
+export type PromptTemplateEditItem =
+  | AiPromptTemplateListItemDto
+  | AiPromptTemplateDefaultListItemDto;
+
 export type PromptTemplateEditViewProps = {
-  template: PromptTemplateModalItem | null;
+  template: PromptTemplateEditItem | null;
   tokens: AiPromptTokenDefinitionDto[];
   loading: boolean;
   saving: boolean;
   error: string;
   backHref: string;
   resolveEditorContent: (
-    template: PromptTemplateModalItem,
+    template: PromptTemplateEditItem,
     language: AppLanguage
   ) => string;
   onSave: (content: string, sourceLanguage: AppLanguage) => Promise<void>;
@@ -37,6 +45,11 @@ export type PromptTemplateEditViewProps = {
   saveConfirmMessage?: string;
   showCustomizedBadge?: boolean;
   isCustomized?: boolean;
+  enablePromptTest?: boolean;
+  testingPrompt?: boolean;
+  onTestPrompt?: (
+    body: TestPromptTemplateBodyDto
+  ) => Promise<TestPromptTemplateResultDto>;
 };
 
 export const PromptTemplateEditView = ({
@@ -57,6 +70,9 @@ export const PromptTemplateEditView = ({
   saveConfirmMessage,
   showCustomizedBadge = false,
   isCustomized = false,
+  enablePromptTest = false,
+  testingPrompt = false,
+  onTestPrompt,
 }: PromptTemplateEditViewProps) => {
   const router = useRouter();
   const { t, language } = useI18n();
@@ -260,6 +276,17 @@ export const PromptTemplateEditView = ({
                   {t('ADMIN_PROMPTS_SAVING_TRANSLATING')}
                 </Title>
               </div>
+            ) : null}
+
+            {enablePromptTest && onTestPrompt && template ? (
+              <PromptTemplateTestPanel
+                templateKey={template.key}
+                category={template.category}
+                draft={draft}
+                language={language}
+                testing={testingPrompt}
+                onTest={onTestPrompt}
+              />
             ) : null}
 
             <div className='mt-5 border-t border-mb-border/50 pt-5'>

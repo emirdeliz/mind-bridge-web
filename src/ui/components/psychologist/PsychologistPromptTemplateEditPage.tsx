@@ -24,9 +24,11 @@ export const PsychologistPromptTemplateEditPage = () => {
     tokens,
     loading,
     saving,
+    testing,
     error,
     saveTemplate,
     restoreTemplate,
+    testTemplate,
   } = usePsychologistPromptTemplates();
 
   const template = useMemo(
@@ -77,6 +79,13 @@ export const PsychologistPromptTemplateEditPage = () => {
         restoreMessageKey='PSYCHOLOGIST_PROMPTS_RESTORE_MESSAGE'
         showCustomizedBadge
         isCustomized={Boolean(template?.isCustomized)}
+        enablePromptTest
+        testingPrompt={testing}
+        onTestPrompt={
+          template
+            ? (body) => testTemplate(template.key, body)
+            : undefined
+        }
         onSave={async (content, sourceLanguage) => {
           if (!template) {
             return;

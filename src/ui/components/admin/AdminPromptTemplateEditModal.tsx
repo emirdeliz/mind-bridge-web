@@ -5,23 +5,33 @@ import { useEffect, useMemo, useState } from 'react';
 import type {
   AiPromptTokenDefinitionDto,
   AppLanguage,
-  PromptTemplateModalItem,
+  TestPromptTemplateBodyDto,
+  TestPromptTemplateResultDto,
 } from '@api';
 import { Button, Flex, Icon, Loading, Overlay, Title } from '@atoms';
 import { useI18n } from '@i18n';
 import { Card, ConfirmModal, FormGroup } from '@molecules';
-import { PromptTemplateEditor, PromptTemplateTokenReference } from '@templates';
+import {
+  PromptTemplateEditor,
+  PromptTemplateTestPanel,
+  PromptTemplateTokenReference,
+  type PromptTemplateEditItem,
+} from '@templates';
 
 type AdminPromptTemplateEditModalProps = {
   visible: boolean;
-  template: PromptTemplateModalItem | null;
+  template: PromptTemplateEditItem | null;
   tokens: AiPromptTokenDefinitionDto[];
   saving: boolean;
+  testing?: boolean;
   onClose: () => void;
   onSave: (content: string, sourceLanguage: AppLanguage) => Promise<void>;
   onRestore?: () => Promise<void>;
+  onTestPrompt?: (
+    body: TestPromptTemplateBodyDto
+  ) => Promise<TestPromptTemplateResultDto>;
   resolveEditorContent: (
-    template: PromptTemplateModalItem,
+    template: PromptTemplateEditItem,
     language: AppLanguage
   ) => string;
   editModalHintKey?: string;
@@ -37,9 +47,11 @@ export const AdminPromptTemplateEditModal = ({
   template,
   tokens,
   saving,
+  testing = false,
   onClose,
   onSave,
   onRestore,
+  onTestPrompt,
   resolveEditorContent,
   editModalHintKey = 'ADMIN_PROMPTS_EDIT_MODAL_HINT',
   restoreTitleKey = 'ADMIN_PROMPTS_RESTORE_TITLE',
@@ -200,6 +212,17 @@ export const AdminPromptTemplateEditModal = ({
                       {t('ADMIN_PROMPTS_SAVING_TRANSLATING')}
                     </Title>
                   </Flex>
+                ) : null}
+
+                {onTestPrompt ? (
+                  <PromptTemplateTestPanel
+                    templateKey={template.key}
+                    category={template.category}
+                    draft={draft}
+                    language={language}
+                    testing={testing}
+                    onTest={onTestPrompt}
+                  />
                 ) : null}
               </div>
 

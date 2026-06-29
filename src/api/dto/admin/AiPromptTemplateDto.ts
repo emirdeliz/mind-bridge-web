@@ -40,6 +40,23 @@ export type SaveAiPromptTemplateBodyDto = {
   sourceLanguage: AppLanguage;
 };
 
+export type TestPromptTemplateBodyDto = {
+  content: string;
+  sourceLanguage: AppLanguage;
+  testMessage: string;
+  psychologistContext?: string;
+  sessionConsiderations?: string;
+  clinicalContext?: string;
+};
+
+export type TestPromptTemplateResultDto = {
+  reply: string;
+  resolvedPrompt: string;
+};
+
+export type TestPsychologistPromptTemplateBodyDto = TestPromptTemplateBodyDto;
+export type TestPsychologistPromptTemplateResultDto = TestPromptTemplateResultDto;
+
 export type PromptTemplateModalItem = {
   key: string;
   label: Record<AppLanguage, string>;
