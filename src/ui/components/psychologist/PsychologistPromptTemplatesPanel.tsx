@@ -1,17 +1,13 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useMemo } from 'react';
 
 import type { AiPromptTemplateListItemDto } from '@api';
 import { Button, Flex, Icon, Loading, Title } from '@atoms';
 import { useI18n } from '@i18n';
 import { Card } from '@molecules';
-import {
-  resolvePromptEditorContent,
-  usePsychologistPromptTemplates,
-} from '@services';
-
-import { AdminPromptTemplateEditModal } from '../admin/AdminPromptTemplateEditModal';
+import { usePsychologistPromptTemplates } from '@services';
 
 const CATEGORY_LABEL_KEYS: Record<string, string> = {
   patient_chat: 'ADMIN_PROMPTS_CATEGORY_PATIENT_CHAT',
@@ -20,18 +16,9 @@ const CATEGORY_LABEL_KEYS: Record<string, string> = {
 };
 
 export const PsychologistPromptTemplatesPanel = () => {
+  const router = useRouter();
   const { t, language } = useI18n();
-  const {
-    templates,
-    tokens,
-    loading,
-    saving,
-    error,
-    saveTemplate,
-    restoreTemplate,
-  } = usePsychologistPromptTemplates();
-  const [editingTemplate, setEditingTemplate] =
-    useState<AiPromptTemplateListItemDto | null>(null);
+  const { templates, loading, error } = usePsychologistPromptTemplates();
 
   const groupedTemplates = useMemo(() => {
     const groups = new Map<string, AiPromptTemplateListItemDto[]>();
@@ -44,8 +31,7 @@ export const PsychologistPromptTemplatesPanel = () => {
   }, [templates]);
 
   return (
-    <>
-      <Card padding='lg' shadow='md'>
+    <Card padding='lg' shadow='md'>
         <Title fs3 fw3 mb2 block>
           {t('PSYCHOLOGIST_PROMPTS_TITLE')}
         </Title>
@@ -96,12 +82,16 @@ export const PsychologistPromptTemplatesPanel = () => {
                       type='button'
                       variant='secondary'
                       outlined
-                      onClick={() => setEditingTemplate(template)}
+                      onClick={() =>
+                        void router.push(
+                          `/psychologist/settings/prompts/${encodeURIComponent(template.key)}`
+                        )
+                      }
                     >
-                      <Flex row alignCenter gap2>
-                        <Icon.Pencil sm />
-                        {t('ADMIN_PROMPTS_EDIT')}
-                      </Flex>
+                        <Flex row alignCenter gap2>
+                          <Icon.Pencil sm />
+                          {t('ADMIN_PROMPTS_EDIT')}
+                        </Flex>
                     </Button>
                   </div>
                 ))}
@@ -109,31 +99,6 @@ export const PsychologistPromptTemplatesPanel = () => {
             ))}
           </Flex>
         )}
-      </Card>
-
-      <AdminPromptTemplateEditModal
-        visible={Boolean(editingTemplate)}
-        template={editingTemplate}
-        tokens={tokens}
-        saving={saving}
-        resolveEditorContent={resolvePromptEditorContent}
-        editModalHintKey='PSYCHOLOGIST_PROMPTS_EDIT_MODAL_HINT'
-        restoreTitleKey='PSYCHOLOGIST_PROMPTS_RESTORE_TITLE'
-        restoreMessageKey='PSYCHOLOGIST_PROMPTS_RESTORE_MESSAGE'
-        onClose={() => setEditingTemplate(null)}
-        onSave={async (content, sourceLanguage) => {
-          if (!editingTemplate) {
-            return;
-          }
-          await saveTemplate(editingTemplate.key, content, sourceLanguage);
-        }}
-        onRestore={async () => {
-          if (!editingTemplate) {
-            return;
-          }
-          await restoreTemplate(editingTemplate.key);
-        }}
-      />
-    </>
+    </Card>
   );
 };

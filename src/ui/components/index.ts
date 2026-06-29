@@ -1,6 +1,7 @@
 export * from './home/HomePage';
 export * from './admin/AdminPage';
 export * from './admin/AdminPromptDefaultsPage';
+export * from './admin/AdminPromptTemplateDefaultEditPage';
 export * from './admin/AdminPsychologistsPage';
 export * from './admin/AdminPsychologistDetailPage';
 export * from './register/RegisterPage';
@@ -9,4 +10,5 @@ export * from './psychologist/PsychologistPage';
 export * from './psychologist/PsychologistPatientPaymentsPage';
 export * from './psychologist/PsychologistSchedulingPage';
 export * from './psychologist/PsychologistSettingsPage';
+export * from './psychologist/PsychologistPromptTemplateEditPage';
 export * from './profile/ProfilePage';

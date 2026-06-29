@@ -210,6 +210,14 @@ export const PromptTemplateEditor = ({
               <span className='text-xs leading-relaxed text-mb-muted'>
                 {resolveLocalized(token.description)}
               </span>
+              <span className='text-xs leading-relaxed text-mb-muted/90'>
+                {resolveLocalized(token.source)}
+              </span>
+              {resolveLocalized(token.preview).trim() ? (
+                <span className='line-clamp-3 font-mono text-[11px] leading-relaxed text-mb-muted/80'>
+                  {resolveLocalized(token.preview)}
+                </span>
+              ) : null}
             </button>
           ))}
         </div>

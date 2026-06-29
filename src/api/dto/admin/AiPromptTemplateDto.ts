@@ -9,6 +9,8 @@ export type AiPromptTokenDefinitionDto = {
   label: Record<AppLanguage, string>;
   description: Record<AppLanguage, string>;
   example: Record<AppLanguage, string>;
+  source: Record<AppLanguage, string>;
+  preview: Record<AppLanguage, string>;
 };
 
 export type AiPromptTemplateListItemDto = {

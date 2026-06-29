@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 
 export interface CardProps {
   children: ReactNode;
+  className?: string;
   padding?: 'sm' | 'md' | 'lg' | 'xl';
   shadow?: 'sm' | 'md' | 'lg' | 'xl';
   border?: boolean;
@@ -11,6 +12,7 @@ export interface CardProps {
 
 export const Card = ({
   children,
+  className,
   padding = 'md',
   shadow = 'md',
   border = true,
@@ -43,6 +45,7 @@ export const Card = ({
       'hover:border-mb-accent/30 hover:shadow-glow transition-all duration-300',
     'transition-all duration-200',
     overflowHidden && 'overflow-hidden',
+    className,
   ]
     .filter(Boolean)
     .join(' ');

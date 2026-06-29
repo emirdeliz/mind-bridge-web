@@ -10,7 +10,7 @@ import type {
 import { Button, Flex, Icon, Loading, Overlay, Title } from '@atoms';
 import { useI18n } from '@i18n';
 import { Card, ConfirmModal, FormGroup } from '@molecules';
-import { PromptTemplateEditor } from '@templates';
+import { PromptTemplateEditor, PromptTemplateTokenReference } from '@templates';
 
 type AdminPromptTemplateEditModalProps = {
   visible: boolean;
@@ -169,18 +169,10 @@ export const AdminPromptTemplateEditModal = ({
                   <Title s2 fw3 mb2 block>
                     {t('ADMIN_PROMPTS_HELP_TITLE')}
                   </Title>
-                  <Title hint gray mb2 block leadingRelaxed>
+                  <Title hint gray mb3 block leadingRelaxed>
                     {t('ADMIN_PROMPTS_HELP_BODY')}
                   </Title>
-                  <ul className='mb-prompt-template-token-help list-disc space-y-2 pl-5 text-sm text-mb-muted'>
-                    {allowedTokensForEditor.map((token) => (
-                      <li key={token.key}>
-                        <span className='font-mono text-mb-accent'>#{token.key}</span>
-                        {' — '}
-                        {token.description[language] ?? token.description.pt}
-                      </li>
-                    ))}
-                  </ul>
+                  <PromptTemplateTokenReference tokens={allowedTokensForEditor} />
                 </Card>
 
                 <div className='mt-4'>
