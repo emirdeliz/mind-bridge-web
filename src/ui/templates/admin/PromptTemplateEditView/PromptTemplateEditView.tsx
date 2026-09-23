@@ -323,8 +323,8 @@ export const PromptTemplateEditView = ({
               <Title s2 fw3 mb2 block>
                 {t('ADMIN_PROMPTS_TOKENS_SIDEBAR_TITLE')}
               </Title>
-              <Title hint gray mb4 block leadingRelaxed>
-                {t('ADMIN_PROMPTS_HELP_BODY')}
+              <Title hint gray mb3 block leadingRelaxed>
+                {t('ADMIN_PROMPTS_TOKENS_SIDEBAR_HINT')}
               </Title>
               <div className='min-h-0 flex-1 overflow-y-auto'>
                 <PromptTemplateTokenReference
