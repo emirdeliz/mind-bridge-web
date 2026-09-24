@@ -1,5 +1,5 @@
 import { Button, Flex, Icon, Title } from '@atoms';
-import type { AppLanguage } from '@api';
+import type { AiContextUsageDto, AppLanguage } from '@api';
 import { localeForAppLanguage, parseEnumeratedChatItems } from '@helpers';
 import { useI18n } from '@i18n';
 import { EnumeratedTextList, useToast } from '@molecules';
@@ -10,6 +10,7 @@ interface ChatMessageBubbleProps {
   text: string;
   createdAt?: string;
   showCopy?: boolean;
+  contextUsage?: AiContextUsageDto;
 }
 
 /** Inline SVG — fontello "user" glyph is optically left-heavy in its em-box. */
@@ -49,12 +50,33 @@ const formatMessageTime = (value: string, language: AppLanguage): string => {
   }).format(date);
 };
 
+const buildContextUsageChips = (
+  usage: AiContextUsageDto,
+  t: (key: string) => string
+): string[] => {
+  const chips: string[] = [];
+  if (usage.usedClinicalRecord) {
+    chips.push(t('CHAT_CONTEXT_USED_CLINICAL'));
+  }
+  if (usage.usedDocuments) {
+    chips.push(t('CHAT_CONTEXT_USED_DOCUMENTS'));
+  }
+  if (usage.usedSessionNotes) {
+    chips.push(t('CHAT_CONTEXT_USED_SESSION_NOTES'));
+  }
+  if (usage.usedPsychologistContext) {
+    chips.push(t('CHAT_CONTEXT_USED_PSYCHOLOGIST'));
+  }
+  return chips;
+};
+
 export const ChatMessageBubble = ({
   sender,
   label,
   text,
   createdAt,
   showCopy = sender === 'agent',
+  contextUsage,
 }: ChatMessageBubbleProps) => {
   const { t, language } = useI18n();
   const { showToastSuccess, showToastError } = useToast();
@@ -62,6 +84,10 @@ export const ChatMessageBubble = ({
     sender === 'agent' ? parseEnumeratedChatItems(text) : null;
   const timeLabel = createdAt ? formatMessageTime(createdAt, language) : '';
   const canCopy = showCopy && text.trim().length > 0;
+  const contextChips =
+    sender === 'agent' && contextUsage
+      ? buildContextUsageChips(contextUsage, t)
+      : [];
 
   const handleCopy = async () => {
     try {
@@ -103,6 +129,21 @@ export const ChatMessageBubble = ({
           {text}
         </span>
       )}
+      {contextChips.length > 0 ? (
+        <div className='mt-2 flex flex-wrap items-center gap-1.5'>
+          <span className='text-[11px] text-mb-muted'>
+            {t('CHAT_CONTEXT_USED_LABEL')}
+          </span>
+          {contextChips.map((chip) => (
+            <span
+              key={chip}
+              className='rounded-md border border-mb-border/60 bg-mb-surface-elevated px-2 py-0.5 text-[11px] text-mb-muted'
+            >
+              {chip}
+            </span>
+          ))}
+        </div>
+      ) : null}
     </Flex>
   );
 };

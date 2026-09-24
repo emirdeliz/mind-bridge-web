@@ -1,11 +1,11 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import type { AppLanguage } from '@api';
+import type { AiContextUsageDto, AppLanguage } from '@api';
 import { streamPatientChatApi, streamPsychologistChatApi } from '@api';
 import { translateTemplate, useI18n } from '@i18n';
 import { useAuth } from '@services';
 
-export interface ChatMessage {
+export type ChatMessage = {
   id: string;
   sender: 'user' | 'agent';
   text: string;
@@ -13,7 +13,9 @@ export interface ChatMessage {
   interactionId?: string;
   isInteractionStart?: boolean;
   isInteractionEnd?: boolean;
-}
+  contextUsage?: AiContextUsageDto;
+};
+
 
 export type UseAiAgentOptions = {
   mode: 'patient' | 'psychologist';
@@ -172,13 +174,17 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
 
           options.onChatComplete?.();
         } else {
+          let streamedAgentText = '';
           const reply = await streamPsychologistChatApi(
             options.patientId!,
             cleanText,
             options.clinicalContext,
             requestLanguage,
             options.sessionConsiderations,
-            (delta) => appendAgentDelta(agentMessageId, delta)
+            (delta) => {
+              streamedAgentText += delta;
+              appendAgentDelta(agentMessageId, delta);
+            }
           );
 
           setSending(false);
@@ -187,11 +193,18 @@ export const useAiAgent = (options: UseAiAgentOptions) => {
               message.id === agentMessageId
                 ? {
                     ...message,
-                    text: reply.trim() || message.text,
+                    text: resolveAgentReplyText(
+                      reply.message,
+                      streamedAgentText,
+                      message.text
+                    ),
+                    contextUsage: reply.contextUsage,
                   }
                 : message
             )
           );
+
+          options.onChatComplete?.();
         }
       } catch (sendError) {
         setMessages((prev) =>

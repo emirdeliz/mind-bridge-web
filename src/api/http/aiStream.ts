@@ -1,10 +1,16 @@
 import type { ClinicalChatMessageDto } from '../dto/clinical/ClinicalContentDto';
+import type { AiContextUsageDto } from '../dto/ai/AiContextUsageDto';
 import type { AppLanguage } from '../dto/auth/AuthDto';
 import { ApiError } from './apiClient';
 
 export type AiStreamEvent =
   | { type: 'delta'; delta: string }
-  | { type: 'done'; message: string; messages?: ClinicalChatMessageDto[] }
+  | {
+      type: 'done';
+      message: string;
+      messages?: ClinicalChatMessageDto[];
+      contextUsage?: AiContextUsageDto;
+    }
   | { type: 'error'; error: string };
 
 const buildProxyUrl = (
@@ -164,6 +170,11 @@ export const streamPatientChatApi = async (
   return { message: resolvedMessage, messages: persistedMessages };
 };
 
+export type StreamPsychologistChatResult = {
+  message: string;
+  contextUsage?: AiContextUsageDto;
+};
+
 export const streamPsychologistChatApi = async (
   patientId: string,
   message: string,
@@ -171,9 +182,10 @@ export const streamPsychologistChatApi = async (
   language: AppLanguage | undefined,
   sessionConsiderations: string | undefined,
   onDelta: (delta: string) => void
-): Promise<string> => {
+): Promise<StreamPsychologistChatResult> => {
   let finalMessage = '';
   let streamedMessage = '';
+  let contextUsage: AiContextUsageDto | undefined;
 
   const lastEvent = await streamAiChatRequest(
     '/ai/psychologist/chat',
@@ -191,6 +203,7 @@ export const streamPsychologistChatApi = async (
       }
       if (event.type === 'done') {
         finalMessage = event.message;
+        contextUsage = event.contextUsage;
       }
     }
   );
@@ -200,8 +213,11 @@ export const streamPsychologistChatApi = async (
     streamedMessage.trim();
 
   if (lastEvent?.type === 'done') {
-    return resolvedMessage;
+    return {
+      message: resolvedMessage,
+      contextUsage: lastEvent.contextUsage ?? contextUsage,
+    };
   }
 
-  return resolvedMessage;
+  return { message: resolvedMessage, contextUsage };
 };

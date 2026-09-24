@@ -520,6 +520,7 @@ export const ChatPanel = ({
                 }
                 text={message.text}
                 createdAt={message.createdAt}
+                contextUsage={message.contextUsage}
               />
               {showInteractionDividers && message.isInteractionEnd ? (
                 <ChatInteractionDivider label={t('CHAT_INTERACTION_END')} />

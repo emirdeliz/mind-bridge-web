@@ -1,4 +1,5 @@
 import type { AppLanguage } from '../../dto/auth/AuthDto';
+import type { AiContextUsageDto } from '../../dto/ai/AiContextUsageDto';
 import type { ClinicalChatMessageDto } from '../../dto/clinical/ClinicalContentDto';
 import { apiRequest } from '../../http/apiClient';
 
@@ -9,6 +10,7 @@ export {
 export type {
   AiStreamEvent,
   StreamPatientChatResult,
+  StreamPsychologistChatResult,
 } from '../../http/aiStream';
 
 type PatientChatResponse = {
@@ -18,6 +20,7 @@ type PatientChatResponse = {
 
 type PsychologistChatResponse = {
   message: string;
+  contextUsage?: AiContextUsageDto;
 };
 
 export const postPatientChatApi = async (
