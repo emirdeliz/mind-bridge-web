@@ -155,7 +155,7 @@ export const PsychologistPatientsPage = () => {
   const buildRowActions = useCallback(
     (row: PsychologistPatientViewDto): ReactNode => (
       <div
-        className='flex flex-row items-center justify-center gap-1.5'
+        className='flex flex-row items-center justify-center gap-2'
         onClick={stopRowClick}
         role='presentation'
       >
@@ -164,97 +164,78 @@ export const PsychologistPatientsPage = () => {
           top
           minWidth={10}
         >
-          <span className='inline-flex h-8 w-8 items-center justify-center'>
-            <Button
-              type='button'
-              xs
-              sm
-              circle
-              variant='primary'
-              clickable={!row.isDeleted}
-              onClick={() => {
-                void router.push({
-                  pathname: '/psychologist/session',
-                  query: {
-                    patientId: row.id,
-                    patientName: row.fullName ?? '',
-                  },
-                });
-              }}
-            >
-              <Icon.Chat sm white />
-            </Button>
-          </span>
+          <Button
+            type='button'
+            icon
+            variant='primary'
+            clickable={!row.isDeleted}
+            onClick={() => {
+              void router.push({
+                pathname: '/psychologist/session',
+                query: {
+                  patientId: row.id,
+                  patientName: row.fullName ?? '',
+                },
+              });
+            }}
+          >
+            <Icon.Chat nm />
+          </Button>
         </Tooltip>
         <Tooltip
           title={t('PSYCHOLOGIST_PATIENTS_ACTION_CHAT_HISTORY')}
           top
           minWidth={10}
         >
-          <span className='inline-flex h-8 w-8 items-center justify-center'>
-            <Button
-              type='button'
-              xs
-              sm
-              circle
-              variant='secondary'
-              outlined
-              clickable={!row.isDeleted}
-              onClick={() => {
-                void openChatHistoryModal({
-                  id: row.id,
-                  fullName: row.fullName,
-                });
-              }}
-            >
-              <Icon.History sm white />
-            </Button>
-          </span>
+          <Button
+            type='button'
+            icon
+            variant='secondary'
+            clickable={!row.isDeleted}
+            onClick={() => {
+              void openChatHistoryModal({
+                id: row.id,
+                fullName: row.fullName,
+              });
+            }}
+          >
+            <Icon.History nm />
+          </Button>
         </Tooltip>
         <Tooltip
           title={t('PSYCHOLOGIST_PATIENTS_ACTION_CONTEXT')}
           top
           minWidth={10}
         >
-          <span className='inline-flex h-8 w-8 items-center justify-center'>
-            <Button
-              type='button'
-              xs
-              sm
-              circle
-              variant='secondary'
-              outlined
-              clickable={!row.isDeleted}
-              onClick={() => {
-                void openContextModal({
-                  id: row.id,
-                  fullName: row.fullName,
-                });
-              }}
-            >
-              <Icon.Cog sm white />
-            </Button>
-          </span>
+          <Button
+            type='button'
+            icon
+            variant='secondary'
+            clickable={!row.isDeleted}
+            onClick={() => {
+              void openContextModal({
+                id: row.id,
+                fullName: row.fullName,
+              });
+            }}
+          >
+            <Icon.Cog nm />
+          </Button>
         </Tooltip>
         <Tooltip
           title={t('PSYCHOLOGIST_PATIENTS_ACTION_EDIT')}
           top
           minWidth={10}
         >
-          <span className='inline-flex h-8 w-8 items-center justify-center'>
-            <Button
-              type='button'
-              xs
-              sm
-              circle
-              variant='secondary'
-              outlined
-              clickable={!row.isDeleted}
-              onClick={() => openEditModal(row)}
-            >
-              <Icon.Pencil sm white />
-            </Button>
-          </span>
+          <Button
+            type='button'
+            icon
+            variant='secondary'
+            clickable={!row.isDeleted}
+            onClick={() => openEditModal(row)}
+          >
+            <Icon.Pencil nm />
+          </Button>
         </Tooltip>
         <Tooltip
           title={
@@ -265,7 +246,7 @@ export const PsychologistPatientsPage = () => {
           top
           minWidth={10}
         >
-          <span className='ml-1.5 inline-flex h-8 w-8 items-center justify-center'>
+          <span className='ml-1.5 inline-flex items-center justify-center'>
             <Switch
               sm
               id={`patient-active-${row.id}`}

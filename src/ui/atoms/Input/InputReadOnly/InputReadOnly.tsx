@@ -1,4 +1,3 @@
-import { Title } from '../../Title/Title';
 import { applyMaskMaybe, InputProps } from '../Input';
 
 export const InputReadOnly = ({
@@ -11,7 +10,6 @@ export const InputReadOnly = ({
   barcode,
   countryState,
   currency,
-  ...props
 }: InputProps) => {
   const readOnlyClasses = [
     'mb-field',
@@ -22,7 +20,7 @@ export const InputReadOnly = ({
 
   return (
     <div className={readOnlyClasses} data-testid={dataTestId || ''}>
-      <Title {...props} fs3 ellipsis>
+      <span className='block min-w-0 truncate text-sm text-mb-muted'>
         {applyMaskMaybe(value, {
           cpf,
           cnpj,
@@ -32,7 +30,7 @@ export const InputReadOnly = ({
           countryState,
           currency,
         })}
-      </Title>
+      </span>
     </div>
   );
 };

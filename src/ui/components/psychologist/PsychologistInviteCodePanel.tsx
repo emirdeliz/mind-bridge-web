@@ -92,7 +92,7 @@ export const PsychologistInviteCodePanel = () => {
           </Title>
         ) : (
           <Flex row wFull wrap alignCenter gap2>
-            <code className='rounded-xl border border-mb-accent/30 bg-mb-accent/10 px-4 py-2 text-lg font-semibold tracking-[0.2em] text-mb-accent'>
+            <code className='inline-flex items-center rounded-md border-2 border-mb-accent/30 bg-mb-accent/10 px-4 py-2 text-sm font-semibold tracking-[0.2em] text-mb-accent'>
               {code}
             </code>
             <Button

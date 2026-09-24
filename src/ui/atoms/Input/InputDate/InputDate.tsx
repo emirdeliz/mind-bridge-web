@@ -19,21 +19,9 @@ export const InputDate = ({
   }, [value]);
 
   const inputClasses = [
-    'w-full',
-    'h-12', // Altura padronizada (48px)
-    'min-h-[48px]', // Altura mínima garantida
-    'bg-white text-gray-900',
-    'border border-gray-300', // Borda explícita com cor
-    'outline-none rounded-lg',
-    'px-4 py-3', // Padding padronizado (16px horizontal, 12px vertical)
-    'text-base',
-    'font-sans',
-    'transition-all duration-200 ease-in-out',
-    'placeholder:text-gray-400 placeholder:font-normal',
-    'disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed',
+    'mb-field block w-full min-w-0',
     'input-focus-primary',
-    hasError &&
-      'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200',
+    hasError && 'mb-field-error',
   ]
     .filter(Boolean)
     .join(' ');

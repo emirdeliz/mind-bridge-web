@@ -155,55 +155,40 @@ export const PsychologistKnowledgeDocumentsSettingsPanel = () => {
               title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_REFRESH_STATUS')}
               top
             >
-              <span className='inline-flex h-8 w-8 items-center justify-center'>
-                <Button
-                  type='button'
-                  xs
-                  sm
-                  circle
-                  variant='secondary'
-                  outlined
-                  clickable={!refreshing && !loading && !isBusy}
-                  title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_REFRESH_STATUS')}
-                  onClick={() => void refreshStatus()}
-                >
-                  <Icon.History sm spinning={refreshing} white />
-                </Button>
-              </span>
+              <Button
+                type='button'
+                icon
+                variant='secondary'
+                clickable={!refreshing && !loading && !isBusy}
+                title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_REFRESH_STATUS')}
+                onClick={() => void refreshStatus()}
+              >
+                <Icon.History nm spinning={refreshing} />
+              </Button>
             </Tooltip>
             <Tooltip title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPDATE')} top>
-              <span className='inline-flex h-8 w-8 items-center justify-center'>
-                <Button
-                  type='button'
-                  xs
-                  sm
-                  circle
-                  variant='secondary'
-                  outlined
-                  clickable={!isBusy}
-                  title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPDATE')}
-                  onClick={() => void handleUpdate(document)}
-                >
-                  <Icon.Edit sm white />
-                </Button>
-              </span>
+              <Button
+                type='button'
+                icon
+                variant='secondary'
+                clickable={!isBusy}
+                title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_UPDATE')}
+                onClick={() => void handleUpdate(document)}
+              >
+                <Icon.Edit nm />
+              </Button>
             </Tooltip>
             <Tooltip title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETE')} top>
-              <span className='inline-flex h-8 w-8 items-center justify-center'>
-                <Button
-                  type='button'
-                  xs
-                  sm
-                  circle
-                  variant='secondary'
-                  outlined
-                  clickable={!isBusy}
-                  title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETE')}
-                  onClick={() => setDeleteTarget(document)}
-                >
-                  <Icon.TrashEmpty sm white />
-                </Button>
-              </span>
+              <Button
+                type='button'
+                icon
+                variant='danger'
+                clickable={!isBusy}
+                title={t('PSYCHOLOGIST_SETTINGS_KNOWLEDGE_DELETE')}
+                onClick={() => setDeleteTarget(document)}
+              >
+                <Icon.TrashEmpty nm />
+              </Button>
             </Tooltip>
           </Flex>
         ),

@@ -10,6 +10,8 @@ export interface ButtonProps {
   outlined?: boolean;
   wFull?: boolean;
   link?: boolean;
+  /** Icon-only control: no padding, border, or filled background. */
+  icon?: boolean;
   circle?: boolean;
   maxWidth?: string;
   minWidth?: string;
@@ -48,6 +50,7 @@ export const Button = ({
   rounded = false,
   outlined = false,
   wFull = false,
+  icon = false,
   circle = false,
   maxWidth,
   minWidth,
@@ -72,48 +75,65 @@ export const Button = ({
   const isDisabled = disabled || !clickable;
 
   // Construir classes Tailwind dinamicamente
-  const sizeClasses = xs
-    ? 'px-2 py-1 text-xs'
-    : sm
-      ? 'px-3 py-1.5 text-sm'
-      : nm
-        ? 'px-4 py-2 text-sm'
-        : lg
-          ? 'px-6 py-3 text-base'
-          : xl
-            ? 'px-8 py-4 text-lg'
-            : 'px-4 py-2 text-sm';
+  const sizeClasses = icon
+    ? 'p-0'
+    : xs
+      ? 'h-8 px-2 py-0 text-xs'
+      : sm
+        ? 'h-9 px-3 py-0 text-sm'
+        : nm
+          ? 'h-10 px-4 py-0 text-sm'
+          : lg
+            ? 'h-12 px-6 py-0 text-base'
+            : xl
+              ? 'h-14 px-8 py-0 text-lg'
+              : 'h-10 px-4 py-0 text-sm';
 
   const widthClasses = wFull ? 'w-full' : 'w-auto';
-  const radiusClasses = circle
-    ? 'rounded-full'
-    : rounded
-      ? 'rounded-lg'
-      : 'rounded-md';
+  const radiusClasses = icon
+    ? 'rounded-sm'
+    : circle
+      ? 'rounded-full'
+      : rounded
+        ? 'rounded-lg'
+        : 'rounded-md';
 
   // Variantes de cor - primary usa classes de tema CSS para permitir customização
-  const variantClasses = {
-    primary: outlined
-      ? 'btn-primary-theme-outlined border-2'
-      : 'btn-primary-theme',
-    secondary: outlined
-      ? 'border-mb-border text-mb-muted hover:border-mb-accent/50 hover:bg-mb-surface-elevated hover:text-mb-text'
-      : 'bg-mb-surface-elevated text-mb-text hover:bg-mb-border border-mb-border',
-    success: outlined
-      ? 'border-emerald-500/60 text-emerald-300 hover:border-emerald-400 hover:bg-emerald-500/10'
-      : 'bg-emerald-600 text-white hover:bg-emerald-500 border-emerald-600',
-    danger: outlined
-      ? 'border-mb-danger/60 text-red-300 hover:border-mb-danger hover:bg-red-500/10'
-      : 'bg-red-600 text-white hover:bg-red-500 border-red-600',
-    warning: outlined
-      ? 'border-mb-warning/60 text-amber-200 hover:border-mb-warning hover:bg-amber-500/10'
-      : 'bg-amber-600 text-white hover:bg-amber-500 border-amber-600',
-    info: outlined
-      ? 'border-mb-primary/50 text-mb-primary hover:border-mb-primary hover:bg-mb-primary/10'
-      : 'bg-mb-primary text-white hover:bg-mb-primary-hover border-mb-primary',
-  };
+  const variantClasses = icon
+    ? {
+        primary: 'text-mb-accent hover:text-mb-accent/80',
+        secondary: 'text-mb-muted hover:text-mb-text',
+        success: 'text-emerald-400 hover:text-emerald-300',
+        danger: 'text-red-400 hover:text-red-300',
+        warning: 'text-amber-400 hover:text-amber-300',
+        info: 'text-mb-primary hover:text-mb-primary-hover',
+      }
+    : {
+        primary: outlined
+          ? 'btn-primary-theme-outlined border-2'
+          : 'btn-primary-theme',
+        secondary: outlined
+          ? 'border-mb-border text-mb-muted hover:border-mb-accent/50 hover:bg-mb-surface-elevated hover:text-mb-text'
+          : 'bg-mb-surface-elevated text-mb-text hover:bg-mb-border border-mb-border',
+        success: outlined
+          ? 'border-emerald-500/60 text-emerald-300 hover:border-emerald-400 hover:bg-emerald-500/10'
+          : 'bg-emerald-600 text-white hover:bg-emerald-500 border-emerald-600',
+        danger: outlined
+          ? 'border-mb-danger/60 text-red-300 hover:border-mb-danger hover:bg-red-500/10'
+          : 'bg-red-600 text-white hover:bg-red-500 border-red-600',
+        warning: outlined
+          ? 'border-mb-warning/60 text-amber-200 hover:border-mb-warning hover:bg-amber-500/10'
+          : 'bg-amber-600 text-white hover:bg-amber-500 border-amber-600',
+        info: outlined
+          ? 'border-mb-primary/50 text-mb-primary hover:border-mb-primary hover:bg-mb-primary/10'
+          : 'bg-mb-primary text-white hover:bg-mb-primary-hover border-mb-primary',
+      };
 
-  const borderClasses = outlined ? 'border-2' : 'border-2 border-transparent';
+  const borderClasses = icon
+    ? 'border-0'
+    : outlined
+      ? 'border-2'
+      : 'border-2 border-transparent';
   const opacityClasses = isDisabled ? 'opacity-50' : 'opacity-100';
   const cursorClasses = isDisabled ? 'cursor-not-allowed' : 'cursor-pointer';
 
@@ -155,8 +175,8 @@ export const Button = ({
     'transition-all duration-200 ease-in-out',
     'focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-mb-accent/30',
     'disabled:opacity-50 disabled:cursor-not-allowed',
-    'hover:brightness-110 active:brightness-95',
-    outlined ? 'bg-transparent' : '',
+    icon ? 'bg-transparent hover:opacity-80 active:opacity-70' : 'hover:brightness-110 active:brightness-95',
+    outlined || icon ? 'bg-transparent' : '',
   ]
     .filter(Boolean)
     .join(' ');

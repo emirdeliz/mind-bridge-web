@@ -200,38 +200,28 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
     (shortcut: PsychologistChatShortcutDto) => (
       <Flex row gap2>
         <Tooltip title={t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_EDIT')} top>
-          <span className='inline-flex h-8 w-8 items-center justify-center'>
-            <Button
-              type='button'
-              xs
-              sm
-              circle
-              variant='secondary'
-              outlined
-              clickable={!saving}
-              title={t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_EDIT')}
-              onClick={() => openEditForm(shortcut)}
-            >
-              <Icon.Pencil sm white />
-            </Button>
-          </span>
+          <Button
+            type='button'
+            icon
+            variant='secondary'
+            clickable={!saving}
+            title={t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_EDIT')}
+            onClick={() => openEditForm(shortcut)}
+          >
+            <Icon.Pencil nm />
+          </Button>
         </Tooltip>
         <Tooltip title={t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_DELETE')} top>
-          <span className='inline-flex h-8 w-8 items-center justify-center'>
-            <Button
-              type='button'
-              xs
-              sm
-              circle
-              variant='secondary'
-              outlined
-              clickable={!saving}
-              title={t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_DELETE')}
-              onClick={() => setDeleteTarget(shortcut)}
-            >
-              <Icon.TrashEmpty sm white />
-            </Button>
-          </span>
+          <Button
+            type='button'
+            icon
+            variant='danger'
+            clickable={!saving}
+            title={t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_DELETE')}
+            onClick={() => setDeleteTarget(shortcut)}
+          >
+            <Icon.TrashEmpty nm />
+          </Button>
         </Tooltip>
       </Flex>
     ),

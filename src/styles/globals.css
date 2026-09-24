@@ -55,7 +55,12 @@
 
 @layer components {
   .mb-field {
-    @apply w-full min-h-[48px] rounded-xl border border-mb-border bg-mb-bg/70 px-4 py-3 text-base text-mb-text shadow-inner shadow-black/10 outline-none transition-all duration-200 placeholder:text-mb-muted focus:border-mb-accent focus:ring-2 focus:ring-mb-accent/25;
+    @apply w-full rounded-md border border-mb-border bg-mb-bg/70 px-4 py-2 text-sm text-mb-text shadow-inner shadow-black/10 outline-none transition-all duration-200 placeholder:text-mb-muted focus:border-mb-accent focus:ring-2 focus:ring-mb-accent/25;
+  }
+
+  input.mb-field,
+  select.mb-field {
+    @apply box-border h-10 py-0;
   }
 
   input.mb-field:-webkit-autofill,

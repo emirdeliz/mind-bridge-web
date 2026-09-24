@@ -30,7 +30,6 @@ export const Select = ({
 }: SelectProps) => {
   const selectClasses = [
     'mb-field',
-    'h-12',
     'cursor-pointer',
     'input-focus-primary',
   ].join(' ');

@@ -150,7 +150,7 @@ export const PsychologistPatientPaymentsPage = () => {
 
       return (
         <div
-          className='flex flex-row items-center justify-center gap-1.5'
+          className='flex flex-row items-center justify-center gap-2'
           onClick={stopRowClick}
           role='presentation'
         >
@@ -163,24 +163,15 @@ export const PsychologistPatientPaymentsPage = () => {
             top
             minWidth={10}
           >
-            <span className='inline-flex h-8 w-8 items-center justify-center'>
-              <Button
-                type='button'
-                xs
-                sm
-                circle
-                variant={row.isCompliant ? 'secondary' : 'primary'}
-                outlined={row.isCompliant}
-                clickable={!saving}
-                onClick={() => setRegisterPatient(row)}
-              >
-                {row.isCompliant ? (
-                  <Icon.Pencil sm white />
-                ) : (
-                  <Icon.Edit sm white />
-                )}
-              </Button>
-            </span>
+            <Button
+              type='button'
+              icon
+              variant={row.isCompliant ? 'secondary' : 'primary'}
+              clickable={!saving}
+              onClick={() => setRegisterPatient(row)}
+            >
+              {row.isCompliant ? <Icon.Pencil nm /> : <Icon.Edit nm />}
+            </Button>
           </Tooltip>
           {row.payment ? (
             <Tooltip
@@ -188,20 +179,15 @@ export const PsychologistPatientPaymentsPage = () => {
               top
               minWidth={10}
             >
-              <span className='inline-flex h-8 w-8 items-center justify-center'>
-                <Button
-                  type='button'
-                  xs
-                  sm
-                  circle
-                  variant='danger'
-                  outlined
-                  clickable={!saving}
-                  onClick={() => setDeletePaymentId(row.payment!.id)}
-                >
-                  <Icon.TrashEmpty sm white />
-                </Button>
-              </span>
+              <Button
+                type='button'
+                icon
+                variant='danger'
+                clickable={!saving}
+                onClick={() => setDeletePaymentId(row.payment!.id)}
+              >
+                <Icon.TrashEmpty nm />
+              </Button>
             </Tooltip>
           ) : null}
         </div>

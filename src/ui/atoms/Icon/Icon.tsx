@@ -299,9 +299,38 @@ const getIcon = ({
 
 export const Icon = ({ className, spinning, ...props }: IconProps) => {
   const icon = getIcon(props);
+  const sizeClass = props.xxs
+    ? 'text-xs'
+    : props.xs
+      ? 'text-sm'
+      : props.sm
+        ? 'text-base'
+        : props.nm
+          ? 'text-lg'
+          : props.xLg
+            ? 'text-xl'
+            : props.xxxLg
+              ? 'text-2xl'
+              : undefined;
+  const colorClass = props.white
+    ? 'text-white'
+    : props.black
+      ? 'text-black'
+      : props.red
+        ? 'text-red-400'
+        : props.green
+          ? 'text-emerald-400'
+          : props.blue
+            ? 'text-mb-primary'
+            : props.gray
+              ? 'text-mb-muted'
+              : undefined;
   const iconClasses = [
     'inline-flex',
     'align-middle',
+    'leading-none',
+    sizeClass,
+    colorClass,
     className,
     spinning && 'animate-spin',
     props.rotate90 && 'rotate-90',
