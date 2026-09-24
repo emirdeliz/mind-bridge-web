@@ -363,6 +363,22 @@ export const ChatPanel = ({
     setText('');
   }, [audioBusy, onSend, sending, text]);
 
+  const resizeComposer = useCallback((element: HTMLTextAreaElement | null) => {
+    if (!element) {
+      return;
+    }
+    element.style.height = 'auto';
+    const nextHeight = Math.min(Math.max(element.scrollHeight, 64), 120);
+    element.style.height = `${nextHeight}px`;
+  }, []);
+
+  useEffect(() => {
+    const element = document.getElementById(
+      'mb-chat-composer-input'
+    ) as HTMLTextAreaElement | null;
+    resizeComposer(element);
+  }, [text, resizeComposer]);
+
   const handleComposerKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (event.key !== 'Enter' || event.shiftKey) {
@@ -375,17 +391,54 @@ export const ChatPanel = ({
     [submitMessage]
   );
 
+  const sendShortcut = useCallback(
+    (message: string) => {
+      if (sending || audioBusy) {
+        return;
+      }
+      onSend(message);
+    },
+    [audioBusy, onSend, sending]
+  );
+
+  const chatSubtitle =
+    speechAudience === 'psychologist'
+      ? t('CHAT_SUBTITLE_PSYCHOLOGIST')
+      : t('CHAT_SUBTITLE_PATIENT');
+
+  const shortcutButtons = shortcuts?.length ? (
+    <Flex row wFull wrap gap2>
+      {shortcuts.map((shortcut) => (
+        <Button
+          key={shortcut.id}
+          type='button'
+          chip
+          clickable={!sending && !audioBusy}
+          onClick={() => sendShortcut(shortcut.message)}
+        >
+          {shortcut.label}
+        </Button>
+      ))}
+    </Flex>
+  ) : null;
+
   return (
     <Card padding='lg' shadow='lg'>
       {sectionTooltip ? (
         <DashboardSectionTitle
           title={t('AI_AGENT_CHAT')}
           tooltip={sectionTooltip}
+          subtitle={chatSubtitle}
         />
       ) : (
-        <Title fs3 fw3 mb2>
-          {t('AI_AGENT_CHAT')}
-        </Title>
+        <Flex col wFull gap1 mb2>
+          <Title fs3 fw3>
+            {t('AI_AGENT_CHAT')}
+          </Title>
+          <Title hint gray block leadingRelaxed>
+            {chatSubtitle}
+          </Title>
+        </Flex>
       )}
       {disclaimer ? (
         <Title hint gray block leadingRelaxed mb3>
@@ -422,6 +475,7 @@ export const ChatPanel = ({
                     : t('CHAT_USER_LABEL')
                 }
                 text={message.text}
+                createdAt={message.createdAt}
               />
               {showInteractionDividers && message.isInteractionEnd ? (
                 <ChatInteractionDivider label={t('CHAT_INTERACTION_END')} />
@@ -436,31 +490,19 @@ export const ChatPanel = ({
           />
         ) : null}
         {!messages.length && !sending ? (
-          <Title s1 gray center py8>
-            {t('CHAT_NO_MESSAGES')}
-          </Title>
+          <Flex col wFull alignCenter justifyCenter gap4 py8>
+            <Title s1 gray center>
+              {t('CHAT_NO_MESSAGES')}
+            </Title>
+            <Title hint gray center block leadingRelaxed>
+              {t('CHAT_EMPTY_HINT')}
+            </Title>
+            {shortcutButtons}
+          </Flex>
         ) : null}
       </ChatScrollArea>
-      {shortcuts?.length ? (
-        <Flex row wFull wrap gap2 mb4>
-          {shortcuts.map((shortcut) => (
-            <Button
-              key={shortcut.id}
-              type='button'
-              variant='secondary'
-              outlined
-              clickable={!sending && !audioBusy}
-              onClick={() => {
-                if (sending || audioBusy) {
-                  return;
-                }
-                onSend(shortcut.message);
-              }}
-            >
-              {shortcut.label}
-            </Button>
-          ))}
-        </Flex>
+      {messages.length > 0 || sending ? (
+        <div className='mb-3'>{shortcutButtons}</div>
       ) : null}
       <Form
         onSubmit={(event) => {
@@ -471,11 +513,15 @@ export const ChatPanel = ({
         <div className='mb-chat-composer'>
           <div className='mb-chat-composer-field'>
             <Input.TextArea
+              id='mb-chat-composer-input'
               placeholder={t('CHAT_MESSAGE_PLACEHOLDER')}
               value={text}
-              rows={4}
+              rows={2}
               disabled={sending || audioBusy}
-              onChange={(event) => setText(event.target.value)}
+              onChange={(event) => {
+                setText(event.target.value);
+                resizeComposer(event.target as HTMLTextAreaElement);
+              }}
               onKeyDown={handleComposerKeyDown}
             />
           </div>

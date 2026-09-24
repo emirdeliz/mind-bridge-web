@@ -83,29 +83,31 @@ export const Button = ({
   const isIconButton = (icon || circle) && !framed;
 
   // Construir classes Tailwind dinamicamente
-  const sizeClasses = isIconButton
-    ? 'p-0'
-    : framed && circle
-      ? nm
-        ? 'h-10 w-10 p-0 text-sm'
-        : lg
-          ? 'h-12 w-12 p-0 text-base'
+  const sizeClasses = chip
+    ? ''
+    : isIconButton
+      ? 'p-0'
+      : framed && circle
+        ? nm
+          ? 'h-10 w-10 p-0 text-sm'
+          : lg
+            ? 'h-12 w-12 p-0 text-base'
+            : sm
+              ? 'h-9 w-9 p-0 text-sm'
+              : xs
+                ? 'h-8 w-8 p-0 text-xs'
+                : 'h-10 w-10 p-0 text-sm'
+        : xs
+          ? 'h-8 px-2 py-0 text-xs'
           : sm
-            ? 'h-9 w-9 p-0 text-sm'
-            : xs
-              ? 'h-8 w-8 p-0 text-xs'
-              : 'h-10 w-10 p-0 text-sm'
-      : xs
-        ? 'h-8 px-2 py-0 text-xs'
-        : sm
-          ? 'h-9 px-3 py-0 text-sm'
-          : nm
-            ? 'h-10 px-4 py-0 text-sm'
-            : lg
-              ? 'h-12 px-6 py-0 text-base'
-              : xl
-                ? 'h-14 px-8 py-0 text-lg'
-                : 'h-10 px-4 py-0 text-sm';
+            ? 'h-9 px-3 py-0 text-sm'
+            : nm
+              ? 'h-10 px-4 py-0 text-sm'
+              : lg
+                ? 'h-12 px-6 py-0 text-base'
+                : xl
+                  ? 'h-14 px-8 py-0 text-lg'
+                  : 'h-10 px-4 py-0 text-sm';
 
   const widthClasses = wFull ? 'w-full' : 'w-auto';
   const radiusClasses = isIconButton
@@ -147,11 +149,13 @@ export const Button = ({
           : 'bg-mb-primary text-white hover:bg-mb-primary-hover border-mb-primary',
       };
 
-  const borderClasses = isIconButton
-    ? 'border-0'
-    : outlined
-      ? 'border-2'
-      : 'border-2 border-transparent';
+  const borderClasses = chip
+    ? ''
+    : isIconButton
+      ? 'border-0'
+      : outlined
+        ? 'border-2'
+        : 'border-2 border-transparent';
   const opacityClasses = isDisabled ? 'opacity-50' : 'opacity-100';
   const cursorClasses = isDisabled ? 'cursor-not-allowed' : 'cursor-pointer';
 
@@ -169,21 +173,19 @@ export const Button = ({
     .join(' ');
 
   const chipClasses = chip
-    ? 'rounded-lg px-2.5 py-1 text-xs font-semibold uppercase tracking-wide'
+    ? 'rounded-full border border-mb-border/70 bg-mb-surface/60 px-3 py-1 text-xs font-medium normal-case tracking-normal text-mb-muted hover:border-mb-accent/40 hover:bg-mb-surface-elevated hover:text-mb-text'
     : '';
 
   const selectedClasses = selected
     ? 'bg-mb-accent/20 text-mb-accent ring-1 ring-mb-accent/30'
-    : chip
-      ? 'text-mb-muted hover:bg-mb-surface-elevated hover:text-mb-text'
-      : '';
+    : '';
 
   const buttonClasses = [
     'flex items-center justify-center',
     'font-medium font-sans',
     sizeClasses,
     widthClasses,
-    radiusClasses,
+    !chip && radiusClasses,
     borderClasses,
     opacityClasses,
     cursorClasses,
@@ -193,10 +195,12 @@ export const Button = ({
     'transition-all duration-200 ease-in-out',
     'focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-mb-accent/30',
     'disabled:opacity-50 disabled:cursor-not-allowed',
-    isIconButton
-      ? 'bg-transparent hover:opacity-80 active:opacity-70'
-      : 'hover:brightness-110 active:brightness-95',
-    outlined || isIconButton ? 'bg-transparent' : '',
+    chip
+      ? ''
+      : isIconButton
+        ? 'bg-transparent hover:opacity-80 active:opacity-70'
+        : 'hover:brightness-110 active:brightness-95',
+    !chip && (outlined || isIconButton) ? 'bg-transparent' : '',
   ]
     .filter(Boolean)
     .join(' ');

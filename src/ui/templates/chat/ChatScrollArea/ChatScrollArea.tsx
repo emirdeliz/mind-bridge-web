@@ -27,7 +27,7 @@ export const ChatScrollArea = ({
     'gap-4',
     'overflow-y-auto',
     'mb-4',
-    tallScroll ? 'max-h-[480px]' : 'max-h-[320px]',
+    tallScroll ? 'min-h-[280px] max-h-[520px]' : 'min-h-[200px] max-h-[320px]',
   ].join(' ');
 
   return (

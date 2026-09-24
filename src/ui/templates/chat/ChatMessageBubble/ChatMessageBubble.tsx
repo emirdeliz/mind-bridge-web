@@ -1,11 +1,14 @@
 import { Flex, Icon, Title } from '@atoms';
-import { parseEnumeratedChatItems } from '@helpers';
+import type { AppLanguage } from '@api';
+import { localeForAppLanguage, parseEnumeratedChatItems } from '@helpers';
+import { useI18n } from '@i18n';
 import { EnumeratedTextList } from '@molecules';
 
 interface ChatMessageBubbleProps {
   sender: 'agent' | 'user';
   label: string;
   text: string;
+  createdAt?: string;
 }
 
 /** Inline SVG — fontello "user" glyph is optically left-heavy in its em-box. */
@@ -33,13 +36,28 @@ const ChatSenderIcon = ({ sender }: { sender: 'agent' | 'user' }) => (
   </span>
 );
 
+const formatMessageTime = (value: string, language: AppLanguage): string => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+
+  return new Intl.DateTimeFormat(localeForAppLanguage(language), {
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
+};
+
 export const ChatMessageBubble = ({
   sender,
   label,
   text,
+  createdAt,
 }: ChatMessageBubbleProps) => {
+  const { language } = useI18n();
   const enumeratedItems =
     sender === 'agent' ? parseEnumeratedChatItems(text) : null;
+  const timeLabel = createdAt ? formatMessageTime(createdAt, language) : '';
 
   return (
     <Flex col agentMessage={sender === 'agent'} userMessage={sender === 'user'}>
@@ -48,9 +66,14 @@ export const ChatMessageBubble = ({
         <Title s1 uppercase trackingWide textAccent block>
           {label}
         </Title>
+        {timeLabel ? (
+          <span className='ml-auto text-[11px] tabular-nums text-mb-muted/80'>
+            {timeLabel}
+          </span>
+        ) : null}
       </Flex>
       {enumeratedItems ? (
-        <EnumeratedTextList items={enumeratedItems} />
+        <EnumeratedTextList items={enumeratedItems} muted={false} />
       ) : (
         <span className='break-words whitespace-pre-wrap text-sm leading-relaxed text-mb-text'>
           {text}
