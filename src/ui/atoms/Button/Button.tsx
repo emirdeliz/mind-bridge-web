@@ -73,9 +73,11 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   const isDisabled = disabled || !clickable;
+  /** Circle buttons in this design system are icon-only controls. */
+  const isIconButton = icon || circle;
 
   // Construir classes Tailwind dinamicamente
-  const sizeClasses = icon
+  const sizeClasses = isIconButton
     ? 'p-0'
     : xs
       ? 'h-8 px-2 py-0 text-xs'
@@ -90,16 +92,14 @@ export const Button = ({
               : 'h-10 px-4 py-0 text-sm';
 
   const widthClasses = wFull ? 'w-full' : 'w-auto';
-  const radiusClasses = icon
+  const radiusClasses = isIconButton
     ? 'rounded-sm'
-    : circle
-      ? 'rounded-full'
-      : rounded
-        ? 'rounded-lg'
-        : 'rounded-md';
+    : rounded
+      ? 'rounded-lg'
+      : 'rounded-md';
 
   // Variantes de cor - primary usa classes de tema CSS para permitir customização
-  const variantClasses = icon
+  const variantClasses = isIconButton
     ? {
         primary: 'text-mb-accent hover:text-mb-accent/80',
         secondary: 'text-mb-muted hover:text-mb-text',
@@ -129,7 +129,7 @@ export const Button = ({
           : 'bg-mb-primary text-white hover:bg-mb-primary-hover border-mb-primary',
       };
 
-  const borderClasses = icon
+  const borderClasses = isIconButton
     ? 'border-0'
     : outlined
       ? 'border-2'
@@ -175,8 +175,10 @@ export const Button = ({
     'transition-all duration-200 ease-in-out',
     'focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-mb-accent/30',
     'disabled:opacity-50 disabled:cursor-not-allowed',
-    icon ? 'bg-transparent hover:opacity-80 active:opacity-70' : 'hover:brightness-110 active:brightness-95',
-    outlined || icon ? 'bg-transparent' : '',
+    isIconButton
+      ? 'bg-transparent hover:opacity-80 active:opacity-70'
+      : 'hover:brightness-110 active:brightness-95',
+    outlined || isIconButton ? 'bg-transparent' : '',
   ]
     .filter(Boolean)
     .join(' ');
