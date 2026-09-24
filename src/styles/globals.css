@@ -55,7 +55,7 @@
 
 @layer components {
   .mb-field {
-    @apply w-full rounded-md border border-mb-border bg-mb-bg/70 px-4 py-2 text-sm text-mb-text shadow-inner shadow-black/10 outline-none transition-all duration-200 placeholder:text-mb-muted focus:border-mb-accent focus:ring-2 focus:ring-mb-accent/25;
+    @apply w-full rounded-md border border-mb-border bg-mb-bg/70 px-4 py-2 text-sm text-mb-text shadow-inner shadow-black/10 outline-none transition-all duration-200 placeholder:text-sm placeholder:text-mb-muted focus:border-mb-accent focus:ring-2 focus:ring-mb-accent/25;
   }
 
   input.mb-field,
