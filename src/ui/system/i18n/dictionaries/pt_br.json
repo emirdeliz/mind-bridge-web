@@ -402,6 +402,8 @@
   "CHAT_EMPTY_HINT": "Peça perguntas, hipóteses ou o próximo passo da sessão.",
   "CHAT_SUBTITLE_PSYCHOLOGIST": "Sugestões para a sessão atual",
   "CHAT_SUBTITLE_PATIENT": "Converse com o assistente entre as sessões",
+  "CHAT_SHORTCUTS_LABEL": "Atalhos",
+  "CHAT_SHORTCUTS_HINT": "Perguntas pré-cadastradas enviadas ao agente de IA com um toque. Gerencie em Configurações.",
   "CHAT_AGENT_TYPING": "O agente está respondendo",
   "CHAT_MESSAGE_PLACEHOLDER": "Escreva sua mensagem…",
   "CHAT_NEW_INTERACTION": "Nova conversa",

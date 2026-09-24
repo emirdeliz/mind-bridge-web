@@ -402,6 +402,8 @@
   "CHAT_EMPTY_HINT": "Ask for questions, hypotheses, or the next step in the session.",
   "CHAT_SUBTITLE_PSYCHOLOGIST": "Suggestions for the current session",
   "CHAT_SUBTITLE_PATIENT": "Chat with the assistant between sessions",
+  "CHAT_SHORTCUTS_LABEL": "Shortcuts",
+  "CHAT_SHORTCUTS_HINT": "Pre-saved questions sent to the AI agent in one tap. Manage them in Settings.",
   "CHAT_AGENT_TYPING": "The agent is responding",
   "CHAT_MESSAGE_PLACEHOLDER": "Write your message…",
   "CHAT_NEW_INTERACTION": "New conversation",

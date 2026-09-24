@@ -407,18 +407,30 @@ export const ChatPanel = ({
       : t('CHAT_SUBTITLE_PATIENT');
 
   const shortcutButtons = shortcuts?.length ? (
-    <Flex row wFull wrap gap2>
-      {shortcuts.map((shortcut) => (
-        <Button
-          key={shortcut.id}
-          type='button'
-          chip
-          clickable={!sending && !audioBusy}
-          onClick={() => sendShortcut(shortcut.message)}
-        >
-          {shortcut.label}
-        </Button>
-      ))}
+    <Flex col wFull gap2>
+      <Flex row alignCenter gap2 wrap>
+        <Title s1 gray>
+          {t('CHAT_SHORTCUTS_LABEL')}
+        </Title>
+        <Tooltip title={t('CHAT_SHORTCUTS_HINT')} top width={280}>
+          <span className='mb-tooltip-trigger'>
+            <Icon.InfoCircle xs />
+          </span>
+        </Tooltip>
+      </Flex>
+      <Flex row wFull wrap gap2>
+        {shortcuts.map((shortcut) => (
+          <Button
+            key={shortcut.id}
+            type='button'
+            chip
+            clickable={!sending && !audioBusy}
+            onClick={() => sendShortcut(shortcut.message)}
+          >
+            {shortcut.label}
+          </Button>
+        ))}
+      </Flex>
     </Flex>
   ) : null;
 
