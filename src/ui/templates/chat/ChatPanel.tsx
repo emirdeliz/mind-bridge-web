@@ -493,6 +493,7 @@ export const ChatPanel = ({
                   <Button
                     type='button'
                     circle
+                    framed
                     nm
                     variant={isRecording ? 'danger' : 'secondary'}
                     outlined

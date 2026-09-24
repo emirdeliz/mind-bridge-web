@@ -13,6 +13,11 @@ export interface ButtonProps {
   /** Icon-only control: no padding, border, or filled background. */
   icon?: boolean;
   circle?: boolean;
+  /**
+   * Keep circular chrome (border + padding). Use with `circle` for icon
+   * buttons that should stay framed (e.g. microphone).
+   */
+  framed?: boolean;
   maxWidth?: string;
   minWidth?: string;
   title?: string;
@@ -52,6 +57,7 @@ export const Button = ({
   wFull = false,
   icon = false,
   circle = false,
+  framed = false,
   maxWidth,
   minWidth,
   variant = 'primary',
@@ -73,30 +79,42 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   const isDisabled = disabled || !clickable;
-  /** Circle buttons in this design system are icon-only controls. */
-  const isIconButton = icon || circle;
+  /** Bare icon control — skipped when `framed` keeps circular chrome. */
+  const isIconButton = (icon || circle) && !framed;
 
   // Construir classes Tailwind dinamicamente
   const sizeClasses = isIconButton
     ? 'p-0'
-    : xs
-      ? 'h-8 px-2 py-0 text-xs'
-      : sm
-        ? 'h-9 px-3 py-0 text-sm'
-        : nm
-          ? 'h-10 px-4 py-0 text-sm'
-          : lg
-            ? 'h-12 px-6 py-0 text-base'
-            : xl
-              ? 'h-14 px-8 py-0 text-lg'
-              : 'h-10 px-4 py-0 text-sm';
+    : framed && circle
+      ? nm
+        ? 'h-10 w-10 p-0 text-sm'
+        : lg
+          ? 'h-12 w-12 p-0 text-base'
+          : sm
+            ? 'h-9 w-9 p-0 text-sm'
+            : xs
+              ? 'h-8 w-8 p-0 text-xs'
+              : 'h-10 w-10 p-0 text-sm'
+      : xs
+        ? 'h-8 px-2 py-0 text-xs'
+        : sm
+          ? 'h-9 px-3 py-0 text-sm'
+          : nm
+            ? 'h-10 px-4 py-0 text-sm'
+            : lg
+              ? 'h-12 px-6 py-0 text-base'
+              : xl
+                ? 'h-14 px-8 py-0 text-lg'
+                : 'h-10 px-4 py-0 text-sm';
 
   const widthClasses = wFull ? 'w-full' : 'w-auto';
   const radiusClasses = isIconButton
     ? 'rounded-sm'
-    : rounded
-      ? 'rounded-lg'
-      : 'rounded-md';
+    : circle
+      ? 'rounded-full'
+      : rounded
+        ? 'rounded-lg'
+        : 'rounded-md';
 
   // Variantes de cor - primary usa classes de tema CSS para permitir customização
   const variantClasses = isIconButton
