@@ -8,7 +8,7 @@ export const EnumeratedTextList = ({ items }: EnumeratedTextListProps) => {
   }
 
   return (
-    <ol className='m-0 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-mb-muted'>
+    <ol className='m-0 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-mb-text'>
       {items.map((item, index) => (
         <li
           key={`${index}-${item}`}
