@@ -36,7 +36,7 @@ export const Label = ({
     error && 'text-red-600',
     disabled && 'text-gray-400 cursor-not-allowed',
     // Hover
-    !disabled && !error && 'hover:text-gray-800',
+    !disabled && !error && 'hover:text-mb-text',
   ]
     .filter(Boolean)
     .join(' ');

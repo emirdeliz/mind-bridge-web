@@ -47,7 +47,7 @@ export const FormGroup = ({
   const requiredClasses = [
     'text-red-500 ml-1',
     'font-semibold',
-    'text-lg',
+    'text-sm',
   ].join(' ');
 
   const optionalClasses = [
@@ -73,8 +73,6 @@ export const FormGroup = ({
       {label && (
         <div className={labelContainerClasses}>
           <Label
-            n2
-            fs3
             target={target}
             fw3={fw3}
             data-testid={`${labelId}-label`}
