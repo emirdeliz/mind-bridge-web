@@ -660,21 +660,42 @@
   }
 
   .mb-chat-sender-icon {
-    @apply inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-mb-border/70 bg-mb-bg/80;
+    @apply relative inline-flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full border border-mb-border/70 bg-mb-bg/80;
+  }
+
+  .mb-chat-sender-icon [class^='icon-'],
+  .mb-chat-sender-icon [class*=' icon-'] {
+    @apply absolute inset-0 flex items-center justify-center leading-none;
+    font-size: 0.75rem;
   }
 
   .mb-chat-sender-icon [class^='icon-']:before,
   .mb-chat-sender-icon [class*=' icon-']:before {
-    margin: 0;
-    font-size: 0.875rem;
+    /* fontello.css is unlayered — beat its default .2em side margins */
+    margin: 0 !important;
+    width: auto !important;
+    line-height: 1;
+    display: block;
   }
 
   .mb-chat-sender-icon-user {
     @apply text-mb-accent;
   }
 
+  /*
+   * Custom fontello "user" path is left-heavy in a 1000-unit em
+   * (ink roughly 35–714). Shift into optical center of the circle.
+   */
+  .mb-chat-sender-icon-user .icon-user:before {
+    transform: translate(0.16em, -0.04em);
+  }
+
   .mb-chat-sender-icon-agent {
     @apply text-mb-primary;
+  }
+
+  .mb-chat-sender-icon-svg {
+    @apply block h-3.5 w-3.5 shrink-0;
   }
 
   .mb-tooltip-shell {

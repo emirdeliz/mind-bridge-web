@@ -8,6 +8,18 @@ interface ChatMessageBubbleProps {
   text: string;
 }
 
+/** Inline SVG — fontello "user" glyph is optically left-heavy in its em-box. */
+const UserSenderSvg = () => (
+  <svg
+    className='mb-chat-sender-icon-svg'
+    viewBox='0 0 24 24'
+    fill='currentColor'
+    aria-hidden
+  >
+    <path d='M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v1.2c0 .7.5 1.2 1.2 1.2h16.8c.7 0 1.2-.5 1.2-1.2v-1.2c0-3.2-6.4-4.8-9.6-4.8z' />
+  </svg>
+);
+
 const ChatSenderIcon = ({ sender }: { sender: 'agent' | 'user' }) => (
   <span
     className={
@@ -17,7 +29,7 @@ const ChatSenderIcon = ({ sender }: { sender: 'agent' | 'user' }) => (
     }
     aria-hidden
   >
-    {sender === 'agent' ? <Icon.AiAgent sm /> : <Icon.User sm />}
+    {sender === 'agent' ? <Icon.AiAgent /> : <UserSenderSvg />}
   </span>
 );
 
