@@ -536,6 +536,23 @@
     @apply bg-gradient-to-r from-mb-text via-mb-accent to-mb-primary bg-clip-text text-transparent;
   }
 
+  .mb-session-notes-card {
+    @apply flex flex-col;
+  }
+
+  .mb-session-notes-fill {
+    @apply flex min-h-0 flex-1 flex-col;
+  }
+
+  .mb-session-notes-fill .mb-field-with-action,
+  .mb-session-notes-fill .w-full {
+    @apply flex h-full min-h-0 flex-1 flex-col;
+  }
+
+  .mb-session-notes-fill textarea.mb-field {
+    @apply h-full min-h-[16rem] flex-1 resize-none;
+  }
+
   .mb-chat-scroll {
     @apply rounded-xl border border-mb-border/80 bg-mb-bg/50 p-3 backdrop-blur-sm;
   }

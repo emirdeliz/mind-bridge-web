@@ -6,7 +6,7 @@ import {
 } from '@api';
 import type { AppLanguage } from '@api';
 import type { ChatMessage } from '@services';
-import { Button, Flex, Icon, Input, Title } from '@atoms';
+import { Button, Flex, Icon, Input, RouteLink, Title } from '@atoms';
 import { localeForAppLanguage } from '@helpers';
 import { useI18n } from '@i18n';
 import {
@@ -113,6 +113,9 @@ interface ChatPanelProps {
   sectionTooltip?: string;
   disclaimer?: string;
   shortcuts?: ChatShortcut[];
+  shortcutsManageHref?: string;
+  /** Stretch to parent height (session split layout). */
+  fillHeight?: boolean;
 }
 
 const pickRecorderMimeType = (): string => {
@@ -140,6 +143,8 @@ export const ChatPanel = ({
   sectionTooltip,
   disclaimer,
   shortcuts,
+  shortcutsManageHref,
+  fillHeight = false,
 }: ChatPanelProps) => {
   const { t, language } = useI18n();
   const { showToastError } = useToast();
@@ -406,36 +411,62 @@ export const ChatPanel = ({
       ? t('CHAT_SUBTITLE_PSYCHOLOGIST')
       : t('CHAT_SUBTITLE_PATIENT');
 
-  const shortcutButtons = shortcuts?.length ? (
+  const shortcutButtons = (
     <Flex col wFull gap2>
-      <Flex row alignCenter gap2 wrap>
-        <Title s1 gray>
-          {t('CHAT_SHORTCUTS_LABEL')}
+      <Flex row alignCenter justifySpaceBetween wrap gap2>
+        <Flex row alignCenter gap2 wrap>
+          <Title s1 gray>
+            {t('CHAT_SHORTCUTS_LABEL')}
+          </Title>
+          <Tooltip title={t('CHAT_SHORTCUTS_HINT')} top width={280}>
+            <span className='mb-tooltip-trigger'>
+              <Icon.InfoCircle xs />
+            </span>
+          </Tooltip>
+        </Flex>
+        {shortcutsManageHref ? (
+          <RouteLink href={shortcutsManageHref} inline>
+            {t('CHAT_SHORTCUTS_MANAGE')}
+          </RouteLink>
+        ) : null}
+      </Flex>
+      {shortcuts?.length ? (
+        <Flex row wFull wrap gap2>
+          {shortcuts.map((shortcut) => (
+            <Button
+              key={shortcut.id}
+              type='button'
+              chip
+              clickable={!sending && !audioBusy}
+              onClick={() => sendShortcut(shortcut.message)}
+            >
+              {shortcut.label}
+            </Button>
+          ))}
+        </Flex>
+      ) : shortcutsManageHref ? (
+        <Title hint gray block leadingRelaxed>
+          {t('CHAT_SHORTCUTS_EMPTY_HINT')}
         </Title>
-        <Tooltip title={t('CHAT_SHORTCUTS_HINT')} top width={280}>
-          <span className='mb-tooltip-trigger'>
-            <Icon.InfoCircle xs />
-          </span>
-        </Tooltip>
-      </Flex>
-      <Flex row wFull wrap gap2>
-        {shortcuts.map((shortcut) => (
-          <Button
-            key={shortcut.id}
-            type='button'
-            chip
-            clickable={!sending && !audioBusy}
-            onClick={() => sendShortcut(shortcut.message)}
-          >
-            {shortcut.label}
-          </Button>
-        ))}
-      </Flex>
+      ) : null}
     </Flex>
-  ) : null;
+  );
+
+  const showShortcutsSection = Boolean(
+    shortcuts?.length || shortcutsManageHref
+  );
 
   return (
-    <Card padding='lg' shadow='lg'>
+    <Card
+      padding='lg'
+      shadow='lg'
+      className={fillHeight ? 'h-full min-h-[36rem]' : undefined}
+    >
+      <div
+        className={
+          fillHeight ? 'flex h-full min-h-0 flex-col gap-3' : 'contents'
+        }
+      >
       {sectionTooltip ? (
         <DashboardSectionTitle
           title={t('AI_AGENT_CHAT')}
@@ -459,6 +490,7 @@ export const ChatPanel = ({
       ) : null}
       <ChatScrollArea
         tallScroll={tallScroll}
+        fillHeight={fillHeight}
         messageCount={messages.length}
         isTyping={showTypingIndicator}
         lastMessageId={lastMessageId}
@@ -509,12 +541,12 @@ export const ChatPanel = ({
             <Title hint gray center block leadingRelaxed>
               {t('CHAT_EMPTY_HINT')}
             </Title>
-            {shortcutButtons}
+            {showShortcutsSection ? shortcutButtons : null}
           </Flex>
         ) : null}
       </ChatScrollArea>
-      {messages.length > 0 || sending ? (
-        <div className='mb-3'>{shortcutButtons}</div>
+      {(messages.length > 0 || sending) && showShortcutsSection ? (
+        <div className={fillHeight ? 'shrink-0' : 'mb-3'}>{shortcutButtons}</div>
       ) : null}
       <Form
         onSubmit={(event) => {
@@ -573,6 +605,7 @@ export const ChatPanel = ({
           </div>
         </div>
       </Form>
+      </div>
     </Card>
   );
 };

@@ -393,101 +393,102 @@ export const PsychologistSessionPage = () => {
                 />
               </Flex>
             </Card>
-          </Flex>
-          <ChatPanel
-            messages={chatMessages}
-            onSend={sendMessage}
-            sending={sending}
-            tallScroll
-            speechAudience='psychologist'
-            sectionTooltip={t('TOOLTIP_PSYCHOLOGIST_CHAT')}
-            shortcuts={psychologistChatShortcuts}
-          />
-          <Card padding='lg' shadow='md'>
-            <DashboardSectionTitle
-              title={t('INTERACTION_SUMMARY')}
-              tooltip={t('TOOLTIP_PSYCHOLOGIST_SUMMARY')}
+            <ChatPanel
+              messages={chatMessages}
+              onSend={sendMessage}
+              sending={sending}
+              tallScroll
+              speechAudience='psychologist'
+              sectionTooltip={t('TOOLTIP_PSYCHOLOGIST_CHAT')}
+              shortcuts={psychologistChatShortcuts}
+              shortcutsManageHref='/psychologist/settings#chat-shortcuts'
             />
-            {hasInteractionSummary ? (
-              <InteractionSummaryBody text={interactionSummaryText} />
-            ) : (
-              <Title s1 gray>
-                {t('AI_SUMMARY_NO_INTERACTIONS')}
-              </Title>
-            )}
-          </Card>
-          <Card padding='lg' shadow='md'>
-            <DashboardSectionTitle
-              title={t('PSYCHOLOGIST_INSIGHTS_TITLE')}
-              tooltip={t('TOOLTIP_PSYCHOLOGIST_INSIGHTS')}
-            />
-            <Flex col wFull gap4>
-              {insights.length ? (
-                insights.map((insight) => (
-                  <Flex col wFull key={insight.title} gap1>
-                    <Title s2 textAccent>
-                      {insight.title}
-                    </Title>
-                    <SessionInsightBody
-                      title={insight.title}
-                      body={insight.body}
-                    />
-                  </Flex>
-                ))
+            <Card padding='lg' shadow='md'>
+              <DashboardSectionTitle
+                title={t('INTERACTION_SUMMARY')}
+                tooltip={t('TOOLTIP_PSYCHOLOGIST_SUMMARY')}
+              />
+              {hasInteractionSummary ? (
+                <InteractionSummaryBody text={interactionSummaryText} />
               ) : (
                 <Title s1 gray>
                   {t('AI_SUMMARY_NO_INTERACTIONS')}
                 </Title>
               )}
-            </Flex>
-          </Card>
-          {previousSessionsAgenticSummaries.length > 0 ? (
+            </Card>
             <Card padding='lg' shadow='md'>
               <DashboardSectionTitle
-                title={t('SESSION_NOTES_AGENTIC_SUMMARY')}
-                tooltip={t('TOOLTIP_SESSION_NOTES_AGENTIC_SUMMARY')}
+                title={t('PSYCHOLOGIST_INSIGHTS_TITLE')}
+                tooltip={t('TOOLTIP_PSYCHOLOGIST_INSIGHTS')}
               />
-              <Flex row wFull alignCenter justifySpaceBetween wrap gap4 mb4>
-                <Title s1 gray>
-                  {agenticRangeLabel}
-                </Title>
-                <SessionHistoryNavButtons
-                  canGoOlder={canGoAgenticOlder}
-                  canGoNewer={canGoAgenticNewer}
-                  onGoOlder={() =>
-                    setAgenticSummaryPage((page) =>
-                      Math.min(agenticSummaryMaxPage, page + 1)
-                    )
-                  }
-                  onGoNewer={() =>
-                    setAgenticSummaryPage((page) => Math.max(0, page - 1))
-                  }
-                  olderTooltip={
-                    olderAgenticBatch
-                      ? `${t('SESSION_NOTES_PREVIOUS')}: ${olderAgenticBatch.sessionDate}`
-                      : t('SESSION_NOTES_PREVIOUS')
-                  }
-                  newerTooltip={
-                    newerAgenticBatch
-                      ? `${t('SESSION_NOTES_NEXT')}: ${newerAgenticBatch.sessionDate}`
-                      : t('SESSION_NOTES_NEXT')
-                  }
-                />
-              </Flex>
               <Flex col wFull gap4>
-                {visibleAgenticSummaries.map((entry) => (
-                  <Flex col wFull key={entry.id} gap1>
-                    <Title s2 textAccent>
-                      {entry.label}
-                    </Title>
-                    <Title s1 gray>
-                      {entry.agenticSummary}
-                    </Title>
-                  </Flex>
-                ))}
+                {insights.length ? (
+                  insights.map((insight) => (
+                    <Flex col wFull key={insight.title} gap1>
+                      <Title s2 textAccent>
+                        {insight.title}
+                      </Title>
+                      <SessionInsightBody
+                        title={insight.title}
+                        body={insight.body}
+                      />
+                    </Flex>
+                  ))
+                ) : (
+                  <Title s1 gray>
+                    {t('AI_SUMMARY_NO_INTERACTIONS')}
+                  </Title>
+                )}
               </Flex>
             </Card>
-          ) : null}
+            {previousSessionsAgenticSummaries.length > 0 ? (
+              <Card padding='lg' shadow='md'>
+                <DashboardSectionTitle
+                  title={t('SESSION_NOTES_AGENTIC_SUMMARY')}
+                  tooltip={t('TOOLTIP_SESSION_NOTES_AGENTIC_SUMMARY')}
+                />
+                <Flex row wFull alignCenter justifySpaceBetween wrap gap4 mb4>
+                  <Title s1 gray>
+                    {agenticRangeLabel}
+                  </Title>
+                  <SessionHistoryNavButtons
+                    canGoOlder={canGoAgenticOlder}
+                    canGoNewer={canGoAgenticNewer}
+                    onGoOlder={() =>
+                      setAgenticSummaryPage((page) =>
+                        Math.min(agenticSummaryMaxPage, page + 1)
+                      )
+                    }
+                    onGoNewer={() =>
+                      setAgenticSummaryPage((page) => Math.max(0, page - 1))
+                    }
+                    olderTooltip={
+                      olderAgenticBatch
+                        ? `${t('SESSION_NOTES_PREVIOUS')}: ${olderAgenticBatch.sessionDate}`
+                        : t('SESSION_NOTES_PREVIOUS')
+                    }
+                    newerTooltip={
+                      newerAgenticBatch
+                        ? `${t('SESSION_NOTES_NEXT')}: ${newerAgenticBatch.sessionDate}`
+                        : t('SESSION_NOTES_NEXT')
+                    }
+                  />
+                </Flex>
+                <Flex col wFull gap4>
+                  {visibleAgenticSummaries.map((entry) => (
+                    <Flex col wFull key={entry.id} gap1>
+                      <Title s2 textAccent>
+                        {entry.label}
+                      </Title>
+                      <Title s1 gray>
+                        {entry.agenticSummary}
+                      </Title>
+                    </Flex>
+                  ))}
+                </Flex>
+              </Card>
+            ) : null}
+          </Flex>
         </>
       )}
     </AppShell>

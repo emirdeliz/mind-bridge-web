@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect } from 'react';
+
 import { AppShell } from '@templates';
 import { Flex } from '@atoms';
 import { useI18n } from '@i18n';
@@ -12,6 +14,20 @@ import { usePsychologistGuard } from './usePsychologistGuard';
 export const PsychologistSettingsPage = () => {
   const { t } = useI18n();
   const { loading: guardLoading, isPsychologist } = usePsychologistGuard();
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    if (window.location.hash !== '#chat-shortcuts') {
+      return;
+    }
+    window.requestAnimationFrame(() => {
+      document
+        .getElementById('chat-shortcuts')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, []);
 
   if (!isPsychologist && !guardLoading) {
     return null;

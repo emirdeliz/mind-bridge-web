@@ -271,6 +271,7 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
   );
 
   return (
+    <div id='chat-shortcuts'>
     <Card padding='lg' shadow='md'>
       <Flex col wFull gap4>
         <Flex row wFull wrap alignStart justifySpaceBetween gap4>
@@ -502,5 +503,6 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
         onConfirm={() => void handleConfirmDelete()}
       />
     </Card>
+    </div>
   );
 };

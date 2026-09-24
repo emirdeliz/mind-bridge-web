@@ -1,14 +1,15 @@
-import { Flex, Icon, Title } from '@atoms';
+import { Button, Flex, Icon, Title } from '@atoms';
 import type { AppLanguage } from '@api';
 import { localeForAppLanguage, parseEnumeratedChatItems } from '@helpers';
 import { useI18n } from '@i18n';
-import { EnumeratedTextList } from '@molecules';
+import { EnumeratedTextList, useToast } from '@molecules';
 
 interface ChatMessageBubbleProps {
   sender: 'agent' | 'user';
   label: string;
   text: string;
   createdAt?: string;
+  showCopy?: boolean;
 }
 
 /** Inline SVG — fontello "user" glyph is optically left-heavy in its em-box. */
@@ -53,11 +54,23 @@ export const ChatMessageBubble = ({
   label,
   text,
   createdAt,
+  showCopy = sender === 'agent',
 }: ChatMessageBubbleProps) => {
-  const { language } = useI18n();
+  const { t, language } = useI18n();
+  const { showToastSuccess, showToastError } = useToast();
   const enumeratedItems =
     sender === 'agent' ? parseEnumeratedChatItems(text) : null;
   const timeLabel = createdAt ? formatMessageTime(createdAt, language) : '';
+  const canCopy = showCopy && text.trim().length > 0;
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      showToastSuccess({ message: t('CHAT_COPY_SUCCESS') });
+    } catch {
+      showToastError({ message: t('CHAT_COPY_ERROR') });
+    }
+  };
 
   return (
     <Flex col agentMessage={sender === 'agent'} userMessage={sender === 'user'}>
@@ -70,6 +83,17 @@ export const ChatMessageBubble = ({
           <span className='ml-auto text-[11px] tabular-nums text-mb-muted/80'>
             {timeLabel}
           </span>
+        ) : null}
+        {canCopy ? (
+          <Button
+            type='button'
+            icon
+            variant='secondary'
+            title={t('CHAT_COPY')}
+            onClick={() => void handleCopy()}
+          >
+            <Icon.Docs sm />
+          </Button>
         ) : null}
       </Flex>
       {enumeratedItems ? (

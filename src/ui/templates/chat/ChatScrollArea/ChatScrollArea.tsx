@@ -5,6 +5,7 @@ import { useChatAutoScroll } from './useChatAutoScroll';
 type ChatScrollAreaProps = {
   children: ReactNode;
   tallScroll?: boolean;
+  fillHeight?: boolean;
   messageCount: number;
   isTyping?: boolean;
   lastMessageId?: string;
@@ -13,6 +14,7 @@ type ChatScrollAreaProps = {
 export const ChatScrollArea = ({
   children,
   tallScroll = false,
+  fillHeight = false,
   messageCount,
   isTyping = false,
   lastMessageId,
@@ -26,8 +28,11 @@ export const ChatScrollArea = ({
     'flex-col',
     'gap-4',
     'overflow-y-auto',
-    'mb-4',
-    tallScroll ? 'min-h-[280px] max-h-[520px]' : 'min-h-[200px] max-h-[320px]',
+    fillHeight
+      ? 'mb-0 min-h-0 flex-1'
+      : tallScroll
+        ? 'mb-4 min-h-[280px] max-h-[520px]'
+        : 'mb-4 min-h-[200px] max-h-[320px]',
   ].join(' ');
 
   return (

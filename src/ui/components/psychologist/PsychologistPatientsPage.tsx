@@ -342,9 +342,23 @@ export const PsychologistPatientsPage = () => {
             <PageLoader />
           ) : tableData.length === 0 ? (
             <Card padding='md' shadow='sm'>
-              <Title s1 gray>
-                {t('PSYCHOLOGIST_PATIENTS_EMPTY')}
-              </Title>
+              <Flex col wFull alignCenter justifyCenter gap4 py8>
+                <Title s1 gray center block>
+                  {search.trim()
+                    ? t('PSYCHOLOGIST_PATIENTS_EMPTY_SEARCH')
+                    : t('PSYCHOLOGIST_PATIENTS_EMPTY')}
+                </Title>
+                {!search.trim() ? (
+                  <>
+                    <Title hint gray center block leadingRelaxed>
+                      {t('PSYCHOLOGIST_PATIENTS_EMPTY_HINT')}
+                    </Title>
+                    <Button variant='primary' onClick={openCreateModal}>
+                      {t('PSYCHOLOGIST_PATIENTS_ADD')}
+                    </Button>
+                  </>
+                ) : null}
+              </Flex>
             </Card>
           ) : (
             <Table<PatientTableRow>
