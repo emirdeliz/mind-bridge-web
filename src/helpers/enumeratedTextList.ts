@@ -1,4 +1,6 @@
 const LIST_PREFIX_PATTERN = /^(?:[-•*]\s*|\d+[.)]\s*)/;
+/** Split before "1. ", "2)", etc. when several items share one line. */
+const INLINE_NUMBERED_SPLIT_PATTERN = /(?=(?:^|\s)\d+[.)]\s+)/;
 
 const HEADER_PATTERN = /^(resumo|resumen|summary)\s+(de|of)\s+/i;
 const CONVERSATION_PATTERN = /^(conversa|conversación|conversation)\s+\d+/i;
@@ -46,6 +48,48 @@ export const parseInsightListItems = (body: string): string[] => {
   }
 
   return [normalizeListItem(trimmed)];
+};
+
+/**
+ * Detects enumerated chat replies (numbered/bulleted) and returns list items.
+ * Returns null when the text should render as a normal paragraph.
+ */
+export const parseEnumeratedChatItems = (body: string): string[] | null => {
+  const trimmed = body.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const lines = trimmed
+    .split(/\r?\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (lines.length >= 2) {
+    const enumeratedLineCount = lines.filter((line) =>
+      LIST_PREFIX_PATTERN.test(line)
+    ).length;
+
+    if (enumeratedLineCount >= 2) {
+      return lines.map(normalizeListItem).filter(Boolean);
+    }
+  }
+
+  const numberedMarkers = trimmed.match(/(?:^|\s)\d+[.)]\s+/g);
+  if (numberedMarkers && numberedMarkers.length >= 2) {
+    const parts = trimmed
+      .split(INLINE_NUMBERED_SPLIT_PATTERN)
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .map(normalizeListItem)
+      .filter(Boolean);
+
+    if (parts.length >= 2 && parts.every((part) => part.length > 0)) {
+      return parts;
+    }
+  }
+
+  return null;
 };
 
 export const parseInteractionSummary = (

@@ -57,6 +57,7 @@ export {
 export {
   isEnumeratedInsightTitle,
   normalizeListItem,
+  parseEnumeratedChatItems,
   parseInsightListItems,
   parseInteractionSummary,
 } from './enumeratedTextList';
