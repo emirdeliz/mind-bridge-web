@@ -17,7 +17,7 @@ export const InputSearch = ({
   return (
     <div className='relative w-full'>
       <input
-        className='mb-field input-focus-primary w-full pl-10 pr-4'
+        className='mb-field input-focus-primary w-full border-mb-border/90 bg-mb-surface-elevated pl-10 pr-4 shadow-none'
         placeholder={placeholder || t('SEARCH')}
         value={value}
         onChange={(e) => onChange(e.target.value)}
