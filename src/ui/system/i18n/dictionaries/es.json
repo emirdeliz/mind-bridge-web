@@ -514,7 +514,7 @@
   "PSYCHOLOGIST_PATIENTS_ACTION_DELETE": "Eliminar",
   "PSYCHOLOGIST_PATIENTS_CONTEXT_MODAL_TITLE": "Contexto del psicólogo para la IA",
   "PSYCHOLOGIST_PATIENTS_CONTEXT_MODAL_SUBTITLE": "Define el contexto clínico que usa el agente de IA en las interacciones con el paciente.",
-  "PSYCHOLOGIST_PATIENTS_CONTEXT_MODAL_SUBTITLE_NAMED": "Contexto clínico para las interacciones de {name} con el agente de IA.",
+  "PSYCHOLOGIST_PATIENTS_CONTEXT_MODAL_SUBTITLE_NAMED": "Contexto clínico para las interacciones de {{name}} con el agente de IA.",
   "PSYCHOLOGIST_PATIENTS_CHAT_HISTORY_MODAL_SUBTITLE": "Historial de conversaciones con el agente de IA",
   "PSYCHOLOGIST_PATIENTS_CHAT_HISTORY_UNNAMED": "Paciente",
   "PSYCHOLOGIST_PATIENTS_CHAT_HISTORY_EMPTY": "No hay conversaciones registradas con el agente de IA.",

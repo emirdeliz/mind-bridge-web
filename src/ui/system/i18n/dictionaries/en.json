@@ -514,7 +514,7 @@
   "PSYCHOLOGIST_PATIENTS_ACTION_DELETE": "Delete",
   "PSYCHOLOGIST_PATIENTS_CONTEXT_MODAL_TITLE": "Psychologist context for AI",
   "PSYCHOLOGIST_PATIENTS_CONTEXT_MODAL_SUBTITLE": "Set the clinical context the AI agent uses in patient interactions.",
-  "PSYCHOLOGIST_PATIENTS_CONTEXT_MODAL_SUBTITLE_NAMED": "Clinical context for {name}'s interactions with the AI agent.",
+  "PSYCHOLOGIST_PATIENTS_CONTEXT_MODAL_SUBTITLE_NAMED": "Clinical context for {{name}}'s interactions with the AI agent.",
   "PSYCHOLOGIST_PATIENTS_CHAT_HISTORY_MODAL_SUBTITLE": "Conversation history with the AI agent",
   "PSYCHOLOGIST_PATIENTS_CHAT_HISTORY_UNNAMED": "Patient",
   "PSYCHOLOGIST_PATIENTS_CHAT_HISTORY_EMPTY": "No conversations recorded with the AI agent.",
