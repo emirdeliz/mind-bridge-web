@@ -157,11 +157,38 @@ export default async function handler(
   }
 
   if (contentType.includes('application/json')) {
-    const payload = await upstream.json().catch(() => ({}));
+    const payload = (await upstream.json().catch(() => ({}))) as {
+      error?: string | { code?: string; message?: string };
+      message?: string;
+    };
+    const nestedMessage =
+      typeof payload.error === 'object' && payload.error?.message
+        ? payload.error.message
+        : undefined;
+    if (
+      upstream.status >= 500 &&
+      (nestedMessage === 'A server error has occurred' ||
+        nestedMessage?.includes('FUNCTION_INVOCATION_FAILED'))
+    ) {
+      res.status(502).json({
+        error: `Backend em ${apiBase} falhou ao iniciar (FUNCTION_INVOCATION_FAILED). Verifique o deploy do mind-bridge-be e as variáveis de ambiente na Vercel.`,
+      });
+      return;
+    }
     res.json(payload);
     return;
   }
 
   const text = await upstream.text();
+  if (
+    upstream.status >= 500 &&
+    (text.includes('FUNCTION_INVOCATION_FAILED') ||
+      text.includes('A server error has occurred'))
+  ) {
+    res.status(502).json({
+      error: `Backend em ${apiBase} falhou ao iniciar (FUNCTION_INVOCATION_FAILED). Verifique o deploy do mind-bridge-be e as variáveis de ambiente na Vercel.`,
+    });
+    return;
+  }
   res.send(text);
 }
