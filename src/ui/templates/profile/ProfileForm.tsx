@@ -3,7 +3,14 @@ import { useState } from 'react';
 import type { UserProfile } from '@api';
 import { Button, Flex, Input, Title } from '@atoms';
 import { DEFAULT_APP_LANGUAGE, useI18n } from '@i18n';
-import { Card, Form, FormGroup, InputForm, LanguageSelect } from '@molecules';
+import {
+  Card,
+  Form,
+  FormActions,
+  FormGroup,
+  InputForm,
+  LanguageSelect,
+} from '@molecules';
 
 interface ProfileFormProps {
   initialData: UserProfile;
@@ -118,26 +125,21 @@ const ProfileFormContent = ({
             onChange={(language) => setData({ ...data, language })}
           />
         </FormGroup>
-        <Flex row wFull gap4 alignCenter>
+        <FormActions>
           {onBack ? (
-            <Flex flex1 wFull>
-              <Button
-                type='button'
-                variant='secondary'
-                wFull
-                onClick={onBack}
-                clickable={!saving}
-              >
-                {backLabel ?? t('BACK')}
-              </Button>
-            </Flex>
-          ) : null}
-          <Flex flex1 wFull>
-            <Button type='submit' wFull clickable={!saving}>
-              {t('SAVE_PROFILE')}
+            <Button
+              type='button'
+              variant='secondary'
+              onClick={onBack}
+              clickable={!saving}
+            >
+              {backLabel ?? t('BACK')}
             </Button>
-          </Flex>
-        </Flex>
+          ) : null}
+          <Button type='submit' clickable={!saving}>
+            {t('SAVE_PROFILE')}
+          </Button>
+        </FormActions>
       </Form>
     </Card>
   );

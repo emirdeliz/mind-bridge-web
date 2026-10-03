@@ -10,7 +10,7 @@ import {
 
 import { Button, Flex, Icon, Input, Overlay, Select, Title } from '@atoms';
 import { translateTemplate, useI18n } from '@i18n';
-import { Card, FormGroup } from '@molecules';
+import { Card, FormActions, FormGroup } from '@molecules';
 
 import {
   PSYCHOLOGIST_PATIENT_CONTEXT_EXAMPLE_IDS,
@@ -184,33 +184,27 @@ export const PsychologistPatientContextModal = ({
                 />
               </Flex>
 
-              <Flex row wFull gap5 mt6>
-                <Flex flex1 wFull>
-                  <Button
-                    type='button'
-                    variant='secondary'
-                    outlined
-                    wFull
-                    onClick={onClose}
-                  >
-                    {t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
-                  </Button>
-                </Flex>
-                <Flex flex1 wFull>
-                  <Button
-                    type='submit'
-                    variant='primary'
-                    wFull
-                    clickable={!saving && !loading}
-                  >
-                    {saving
-                      ? t('PSYCHOLOGIST_PATIENTS_SAVING')
-                      : loading
-                        ? t('PSYCHOLOGIST_PATIENTS_CONTEXT_LOADING')
-                        : t('PSYCHOLOGIST_PATIENTS_MODAL_SAVE')}
-                  </Button>
-                </Flex>
-              </Flex>
+              <FormActions mt6>
+                <Button
+                  type='button'
+                  variant='secondary'
+                  outlined
+                  onClick={onClose}
+                >
+                  {t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
+                </Button>
+                <Button
+                  type='submit'
+                  variant='primary'
+                  clickable={!saving && !loading}
+                >
+                  {saving
+                    ? t('PSYCHOLOGIST_PATIENTS_SAVING')
+                    : loading
+                      ? t('PSYCHOLOGIST_PATIENTS_CONTEXT_LOADING')
+                      : t('PSYCHOLOGIST_PATIENTS_MODAL_SAVE')}
+                </Button>
+              </FormActions>
             </form>
           </Flex>
         </Card>

@@ -7,7 +7,7 @@ import { getPsychologistPatientsApi } from '@api';
 import { Button, Flex, Icon, Loading, Overlay, Title } from '@atoms';
 import { maskPhone } from '@helpers';
 import { useI18n } from '@i18n';
-import { Card } from '@molecules';
+import { Card, FormActions } from '@molecules';
 
 type SchedulingPatientContactModalProps = {
   visible: boolean;
@@ -107,15 +107,16 @@ export const SchedulingPatientContactModal = ({
               </Flex>
             </Flex>
 
-            <Button
-              type='button'
-              variant='secondary'
-              outlined
-              wFull
-              onClick={onClose}
-            >
-              {t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
-            </Button>
+            <FormActions>
+              <Button
+                type='button'
+                variant='secondary'
+                outlined
+                onClick={onClose}
+              >
+                {t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
+              </Button>
+            </FormActions>
           </Flex>
         </Card>
       </div>

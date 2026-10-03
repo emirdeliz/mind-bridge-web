@@ -8,7 +8,7 @@ import type {
 } from '@api';
 import { Button, Flex, Icon, Overlay, Title } from '@atoms';
 import { useI18n } from '@i18n';
-import { Card, Form, InputForm } from '@molecules';
+import { Card, Form, FormActions, InputForm } from '@molecules';
 
 type SchedulingSettingsModalProps = {
   visible: boolean;
@@ -241,30 +241,24 @@ export const SchedulingSettingsModal = ({
                   </Title>
                 ) : null}
 
-                <Flex row wFull gap4>
-                  <Flex flex1 wFull>
-                    <Button
-                      type='button'
-                      variant='secondary'
-                      outlined
-                      wFull
-                      clickable={!saving}
-                      onClick={onClose}
-                    >
-                      {t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
-                    </Button>
-                  </Flex>
-                  <Flex flex1 wFull>
-                    <Button
-                      type='submit'
-                      variant='primary'
-                      wFull
-                      clickable={!saving}
-                    >
-                      {t('SAVE')}
-                    </Button>
-                  </Flex>
-                </Flex>
+                <FormActions>
+                  <Button
+                    type='button'
+                    variant='secondary'
+                    outlined
+                    clickable={!saving}
+                    onClick={onClose}
+                  >
+                    {t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
+                  </Button>
+                  <Button
+                    type='submit'
+                    variant='primary'
+                    clickable={!saving}
+                  >
+                    {t('SAVE')}
+                  </Button>
+                </FormActions>
               </Flex>
             </Form>
           </Flex>

@@ -5,6 +5,7 @@ import type { MouseEvent } from 'react';
 import { Button, Flex, Icon, Overlay, Title } from '@atoms';
 
 import { Card } from '../Card/Card';
+import { FormActions } from '../FormActions/FormActions';
 
 export type ConfirmModalProps = {
   visible: boolean;
@@ -76,29 +77,23 @@ export const ConfirmModal = ({
 
             <div className='h-px w-full bg-mb-border/70' aria-hidden />
 
-            <Flex row wFull gap5>
-              <Flex flex1 wFull>
-                <Button
-                  type='button'
-                  variant='secondary'
-                  outlined
-                  wFull
-                  onClick={onClose}
-                >
-                  {cancelLabel}
-                </Button>
-              </Flex>
-              <Flex flex1 wFull>
-                <Button
-                  type='button'
-                  variant={confirmVariant}
-                  wFull
-                  onClick={onConfirm}
-                >
-                  {confirmLabel}
-                </Button>
-              </Flex>
-            </Flex>
+            <FormActions>
+              <Button
+                type='button'
+                variant='secondary'
+                outlined
+                onClick={onClose}
+              >
+                {cancelLabel}
+              </Button>
+              <Button
+                type='button'
+                variant={confirmVariant}
+                onClick={onConfirm}
+              >
+                {confirmLabel}
+              </Button>
+            </FormActions>
           </Flex>
         </Card>
       </div>

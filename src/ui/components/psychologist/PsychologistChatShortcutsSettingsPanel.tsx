@@ -5,7 +5,14 @@ import { useCallback, useMemo, useState, type ReactNode } from 'react';
 import type { PsychologistChatShortcutDto } from '@api';
 import { Button, Flex, Icon, Input, Loading, Title } from '@atoms';
 import { translateTemplate, useI18n } from '@i18n';
-import { Card, ConfirmModal, FormGroup, Table, Tooltip } from '@molecules';
+import {
+  Card,
+  ConfirmModal,
+  FormActions,
+  FormGroup,
+  Table,
+  Tooltip,
+} from '@molecules';
 import { DashboardSectionTitle } from '@templates';
 import {
   resolveChatShortcutTranslation,
@@ -444,7 +451,7 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
                 </Flex>
               ) : null}
 
-              <Flex row wFull gap4 wrap>
+              <FormActions>
                 <Button
                   type='button'
                   variant='secondary'
@@ -482,7 +489,7 @@ export const PsychologistChatShortcutsSettingsPanel = () => {
                       )
                     : t('PSYCHOLOGIST_SETTINGS_CHAT_SHORTCUTS_SAVE')}
                 </Button>
-              </Flex>
+              </FormActions>
             </Flex>
           </div>
         ) : null}

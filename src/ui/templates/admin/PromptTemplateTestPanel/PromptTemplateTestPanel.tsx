@@ -9,7 +9,7 @@ import type {
 } from '@api';
 import { Button, Flex, Input, Loading, Title } from '@atoms';
 import { useI18n } from '@i18n';
-import { FormGroup } from '@molecules';
+import { FormActions, FormGroup } from '@molecules';
 
 type PromptTemplateTestPanelProps = {
   templateKey: string;
@@ -153,7 +153,7 @@ export const PromptTemplateTestPanel = ({
           </Title>
         ) : null}
 
-        <Flex row wFull gap2 wrap>
+        <FormActions>
           <Button
             type='button'
             variant='secondary'
@@ -165,7 +165,7 @@ export const PromptTemplateTestPanel = ({
               ? t('PSYCHOLOGIST_PROMPTS_TEST_RUNNING')
               : t('PSYCHOLOGIST_PROMPTS_TEST_RUN')}
           </Button>
-        </Flex>
+        </FormActions>
 
         {testing ? (
           <Flex row wFull alignCenter gap2>

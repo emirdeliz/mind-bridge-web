@@ -11,7 +11,7 @@ import {
 import { Button, Flex, Icon, Overlay, Select, Title } from '@atoms';
 import { localeForAppLanguage } from '@helpers';
 import { useI18n } from '@i18n';
-import { Card, FormGroup } from '@molecules';
+import { Card, FormActions, FormGroup } from '@molecules';
 import { getWeekStartIsoForLocalDate } from '@services';
 
 type SchedulingGoToDateModalProps = {
@@ -201,24 +201,19 @@ export const SchedulingGoToDateModal = ({
                 </Flex>
               </Flex>
 
-              <Flex row wFull gap4 mt6>
-                <Flex flex1 wFull>
-                  <Button
-                    type='button'
-                    variant='secondary'
-                    outlined
-                    wFull
-                    onClick={onClose}
-                  >
-                    {t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
-                  </Button>
-                </Flex>
-                <Flex flex1 wFull>
-                  <Button type='submit' variant='primary' wFull>
-                    {t('PSYCHOLOGIST_SCHEDULING_GO_TO_ACTION')}
-                  </Button>
-                </Flex>
-              </Flex>
+              <FormActions mt6>
+                <Button
+                  type='button'
+                  variant='secondary'
+                  outlined
+                  onClick={onClose}
+                >
+                  {t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
+                </Button>
+                <Button type='submit' variant='primary'>
+                  {t('PSYCHOLOGIST_SCHEDULING_GO_TO_ACTION')}
+                </Button>
+              </FormActions>
             </form>
           </Flex>
         </Card>

@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { PsychologistAppointmentDto } from '@api';
 import { Button, Flex, Icon, Input, Overlay, Select, Title } from '@atoms';
 import { useI18n } from '@i18n';
-import { Card, ConfirmModal, Form, FormGroup } from '@molecules';
+import { Card, ConfirmModal, Form, FormActions, FormGroup } from '@molecules';
 import {
   combineLocalDateAndTime,
   getWeekDateKeys,
@@ -356,30 +356,24 @@ export const SchedulingAppointmentModal = ({
                     </Title>
                   ) : null}
 
-                  <Flex row wFull gap4>
-                    <Flex flex1 wFull>
-                      <Button
-                        type='button'
-                        variant='danger'
-                        outlined
-                        wFull
-                        clickable={!saving}
-                        onClick={() => setDeleteConfirmOpen(true)}
-                      >
-                        {t('PSYCHOLOGIST_SCHEDULING_APPOINTMENT_DELETE')}
-                      </Button>
-                    </Flex>
-                    <Flex flex1 wFull>
-                      <Button
-                        type='submit'
-                        variant='primary'
-                        wFull
-                        clickable={!saving}
-                      >
-                        {t('SAVE')}
-                      </Button>
-                    </Flex>
-                  </Flex>
+                  <FormActions>
+                    <Button
+                      type='button'
+                      variant='danger'
+                      outlined
+                      clickable={!saving}
+                      onClick={() => setDeleteConfirmOpen(true)}
+                    >
+                      {t('PSYCHOLOGIST_SCHEDULING_APPOINTMENT_DELETE')}
+                    </Button>
+                    <Button
+                      type='submit'
+                      variant='primary'
+                      clickable={!saving}
+                    >
+                      {t('SAVE')}
+                    </Button>
+                  </FormActions>
                 </Flex>
               </Form>
             </Flex>

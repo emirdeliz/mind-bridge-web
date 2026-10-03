@@ -13,7 +13,7 @@ import type {
 } from '@api';
 import { Button, Flex, Icon, Loading, Title } from '@atoms';
 import { useI18n } from '@i18n';
-import { Card, ConfirmModal } from '@molecules';
+import { Card, ConfirmModal, FormActions } from '@molecules';
 import { PromptTemplateWizard } from '../PromptTemplateWizard/PromptTemplateWizard';
 import {
   composePromptGuidanceDraft,
@@ -264,9 +264,15 @@ export const PromptTemplateEditView = ({
           ) : null}
 
           <div className='mt-5 border-t border-mb-border/50 pt-5'>
-            <Flex row wFull gap2 wrap>
-              <Button type='button' clickable={!saving} onClick={requestSave}>
-                {t('ADMIN_PROMPTS_SAVE')}
+            <FormActions>
+              <Button
+                type='button'
+                variant='secondary'
+                outlined
+                clickable={!saving}
+                onClick={requestNavigateBack}
+              >
+                {t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
               </Button>
               {onRestore ? (
                 <Button
@@ -279,16 +285,10 @@ export const PromptTemplateEditView = ({
                   {t('ADMIN_PROMPTS_RESTORE')}
                 </Button>
               ) : null}
-              <Button
-                type='button'
-                variant='secondary'
-                outlined
-                clickable={!saving}
-                onClick={requestNavigateBack}
-              >
-                {t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
+              <Button type='button' clickable={!saving} onClick={requestSave}>
+                {t('ADMIN_PROMPTS_SAVE')}
               </Button>
-            </Flex>
+            </FormActions>
           </div>
         </Card>
       </div>

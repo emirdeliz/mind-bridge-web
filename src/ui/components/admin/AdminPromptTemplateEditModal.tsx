@@ -10,7 +10,7 @@ import type {
 } from '@api';
 import { Button, Flex, Icon, Loading, Overlay, Title } from '@atoms';
 import { useI18n } from '@i18n';
-import { Card, ConfirmModal, FormGroup } from '@molecules';
+import { Card, ConfirmModal, FormActions, FormGroup } from '@molecules';
 import {
   PromptTemplateEditor,
   PromptTemplateTestPanel,
@@ -227,9 +227,15 @@ export const AdminPromptTemplateEditModal = ({
               </div>
 
               <div className='mt-4 shrink-0 border-t border-mb-border/50 pt-4'>
-                <Flex row wFull gap2 wrap>
-                  <Button type='button' clickable={!saving} onClick={requestSave}>
-                    {t('ADMIN_PROMPTS_SAVE')}
+                <FormActions>
+                  <Button
+                    type='button'
+                    variant='secondary'
+                    outlined
+                    clickable={!saving}
+                    onClick={onClose}
+                  >
+                    {t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
                   </Button>
                   {onRestore ? (
                     <Button
@@ -242,16 +248,10 @@ export const AdminPromptTemplateEditModal = ({
                       {t('ADMIN_PROMPTS_RESTORE')}
                     </Button>
                   ) : null}
-                  <Button
-                    type='button'
-                    variant='secondary'
-                    outlined
-                    clickable={!saving}
-                    onClick={onClose}
-                  >
-                    {t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
+                  <Button type='button' clickable={!saving} onClick={requestSave}>
+                    {t('ADMIN_PROMPTS_SAVE')}
                   </Button>
-                </Flex>
+                </FormActions>
               </div>
             </div>
           </Card>

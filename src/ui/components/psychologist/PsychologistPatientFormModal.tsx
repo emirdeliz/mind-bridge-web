@@ -8,7 +8,7 @@ import type {
 } from '@api';
 import { Button, Flex, Icon, Input, Overlay, Title } from '@atoms';
 import { useI18n } from '@i18n';
-import { Card, FormGroup, InputForm } from '@molecules';
+import { Card, FormActions, FormGroup, InputForm } from '@molecules';
 
 import { PATIENT_ANAMNESIS_FIELDS } from './patientAnamnesisFields';
 
@@ -279,33 +279,27 @@ export const PsychologistPatientFormModal = ({
               </div>
 
               <div className='mt-5 shrink-0 border-t border-mb-border/50 pt-5'>
-                <Flex row wFull gap5>
-                  <Flex flex1 wFull>
-                    <Button
-                      type='button'
-                      variant='secondary'
-                      outlined
-                      wFull
-                      onClick={onClose}
-                    >
-                      {t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
-                    </Button>
-                  </Flex>
-                  <Flex flex1 wFull>
-                    <Button
-                      type='submit'
-                      variant='primary'
-                      wFull
-                      clickable={!formDisabled}
-                    >
-                      {saving
-                        ? t('PSYCHOLOGIST_PATIENTS_SAVING')
-                        : loadingAnamnesis
-                          ? t('PSYCHOLOGIST_PATIENTS_ANAMNESIS_LOADING')
-                          : t('PSYCHOLOGIST_PATIENTS_MODAL_SAVE')}
-                    </Button>
-                  </Flex>
-                </Flex>
+                <FormActions>
+                  <Button
+                    type='button'
+                    variant='secondary'
+                    outlined
+                    onClick={onClose}
+                  >
+                    {t('PSYCHOLOGIST_PATIENTS_MODAL_CANCEL')}
+                  </Button>
+                  <Button
+                    type='submit'
+                    variant='primary'
+                    clickable={!formDisabled}
+                  >
+                    {saving
+                      ? t('PSYCHOLOGIST_PATIENTS_SAVING')
+                      : loadingAnamnesis
+                        ? t('PSYCHOLOGIST_PATIENTS_ANAMNESIS_LOADING')
+                        : t('PSYCHOLOGIST_PATIENTS_MODAL_SAVE')}
+                  </Button>
+                </FormActions>
               </div>
             </form>
           </div>

@@ -9,6 +9,7 @@ export * from './EmptyState/EmptyState';
 export * from './EnumeratedTextList/EnumeratedTextList';
 export * from './ErrorMessage/ErrorMessage';
 export * from './Form/Form';
+export * from './FormActions/FormActions';
 export * from './FormError/FormError';
 export * from './FormGroup/FormGroup';
 export * from './InputForm/InputForm';
