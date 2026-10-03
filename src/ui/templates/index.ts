@@ -2,6 +2,7 @@ export * from './admin/PromptTemplateEditor/PromptTemplateEditor';
 export * from './admin/PromptTemplateTokenReference/PromptTemplateTokenReference';
 export * from './admin/PromptTemplateEditView/PromptTemplateEditView';
 export * from './admin/PromptTemplateTestPanel/PromptTemplateTestPanel';
+export * from './admin/PromptTemplateWizard/PromptTemplateWizard';
 export * from './auth/AuthFormCard/AuthFormCard';
 export * from './chat/ChatInteractionDivider/ChatInteractionDivider';
 export * from './chat/ChatMessageBubble/ChatMessageBubble';
